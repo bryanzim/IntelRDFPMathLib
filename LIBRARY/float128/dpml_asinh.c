@@ -90,7 +90,7 @@ Arcsinh & Arccosh
 
 
 
-
+ 
 
 #if !defined(MAKE_INCLUDE) 
 #include STR(BUILD_FILE_NAME)
@@ -1073,7 +1073,7 @@ function make_accurate()
 #endif  /* MAKE_INCLUDE */
 
 
-
+ 
 
 typedef struct { F_TYPE x_value, asinh_value, cosh_asinh_value;} TABLE_ENTRY;
 
@@ -1210,7 +1210,7 @@ F_ENTRY_NAME (F_TYPE x)
 
 
         GET_EXP_WORD(x, exp_word_x);
-	IEEE_ONLY(if (F_EXP_WORD_IS_ABNORMAL(exp_word_x)) goto non_finite_x;)
+    IEEE_ONLY(if (F_EXP_WORD_IS_ABNORMAL(exp_word_x)) goto non_finite_x;)
 
         if (x <= 1.0) goto out_of_range_or_one;
 
@@ -1276,7 +1276,7 @@ invalid_argument:
 
 #endif /* MAKE_ASINH */
 
-
+ 
 
 #ifdef MTC
 

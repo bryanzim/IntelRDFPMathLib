@@ -183,7 +183,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 
   if (!CR.w[1] && !CR.w[0]) {
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
-		pfpsf);
+        pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -267,53 +267,53 @@ if (!CA4.w[0] && !CA4.w[1])
       nzeros = 0;
 
       for (j = 0; QX32; j++, QX32 >>= 7) {
-	k = (QX32 & 127);
-	tdigit[0] += bid_convert_table[j][k][0];
-	tdigit[1] += bid_convert_table[j][k][1];
-	if (tdigit[0] >= 100000000) {
-	  tdigit[0] -= 100000000;
-	  tdigit[1]++;
-	}
+    k = (QX32 & 127);
+    tdigit[0] += bid_convert_table[j][k][0];
+    tdigit[1] += bid_convert_table[j][k][1];
+    if (tdigit[0] >= 100000000) {
+      tdigit[0] -= 100000000;
+      tdigit[1]++;
+    }
       }
 
       if (tdigit[1] >= 100000000) {
-	tdigit[1] -= 100000000;
-	if (tdigit[1] >= 100000000)
-	  tdigit[1] -= 100000000;
+    tdigit[1] -= 100000000;
+    if (tdigit[1] >= 100000000)
+      tdigit[1] -= 100000000;
       }
 
       digit = tdigit[0];
       if (!digit && !tdigit[1])
-	nzeros += 16;
+    nzeros += 16;
       else {
-	if (!digit) {
-	  nzeros += 8;
-	  digit = tdigit[1];
-	}
-	// decompose digit
-	PD = (BID_UINT64) digit *0x068DB8BBull;
-	digit_h = (BID_UINT32) (PD >> 40);
-	digit_low = digit - digit_h * 10000;
+    if (!digit) {
+      nzeros += 8;
+      digit = tdigit[1];
+    }
+    // decompose digit
+    PD = (BID_UINT64) digit *0x068DB8BBull;
+    digit_h = (BID_UINT32) (PD >> 40);
+    digit_low = digit - digit_h * 10000;
 
-	if (!digit_low)
-	  nzeros += 4;
-	else
-	  digit_h = digit_low;
+    if (!digit_low)
+      nzeros += 4;
+    else
+      digit_h = digit_low;
 
-	if (!(digit_h & 1))
-	  nzeros +=
-	    3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			  (digit_h & 7));
+    if (!(digit_h & 1))
+      nzeros +=
+        3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+              (digit_h & 7));
       }
 
       if (nzeros) {
-	__mul_64x64_to_128 (CQ, Q_high, bid_reciprocals10_64[nzeros]);
+    __mul_64x64_to_128 (CQ, Q_high, bid_reciprocals10_64[nzeros]);
 
-	// now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
-	amount = bid_short_recip_scale[nzeros];
-	CQ.w[0] = CQ.w[1] >> amount;
+    // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
+    amount = bid_short_recip_scale[nzeros];
+    CQ.w[0] = CQ.w[1] >> amount;
       } else
-	CQ.w[0] = Q_high;
+    CQ.w[0] = Q_high;
       CQ.w[1] = 0;
 
       diff_expon += nzeros;
@@ -325,52 +325,52 @@ if (!CA4.w[0] && !CA4.w[1])
       nzeros = 0;
 
       for (j = 0; QX32; j++, QX32 >>= 7) {
-	k = (QX32 & 127);
-	tdigit[0] += bid_convert_table[j][k][0];
-	tdigit[1] += bid_convert_table[j][k][1];
-	if (tdigit[0] >= 100000000) {
-	  tdigit[0] -= 100000000;
-	  tdigit[1]++;
-	}
+    k = (QX32 & 127);
+    tdigit[0] += bid_convert_table[j][k][0];
+    tdigit[1] += bid_convert_table[j][k][1];
+    if (tdigit[0] >= 100000000) {
+      tdigit[0] -= 100000000;
+      tdigit[1]++;
+    }
       }
 
       if (tdigit[1] >= 100000000) {
-	tdigit[1] -= 100000000;
-	if (tdigit[1] >= 100000000)
-	  tdigit[1] -= 100000000;
+    tdigit[1] -= 100000000;
+    if (tdigit[1] >= 100000000)
+      tdigit[1] -= 100000000;
       }
 
       digit = tdigit[0];
       if (!digit && !tdigit[1])
-	nzeros += 16;
+    nzeros += 16;
       else {
-	if (!digit) {
-	  nzeros += 8;
-	  digit = tdigit[1];
-	}
-	// decompose digit
-	PD = (BID_UINT64) digit *0x068DB8BBull;
-	digit_h = (BID_UINT32) (PD >> 40);
-	digit_low = digit - digit_h * 10000;
+    if (!digit) {
+      nzeros += 8;
+      digit = tdigit[1];
+    }
+    // decompose digit
+    PD = (BID_UINT64) digit *0x068DB8BBull;
+    digit_h = (BID_UINT32) (PD >> 40);
+    digit_low = digit - digit_h * 10000;
 
-	if (!digit_low)
-	  nzeros += 4;
-	else
-	  digit_h = digit_low;
+    if (!digit_low)
+      nzeros += 4;
+    else
+      digit_h = digit_low;
 
-	if (!(digit_h & 1))
-	  nzeros +=
-	    3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			  (digit_h & 7));
+    if (!(digit_h & 1))
+      nzeros +=
+        3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+              (digit_h & 7));
       }
 
       if (nzeros) {
-	// get P*(2^M[extra_digits])/10^extra_digits
-	__mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
+    // get P*(2^M[extra_digits])/10^extra_digits
+    __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
 
-	//now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
-	amount = bid_recip_scale[nzeros];
-	__shr_128 (CQ, Qh, amount);
+    //now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
+    amount = bid_recip_scale[nzeros];
+    __shr_128 (CQ, Qh, amount);
       }
       diff_expon += nzeros;
 
@@ -466,7 +466,7 @@ if (diff_expon >= 0) {
 #endif
 
   bid_handle_UF_128_rem (&res, sign_x ^ sign_y, diff_expon, CQ,
-		     CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
+             CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -485,7 +485,7 @@ BID_RETURN (res);
 //#define LEAVE_TRAILING_ZEROS
 
 BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2 (BID_UINT128, bid128dd_div, BID_UINT64, x,
-				  BID_UINT64, y)
+                  BID_UINT64, y)
 
      BID_UINT256 CA4, CA4r, P256;
      BID_UINT128 CX, CY, T128, CQ, CR, CA, TP128, Qh, Ql, res;
@@ -502,7 +502,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2 (BID_UINT128, bid128dd_div, BID_UINT64, x,
 
 valid_y = unpack_BID64 (&sign_y, &exponent_y, &CY.w[0], y);
 
-	// unpack arguments, check for NaN or Infinity
+    // unpack arguments, check for NaN or Infinity
 CX.w[1] = 0;
 if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], (x))) {
 #ifdef BID_SET_STATUS_FLAGS
@@ -521,7 +521,7 @@ if ((x & NAN_MASK64) == NAN_MASK64) {
   res.w[1] |= ((CX.w[0]) & 0xfc00000000000000ull);
   BID_RETURN (res);
 }
-	   // x is Infinity?
+       // x is Infinity?
 if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
   // check if y is Inf.
   if ((((y) & 0x7c00000000000000ull) == 0x7800000000000000ull))
@@ -542,7 +542,7 @@ if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
   BID_RETURN (res);
   }
 }
-	   // x is 0
+       // x is 0
 if ((((y) & 0x7800000000000000ull) != 0x7800000000000000ull)) {
     if(!CY.w[0]) {
 #ifdef BID_SET_STATUS_FLAGS
@@ -553,7 +553,7 @@ if ((((y) & 0x7800000000000000ull) != 0x7800000000000000ull)) {
   res.w[0] = 0;
   BID_RETURN (res);
 }
-	   // return 0
+       // return 0
 res.w[1] = ((x) ^ (y)) & 0x8000000000000000ull;
 if (((y) & 0x6000000000000000ull) == 0x6000000000000000ull)
   exponent_y = ((BID_UINT32) ((y) >> 51)) & 0x3ff;
@@ -634,7 +634,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 
   if (!CR.w[1] && !CR.w[0]) {
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
-		pfpsf);
+        pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -690,7 +690,7 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
       // difference in powers of 5 bid_factors
       d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
       if (d5 < nzeros)
-	nzeros = d5;
+    nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
       __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
       //__mul_128x128_to_256(P256, CQ, bid_reciprocals10_128[nzeros]);Qh.w[1]=P256.w[3];Qh.w[0]=P256.w[2];
@@ -711,122 +711,122 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
       Q_low = CQ.w[0] - Q_high * 100000000000000000ull;
 
       if (!Q_low) {
-	diff_expon += 17;
+    diff_expon += 17;
 
-	tdigit[0] = Q_high & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_high >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_high & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_high >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
 
-	if (tdigit[1] >= 100000000) {
-	  tdigit[1] -= 100000000;
-	  if (tdigit[1] >= 100000000)
-	    tdigit[1] -= 100000000;
-	}
+    if (tdigit[1] >= 100000000) {
+      tdigit[1] -= 100000000;
+      if (tdigit[1] >= 100000000)
+        tdigit[1] -= 100000000;
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  __mul_64x64_to_128 (CQ, Q_high, bid_reciprocals10_64[nzeros]);
+    if (nzeros) {
+      __mul_64x64_to_128 (CQ, Q_high, bid_reciprocals10_64[nzeros]);
 
-	  // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
-	  amount = bid_short_recip_scale[nzeros];
-	  CQ.w[0] = CQ.w[1] >> amount;
-	} else
-	  CQ.w[0] = Q_high;
-	CQ.w[1] = 0;
+      // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
+      amount = bid_short_recip_scale[nzeros];
+      CQ.w[0] = CQ.w[1] >> amount;
+    } else
+      CQ.w[0] = Q_high;
+    CQ.w[1] = 0;
 
-	diff_expon += nzeros;
+    diff_expon += nzeros;
       } else {
-	tdigit[0] = Q_low & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_low >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_low & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_low >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
-	if (tdigit[1] >= 100000000) {
-	  tdigit[1] -= 100000000;
-	  if (tdigit[1] >= 100000000)
-	    tdigit[1] -= 100000000;
-	}
+    if (tdigit[1] >= 100000000) {
+      tdigit[1] -= 100000000;
+      if (tdigit[1] >= 100000000)
+        tdigit[1] -= 100000000;
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  // get P*(2^M[extra_digits])/10^extra_digits
-	  __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
+    if (nzeros) {
+      // get P*(2^M[extra_digits])/10^extra_digits
+      __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
 
-	  // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
-	  amount = bid_recip_scale[nzeros];
-	  __shr_128 (CQ, Qh, amount);
-	}
-	diff_expon += nzeros;
+      // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
+      amount = bid_recip_scale[nzeros];
+      __shr_128 (CQ, Qh, amount);
+    }
+    diff_expon += nzeros;
 
       }
     }
@@ -919,7 +919,7 @@ if (diff_expon >= 0) {
   }
 #endif
   bid_handle_UF_128_rem (&res, sign_x ^ sign_y, diff_expon, CQ,
-		     CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
+             CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -951,7 +951,7 @@ BID128_FUNCTION_ARGTYPE1_ARG128 (bid128dq_div, BID_UINT64, x, y)
 
 valid_y = unpack_BID128_value (&sign_y, &exponent_y, &CY, y);
 
-	// unpack arguments, check for NaN or Infinity
+    // unpack arguments, check for NaN or Infinity
 CX.w[1] = 0;
 if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], x)) {
 #ifdef BID_SET_STATUS_FLAGS
@@ -970,7 +970,7 @@ if ((x & NAN_MASK64) == NAN_MASK64) {
   res.w[1] |= ((CX.w[0]) & 0xfc00000000000000ull);
   BID_RETURN (res);
 }
-	   // x is Infinity?
+       // x is Infinity?
 if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
   // check if y is Inf.
   if (((y.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull))
@@ -991,7 +991,7 @@ if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
   BID_RETURN (res);
   }
 }
-	   // x is 0
+       // x is 0
 if ((y.w[1] & INFINITY_MASK64) != INFINITY_MASK64) {
   if ((!CY.w[0]) && !(CY.w[1] & 0x0001ffffffffffffull)) {
 #ifdef BID_SET_STATUS_FLAGS
@@ -1082,7 +1082,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 
   if (!CR.w[1] && !CR.w[0]) {
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
-		pfpsf);
+        pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1138,7 +1138,7 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
       // difference in powers of 5 bid_factors
       d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
       if (d5 < nzeros)
-	nzeros = d5;
+    nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
       __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
       //__mul_128x128_to_256(P256, CQ, bid_reciprocals10_128[nzeros]);Qh.w[1]=P256.w[3];Qh.w[0]=P256.w[2];
@@ -1159,129 +1159,129 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
       Q_low = CQ.w[0] - Q_high * 100000000000000000ull;
 
       if (!Q_low) {
-	diff_expon += 17;
+    diff_expon += 17;
 
-	tdigit[0] = Q_high & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_high >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_high & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_high >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
 
-	if (tdigit[1] >= 100000000) {
-	  tdigit[1] -= 100000000;
-	  if (tdigit[1] >= 100000000)
-	    tdigit[1] -= 100000000;
-	}
+    if (tdigit[1] >= 100000000) {
+      tdigit[1] -= 100000000;
+      if (tdigit[1] >= 100000000)
+        tdigit[1] -= 100000000;
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  //printf("i=%d, nz=%d, digit=%d (%d, %016I64x %016I64x)\n",i,nzeros,digit_h,digit,PD,digit_h);fflush(stdout);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      //printf("i=%d, nz=%d, digit=%d (%d, %016I64x %016I64x)\n",i,nzeros,digit_h,digit,PD,digit_h);fflush(stdout);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  __mul_64x64_to_128 (CQ, Q_high, bid_reciprocals10_64[nzeros]);
+    if (nzeros) {
+      __mul_64x64_to_128 (CQ, Q_high, bid_reciprocals10_64[nzeros]);
 
-	  // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
-	  amount = bid_short_recip_scale[nzeros];
-	  CQ.w[0] = CQ.w[1] >> amount;
-	} else
-	  CQ.w[0] = Q_high;
-	CQ.w[1] = 0;
+      // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
+      amount = bid_short_recip_scale[nzeros];
+      CQ.w[0] = CQ.w[1] >> amount;
+    } else
+      CQ.w[0] = Q_high;
+    CQ.w[1] = 0;
 
-	diff_expon += nzeros;
+    diff_expon += nzeros;
       } else {
-	tdigit[0] = Q_low & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_low >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_low & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_low >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
-	if (tdigit[1] >= 100000000) {
-	  tdigit[1] -= 100000000;
-	  if (tdigit[1] >= 100000000)
-	    tdigit[1] -= 100000000;
-	}
+    if (tdigit[1] >= 100000000) {
+      tdigit[1] -= 100000000;
+      if (tdigit[1] >= 100000000)
+        tdigit[1] -= 100000000;
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  //printf("i=%d, nz=%d, digit=%d (%d, %016I64x %016I64x)\n",i,nzeros,digit_h,digit,PD,digit_h);fflush(stdout);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      //printf("i=%d, nz=%d, digit=%d (%d, %016I64x %016I64x)\n",i,nzeros,digit_h,digit,PD,digit_h);fflush(stdout);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  // get P*(2^M[extra_digits])/10^extra_digits
-	  __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
+    if (nzeros) {
+      // get P*(2^M[extra_digits])/10^extra_digits
+      __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
 
-	  // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
-	  amount = bid_recip_scale[nzeros];
-	  __shr_128 (CQ, Qh, amount);
-	}
-	diff_expon += nzeros;
+      // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
+      amount = bid_recip_scale[nzeros];
+      __shr_128 (CQ, Qh, amount);
+    }
+    diff_expon += nzeros;
 
       }
     }
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
-		pfpsf);
+        pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1370,7 +1370,7 @@ if (diff_expon >= 0) {
   }
 #endif
   bid_handle_UF_128_rem (&res, sign_x ^ sign_y, diff_expon, CQ,
-		     CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
+             CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1400,7 +1400,7 @@ BID128_FUNCTION_ARG128_ARGTYPE2 (bid128qd_div, x, BID_UINT64, y)
   BID_OPT_SAVE_BINARY_FLAGS()
 
 valid_y = unpack_BID64 (&sign_y, &exponent_y, &CY.w[0], y);
-	// unpack arguments, check for NaN or Infinity
+    // unpack arguments, check for NaN or Infinity
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
     // test if x is NaN
 if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
@@ -1439,7 +1439,7 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 }
     // x is 0
 if ((y & 0x7800000000000000ull) < 0x7800000000000000ull) {
-	if (!CY.w[0]) {
+    if (!CY.w[0]) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -1527,7 +1527,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 
   if (!CR.w[1] && !CR.w[0]) {
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
-		pfpsf);
+        pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1583,7 +1583,7 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
       // difference in powers of 5 bid_factors
       d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
       if (d5 < nzeros)
-	nzeros = d5;
+    nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
       __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
       //__mul_128x128_to_256(P256, CQ, bid_reciprocals10_128[nzeros]);Qh.w[1]=P256.w[3];Qh.w[0]=P256.w[2];
@@ -1604,122 +1604,122 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
       Q_low = CQ.w[0] - Q_high * 100000000000000000ull;
 
       if (!Q_low) {
-	diff_expon += 17;
+    diff_expon += 17;
 
-	tdigit[0] = Q_high & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_high >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_high & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_high >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
 
-	if (tdigit[1] >= 100000000) {
-	  tdigit[1] -= 100000000;
-	  if (tdigit[1] >= 100000000)
-	    tdigit[1] -= 100000000;
-	}
+    if (tdigit[1] >= 100000000) {
+      tdigit[1] -= 100000000;
+      if (tdigit[1] >= 100000000)
+        tdigit[1] -= 100000000;
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  __mul_64x64_to_128 (CQ, Q_high, bid_reciprocals10_64[nzeros]);
+    if (nzeros) {
+      __mul_64x64_to_128 (CQ, Q_high, bid_reciprocals10_64[nzeros]);
 
-	  // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
-	  amount = bid_short_recip_scale[nzeros];
-	  CQ.w[0] = CQ.w[1] >> amount;
-	} else
-	  CQ.w[0] = Q_high;
-	CQ.w[1] = 0;
+      // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
+      amount = bid_short_recip_scale[nzeros];
+      CQ.w[0] = CQ.w[1] >> amount;
+    } else
+      CQ.w[0] = Q_high;
+    CQ.w[1] = 0;
 
-	diff_expon += nzeros;
+    diff_expon += nzeros;
       } else {
-	tdigit[0] = Q_low & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_low >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_low & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_low >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
-	if (tdigit[1] >= 100000000) {
-	  tdigit[1] -= 100000000;
-	  if (tdigit[1] >= 100000000)
-	    tdigit[1] -= 100000000;
-	}
+    if (tdigit[1] >= 100000000) {
+      tdigit[1] -= 100000000;
+      if (tdigit[1] >= 100000000)
+        tdigit[1] -= 100000000;
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  // get P*(2^M[extra_digits])/10^extra_digits
-	  __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
+    if (nzeros) {
+      // get P*(2^M[extra_digits])/10^extra_digits
+      __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
 
-	  // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
-	  amount = bid_recip_scale[nzeros];
-	  __shr_128 (CQ, Qh, amount);
-	}
-	diff_expon += nzeros;
+      // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
+      amount = bid_recip_scale[nzeros];
+      __shr_128 (CQ, Qh, amount);
+    }
+    diff_expon += nzeros;
 
       }
     }
@@ -1812,7 +1812,7 @@ if (diff_expon >= 0) {
   }
 #endif
   bid_handle_UF_128_rem (&res, sign_x ^ sign_y, diff_expon, CQ,
-		     CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
+             CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif

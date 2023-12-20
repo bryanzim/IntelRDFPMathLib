@@ -33,24 +33,24 @@
 
     static const TABLE_UNION TABLE_NAME[] = { 
 
-	/* asinh class-to-action-mapping */
-	/* 000 */ DATA_1x2( 0x00410408, 0x14104100 ),
+    /* asinh class-to-action-mapping */
+    /* 000 */ DATA_1x2( 0x00410408, 0x14104100 ),
 
-	/* acosh class-to-action-mapping */
-	/* 008 */ DATA_1x2( 0x40e50408, 0x1e79e79e ),
-	/* 016 */ DATA_1x2( 0x00000002, 0x00000000 ),
+    /* acosh class-to-action-mapping */
+    /* 008 */ DATA_1x2( 0x40e50408, 0x1e79e79e ),
+    /* 016 */ DATA_1x2( 0x00000002, 0x00000000 ),
 
-	/* atanh class-to-action-mapping */
-	/* 024 */ DATA_1x2( 0x00e79408, 0x14104100 ),
-	/* 032 */ DATA_1x2( 0x00000005, 0x00000000 ),
-	/* 040 */ DATA_1x2( 0xf9de6484, 0xb504f333 ),
-	/* 048 */ DATA_1x2( 0xfb66cb63, 0x87c3b666 ),
-	/* 056 */ DATA_1x2( 0x6219b7ba, 0xafb0ccc0 ),
+    /* atanh class-to-action-mapping */
+    /* 024 */ DATA_1x2( 0x00e79408, 0x14104100 ),
+    /* 032 */ DATA_1x2( 0x00000005, 0x00000000 ),
+    /* 040 */ DATA_1x2( 0xf9de6484, 0xb504f333 ),
+    /* 048 */ DATA_1x2( 0xfb66cb63, 0x87c3b666 ),
+    /* 056 */ DATA_1x2( 0x6219b7ba, 0xafb0ccc0 ),
 
-	/* Unpacked constants 1 and ln2 */
-	/* 064 */ POS, 0001, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
-	/* 088 */ POS, 0000, DATA_2x2( 0xd1cf79ab, 0xb17217f7, 0x03f2f6af, 0xc9e3b398 ),
-	};
+    /* Unpacked constants 1 and ln2 */
+    /* 064 */ POS, 0001, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
+    /* 088 */ POS, 0000, DATA_2x2( 0xd1cf79ab, 0xb17217f7, 0x03f2f6af, 0xc9e3b398 ),
+    };
 
 #define	ASINH_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 0))
 #define	ACOSH_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 8))

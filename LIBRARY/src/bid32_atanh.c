@@ -50,70 +50,70 @@ if ((x & 0x7c000000) == 0x7c000000) {
   if ((x & 0x7e000000) == 0x7e000000)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	res = (coefficient_x) & QUIET_MASK32;
-	BID_RETURN (res);
+    res = (coefficient_x) & QUIET_MASK32;
+    BID_RETURN (res);
 }
     // x is Infinity?
 if ((x & 0x78000000) == 0x78000000) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	  res = 0x7c000000;
+      res = 0x7c000000;
       BID_RETURN (res);
   }
     // x is 0
-	 res = sign_x | coefficient_x;
+     res = sign_x | coefficient_x;
      BID_RETURN (res);
 }
 
-	
+    
     if(exponent_x <= DECIMAL_EXPONENT_BIAS_32 - 12)
-	{
-		res = x;
-		BID_RETURN (res);
-	}
+    {
+        res = x;
+        BID_RETURN (res);
+    }
 
-	// |x| 
-	xn = x & 0x7fffffff;
+    // |x| 
+    xn = x & 0x7fffffff;
 
-	// 1.0
-	one = 0x32800001ull;    
+    // 1.0
+    one = 0x32800001ull;    
 
-	// 1 - |x|
-	BIDECIMAL_CALL2 (bid32_sub, one_m_x, one, xn);
+    // 1 - |x|
+    BIDECIMAL_CALL2 (bid32_sub, one_m_x, one, xn);
 
-	if(one_m_x & 0x80000000)
-	{
-		// |x|>1
+    if(one_m_x & 0x80000000)
+    {
+        // |x|>1
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	  res = 0x7c000000;
+      res = 0x7c000000;
       BID_RETURN (res);
   }
 
   if(!(one_m_x<<(32-23)) && ((one_m_x & SPECIAL_ENCODING_MASK32)!=SPECIAL_ENCODING_MASK32))
   {
-	  // |x|==1
+      // |x|==1
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-	  res = sign_x | 0x78000000;
+      res = sign_x | 0x78000000;
       BID_RETURN (res);
   }
 
-	// (2*|x|)/(1-|x|)
-	BIDECIMAL_CALL2 (bid32_div, tmp, xn, one_m_x);
-	BIDECIMAL_CALL2 (bid32_add, y, tmp, tmp);
+    // (2*|x|)/(1-|x|)
+    BIDECIMAL_CALL2 (bid32_div, tmp, xn, one_m_x);
+    BIDECIMAL_CALL2 (bid32_add, y, tmp, tmp);
 
-	BIDECIMAL_CALL1 (bid32_to_binary64, xq, y);
-	rq = log1p(xq);
-	rq = rq * (double)0.5;
+    BIDECIMAL_CALL1 (bid32_to_binary64, xq, y);
+    rq = log1p(xq);
+    rq = rq * (double)0.5;
     BIDECIMAL_CALL1 (binary64_to_bid32, res, rq);
 
-	res ^= sign_x;
+    res ^= sign_x;
 
-	BID_RETURN (res);
+    BID_RETURN (res);
 
 
 }

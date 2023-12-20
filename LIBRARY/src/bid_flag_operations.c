@@ -91,7 +91,7 @@ bid_lowerFlags (_IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid_testFlags (_IDEC_flags * praised,
-	   _IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
+       _IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
   // *praised is a pointer to the result, i.e. the logical OR of the flags 
   // selected by *pflagsmask that are set; e.g. if
   // *pflagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
@@ -116,7 +116,7 @@ bid_testFlags (_IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid_testSavedFlags (_IDEC_flags * praised, _IDEC_flags * psavedflags,
-		_IDEC_flags * pflagsmask) {
+        _IDEC_flags * pflagsmask) {
   // *praised is a pointer to the result, i.e. the logical OR of the flags
   // selected by *pflagsmask that are set in *psavedflags; e.g. if
   // *pflagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
@@ -145,7 +145,7 @@ bid_testSavedFlags (_IDEC_flags savedflags, _IDEC_flags flagsmask) {
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid_restoreFlags (_IDEC_flags * pflagsvalues,
-	      _IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
+          _IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
   // restore the status flags selected by *pflagsmask to the values speciafied
   // (as a logical OR) in *pflagsvalues; e.g. if
   // *pflagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
@@ -160,7 +160,7 @@ bid_restoreFlags (_IDEC_flags * pflagsvalues,
 #else
 void
 bid_restoreFlags (_IDEC_flags flagsvalues,
-	      _IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
+          _IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
   // restore the status flags selected by flagsmask to the values speciafied
   // (as a logical OR) in flagsvalues; e.g. if 
   // flagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
@@ -177,7 +177,7 @@ bid_restoreFlags (_IDEC_flags flagsvalues,
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid_saveFlags (_IDEC_flags * pflagsvalues,
-	   _IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
+       _IDEC_flags * pflagsmask _EXC_FLAGS_PARAM) {
   // return in *pflagsvalues the status flags specified (as a logical OR) in
   // *pflagsmask; e.g. if
   // *pflagsmask = BID_INVALID_EXCEPTION | BID_UNDERFLOW_EXCEPTION | BID_INEXACT_EXCEPTION
@@ -228,7 +228,7 @@ bid_saveFlags (_IDEC_flags flagsmask _EXC_FLAGS_PARAM) {
     // #define _RND_MODE_PARAM , _IDEC_round *prnd_mode
 void
 bid_getDecimalRoundingDirection (_IDEC_round * rounding_mode
-			     _RND_MODE_PARAM) {
+                 _RND_MODE_PARAM) {
   // returns the current rounding mode
   *rounding_mode = *prnd_mode;
 }
@@ -237,7 +237,7 @@ bid_getDecimalRoundingDirection (_IDEC_round * rounding_mode
     // #define rnd_mode _IDEC_glbround
 void
 bid_getDecimalRoundingDirection (_IDEC_round * rounding_mode
-			     _RND_MODE_PARAM) {
+                 _RND_MODE_PARAM) {
   // returns the current rounding mode
   *rounding_mode = rnd_mode;
 }
@@ -266,7 +266,7 @@ bid_getDecimalRoundingDirection (void) {
     // #define _RND_MODE_PARAM , _IDEC_round *prnd_mode
 void
 bid_setDecimalRoundingDirection (_IDEC_round * rounding_mode
-			     _RND_MODE_PARAM) {
+                 _RND_MODE_PARAM) {
   // sets the current rounding mode to the value in *rounding_mode, if valid
   if (*rounding_mode == BID_ROUNDING_TO_NEAREST ||
       *rounding_mode == BID_ROUNDING_DOWN ||
@@ -281,7 +281,7 @@ bid_setDecimalRoundingDirection (_IDEC_round * rounding_mode
     // #define rnd_mode _IDEC_glbround
 void
 bid_setDecimalRoundingDirection (_IDEC_round * rounding_mode
-			     ) {
+                 ) {
   // sets the global rounding mode to the value in *rounding_mode, if valid
   if (*rounding_mode == BID_ROUNDING_TO_NEAREST ||
       *rounding_mode == BID_ROUNDING_DOWN ||
@@ -365,52 +365,52 @@ int_float tmp;
 
     crt_flags = _statusfp();
 
-	if(crt_flags != *pflags)
-	{
+    if(crt_flags != *pflags)
+    {
           _clearfp();
 
-		  if(crt_flags & _SW_INEXACT)
-		  {
-			  tmp.i = 0x3f800001;
-			  tmp.d *= tmp.d;
-			  n |= tmp.i;
-		  }
-		  if(crt_flags & _SW_UNDERFLOW)
-		  {
-			  tmp.i = 0x00800001;
-			  tmp.d *= tmp.d;
-			  n |= tmp.i;
-		  }
-		  if(crt_flags & _SW_OVERFLOW)
-		  {
-			  tmp.i = 0x7f000001;
-			  tmp.d *= tmp.d;
-			  n |= tmp.i;
-		  }
-		  if(crt_flags & _SW_ZERODIVIDE)
-		  {
-			  tmp.i = 0x80000000;
-			  tmp.d = 1.0/tmp.d;
-			  n |= tmp.i;
-		  }
-		  if(crt_flags & _SW_INVALID)
-		  {
-			  tmp.i = 0x80000000;
-			  tmp.d /= tmp.d;
-			  n |= tmp.i;
-		  }
+          if(crt_flags & _SW_INEXACT)
+          {
+              tmp.i = 0x3f800001;
+              tmp.d *= tmp.d;
+              n |= tmp.i;
+          }
+          if(crt_flags & _SW_UNDERFLOW)
+          {
+              tmp.i = 0x00800001;
+              tmp.d *= tmp.d;
+              n |= tmp.i;
+          }
+          if(crt_flags & _SW_OVERFLOW)
+          {
+              tmp.i = 0x7f000001;
+              tmp.d *= tmp.d;
+              n |= tmp.i;
+          }
+          if(crt_flags & _SW_ZERODIVIDE)
+          {
+              tmp.i = 0x80000000;
+              tmp.d = 1.0/tmp.d;
+              n |= tmp.i;
+          }
+          if(crt_flags & _SW_INVALID)
+          {
+              tmp.i = 0x80000000;
+              tmp.d /= tmp.d;
+              n |= tmp.i;
+          }
 
-		  if(crt_flags & _SW_DENORMAL)
-		  {
-			  tmp.i = 0x80000001;
-			  tmp.d = 1.0+tmp.d;
-			  n |= tmp.i;
-		  }
-	}
+          if(crt_flags & _SW_DENORMAL)
+          {
+              tmp.i = 0x80000001;
+              tmp.d = 1.0+tmp.d;
+              n |= tmp.i;
+          }
+    }
 
     n &= __bid_flag_mask;
 
-	return n;
+    return n;
 }
 
 #endif

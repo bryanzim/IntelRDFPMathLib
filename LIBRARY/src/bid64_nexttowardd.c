@@ -93,10 +93,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_nexttoward, BID_UIN
       BID_RETURN (res);
     } else {	// at least one is infinity
       if ((x & MASK_ANY_INF) == MASK_INF) { // x = inf
-	x = x & (MASK_SIGN | MASK_INF);
+    x = x & (MASK_SIGN | MASK_INF);
       }
       if ((y.w[BID_HIGH_128W] & MASK_ANY_INF) == MASK_INF) { // y = inf
-	y.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & (MASK_SIGN | MASK_INF);
+    y.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & (MASK_SIGN | MASK_INF);
         y.w[BID_LOW_128W] = 0x0ull;
       }
     }

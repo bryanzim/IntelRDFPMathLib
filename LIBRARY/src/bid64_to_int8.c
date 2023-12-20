@@ -35,41 +35,41 @@
 
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_rnint, BID_UINT64, x,
-			       bid64_to_int32_rnint, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_rnint, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_xrnint, BID_UINT64, x,
-			       bid64_to_int32_xrnint, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_xrnint, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_rninta, BID_UINT64, x,
-			       bid64_to_int32_rninta, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_rninta, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_xrninta, BID_UINT64, x,
-			       bid64_to_int32_xrninta, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_xrninta, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_int, BID_UINT64, x,
-			       bid64_to_int32_int, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_int, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_xint, BID_UINT64, x,
-			       bid64_to_int32_xint, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_xint, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_floor, BID_UINT64, x,
-			       bid64_to_int32_floor, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_floor, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_ceil, BID_UINT64, x,
-			       bid64_to_int32_ceil, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_ceil, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_xfloor, BID_UINT64, x,
-			       bid64_to_int32_xfloor, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_xfloor, int, SIZE_MASK,
+                   INVALID_RESULT)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid64_to_int8_xceil, BID_UINT64, x,
-			       bid64_to_int32_xceil, int, SIZE_MASK,
-			       INVALID_RESULT)
+                   bid64_to_int32_xceil, int, SIZE_MASK,
+                   INVALID_RESULT)

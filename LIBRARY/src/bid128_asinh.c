@@ -39,48 +39,48 @@ int exponent_x, exponent_y, cmp_res, exponent_res;
 BID_F128_TYPE rq, xq, yq, rt;
 
   // unpack arguments, check for NaN or Infinity
-	if (!unpack_BID128_value_BLE (&sign_x, &exponent_x, &CX, x)) {
+    if (!unpack_BID128_value_BLE (&sign_x, &exponent_x, &CX, x)) {
     // test if x is NaN
 if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
   if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	res.w[BID_HIGH_128W] = (CX.w[BID_HIGH_128W]) & QUIET_MASK64;
-	res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
-	BID_RETURN (res);
+    res.w[BID_HIGH_128W] = (CX.w[BID_HIGH_128W]) & QUIET_MASK64;
+    res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
+    BID_RETURN (res);
 }
     // x is Infinity?
 if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-	  res.w[BID_HIGH_128W] = sign_x | 0x7800000000000000ull;
-	  res.w[BID_LOW_128W] = 0;
+      res.w[BID_HIGH_128W] = sign_x | 0x7800000000000000ull;
+      res.w[BID_LOW_128W] = 0;
     BID_RETURN (res);
   }
     // x is 0
-	 res.w[BID_HIGH_128W] = sign_x | CX.w[BID_HIGH_128W];
-	 res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
+     res.w[BID_HIGH_128W] = sign_x | CX.w[BID_HIGH_128W];
+     res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
      BID_RETURN (res);
 }
 
-	if(exponent_x > (DECIMAL_EXPONENT_BIAS_128+34))
-	{	
-		bid_get_BID128_very_fast_BLE(&xn, 0, DECIMAL_EXPONENT_BIAS_128, CX);
-		BIDECIMAL_CALL1 (bid128_to_binary128, xq, xn);
-		__bid_f128_add(xq, xq, xq);
+    if(exponent_x > (DECIMAL_EXPONENT_BIAS_128+34))
+    {	
+        bid_get_BID128_very_fast_BLE(&xn, 0, DECIMAL_EXPONENT_BIAS_128, CX);
+        BIDECIMAL_CALL1 (bid128_to_binary128, xq, xn);
+        __bid_f128_add(xq, xq, xq);
                 __bid_f128_itof(yq, exponent_x-DECIMAL_EXPONENT_BIAS_128);
-		__bid_f128_mul(rq, yq, c_log10.v);
-		__bid_f128_log(rt, xq);
-		__bid_f128_add(rq, rq, rt);
-		BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
+        __bid_f128_mul(rq, yq, c_log10.v);
+        __bid_f128_log(rt, xq);
+        __bid_f128_add(rq, rq, rt);
+        BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 
-		res.w[BID_HIGH_128W] |= sign_x;
-	    BID_RETURN (res);
-	}
+        res.w[BID_HIGH_128W] |= sign_x;
+        BID_RETURN (res);
+    }
 
-	BIDECIMAL_CALL1 (bid128_to_binary128, xq, x);
-	__bid_f128_asinh(rq, xq);
+    BIDECIMAL_CALL1 (bid128_to_binary128, xq, x);
+    __bid_f128_asinh(rq, xq);
     BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 
-	BID_RETURN (res);
+    BID_RETURN (res);
 }
 

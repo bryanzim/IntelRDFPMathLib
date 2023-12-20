@@ -36,14 +36,14 @@
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_nextup (BID_UINT64 * pres,
-	      BID_UINT64 *
-	      px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+          BID_UINT64 *
+          px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 DFP_WRAPFN_DFP(64, bid64_nextup, 64)
 BID_UINT64
 bid64_nextup (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-	      _EXC_INFO_PARAM) {
+          _EXC_INFO_PARAM) {
 #endif
 
   BID_UINT64 res;
@@ -110,65 +110,65 @@ bid64_nextup (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // q1 = nr. of decimal digits in x (1 <= q1 <= 54)
       //  determine first the nr. of bits in x
       if (C1 >= MASK_BINARY_OR2) {	// x >= 2^53
-	// split the 64-bit value in two 32-bit halves to avoid rounding errors
-	if (C1 >= 0x0000000100000000ull) {	// x >= 2^32
-	  tmp1.d = (double) (C1 >> 32);	// exact conversion
-	  x_nr_bits =
-	    33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-	} else {	// x < 2^32
-	  tmp1.d = (double) C1;	// exact conversion
-	  x_nr_bits =
-	    1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-	}
+    // split the 64-bit value in two 32-bit halves to avoid rounding errors
+    if (C1 >= 0x0000000100000000ull) {	// x >= 2^32
+      tmp1.d = (double) (C1 >> 32);	// exact conversion
+      x_nr_bits =
+        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+    } else {	// x < 2^32
+      tmp1.d = (double) C1;	// exact conversion
+      x_nr_bits =
+        1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+    }
       } else {	// if x < 2^53
-	tmp1.d = (double) C1;	// exact conversion
-	x_nr_bits =
-	  1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+    tmp1.d = (double) C1;	// exact conversion
+    x_nr_bits =
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
       }
       q1 = bid_nr_digits[x_nr_bits - 1].digits;
       if (q1 == 0) {
-	q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-	if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
-	  q1++;
+    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q1++;
       }
       // if q1 < P16 then pad the significand with zeros
       if (q1 < P16) {
-	if (x_exp > (BID_UINT64) (P16 - q1)) {
-	  ind = P16 - q1;	// 1 <= ind <= P16 - 1
-	  // pad with P16 - q1 zeros, until exponent = emin
-	  // C1 = C1 * 10^ind
-	  C1 = C1 * bid_ten2k64[ind];
-	  x_exp = x_exp - ind;
-	} else {	// pad with zeros until the exponent reaches emin
-	  ind = x_exp;
-	  C1 = C1 * bid_ten2k64[ind];
-	  x_exp = EXP_MIN;
-	}
+    if (x_exp > (BID_UINT64) (P16 - q1)) {
+      ind = P16 - q1;	// 1 <= ind <= P16 - 1
+      // pad with P16 - q1 zeros, until exponent = emin
+      // C1 = C1 * 10^ind
+      C1 = C1 * bid_ten2k64[ind];
+      x_exp = x_exp - ind;
+    } else {	// pad with zeros until the exponent reaches emin
+      ind = x_exp;
+      C1 = C1 * bid_ten2k64[ind];
+      x_exp = EXP_MIN;
+    }
       }
       if (!x_sign) {	// x > 0
-	// add 1 ulp (add 1 to the significand)
-	C1++;
-	if (C1 == 0x002386f26fc10000ull) {	// if  C1 = 10^16
-	  C1 = 0x00038d7ea4c68000ull;	// C1 = 10^15
-	  x_exp++;
-	}
-	// Ok, because MAXFP = 999...99 * 10^emax was caught already
+    // add 1 ulp (add 1 to the significand)
+    C1++;
+    if (C1 == 0x002386f26fc10000ull) {	// if  C1 = 10^16
+      C1 = 0x00038d7ea4c68000ull;	// C1 = 10^15
+      x_exp++;
+    }
+    // Ok, because MAXFP = 999...99 * 10^emax was caught already
       } else {	// x < 0
-	// subtract 1 ulp (subtract 1 from the significand)
-	C1--;
-	if (C1 == 0x00038d7ea4c67fffull && x_exp != 0) {	// if  C1 = 10^15 - 1
-	  C1 = 0x002386f26fc0ffffull;	// C1 = 10^16 - 1
-	  x_exp--;
-	}
+    // subtract 1 ulp (subtract 1 from the significand)
+    C1--;
+    if (C1 == 0x00038d7ea4c67fffull && x_exp != 0) {	// if  C1 = 10^15 - 1
+      C1 = 0x002386f26fc0ffffull;	// C1 = 10^16 - 1
+      x_exp--;
+    }
       }
       // assemble the result
       // if significand has 54 bits
       if (C1 & MASK_BINARY_OR2) {
-	res =
-	  x_sign | (x_exp << 51) | MASK_STEERING_BITS | (C1 &
-							 MASK_BINARY_SIG2);
+    res =
+      x_sign | (x_exp << 51) | MASK_STEERING_BITS | (C1 &
+                             MASK_BINARY_SIG2);
       } else {	// significand fits in 53 bits
-	res = x_sign | (x_exp << 53) | C1;
+    res = x_sign | (x_exp << 53) | C1;
       }
     }	// end -MAXFP <= x <= -MINFP - 1 ulp OR MINFP <= x <= MAXFP - 1 ulp
   }	// end x is not special and is not zero
@@ -182,14 +182,14 @@ bid64_nextup (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_nextdown (BID_UINT64 * pres,
-		BID_UINT64 *
-		px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+        BID_UINT64 *
+        px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 DFP_WRAPFN_DFP(64, bid64_nextdown, 64)
 BID_UINT64
 bid64_nextdown (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		_EXC_INFO_PARAM) {
+        _EXC_INFO_PARAM) {
 #endif
 
   BID_UINT64 res;
@@ -256,66 +256,66 @@ bid64_nextdown (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // q1 = nr. of decimal digits in x (1 <= q1 <= 16)
       //  determine first the nr. of bits in x
       if (C1 >= 0x0020000000000000ull) {	// x >= 2^53
-	// split the 64-bit value in two 32-bit halves to avoid 
-	// rounding errors
-	if (C1 >= 0x0000000100000000ull) {	// x >= 2^32
-	  tmp1.d = (double) (C1 >> 32);	// exact conversion
-	  x_nr_bits =
-	    33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-	} else {	// x < 2^32
-	  tmp1.d = (double) C1;	// exact conversion
-	  x_nr_bits =
-	    1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-	}
+    // split the 64-bit value in two 32-bit halves to avoid 
+    // rounding errors
+    if (C1 >= 0x0000000100000000ull) {	// x >= 2^32
+      tmp1.d = (double) (C1 >> 32);	// exact conversion
+      x_nr_bits =
+        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+    } else {	// x < 2^32
+      tmp1.d = (double) C1;	// exact conversion
+      x_nr_bits =
+        1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+    }
       } else {	// if x < 2^53
-	tmp1.d = (double) C1;	// exact conversion
-	x_nr_bits =
-	  1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+    tmp1.d = (double) C1;	// exact conversion
+    x_nr_bits =
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
       }
       q1 = bid_nr_digits[x_nr_bits - 1].digits;
       if (q1 == 0) {
-	q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-	if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
-	  q1++;
+    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q1++;
       }
       // if q1 < P16 then pad the significand with zeros
       if (q1 < P16) {
-	if (x_exp > (BID_UINT64) (P16 - q1)) {
-	  ind = P16 - q1;	// 1 <= ind <= P16 - 1
-	  // pad with P16 - q1 zeros, until exponent = emin
-	  // C1 = C1 * 10^ind
-	  C1 = C1 * bid_ten2k64[ind];
-	  x_exp = x_exp - ind;
-	} else {	// pad with zeros until the exponent reaches emin
-	  ind = x_exp;
-	  C1 = C1 * bid_ten2k64[ind];
-	  x_exp = EXP_MIN;
-	}
+    if (x_exp > (BID_UINT64) (P16 - q1)) {
+      ind = P16 - q1;	// 1 <= ind <= P16 - 1
+      // pad with P16 - q1 zeros, until exponent = emin
+      // C1 = C1 * 10^ind
+      C1 = C1 * bid_ten2k64[ind];
+      x_exp = x_exp - ind;
+    } else {	// pad with zeros until the exponent reaches emin
+      ind = x_exp;
+      C1 = C1 * bid_ten2k64[ind];
+      x_exp = EXP_MIN;
+    }
       }
       if (x_sign) {	// x < 0
-	// add 1 ulp (add 1 to the significand)
-	C1++;
-	if (C1 == 0x002386f26fc10000ull) {	// if  C1 = 10^16
-	  C1 = 0x00038d7ea4c68000ull;	// C1 = 10^15
-	  x_exp++;
-	  // Ok, because -MAXFP = -999...99 * 10^emax was caught already
-	}
+    // add 1 ulp (add 1 to the significand)
+    C1++;
+    if (C1 == 0x002386f26fc10000ull) {	// if  C1 = 10^16
+      C1 = 0x00038d7ea4c68000ull;	// C1 = 10^15
+      x_exp++;
+      // Ok, because -MAXFP = -999...99 * 10^emax was caught already
+    }
       } else {	// x > 0
-	// subtract 1 ulp (subtract 1 from the significand)
-	C1--;
-	if (C1 == 0x00038d7ea4c67fffull && x_exp != 0) {	// if  C1 = 10^15 - 1
-	  C1 = 0x002386f26fc0ffffull;	// C1 = 10^16 - 1
-	  x_exp--;
-	}
+    // subtract 1 ulp (subtract 1 from the significand)
+    C1--;
+    if (C1 == 0x00038d7ea4c67fffull && x_exp != 0) {	// if  C1 = 10^15 - 1
+      C1 = 0x002386f26fc0ffffull;	// C1 = 10^16 - 1
+      x_exp--;
+    }
       }
       // assemble the result
       // if significand has 54 bits
       if (C1 & MASK_BINARY_OR2) {
-	res =
-	  x_sign | (x_exp << 51) | MASK_STEERING_BITS | (C1 &
-							 MASK_BINARY_SIG2);
+    res =
+      x_sign | (x_exp << 51) | MASK_STEERING_BITS | (C1 &
+                             MASK_BINARY_SIG2);
       } else {	// significand fits in 53 bits
-	res = x_sign | (x_exp << 53) | C1;
+    res = x_sign | (x_exp << 53) | C1;
       }
     }	// end -MAXFP <= x <= -MINFP - 1 ulp OR MINFP <= x <= MAXFP - 1 ulp
   }	// end x is not special and is not zero
@@ -329,16 +329,16 @@ bid64_nextdown (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_nextafter (BID_UINT64 * pres, BID_UINT64 * px,
-		 BID_UINT64 *
-		 py _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+         BID_UINT64 *
+         py _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
   BID_UINT64 y = *py;
 #else
 DFP_WRAPFN_DFP_DFP(64, bid64_nextafter, 64, 64)
 BID_UINT64
 bid64_nextafter (BID_UINT64 x,
-		 BID_UINT64 y _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		 _EXC_INFO_PARAM) {
+         BID_UINT64 y _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+         _EXC_INFO_PARAM) {
 #endif
 
   BID_UINT64 res;
@@ -353,44 +353,44 @@ bid64_nextafter (BID_UINT64 x,
 
     if ((x & MASK_NAN) == MASK_NAN) {	// x is NAN
       if ((x & 0x0003ffffffffffffull) > 999999999999999ull)
-	x = x & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
+    x = x & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
       else
-	x = x & 0xfe03ffffffffffffull;	// clear G6-G12
+    x = x & 0xfe03ffffffffffffull;	// clear G6-G12
       if ((x & MASK_SNAN) == MASK_SNAN) {	// x is SNAN
-	// set invalid flag
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return quiet (x)
-	res = x & 0xfdffffffffffffffull;
+    // set invalid flag
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return quiet (x)
+    res = x & 0xfdffffffffffffffull;
       } else {	// x is QNaN
-	if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	}
-	// return x
-	res = x;
+    if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+    }
+    // return x
+    res = x;
       }
       BID_RETURN (res);
     } else if ((y & MASK_NAN) == MASK_NAN) {	// y is NAN
       if ((y & 0x0003ffffffffffffull) > 999999999999999ull)
-	y = y & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
+    y = y & 0xfe00000000000000ull;	// clear G6-G12 and the payload bits
       else
-	y = y & 0xfe03ffffffffffffull;	// clear G6-G12
+    y = y & 0xfe03ffffffffffffull;	// clear G6-G12
       if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	// set invalid flag
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return quiet (y)
-	res = y & 0xfdffffffffffffffull;
+    // set invalid flag
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return quiet (y)
+    res = y & 0xfdffffffffffffffull;
       } else {	// y is QNaN
-	// return y
-	res = y;
+    // return y
+    res = y;
       }
       BID_RETURN (res);
     } else {	// at least one is infinity
       if ((x & MASK_ANY_INF) == MASK_INF) {	// x = inf
-	x = x & (MASK_SIGN | MASK_INF);
+    x = x & (MASK_SIGN | MASK_INF);
       }
       if ((y & MASK_ANY_INF) == MASK_INF) {	// y = inf
-	y = y & (MASK_SIGN | MASK_INF);
+    y = y & (MASK_SIGN | MASK_INF);
       }
     }
   }
@@ -403,9 +403,9 @@ bid64_nextafter (BID_UINT64 x,
       // if the steering bits are 11 (condition will be 0), then
       // the exponent is G[0:w+1]
       if (((x & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }
     } else {	// if ((x & MASK_STEERING_BITS) != MASK_STEERING_BITS) x is unch.
       ;	// canonical
@@ -417,16 +417,16 @@ bid64_nextafter (BID_UINT64 x,
   tmp_fpsf = *pfpsf;	// save fpsf
 #if DECIMAL_CALL_BY_REFERENCE
   bid64_quiet_equal (&res1, px,
-		     py _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+             py _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64_quiet_greater (&res2, px,
-		       py _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+               py _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #else
   res1 =
     bid64_quiet_equal (x,
-		       y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+               y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res2 =
     bid64_quiet_greater (x,
-			 y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+             y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #endif
   *pfpsf = tmp_fpsf;	// restore fpsf
   if (res1) {	// x = y
@@ -435,7 +435,7 @@ bid64_nextafter (BID_UINT64 x,
   } else if (res2) {	// x > y
 #if DECIMAL_CALL_BY_REFERENCE
     bid64_nextdown (&res,
-		    px _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+            px _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #else
     res =
       bid64_nextdown (x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
@@ -462,20 +462,20 @@ bid64_nextafter (BID_UINT64 x,
   tmp_fpsf = *pfpsf;	// save fpsf
 #if DECIMAL_CALL_BY_REFERENCE
   bid64_quiet_greater (&res1, &tmp1,
-		       &tmp2 _EXC_FLAGS_ARG _EXC_MASKS_ARG
-		       _EXC_INFO_ARG);
+               &tmp2 _EXC_FLAGS_ARG _EXC_MASKS_ARG
+               _EXC_INFO_ARG);
   bid64_quiet_not_equal (&res2, &x,
-			 &res _EXC_FLAGS_ARG _EXC_MASKS_ARG
-			 _EXC_INFO_ARG);
+             &res _EXC_FLAGS_ARG _EXC_MASKS_ARG
+             _EXC_INFO_ARG);
 #else
   res1 =
     bid64_quiet_greater (tmp1,
-			 tmp2 _EXC_FLAGS_ARG _EXC_MASKS_ARG
-			 _EXC_INFO_ARG);
+             tmp2 _EXC_FLAGS_ARG _EXC_MASKS_ARG
+             _EXC_INFO_ARG);
   res2 =
     bid64_quiet_not_equal (x,
-			   res _EXC_FLAGS_ARG _EXC_MASKS_ARG
-			   _EXC_INFO_ARG);
+               res _EXC_FLAGS_ARG _EXC_MASKS_ARG
+               _EXC_INFO_ARG);
 #endif
   *pfpsf = tmp_fpsf;	// restore fpsf
   if (res1 && res2) {

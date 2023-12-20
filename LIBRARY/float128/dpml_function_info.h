@@ -37,9 +37,9 @@
 #define	ONE_ARG(r,a)		(1 | ((r) << 3) | ((a) << 6))
 #define	TWO_ARGS(r,a,b)		(2 | ((r) << 3) | ((a) << 6) | ((b) << 9))
 #define	THREE_ARGS(r,a,b,c)	(4 | ((r) << 3) | ((a) << 6) | ((b) << 9) \
-				   | ((c) << 12))
+                   | ((c) << 12))
 #define	FOUR_ARGS(r,a,b,c,d)	(4 | ((r) << 3) | ((a) << 6) | ((b) << 9) \
-				   | ((c) << 12) | ((d) << 15))
+                   | ((c) << 12) | ((d) << 15))
 
 #define	F_F	ONE_ARG(   __FLOAT,   __FLOAT)
 #define I_F     ONE_ARG(__INTEGER,  __FLOAT)

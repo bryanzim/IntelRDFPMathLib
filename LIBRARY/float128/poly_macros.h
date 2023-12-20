@@ -82,94 +82,94 @@ the other forms in this file */
 /* y = a */
 
 #define POLY_0_C(x,p,y) { \
-	(y)  = (p)[0]; \
+    (y)  = (p)[0]; \
 }
 
 /* y = a(x) + b */
 
 #define POLY_1_C(x,p,y) { \
-	(y)  = (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 /* y = a(x)^2 + b(x) + c */
 
 #define POLY_2_C(x,p,y) { \
-	(y)  = (p)[2]; (y) *= (x); \
-	(y) += (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[2]; (y) *= (x); \
+    (y) += (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 /* y = a(x)^3 + b(x)^2 + c(x) + d */
 
 #define POLY_3_C(x,p,y) { \
-	(y)  = (p)[3]; (y) *= (x); \
-	(y) += (p)[2]; (y) *= (x); \
-	(y) += (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[3]; (y) *= (x); \
+    (y) += (p)[2]; (y) *= (x); \
+    (y) += (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 #define POLY_4_C(x,p,y) { \
-	(y)  = (p)[4]; (y) *= (x); \
-	(y) += (p)[3]; (y) *= (x); \
-	(y) += (p)[2]; (y) *= (x); \
-	(y) += (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[4]; (y) *= (x); \
+    (y) += (p)[3]; (y) *= (x); \
+    (y) += (p)[2]; (y) *= (x); \
+    (y) += (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 #define POLY_5_C(x,p,y) { \
-	(y)  = (p)[5]; (y) *= (x); \
-	(y) += (p)[4]; (y) *= (x); \
-	(y) += (p)[3]; (y) *= (x); \
-	(y) += (p)[2]; (y) *= (x); \
-	(y) += (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[5]; (y) *= (x); \
+    (y) += (p)[4]; (y) *= (x); \
+    (y) += (p)[3]; (y) *= (x); \
+    (y) += (p)[2]; (y) *= (x); \
+    (y) += (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 #define POLY_6_C(x,p,y) { \
-	(y)  = (p)[6]; (y) *= (x); \
-	(y) += (p)[5]; (y) *= (x); \
-	(y) += (p)[4]; (y) *= (x); \
-	(y) += (p)[3]; (y) *= (x); \
-	(y) += (p)[2]; (y) *= (x); \
-	(y) += (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[6]; (y) *= (x); \
+    (y) += (p)[5]; (y) *= (x); \
+    (y) += (p)[4]; (y) *= (x); \
+    (y) += (p)[3]; (y) *= (x); \
+    (y) += (p)[2]; (y) *= (x); \
+    (y) += (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 #define POLY_7_C(x,p,y) { \
-	(y)  = (p)[7]; (y) *= (x); \
-	(y) += (p)[6]; (y) *= (x); \
-	(y) += (p)[5]; (y) *= (x); \
-	(y) += (p)[4]; (y) *= (x); \
-	(y) += (p)[3]; (y) *= (x); \
-	(y) += (p)[2]; (y) *= (x); \
-	(y) += (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[7]; (y) *= (x); \
+    (y) += (p)[6]; (y) *= (x); \
+    (y) += (p)[5]; (y) *= (x); \
+    (y) += (p)[4]; (y) *= (x); \
+    (y) += (p)[3]; (y) *= (x); \
+    (y) += (p)[2]; (y) *= (x); \
+    (y) += (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 #define POLY_8_C(x,p,y) { \
-	(y)  = (p)[8]; (y) *= (x); \
-	(y) += (p)[7]; (y) *= (x); \
-	(y) += (p)[6]; (y) *= (x); \
-	(y) += (p)[5]; (y) *= (x); \
-	(y) += (p)[4]; (y) *= (x); \
-	(y) += (p)[3]; (y) *= (x); \
-	(y) += (p)[2]; (y) *= (x); \
-	(y) += (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[8]; (y) *= (x); \
+    (y) += (p)[7]; (y) *= (x); \
+    (y) += (p)[6]; (y) *= (x); \
+    (y) += (p)[5]; (y) *= (x); \
+    (y) += (p)[4]; (y) *= (x); \
+    (y) += (p)[3]; (y) *= (x); \
+    (y) += (p)[2]; (y) *= (x); \
+    (y) += (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 #define POLY_9_C(x,p,y) { \
-	(y)  = (p)[9]; (y) *= (x); \
-	(y) += (p)[8]; (y) *= (x); \
-	(y) += (p)[7]; (y) *= (x); \
-	(y) += (p)[6]; (y) *= (x); \
-	(y) += (p)[5]; (y) *= (x); \
-	(y) += (p)[4]; (y) *= (x); \
-	(y) += (p)[3]; (y) *= (x); \
-	(y) += (p)[2]; (y) *= (x); \
-	(y) += (p)[1]; (y) *= (x); \
-	(y) += (p)[0]; \
+    (y)  = (p)[9]; (y) *= (x); \
+    (y) += (p)[8]; (y) *= (x); \
+    (y) += (p)[7]; (y) *= (x); \
+    (y) += (p)[6]; (y) *= (x); \
+    (y) += (p)[5]; (y) *= (x); \
+    (y) += (p)[4]; (y) *= (x); \
+    (y) += (p)[3]; (y) *= (x); \
+    (y) += (p)[2]; (y) *= (x); \
+    (y) += (p)[1]; (y) *= (x); \
+    (y) += (p)[0]; \
 }
 
 #define POLY_10_C(x,p,y) { \
@@ -702,52 +702,52 @@ the other forms in this file */
 /* y = a(x) */
 
 #define POLY_1(x,p,y) { \
-	POLY_0_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_0_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 /* y = a(x)^2 + b(x) */
 
 #define POLY_2(x,p,y) { \
-	POLY_1_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_1_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 /* y = a(x)^3 + b(x)^2 + c(x) */
 
 #define POLY_3(x,p,y) { \
-	POLY_2_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_2_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_4(x,p,y) { \
-	POLY_3_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_3_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_5(x,p,y) { \
-	POLY_4_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_4_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_6(x,p,y) { \
-	POLY_5_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_5_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_7(x,p,y) { \
-	POLY_6_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_6_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_8(x,p,y) { \
-	POLY_7_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_7_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_9(x,p,y) { \
-	POLY_8_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_8_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_10(x,p,y) { \
@@ -869,7 +869,7 @@ the other forms in this file */
 #	define	POLY_7_X2(x,p,y) POLY_7_X2_M(x,p,y)
 #	define	POLY_8_X2(x,p,y) POLY_8_X2_M(x,p,y)
 #	define	POLY_9_X2(x,p,y) POLY_9_X2_M(x,p,y)
-	/* the polys below need multiple issue polynomials put together for them */
+    /* the polys below need multiple issue polynomials put together for them */
 #	define	POLY_10_X2(x,p,y) POLY_10_WO_L_OR_C(x,p,y)
 #	define	POLY_11_X2(x,p,y) POLY_11_WO_L_OR_C(x,p,y)
 #	define	POLY_12_X2(x,p,y) POLY_12_WO_L_OR_C(x,p,y)
@@ -1186,65 +1186,65 @@ the other forms in this file */
 /* The macros below should allow maximum parallelization */
 
 
-	/* y  =  a(x)^2  */
+    /* y  =  a(x)^2  */
 
 #define POLY_2_X2_M(x,p,y) \
-		(y) = (x*x) * (p)[0]
+        (y) = (x*x) * (p)[0]
 
 
-	/* y  =  a(x)^2 + b(x)^3  =  (x)^2 * (a + b(x))  */
+    /* y  =  a(x)^2 + b(x)^3  =  (x)^2 * (a + b(x))  */
 
 #define POLY_3_X2_M(x,p,y) \
-		(y) = (x*x) * ((p)[0] + (p)[1]*(x))
+        (y) = (x*x) * ((p)[0] + (p)[1]*(x))
 
 
-	/* y  =  a(x)^2 + b(x)^3 + c(x)^4
+    /* y  =  a(x)^2 + b(x)^3 + c(x)^4
           =  [ (x)^2 * (a + b(x)) ]  + c(x)^4  */
 
 #define POLY_4_X2_M(x,p,y) \
-		(y) = ((x*x) * ((p)[0] + (p)[1]*(x))) + \
-			  (((x*x)*(x*x)) * (p)[2])
+        (y) = ((x*x) * ((p)[0] + (p)[1]*(x))) + \
+              (((x*x)*(x*x)) * (p)[2])
 
 
-	/* y  =  a(x)^2 + b(x)^3 + c(x)^4 + d(x)^5
+    /* y  =  a(x)^2 + b(x)^3 + c(x)^4 + d(x)^5
           =  [ (x)^2 * (a + b(x)) ]  +  [ (x)^4 * (c + d(x))  ]  */
 
 #define POLY_5_X2_M(x,p,y) \
-		(y) = ((x*x) * ((p)[0] + (p)[1]*(x))) + \
-			  (((x*x)*(x*x)) * ((p)[2] + (p)[3]*(x)))
+        (y) = ((x*x) * ((p)[0] + (p)[1]*(x))) + \
+              (((x*x)*(x*x)) * ((p)[2] + (p)[3]*(x)))
 
 
-	/* y  =  a(x)^2 + b(x)^3 + c(x)^4 + d(x)^5 + e(x)^6
+    /* y  =  a(x)^2 + b(x)^3 + c(x)^4 + d(x)^5 + e(x)^6
           =  a(x)^2 + ( [ (x)^2 * (b(x) + c(x)^2) ]
-		            +   [ (x)^4 * (d(x) + e(x)^2) ] )  */
+                    +   [ (x)^4 * (d(x) + e(x)^2) ] )  */
 #define POLY_6_X2_M(x,p,y) \
-		(y) = (((x*x)*(p)[0]) + \
-			  (((x*x) *x)* ((p)[1] + (p)[2]*(x)))) + \
-			  (((x*x)*(x*x)* x) * ((p)[3] + (p)[4]*(x))) 
+        (y) = (((x*x)*(p)[0]) + \
+              (((x*x) *x)* ((p)[1] + (p)[2]*(x)))) + \
+              (((x*x)*(x*x)* x) * ((p)[3] + (p)[4]*(x))) 
 
 
-	/* y  =  a(x)^2 + b(x)^3 + c(x)^4 + d(x)^5 + e(x)^6 + f(x)^7
-		  =  (x)^2 * (a + b(x)) +
-			 [ ((x)^2 * (x)^2 * (c + d(x))) +
-			   ((x)^2 * (x)^2 * (x)^2 * (e + f(x))) ]
+    /* y  =  a(x)^2 + b(x)^3 + c(x)^4 + d(x)^5 + e(x)^6 + f(x)^7
+          =  (x)^2 * (a + b(x)) +
+             [ ((x)^2 * (x)^2 * (c + d(x))) +
+               ((x)^2 * (x)^2 * (x)^2 * (e + f(x))) ]
     */ 
 #define POLY_7_X2_M(x,p,y) \
-		(y) = ((x*x) * ((p)[0] + (p)[1]*(x))) + \
-		      (((x*x)*(x*x) * ((p)[2] + (p)[3]*(x))) + \
-		      ((x*x)*(x*x)*(x*x) * ((p)[4] + (p)[5]*(x))))
+        (y) = ((x*x) * ((p)[0] + (p)[1]*(x))) + \
+              (((x*x)*(x*x) * ((p)[2] + (p)[3]*(x))) + \
+              ((x*x)*(x*x)*(x*x) * ((p)[4] + (p)[5]*(x))))
 
 
 #define POLY_8_X2_M(x,p,y) \
-		(y) = (((x*x) * ((p)[0] + (p)[1]*(x))) + \
-		      ((x*x)*(x*x) * ((p)[2] + (p)[3]*(x)))) + \
-		      ((x*x)*(x*x)*(x*x) * ((p)[4] + (p)[5]*(x) + (p)[6]*(x*x)))
+        (y) = (((x*x) * ((p)[0] + (p)[1]*(x))) + \
+              ((x*x)*(x*x) * ((p)[2] + (p)[3]*(x)))) + \
+              ((x*x)*(x*x)*(x*x) * ((p)[4] + (p)[5]*(x) + (p)[6]*(x*x)))
 
 
 #define POLY_9_X2_M(x,p,y) \
-		(y) = (((x*x) * ((p)[0] + (p)[1]*(x))) + \
-		      ((x*x)*(x*x) * ((p)[2] + (p)[3]*(x)))) + \
-		      (((x*x)*(x*x)*(x*x) * ((p)[4] + (p)[5]*(x))) + \
-		      ((x*x)*(x*x)*(x*x)*(x*x) * ((p)[6] + (p)[7]*(x))))
+        (y) = (((x*x) * ((p)[0] + (p)[1]*(x))) + \
+              ((x*x)*(x*x) * ((p)[2] + (p)[3]*(x)))) + \
+              (((x*x)*(x*x)*(x*x) * ((p)[4] + (p)[5]*(x))) + \
+              ((x*x)*(x*x)*(x*x)*(x*x) * ((p)[6] + (p)[7]*(x))))
 
 
 
@@ -1254,85 +1254,85 @@ the other forms in this file */
 /* y = a(x)^2 */
 
 #define POLY_2_WO_L_OR_C(x,p,y) { \
-	POLY_1((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_1((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 /* y = a(x)^3 + b(x)^2 */
 
 #define POLY_3_WO_L_OR_C(x,p,y) { \
-	POLY_2((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_2((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_4_WO_L_OR_C(x,p,y) { \
-	POLY_3((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_3((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_5_WO_L_OR_C(x,p,y) { \
-	POLY_4((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_4((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_6_WO_L_OR_C(x,p,y) { \
-	POLY_5((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_5((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_7_WO_L_OR_C(x,p,y) { \
-	POLY_6((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_6((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_8_WO_L_OR_C(x,p,y) { \
-	POLY_7((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_7((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_9_WO_L_OR_C(x,p,y) { \
-	POLY_8((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_8((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_10_WO_L_OR_C(x,p,y) { \
-	POLY_9((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_9((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_11_WO_L_OR_C(x,p,y) { \
-	POLY_10((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_10((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_12_WO_L_OR_C(x,p,y) { \
-	POLY_11((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_11((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_13_WO_L_OR_C(x,p,y) { \
-	POLY_12((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_12((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_14_WO_L_OR_C(x,p,y) { \
-	POLY_13((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_13((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_15_WO_L_OR_C(x,p,y) { \
-	POLY_14((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_14((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_16_WO_L_OR_C(x,p,y) { \
-	POLY_15((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_15((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 #define POLY_17_WO_L_OR_C(x,p,y) { \
-	POLY_16((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_16((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 
@@ -1722,59 +1722,59 @@ the other forms in this file */
 /* y = 1(x) */
 
 #define POLY_1_U(x,p,y) { \
-	(y) = (x); \
+    (y) = (x); \
 }
 
 /* y = a(x)^2 + 1(x) */
 
 #define POLY_2_U(x,p,y) { \
-	POLY_1((x),(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    POLY_1((x),(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 /* y = a(x)^3 + b(x)^2 + 1(x) */
 
 #define POLY_3_U(x,p,y) { \
-	POLY_2((x),(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    POLY_2((x),(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define POLY_4_U(x,p,y) { \
-	POLY_3((x),(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    POLY_3((x),(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define POLY_5_U(x,p,y) { \
-	POLY_4((x),(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    POLY_4((x),(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define POLY_6_U(x,p,y) { \
-	POLY_5((x),(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    POLY_5((x),(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define POLY_7_U(x,p,y) { \
-	POLY_6((x),(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    POLY_6((x),(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define POLY_8_U(x,p,y) { \
-	POLY_7((x),(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    POLY_7((x),(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define POLY_9_U(x,p,y) { \
-	POLY_8((x),(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    POLY_8((x),(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 
@@ -1786,68 +1786,68 @@ the other forms in this file */
 /* y = a(x) */
 
 #define ODD_POLY_1(x,p,y) { \
-	POLY_0_C((x),(p),(y)); \
-	(y) *= (x); \
+    POLY_0_C((x),(p),(y)); \
+    (y) *= (x); \
 }
 
 /* y = a(x)^3 + b(x) */
 
 #define ODD_POLY_3(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_1_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_1_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 /* y = a(x)^5 + b(x)^3 + c(x) */
 
 #define ODD_POLY_5(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_2_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_2_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 /* y = a(x)^7 + b(x)^5 + c(x)^3 + d(x) */
 
 #define ODD_POLY_7(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_3_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_3_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_9(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_4_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_4_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_11(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_5_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_5_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_13(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_6_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_6_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_15(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_7_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_7_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_17(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_8_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_8_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_19(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_9_C(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_9_C(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 
@@ -1858,84 +1858,84 @@ the other forms in this file */
 /* y = a(x)^3 */
 
 #define ODD_POLY_3_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_1(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_1(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 /* y = a(x)^5 + b(x)^3  */
 
 #define ODD_POLY_5_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_2(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_2(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 /* y = a(x)^7 + b(x)^5 + c(x)^3 */
 
 #define ODD_POLY_7_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_3(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_3(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_9_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_4(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_4(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_11_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_5(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_5(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_13_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_6(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_6(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_15_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_7(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_7(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_17_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_8(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_8(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_19_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_9(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_9(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_21_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_10(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_10(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_23_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_11(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_11(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 #define ODD_POLY_25_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_12(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_12(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 #define ODD_POLY_27_WO_L_OR_C(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_13(x_sqrd,(p),(y)); \
-	(y) *= (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_13(x_sqrd,(p),(y)); \
+    (y) *= (x); \
 }
 
 
@@ -1947,76 +1947,76 @@ the other forms in this file */
 /* y = 1(x) */
 
 #define ODD_POLY_1_U(x,p,y) { \
-	(y) = (x); \
+    (y) = (x); \
 }
 
 /* y = a(x)^3 + 1(x) */
 
 #define ODD_POLY_3_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_1(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_1(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 /* y = a(x)^5 + b(x)^3 + 1(x) */
 
 #define ODD_POLY_5_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_2(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_2(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 /* y = a(x)^7 + b(x)^5 + c(x)^3 + 1(x) */
 
 #define ODD_POLY_7_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_3(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_3(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define ODD_POLY_9_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_4(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_4(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define ODD_POLY_11_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_5(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_5(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define ODD_POLY_13_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_6(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_6(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define ODD_POLY_15_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_7(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_7(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define ODD_POLY_17_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_8(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_8(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define ODD_POLY_19_U(x,p,y) { \
-	F_TYPE x_sqrd = (x) * (x); \
-	POLY_9(x_sqrd,(p),(y)); \
-	(y) *= (x); \
-	(y) += (x); \
+    F_TYPE x_sqrd = (x) * (x); \
+    POLY_9(x_sqrd,(p),(y)); \
+    (y) *= (x); \
+    (y) += (x); \
 }
 
 #define ODD_POLY_21_U(x,p,y) { \

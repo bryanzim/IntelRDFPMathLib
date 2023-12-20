@@ -47,9 +47,9 @@ unsigned rnd_mode=0;
    ps0 = strtod_conversion(ps_in, endptr);
 
    if(!ps0) {
-	   DR.w[BID_HIGH_128W] = 0x3040000000000000ull;
-	   DR.w[BID_LOW_128W] = 0ull;
-	   return DR;   // 0.0
+       DR.w[BID_HIGH_128W] = 0x3040000000000000ull;
+       DR.w[BID_LOW_128W] = 0ull;
+       return DR;   // 0.0
    }
 
    BIDECIMAL_CALL1_RESARG (bid128_from_string, DR, ps0);

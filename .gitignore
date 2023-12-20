@@ -1,0 +1,5 @@
+#Ignore Visual Studio Products
+.vs/**
+
+#Ignore Build Directories
+out/**

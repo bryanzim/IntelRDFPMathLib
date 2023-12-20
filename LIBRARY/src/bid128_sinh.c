@@ -161,9 +161,9 @@ BID128_FUNCTION_ARG1 (bid128_sinh, x)
      BIDECIMAL_CALL1(bid128_to_binary128, md, m);
      if (__bid_f128_gt(nd, c_11000.v))
       {
-	__bid_f128_sub(nd, nd, c_11000.v);
-	__bid_f128_exp(rd, nd);
-	__bid_f128_exp(rt, md);
+    __bid_f128_sub(nd, nd, c_11000.v);
+    __bid_f128_exp(rd, nd);
+    __bid_f128_exp(rt, md);
         __bid_f128_mul(rd, rd, rt);
         if (__bid_f128_lt(xd, c_zero.v))
            __bid_f128_mul(rd, c_minus_half.v, rd);

@@ -93,15 +93,15 @@ bid32_isNormal (BID_UINT32 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
       sig_x = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
       // check for zero or non-canonical
       if (sig_x > 9999999 || sig_x == 0) {
-	res = 0; // zero or non-canonical
-	BID_RETURN (res);
+    res = 0; // zero or non-canonical
+    BID_RETURN (res);
       }
       exp_x = (x & MASK_BINARY_EXPONENT2_32) >> 21;
     } else {
       sig_x = (x & MASK_BINARY_SIG1_32);
       if (sig_x == 0) {
-	res = 0; // zero
-	BID_RETURN (res);
+    res = 0; // zero
+    BID_RETURN (res);
       }
       exp_x = (x & MASK_BINARY_EXPONENT1_32) >> 23;
     }
@@ -110,9 +110,9 @@ bid32_isNormal (BID_UINT32 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     if (exp_x < 6) {
       sig_x_prime = (BID_UINT64)sig_x * (BID_UINT64)bid_mult_factor[exp_x];
       if (sig_x_prime < 1000000ull) {
-	res = 0; // subnormal
+    res = 0; // subnormal
       } else {
-	res = 1; // normal
+    res = 1; // normal
       }
     } else {
       res = 1; // normal
@@ -145,15 +145,15 @@ bid32_isSubnormal (BID_UINT32 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
       sig_x = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
       // check for zero or non-canonical
       if (sig_x > 9999999 || sig_x == 0) {
-	res = 0; // zero or non-canonical
-	BID_RETURN (res);
+    res = 0; // zero or non-canonical
+    BID_RETURN (res);
       }
       exp_x = (x & MASK_BINARY_EXPONENT2_32) >> 21;
     } else {
       sig_x = (x & MASK_BINARY_SIG1_32);
       if (sig_x == 0) {
-	res = 0; // zero
-	BID_RETURN (res);
+    res = 0; // zero
+    BID_RETURN (res);
       }
       exp_x = (x & MASK_BINARY_EXPONENT1_32) >> 23;
     }
@@ -350,7 +350,7 @@ DFP_WRAPFN_DFP_DFP(32, bid32_copySign, 32, 32);
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_copySign (BID_UINT32 * pres, BID_UINT32 * px,
-		BID_UINT32 * py _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+        BID_UINT32 * py _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
   BID_UINT32 y = *py;
 #else
@@ -401,9 +401,9 @@ bid32_class (BID_UINT32 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     // check for zero or non-canonical
     if (sig_x > 9999999 || sig_x == 0) {
       if ((x & MASK_SIGN32) == MASK_SIGN32) {
-	res = negativeZero;
+    res = negativeZero;
       } else {
-	res = positiveZero;
+    res = positiveZero;
       }
       BID_RETURN (res);
     }
@@ -505,74 +505,74 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     if ((x & MASK_SIGN32) == MASK_SIGN32) {
       // return true, unless y is -NaN also
       if ((y & MASK_NAN32) != MASK_NAN32 || (y & MASK_SIGN32) != MASK_SIGN32) {
-	res = 1; // y is a number, return 1
-	BID_RETURN (res);
+    res = 1; // y is a number, return 1
+    BID_RETURN (res);
       } else { // if y and x are both -NaN
-	// if x and y are both -sNaN or both -qNaN, we have to compare payloads
-	// this xnor statement evaluates to true if both are sNaN or qNaN
-	if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^ 
+    // if x and y are both -sNaN or both -qNaN, we have to compare payloads
+    // this xnor statement evaluates to true if both are sNaN or qNaN
+    if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^ 
             ((x & MASK_SNAN32) == MASK_SNAN32))) {
-	  // it comes down to the payload.  we want to return true if x has a
-	  // larger payload, or if the payloads are equal (canonical forms
-	  // are bitwise identical)
-	  pyld_y = y & 0x000fffff;
-	  pyld_x = x & 0x000fffff;
-	  if (pyld_y > 999999 || pyld_y == 0) {
-	    // if y is zero, x must be less than or numerically equal
-	    // y's payload is 0
-	    res = 1;
-	    BID_RETURN (res);
-	  }
-	  // if x is zero and y isn't, x has the smaller payload
-	  // definitely (since we know y isn't 0 at this point)
-	  if (pyld_x > 999999 || pyld_x == 0) {
-	    // x's payload is 0
-	    res = 0;
-	    BID_RETURN (res);
-	  }
-	  res = (pyld_x >= pyld_y);
-	  BID_RETURN (res);
-	} else {
-	  // either x = -sNaN and y = -qNaN or x = -qNaN and y = -sNaN
-	  res = (y & MASK_SNAN32) == MASK_SNAN32; // totalOrder(-qNaN,-sNaN)==1
-	  BID_RETURN (res);
-	}
+      // it comes down to the payload.  we want to return true if x has a
+      // larger payload, or if the payloads are equal (canonical forms
+      // are bitwise identical)
+      pyld_y = y & 0x000fffff;
+      pyld_x = x & 0x000fffff;
+      if (pyld_y > 999999 || pyld_y == 0) {
+        // if y is zero, x must be less than or numerically equal
+        // y's payload is 0
+        res = 1;
+        BID_RETURN (res);
+      }
+      // if x is zero and y isn't, x has the smaller payload
+      // definitely (since we know y isn't 0 at this point)
+      if (pyld_x > 999999 || pyld_x == 0) {
+        // x's payload is 0
+        res = 0;
+        BID_RETURN (res);
+      }
+      res = (pyld_x >= pyld_y);
+      BID_RETURN (res);
+    } else {
+      // either x = -sNaN and y = -qNaN or x = -qNaN and y = -sNaN
+      res = (y & MASK_SNAN32) == MASK_SNAN32; // totalOrder(-qNaN,-sNaN)==1
+      BID_RETURN (res);
+    }
       }
     } else { // x is +NaN
       // return false, unless y is +NaN also
       if ((y & MASK_NAN32) != MASK_NAN32 || (y & MASK_SIGN32) == MASK_SIGN32) {
-	res = 0; // y is a number, return 1
-	BID_RETURN (res);
+    res = 0; // y is a number, return 1
+    BID_RETURN (res);
       } else {
-	// x and y are both +NaN; 
-	// must investigate payload if both quiet or both signaling
-	// this xnor statement will be true if both x and y are +qNaN or +sNaN
-	if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^ 
+    // x and y are both +NaN; 
+    // must investigate payload if both quiet or both signaling
+    // this xnor statement will be true if both x and y are +qNaN or +sNaN
+    if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^ 
             ((x & MASK_SNAN32) == MASK_SNAN32))) {
-	  // it comes down to the payload.  we want to return true if x has a
-	  // smaller payload, or if the payloads are equal (canonical forms
-	  // are bitwise identical)
-	  pyld_y = y & 0x000fffff;
-	  pyld_x = x & 0x000fffff;
-	  // if x is zero and y isn't, x has the smaller 
-	  // payload definitely (since we know y isn't 0 at this point)
-	  if (pyld_x > 999999 || pyld_x == 0) {
-	    res = 1;
-	    BID_RETURN (res);
-	  }
-	  if (pyld_y > 999999 || pyld_y == 0) {
-	    // if y is zero, x must be less than or numerically equal
-	    res = 0;
-	    BID_RETURN (res);
-	  }
-	  res = (pyld_x <= pyld_y);
-	  BID_RETURN (res);
-	} else {
-	  // return true if y is +qNaN and x is +sNaN 
-	  // (we know they're different bc of xor if_stmt above)
-	  res = ((x & MASK_SNAN32) == MASK_SNAN32);
-	  BID_RETURN (res);
-	}
+      // it comes down to the payload.  we want to return true if x has a
+      // smaller payload, or if the payloads are equal (canonical forms
+      // are bitwise identical)
+      pyld_y = y & 0x000fffff;
+      pyld_x = x & 0x000fffff;
+      // if x is zero and y isn't, x has the smaller 
+      // payload definitely (since we know y isn't 0 at this point)
+      if (pyld_x > 999999 || pyld_x == 0) {
+        res = 1;
+        BID_RETURN (res);
+      }
+      if (pyld_y > 999999 || pyld_y == 0) {
+        // if y is zero, x must be less than or numerically equal
+        res = 0;
+        BID_RETURN (res);
+      }
+      res = (pyld_x <= pyld_y);
+      BID_RETURN (res);
+    } else {
+      // return true if y is +qNaN and x is +sNaN 
+      // (we know they're different bc of xor if_stmt above)
+      res = ((x & MASK_SNAN32) == MASK_SNAN32);
+      BID_RETURN (res);
+    }
       }
     }
   } else if ((y & MASK_NAN32) == MASK_NAN32) {
@@ -768,31 +768,31 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
       // this xnor statement will be true if both x and y are +qNaN or +sNaN
       if (!(((y & MASK_SNAN32) == MASK_SNAN32) ^ 
           ((x & MASK_SNAN32) == MASK_SNAN32))) {
-	// it comes down to the payload.  we want to return true if x has a
-	// smaller payload, or if the payloads are equal (canonical forms
-	// are bitwise identical)
-	pyld_y = y & 0x000fffff;
-	pyld_x = x & 0x000fffff;
-	// if x is zero and y isn't, x has the smaller 
-	// payload definitely (since we know y isn't 0 at this point)
-	if (pyld_x > 999999 || pyld_x == 0) {
-	  res = 1;
-	  BID_RETURN (res);
-	}
+    // it comes down to the payload.  we want to return true if x has a
+    // smaller payload, or if the payloads are equal (canonical forms
+    // are bitwise identical)
+    pyld_y = y & 0x000fffff;
+    pyld_x = x & 0x000fffff;
+    // if x is zero and y isn't, x has the smaller 
+    // payload definitely (since we know y isn't 0 at this point)
+    if (pyld_x > 999999 || pyld_x == 0) {
+      res = 1;
+      BID_RETURN (res);
+    }
 
-	if (pyld_y > 999999 || pyld_y == 0) {
-	  // if y is zero, x must be less than or numerically equal
-	  res = 0;
-	  BID_RETURN (res);
-	}
-	res = (pyld_x <= pyld_y);
-	BID_RETURN (res);
+    if (pyld_y > 999999 || pyld_y == 0) {
+      // if y is zero, x must be less than or numerically equal
+      res = 0;
+      BID_RETURN (res);
+    }
+    res = (pyld_x <= pyld_y);
+    BID_RETURN (res);
 
       } else {
-	// return true if y is +qNaN and x is +sNaN 
-	// (we know they're different bc of xor if_stmt above)
-	res = ((x & MASK_SNAN32) == MASK_SNAN32);
-	BID_RETURN (res);
+    // return true if y is +qNaN and x is +sNaN 
+    // (we know they're different bc of xor if_stmt above)
+    res = ((x & MASK_SNAN32) == MASK_SNAN32);
+    BID_RETURN (res);
       }
     }
 

@@ -155,7 +155,7 @@ EXTENDED_MULTIPLY(UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * hi, UX_FLOAT * lo)
 
 
 static const UX_FLOAT __ux_one__ = { 0, 1, ((U_WORD) 1 << 63), 0 };
-	
+    
 void
 DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     {
@@ -519,7 +519,7 @@ __eval_pos_poly(UX_FLOAT * x, WORD shift, FIXED_128 * coef, WORD cnt,
 
     p_shift_64_to_127_zero_loop:
         s_lo = coef->digits[1] >> (shift - 64);
- 	//printf("s_lo, sh, sh_inc, c: %llx, %llx, %llx, %llx (%llx)\n",s_lo,shift, shift_inc,coef->digits[1],coef->digits[0]);
+    //printf("s_lo, sh, sh_inc, c: %llx, %llx, %llx, %llx (%llx)\n",s_lo,shift, shift_inc,coef->digits[1],coef->digits[0]);
        shift += shift_inc;
         coef++;
         cnt--;
@@ -532,9 +532,9 @@ __eval_pos_poly(UX_FLOAT * x, WORD shift, FIXED_128 * coef, WORD cnt,
     */
 
 p_shift_64_to_127:
-		//printf("s_lo,x_hi,p1: %llx, %llx, %llx\n",s_lo,x_hi,p1);
+        //printf("s_lo,x_hi,p1: %llx, %llx, %llx\n",s_lo,x_hi,p1);
         UMULH(s_lo, x_hi, p1);
-		//printf("s_lo,x_hi,p1: %llx, %llx, %llx\n",s_lo,x_hi,p1);
+        //printf("s_lo,x_hi,p1: %llx, %llx, %llx\n",s_lo,x_hi,p1);
             c_lo = coef->digits[1] >> (shift - 64);
             shift += shift_inc;
             coef++;
@@ -910,15 +910,15 @@ EVALUATE_RATIONAL(
         poly_func(
             poly_arg,
             shift,
-	    coefficients,
-	    degree,
-	    first_result);
- 		//printf("f_result= (%x %x) %llx %llx\n",first_result->sign,first_result->exponent,first_result->fraction[0],first_result->fraction[1]);
+        coefficients,
+        degree,
+        first_result);
+        //printf("f_result= (%x %x) %llx %llx\n",first_result->sign,first_result->exponent,first_result->fraction[0],first_result->fraction[1]);
 
  //printf("fl & NUMERATOR_FLAGS(POST_MULTIPLY) = %llx (%llx)\n", flags & NUMERATOR_FLAGS(POST_MULTIPLY), flags); 
         if (flags & NUMERATOR_FLAGS(POST_MULTIPLY))
             MULTIPLY(argument, first_result, first_result);
- 		//printf("result..= (%x %x) %llx %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
+        //printf("result..= (%x %x) %llx %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
 
         UPDATE_COEF_PTR(coefficients, byte_length);
         UX_INCR_EXPONENT(first_result, G_EXPONENT(coefficients));
@@ -941,9 +941,9 @@ EVALUATE_RATIONAL(
         poly_func(
             poly_arg,
             shift,
-	    coefficients,
-	    degree,
-	    second_result);
+        coefficients,
+        degree,
+        second_result);
 
         if (flags & DENOMINATOR_FLAGS(POST_MULTIPLY))
             MULTIPLY(argument, second_result, second_result);
@@ -963,7 +963,7 @@ EVALUATE_RATIONAL(
         }
 
  //printf("fl & NO_DIV = %llx\n", flags & NO_DIVIDE);
- 		//printf("result0= (%x %x) %llx %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
+        //printf("result0= (%x %x) %llx %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
 
     if ((flags & NO_DIVIDE) == 0)
         DIVIDE(result, result + 1, FULL_PRECISION, result);
@@ -974,14 +974,14 @@ EVALUATE_RATIONAL(
 U_INT_64 __umulh( U_INT_64 i, U_INT_64 j ) {
     U_INT_64 k;
         {
-	U_INT_64 iLo, iHi, jLo, jHi, p0, p1, p2; 
+    U_INT_64 iLo, iHi, jLo, jHi, p0, p1, p2; 
         iLo = __LO(i); iHi = __HI(i);
         jLo = __LO(j); jHi = __HI(j);
-	p0  = iLo * jLo;
-	p1  = (iLo * jHi);
-	p2  = (iHi * jLo) + __HI(p0) + __LO(p1);\
+    p0  = iLo * jLo;
+    p1  = (iLo * jHi);
+    p2  = (iHi * jLo) + __HI(p0) + __LO(p1);\
         k   = (iHi * jHi) + __HI(p1) + __HI(p2);
-	}
+    }
     return k;
 }
 #endif

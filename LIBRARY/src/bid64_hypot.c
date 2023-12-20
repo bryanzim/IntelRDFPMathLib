@@ -47,24 +47,24 @@ if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   if (((x & 0x7e00000000000000ull) == 0x7e00000000000000ull) || ((y & 0x7c00000000000000ull) != 0x7800000000000000ull)) 
-	res = (coefficient_x) & QUIET_MASK64;
+    res = (coefficient_x) & QUIET_MASK64;
   else res = 0x7800000000000000ull;  
-	BID_RETURN (res);
+    BID_RETURN (res);
   
 }
     // x is Infinity?
 if (((x & 0x7800000000000000ull) == 0x7800000000000000ull) && ((y & 0x7e00000000000000ull) != 0x7e00000000000000ull)) {
-	  res = 0x7800000000000000ull;
+      res = 0x7800000000000000ull;
     BID_RETURN (res);
   }
     // x is 0
   if (valid_y) {
-	 res = y & 0x7fffffffffffffffull;
+     res = y & 0x7fffffffffffffffull;
      BID_RETURN (res);
 }
 }
 
-	if (!valid_y) {
+    if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
@@ -78,15 +78,15 @@ if (((x & 0x7800000000000000ull) == 0x7800000000000000ull) && ((y & 0x7e00000000
   }
 
   if ((y & 0x7800000000000000ull) == 0x7800000000000000ull) {
-	  res = 0x7800000000000000ull;
+      res = 0x7800000000000000ull;
       BID_RETURN (res);
   }
     // y is 0
   if (valid_x) {
-	 res = x & 0x7fffffffffffffffull;
+     res = x & 0x7fffffffffffffffull;
      BID_RETURN (res);
   }
-	}
+    }
 
   BIDECIMAL_CALL1(bid64_to_binary80,xd,x);
   BIDECIMAL_CALL1(bid64_to_binary80,yd,y);

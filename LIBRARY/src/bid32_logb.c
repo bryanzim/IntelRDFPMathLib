@@ -42,7 +42,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid32_ilogb, BID_UINT32, x)
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	  res = ((x & 0x7c000000) == 0x78000000) ? 0x7fffffff : 0x80000000;
+      res = ((x & 0x7c000000) == 0x78000000) ? 0x7fffffff : 0x80000000;
 
       BID_RETURN (res);
   }

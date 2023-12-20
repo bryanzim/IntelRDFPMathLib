@@ -51,16 +51,16 @@ if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
   if ((x & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	res = (coefficient_x) & QUIET_MASK64;
-	BID_RETURN (res);
+    res = (coefficient_x) & QUIET_MASK64;
+    BID_RETURN (res);
 }
     // x is Infinity?
 if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
-	res = sign_x ? 0ull : 0x7800000000000000ull;
+    res = sign_x ? 0ull : 0x7800000000000000ull;
     BID_RETURN (res);
   }
     // x is 0
-	 res = 0x31c0000000000001ull;
+     res = 0x31c0000000000001ull;
      BID_RETURN (res);
 }
 

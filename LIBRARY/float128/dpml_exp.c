@@ -369,12 +369,12 @@
 # if COMPATIBILITY_MODE
         j = ERROR_OVERFLOW;
 # else
-	func_error_word = ERROR_WORD( STATUS_OVERFLOW,
-				      POS_HUGE_INDEX,
-				      POS_INFINITY_INDEX,
-				      F_TYPE_ENUM,
-				      DPML_ERANGE,
-				      0 ) ;
+    func_error_word = ERROR_WORD( STATUS_OVERFLOW,
+                      POS_HUGE_INDEX,
+                      POS_INFINITY_INDEX,
+                      F_TYPE_ENUM,
+                      DPML_ERANGE,
+                      0 ) ;
 # endif
 
         if (((U_WORD) i) < (2*F_MAX_BIN_EXP + B_EXP_BIAS)) 
@@ -388,19 +388,19 @@
 # if COMPATIBILITY_MODE
         j = ERROR_UNDERFLOW;
 # else
-	func_error_word = ERROR_WORD( STATUS_UNDERFLOW,
-				      POS_ZERO_INDEX,
-				      POS_ZERO_INDEX,
-				      F_TYPE_ENUM,
-				      DPML_ERANGE,
-				      0 ) ;
+    func_error_word = ERROR_WORD( STATUS_UNDERFLOW,
+                      POS_ZERO_INDEX,
+                      POS_ZERO_INDEX,
+                      F_TYPE_ENUM,
+                      DPML_ERANGE,
+                      0 ) ;
 # endif
     
 #       if IEEE_FLOATING
             
             i += (F_PRECISION + 1);
             if ((WORD) i < 0)
-		goto do_exception;
+        goto do_exception;
     
             /*
             ** The result is probably denormal so we have to (carefully)
@@ -447,18 +447,18 @@
                goto do_exception;
 # else
 
-	    if ( ( m & F_EXP_MASK ) == 0 ) {
-		P_EXCPTN_VALUE_F( tmp_rec.value_under_test, v ) ;
-		func_error_word = ERROR_WORD( STATUS_DENORM_PROCESSING | STATUS_UNDERFLOW,
-					      POS_ZERO_INDEX,
-					      POS_ZERO_INDEX,
-					      F_TYPE_ENUM,
-					      DPML_ERANGE,
-					      0 ) ;
-		goto do_exception ;
-		}
+        if ( ( m & F_EXP_MASK ) == 0 ) {
+        P_EXCPTN_VALUE_F( tmp_rec.value_under_test, v ) ;
+        func_error_word = ERROR_WORD( STATUS_DENORM_PROCESSING | STATUS_UNDERFLOW,
+                          POS_ZERO_INDEX,
+                          POS_ZERO_INDEX,
+                          F_TYPE_ENUM,
+                          DPML_ERANGE,
+                          0 ) ;
+        goto do_exception ;
+        }
 # endif
-	    return v ;
+        return v ;
 
             }
     
@@ -481,19 +481,19 @@
 # if COMPATIBILITY_MODE
             j = ((WORD) i < 0) ? NO_ERR_NEG_INF : NO_ERR_POS_INF;
 # else
-	    func_error_word = ( ( WORD )i < 0 ) ?
+        func_error_word = ( ( WORD )i < 0 ) ?
                  ERROR_WORD( EXP2_SELECT(STATUS_NO_ERROR,STATUS_UNDERFLOW),
-				      POS_ZERO_INDEX,
-				      POS_ZERO_INDEX,
-				      F_TYPE_ENUM,
-				      DPML_ERANGE,
-			              0 ) :
+                      POS_ZERO_INDEX,
+                      POS_ZERO_INDEX,
+                      F_TYPE_ENUM,
+                      DPML_ERANGE,
+                          0 ) :
                  ERROR_WORD( EXP2_SELECT(STATUS_NO_ERROR,STATUS_OVERFLOW),
-				      POS_HUGE_INDEX,
-				      POS_INFINITY_INDEX,
-				      F_TYPE_ENUM,
-				      DPML_ERANGE,
-				      0 ) ;
+                      POS_HUGE_INDEX,
+                      POS_INFINITY_INDEX,
+                      F_TYPE_ENUM,
+                      DPML_ERANGE,
+                      0 ) ;
 
 # endif
 #       endif
@@ -533,19 +533,19 @@
             /* Argument was positive */
 
 # else
-	func_error_word = ( i & F_SIGN_BIT_MASK ) ?
-	                  ERROR_WORD( STATUS_UNDERFLOW,
-				      POS_ZERO_INDEX,
-				      POS_ZERO_INDEX,
-				      F_TYPE_ENUM,
-				      DPML_ERANGE,
-				      0 ) :
+    func_error_word = ( i & F_SIGN_BIT_MASK ) ?
+                      ERROR_WORD( STATUS_UNDERFLOW,
+                      POS_ZERO_INDEX,
+                      POS_ZERO_INDEX,
+                      F_TYPE_ENUM,
+                      DPML_ERANGE,
+                      0 ) :
                           ERROR_WORD( STATUS_OVERFLOW,
-				      POS_HUGE_INDEX,
-				      POS_INFINITY_INDEX,
-				      F_TYPE_ENUM,
-				      DPML_ERANGE,
-				      0 ) ;
+                      POS_HUGE_INDEX,
+                      POS_INFINITY_INDEX,
+                      F_TYPE_ENUM,
+                      DPML_ERANGE,
+                      0 ) ;
 
 
 
@@ -559,7 +559,7 @@
         GET_EXCEPTION_RESULT_1(j, x, x);
         return x;
 # else
-	RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeExp ) ;
+    RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeExp ) ;
 # endif    
 
         }

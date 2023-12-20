@@ -33,56 +33,56 @@
 
     static const TABLE_UNION TABLE_NAME[] = { 
 
-	/* log class-to-action-mapping */
-	/* 000 */ DATA_1x2( 0x40e50408, 0x1e7ae40e ),
-	/* 008 */ DATA_1x2( 0x00000034, 0x00000000 ),
-	/* 016 */ DATA_1x2( 0x00000035, 0x00000000 ),
+    /* log class-to-action-mapping */
+    /* 000 */ DATA_1x2( 0x40e50408, 0x1e7ae40e ),
+    /* 008 */ DATA_1x2( 0x00000034, 0x00000000 ),
+    /* 016 */ DATA_1x2( 0x00000035, 0x00000000 ),
 
-	/* log2 class-to-action-mapping */
-	/* 024 */ DATA_1x2( 0x40e50408, 0x1e7ae40e ),
-	/* 032 */ DATA_1x2( 0x00000036, 0x00000000 ),
-	/* 040 */ DATA_1x2( 0x00000037, 0x00000000 ),
+    /* log2 class-to-action-mapping */
+    /* 024 */ DATA_1x2( 0x40e50408, 0x1e7ae40e ),
+    /* 032 */ DATA_1x2( 0x00000036, 0x00000000 ),
+    /* 040 */ DATA_1x2( 0x00000037, 0x00000000 ),
 
-	/* log10 class-to-action-mapping */
-	/* 048 */ DATA_1x2( 0x40e50408, 0x1e7ae40e ),
-	/* 056 */ DATA_1x2( 0x00000038, 0x00000000 ),
-	/* 064 */ DATA_1x2( 0x00000039, 0x00000000 ),
+    /* log10 class-to-action-mapping */
+    /* 048 */ DATA_1x2( 0x40e50408, 0x1e7ae40e ),
+    /* 056 */ DATA_1x2( 0x00000038, 0x00000000 ),
+    /* 064 */ DATA_1x2( 0x00000039, 0x00000000 ),
 
-	/* log1p class-to-action-mapping */
-	/* 072 */ DATA_1x2( 0x00e50408, 0x14104100 ),
-	/* 080 */ DATA_1x2( 0x00000034, 0x00000000 ),
+    /* log1p class-to-action-mapping */
+    /* 072 */ DATA_1x2( 0x00e50408, 0x14104100 ),
+    /* 080 */ DATA_1x2( 0x00000034, 0x00000000 ),
 
-	/* MSD of sqrt(2) and 1/sqrt(2) (in fixed point) */
-	/* 088 */ DATA_1x2( 0xf9de6484, 0xb504f333 ),
-	/* 096 */ DATA_1x2( 0xfcef3242, 0x5a827999 ),
+    /* MSD of sqrt(2) and 1/sqrt(2) (in fixed point) */
+    /* 088 */ DATA_1x2( 0xf9de6484, 0xb504f333 ),
+    /* 096 */ DATA_1x2( 0xfcef3242, 0x5a827999 ),
 
-	/* Fixed point coefficients for log2 evaluation */
-	/* 104 */ DATA_2x2( 0x56dac09b, 0x271eee7d, 0x2a1966ce, 0x06cc4d0d ),
-	/* 120 */ DATA_2x2( 0x6f81e43d, 0x1ba3468b, 0x9caac22d, 0x05671139 ),
-	/* 136 */ DATA_2x2( 0xa20f818f, 0xf7ca0b25, 0x32b2540a, 0x05f8b502 ),
-	/* 152 */ DATA_2x2( 0x3f28f8fe, 0x7adfa93e, 0xcb8d055c, 0x065df4e9 ),
-	/* 168 */ DATA_2x2( 0xf7891d9d, 0xce5c4ea3, 0x4c87d854, 0x06d6e780 ),
-	/* 184 */ DATA_2x2( 0x9feb8d1e, 0xe820f58a, 0x5c44b19a, 0x0762f814 ),
-	/* 200 */ DATA_2x2( 0xf720bb2c, 0xe8c1f4c0, 0x41dad530, 0x080766bf ),
-	/* 216 */ DATA_2x2( 0x1df3812c, 0x80535f75, 0x7d59049f, 0x08cb2763 ),
-	/* 232 */ DATA_2x2( 0x2c2ac1eb, 0x96e6a1d7, 0xa68ac838, 0x09b81e0f ),
-	/* 248 */ DATA_2x2( 0x7df70971, 0x8c3b0c94, 0xba1f8070, 0x0adcd64d ),
-	/* 264 */ DATA_2x2( 0x11d8754e, 0xa70095aa, 0x4a67ff05, 0x0c4f9d8b ),
-	/* 280 */ DATA_2x2( 0x05f3cefe, 0x64f2a61e, 0x698bb00e, 0x0e347ab4 ),
-	/* 296 */ DATA_2x2( 0x3936b199, 0x572dc64d, 0x94022d28, 0x10c9a849 ),
-	/* 312 */ DATA_2x2( 0x8c4ac6fe, 0x6a80ddd5, 0x7c02a8f8, 0x1484b13d ),
-	/* 328 */ DATA_2x2( 0xa5c4559c, 0x645c921f, 0x7aded93f, 0x1a61762a ),
-	/* 344 */ DATA_2x2( 0xae4a965a, 0x594e6629, 0xdf37fcf2, 0x24eed8a1 ),
-	/* 360 */ DATA_2x2( 0x785f1acb, 0x3f82aa45, 0x7407fae9, 0x3d8e13b8 ),
-	/* 376 */ DATA_2x2( 0x691d3e89, 0xbe87fed0, 0x5c17f0bb, 0xb8aa3b29 ),
-	/* 392 */ DATA_1x2( 0x00000002, 0x00000000 ),
+    /* Fixed point coefficients for log2 evaluation */
+    /* 104 */ DATA_2x2( 0x56dac09b, 0x271eee7d, 0x2a1966ce, 0x06cc4d0d ),
+    /* 120 */ DATA_2x2( 0x6f81e43d, 0x1ba3468b, 0x9caac22d, 0x05671139 ),
+    /* 136 */ DATA_2x2( 0xa20f818f, 0xf7ca0b25, 0x32b2540a, 0x05f8b502 ),
+    /* 152 */ DATA_2x2( 0x3f28f8fe, 0x7adfa93e, 0xcb8d055c, 0x065df4e9 ),
+    /* 168 */ DATA_2x2( 0xf7891d9d, 0xce5c4ea3, 0x4c87d854, 0x06d6e780 ),
+    /* 184 */ DATA_2x2( 0x9feb8d1e, 0xe820f58a, 0x5c44b19a, 0x0762f814 ),
+    /* 200 */ DATA_2x2( 0xf720bb2c, 0xe8c1f4c0, 0x41dad530, 0x080766bf ),
+    /* 216 */ DATA_2x2( 0x1df3812c, 0x80535f75, 0x7d59049f, 0x08cb2763 ),
+    /* 232 */ DATA_2x2( 0x2c2ac1eb, 0x96e6a1d7, 0xa68ac838, 0x09b81e0f ),
+    /* 248 */ DATA_2x2( 0x7df70971, 0x8c3b0c94, 0xba1f8070, 0x0adcd64d ),
+    /* 264 */ DATA_2x2( 0x11d8754e, 0xa70095aa, 0x4a67ff05, 0x0c4f9d8b ),
+    /* 280 */ DATA_2x2( 0x05f3cefe, 0x64f2a61e, 0x698bb00e, 0x0e347ab4 ),
+    /* 296 */ DATA_2x2( 0x3936b199, 0x572dc64d, 0x94022d28, 0x10c9a849 ),
+    /* 312 */ DATA_2x2( 0x8c4ac6fe, 0x6a80ddd5, 0x7c02a8f8, 0x1484b13d ),
+    /* 328 */ DATA_2x2( 0xa5c4559c, 0x645c921f, 0x7aded93f, 0x1a61762a ),
+    /* 344 */ DATA_2x2( 0xae4a965a, 0x594e6629, 0xdf37fcf2, 0x24eed8a1 ),
+    /* 360 */ DATA_2x2( 0x785f1acb, 0x3f82aa45, 0x7407fae9, 0x3d8e13b8 ),
+    /* 376 */ DATA_2x2( 0x691d3e89, 0xbe87fed0, 0x5c17f0bb, 0xb8aa3b29 ),
+    /* 392 */ DATA_1x2( 0x00000002, 0x00000000 ),
 
-	/* Unpacked constants 1, 2, log(2) and log(10) */
-	/* 400 */ POS, 0001, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
-	/* 424 */ POS, 0002, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
-	/* 448 */ POS, 0000, DATA_2x2( 0xd1cf79ab, 0xb17217f7, 0x03f2f6af, 0xc9e3b398 ),
-	/* 472 */ POS, 00-1, DATA_2x2( 0xfbcff798, 0x9a209a84, 0x0b7c9178, 0x8f8959ac ),
-	};
+    /* Unpacked constants 1, 2, log(2) and log(10) */
+    /* 400 */ POS, 0001, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
+    /* 424 */ POS, 0002, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
+    /* 448 */ POS, 0000, DATA_2x2( 0xd1cf79ab, 0xb17217f7, 0x03f2f6af, 0xc9e3b398 ),
+    /* 472 */ POS, 00-1, DATA_2x2( 0xfbcff798, 0x9a209a84, 0x0b7c9178, 0x8f8959ac ),
+    };
 
 #define	LOG_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 0))
 #define	LOG2_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 24))

@@ -444,7 +444,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     TABLE_COMMENT("Square root class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "SQRT_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) + 
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     1) +
@@ -479,65 +479,65 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     TABLE_COMMENT("Hypot(x,y) root class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "HYPOT_CLASS_TO_ACTION_MAP");
 
-	  /* Index 0: mapping for x */
+      /* Index 0: mapping for x */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) );
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) );
 
-	  /* Index 1: class-to-index mapping */
+      /* Index 1: class-to-index mapping */
 
     PRINT_64_TBL_ITEM( 
-	      CLASS_TO_INDEX( F_C_POS_ZERO,   2) +
-	      CLASS_TO_INDEX( F_C_NEG_ZERO ,  2) +
-	      CLASS_TO_INDEX( F_C_POS_DENORM, 3) +
-	      CLASS_TO_INDEX( F_C_NEG_DENORM, 3) +
-	      CLASS_TO_INDEX( F_C_POS_NORM,   3) +
-	      CLASS_TO_INDEX( F_C_NEG_NORM,   3) +
-	      CLASS_TO_INDEX( F_C_POS_INF,    4) +
-	      CLASS_TO_INDEX( F_C_NEG_INF,    4) );
+          CLASS_TO_INDEX( F_C_POS_ZERO,   2) +
+          CLASS_TO_INDEX( F_C_NEG_ZERO ,  2) +
+          CLASS_TO_INDEX( F_C_POS_DENORM, 3) +
+          CLASS_TO_INDEX( F_C_NEG_DENORM, 3) +
+          CLASS_TO_INDEX( F_C_POS_NORM,   3) +
+          CLASS_TO_INDEX( F_C_NEG_NORM,   3) +
+          CLASS_TO_INDEX( F_C_POS_INF,    4) +
+          CLASS_TO_INDEX( F_C_NEG_INF,    4) );
 
-	  /* Index 2: y class-to-index mapping for x = +/- zero */
-
-    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
-	      CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_DENORM, RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_POS_NORM,   RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_NORM,   RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) );
-
-	  /* Index 3: y class-to-index mapping for x = +/- norm or denorm */
+      /* Index 2: y class-to-index mapping for x = +/- zero */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
-	      CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_DENORM, RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_POS_NORM,   RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_NORM,   RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ABSOLUTE,  1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) );
+          CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_NEG_DENORM, RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_POS_NORM,   RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_NEG_NORM,   RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) );
 
-	  /* Index 4: y class-to-index mapping for x = +/- Inf */
+      /* Index 3: y class-to-index mapping for x = +/- norm or denorm */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
-	      CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_NEG_DENORM, RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_POS_NORM,   RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_NEG_NORM,   RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ABSOLUTE,  0) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) );
+          CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_NEG_DENORM, RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_POS_NORM,   RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_NEG_NORM,   RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ABSOLUTE,  1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) );
+
+      /* Index 4: y class-to-index mapping for x = +/- Inf */
+
+    PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) + 
+          CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_POS_DENORM, RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_NEG_DENORM, RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_POS_NORM,   RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_NEG_NORM,   RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ABSOLUTE,  0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) );
 
     PAD_IF_NEEDED(MP_BIT_OFFSET, 64);
 

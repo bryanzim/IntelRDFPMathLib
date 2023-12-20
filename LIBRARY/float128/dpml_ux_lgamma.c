@@ -294,7 +294,7 @@ UX_LGAMMA(UX_FLOAT * unpacked_argument, int * signgam,
     *signgam = 1 - ((sign >> (BITS_PER_UX_SIGN_TYPE - 2)) & (floor_2x & 2));
 
     if (exponent < 5)
-	{ /* | x | < 16
+    { /* | x | < 16
 
         /* Set initial product to 1 and get  */
 
@@ -336,15 +336,15 @@ UX_LGAMMA(UX_FLOAT * unpacked_argument, int * signgam,
             EVALUATE_RATIONAL(
                 &reduced_argument,
                 LGAMMA_P_COEF_ARRAY,
-	        LGAMMA_P_COEF_ARRAY_DEGREE,
+            LGAMMA_P_COEF_ARRAY_DEGREE,
                 NUMERATOR_FLAGS( STANDARD ) | DENOMINATOR_FLAGS( STANDARD ),
                 &tmp[1]
                 );
 /*printf("DGAMMA 2: rarg=%x %x %llx %llx, tmp1=%x %x %llx %llx\n",reduced_argument.sign,reduced_argument.exponent,reduced_argument.fraction[0],reduced_argument.fraction[1],
-	tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1]);*/
+    tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1]);*/
             MULTIPLY(unpacked_result, &tmp[1], unpacked_result);
  /*printf("DGAMMA 2: ures=%x %x %llx %llx, tmp1=%x %x %llx %llx\n",unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1],
-	tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1]);*/
+    tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1]);*/
           }
 
 
@@ -390,7 +390,7 @@ UX_LGAMMA(UX_FLOAT * unpacked_argument, int * signgam,
         EVALUATE_RATIONAL(
             tmp,
             LGAMMA_PHI_COEF_ARRAY,
-	    LGAMMA_PHI_COEF_ARRAY_DEGREE,
+        LGAMMA_PHI_COEF_ARRAY_DEGREE,
             NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY)
                | DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(3),
             // unpacked_argument
@@ -651,7 +651,7 @@ pack_it:
     TABLE_COMMENT("lgamma class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "LGAMMA_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     2) +

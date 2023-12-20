@@ -108,17 +108,17 @@ BID128_FUNCTION_ARG1 (bid128_tgamma, x)
   // check for nonpositive integers
   BIDECIMAL_CALL2_NORND (bid128_quiet_less_equal, cmp_res, x, BID128_ZERO);
   if(cmp_res) {
-	BIDECIMAL_CALL1_NORND(bid128_round_integral_nearest_even, x_int, x);
-	BIDECIMAL_CALL2(bid128_sub,x_frac,x,x_int);
-	// If the fractional part is 0, return NaN
-	BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero,cmp_res,x_frac);
-	if (cmp_res)
-	{ res = BID128_NAN;
+    BIDECIMAL_CALL1_NORND(bid128_round_integral_nearest_even, x_int, x);
+    BIDECIMAL_CALL2(bid128_sub,x_frac,x,x_int);
+    // If the fractional part is 0, return NaN
+    BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero,cmp_res,x_frac);
+    if (cmp_res)
+    { res = BID128_NAN;
       #ifdef BID_SET_STATUS_FLAGS
         __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
      #endif
      BID_RETURN (res);
-	}
+    }
   }
 
 // Compute lgamma and take the exponential.

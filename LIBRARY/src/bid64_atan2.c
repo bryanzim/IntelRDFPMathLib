@@ -50,7 +50,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT64, bid64_atan2, x, y)
     if ((x & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
       if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN (coefficient_x & QUIET_MASK64);
     }
@@ -63,11 +63,11 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT64, bid64_atan2, x, y)
     if ((y & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
       if ((y & SNAN_MASK64) == SNAN_MASK64)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN (coefficient_y & QUIET_MASK64);
     }
-	}
+    }
 
   BIDECIMAL_CALL1(bid64_to_binary80,xd,x);
   BIDECIMAL_CALL1(bid64_to_binary80,yd,y);

@@ -178,53 +178,53 @@
 
 #   define EXTENDED_DIGIT_SHIFT_LEFT_UX_FRACTION(g, m)			\
                 (m) = G_UX_FRACTION_DIGIT(g,0);				\
-		P_UX_FRACTION_DIGIT(g, 0, G_UX_FRACTION_DIGIT(g, 1));	\
-		P_UX_FRACTION_DIGIT(g, 1, G_UX_FRACTION_DIGIT(g, 2));	\
-		P_UX_FRACTION_DIGIT(g, 2, G_UX_FRACTION_DIGIT(g, 3));	\
-		P_UX_FRACTION_DIGIT(g, 3, 0);
+        P_UX_FRACTION_DIGIT(g, 0, G_UX_FRACTION_DIGIT(g, 1));	\
+        P_UX_FRACTION_DIGIT(g, 1, G_UX_FRACTION_DIGIT(g, 2));	\
+        P_UX_FRACTION_DIGIT(g, 2, G_UX_FRACTION_DIGIT(g, 3));	\
+        P_UX_FRACTION_DIGIT(g, 3, 0);
 
 #   define EXTENDED_BIT_SHIFT_LEFT_UX_FRACTION(g, m, s, c)		\
-		{							\
-		UX_FRACTION_DIGIT_TYPE _t0, _t1, _t2, _t3;		\
-		 							\
+        {							\
+        UX_FRACTION_DIGIT_TYPE _t0, _t1, _t2, _t3;		\
+                                    \
                 _t0 = G_UX_FRACTION_DIGIT(g,0);				\
-		(m) = _t0 >> (c);					\
+        (m) = _t0 >> (c);					\
                 _t1 = G_UX_FRACTION_DIGIT(g,1);				\
-		P_UX_FRACTION_DIGIT(g, 0, EXT_SHIFT(_t0, s, _t1, c));	\
+        P_UX_FRACTION_DIGIT(g, 0, EXT_SHIFT(_t0, s, _t1, c));	\
                 _t2 = G_UX_FRACTION_DIGIT(g,2);				\
-		P_UX_FRACTION_DIGIT(g, 1, EXT_SHIFT(_t1, s, _t2, c));	\
+        P_UX_FRACTION_DIGIT(g, 1, EXT_SHIFT(_t1, s, _t2, c));	\
                 _t3 = G_UX_FRACTION_DIGIT(g,3);				\
-		P_UX_FRACTION_DIGIT(g, 2, EXT_SHIFT(_t2, s, _t3, c));	\
-		P_UX_FRACTION_DIGIT(g, 1, _t3 << (s));			\
-		}
+        P_UX_FRACTION_DIGIT(g, 2, EXT_SHIFT(_t2, s, _t3, c));	\
+        P_UX_FRACTION_DIGIT(g, 1, _t3 << (s));			\
+        }
 
 #   define DIGIT_SHIFT_LEFT_UX_FRACTION(g,p)				\
-		P_UX_FRACTION_DIGIT(p, 0, G_UX_FRACTION_DIGIT(g, 1));	\
-		P_UX_FRACTION_DIGIT(p, 1, G_UX_FRACTION_DIGIT(g, 2));	\
-		P_UX_FRACTION_DIGIT(p, 2, G_UX_FRACTION_DIGIT(g, 3));	\
-		P_UX_FRACTION_DIGIT(p, 3, 0);
+        P_UX_FRACTION_DIGIT(p, 0, G_UX_FRACTION_DIGIT(g, 1));	\
+        P_UX_FRACTION_DIGIT(p, 1, G_UX_FRACTION_DIGIT(g, 2));	\
+        P_UX_FRACTION_DIGIT(p, 2, G_UX_FRACTION_DIGIT(g, 3));	\
+        P_UX_FRACTION_DIGIT(p, 3, 0);
 
 #else
 
 #   define EXTENDED_DIGIT_SHIFT_LEFT_UX_FRACTION(g, m)			\
                 (m) = G_UX_FRACTION_DIGIT(g,0);				\
-		P_UX_FRACTION_DIGIT(g, 0, G_UX_FRACTION_DIGIT(g, 1));	\
-		P_UX_FRACTION_DIGIT(g, 1, 0);
+        P_UX_FRACTION_DIGIT(g, 0, G_UX_FRACTION_DIGIT(g, 1));	\
+        P_UX_FRACTION_DIGIT(g, 1, 0);
 
 #   define EXTENDED_BIT_SHIFT_LEFT_UX_FRACTION(g, m, s, c)		\
-		{							\
-		UX_FRACTION_DIGIT_TYPE _t0, _t1;			\
-		 							\
+        {							\
+        UX_FRACTION_DIGIT_TYPE _t0, _t1;			\
+                                    \
                 _t0 = G_UX_FRACTION_DIGIT(g,0);				\
-		(m) = _t0 >> (c);					\
+        (m) = _t0 >> (c);					\
                 _t1 = G_UX_FRACTION_DIGIT(g,1);				\
-		P_UX_FRACTION_DIGIT(g, 0, EXT_SHIFT(_t0, s, _t1, c));	\
-		P_UX_FRACTION_DIGIT(g, 1, _t1 << (s));			\
-		}
+        P_UX_FRACTION_DIGIT(g, 0, EXT_SHIFT(_t0, s, _t1, c));	\
+        P_UX_FRACTION_DIGIT(g, 1, _t1 << (s));			\
+        }
 
 #   define DIGIT_SHIFT_LEFT_UX_FRACTION(g,p)				\
-		P_UX_FRACTION_DIGIT(p, 0, G_UX_FRACTION_DIGIT(g, 1));	\
-		P_UX_FRACTION_DIGIT(p, 1, 0);
+        P_UX_FRACTION_DIGIT(p, 0, G_UX_FRACTION_DIGIT(g, 1));	\
+        P_UX_FRACTION_DIGIT(p, 1, 0);
 
 #endif
 
@@ -415,7 +415,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
         R = (UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_23*r_hi);
         T1 = (UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_78*r_lo);
         R = (R << (BITS_PER_UX_FRACTION_DIGIT_TYPE - S_PRECISION)) +
-	     ((T1 - 8) >> (79 - BITS_PER_UX_FRACTION_DIGIT_TYPE));
+         ((T1 - 8) >> (79 - BITS_PER_UX_FRACTION_DIGIT_TYPE));
 
 #    endif
 
@@ -441,7 +441,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
         if (J >= 0)
             { 
             EXTENDED_DIGIT_SHIFT_LEFT_UX_FRACTION(result, F1);
-	    old_quot = 0; 
+        old_quot = 0; 
             }
         else
             {
@@ -449,7 +449,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
 
             shift = BITS_PER_UX_FRACTION_DIGIT_TYPE + J;
             cshift = -J;
-	    old_quot = (Q << shift);
+        old_quot = (Q << shift);
             EXTENDED_BIT_SHIFT_LEFT_UX_FRACTION(result, F1, shift, cshift);
             J = 0;
             }
@@ -531,8 +531,8 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
         **
         **	fh' 	the high two digits of f'
         **	fl'	the remaining digits of f'
-	**	gh	the high digit of g
-	**	gl	the remaining digits of g
+    **	gh	the high digit of g
+    **	gl	the remaining digits of g
         **
         ** we proceed with the updating of f':
         ** 
@@ -553,7 +553,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
         ** adjust f' by adding in g at most twice.
         */ 
 
-	P_UX_MSD(result, T2);
+    P_UX_MSD(result, T2);
         P_UX_MSD(&ux_q, Q);
         MULTIPLY(&ux_q, &ux_g_lo, &product);
         ADDSUB(result, &product, SUB | NO_NORMALIZATION, result);
@@ -573,7 +573,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
                 }
             ADDSUB(result, addend, ADD | NO_NORMALIZATION, result);
             }
-	    Q |= old_quot; 
+        Q |= old_quot; 
 
         } while (J > 0);
 
@@ -678,16 +678,16 @@ C_UX_MOD(_X_FLOAT * packed_x, _X_FLOAT * packed_y, U_WORD bit_vector,
 */
 
 #define R_minus_2B(B,i)		\
-		((2 + ((i & 1) - (((2*B) >> i) & 2))) << (i * FLAGS_BIT_WIDTH))
+        ((2 + ((i & 1) - (((2*B) >> i) & 2))) << (i * FLAGS_BIT_WIDTH))
 
 #define CVT_B_TO_B_PRIME(B)	( R_minus_2B(B, 0) | R_minus_2B(B, 1) | \
-				  R_minus_2B(B, 2) | R_minus_2B(B, 3) | \
-				  R_minus_2B(B, 4) | R_minus_2B(B, 5) | \
-				  R_minus_2B(B, 6) | R_minus_2B(B, 7) | \
-				  R_minus_2B(B, 8) | R_minus_2B(B, 9) | \
-				  R_minus_2B(B,10) | R_minus_2B(B,11) | \
-				  R_minus_2B(B,12) | R_minus_2B(B,13) | \
-				  R_minus_2B(B,14) | R_minus_2B(B,15) )
+                  R_minus_2B(B, 2) | R_minus_2B(B, 3) | \
+                  R_minus_2B(B, 4) | R_minus_2B(B, 5) | \
+                  R_minus_2B(B, 6) | R_minus_2B(B, 7) | \
+                  R_minus_2B(B, 8) | R_minus_2B(B, 9) | \
+                  R_minus_2B(B,10) | R_minus_2B(B,11) | \
+                  R_minus_2B(B,12) | R_minus_2B(B,13) | \
+                  R_minus_2B(B,14) | R_minus_2B(B,15) )
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME	F_MOD_NAME
@@ -801,84 +801,84 @@ X_XXIptr_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y, quotient)
 
     procedure print_class_to_action_table( infinity_error, zero_error )
         {
-	   /* Index 0: mapping for x */	
+       /* Index 0: mapping for x */	
 
         PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(6) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,      0) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,  0) );
+          CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,      0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,  0) );
 
-	   /* Index 1: class-to-index mapping */
+       /* Index 1: class-to-index mapping */
 
         PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(5) +
-	       CLASS_TO_INDEX( F_C_POS_INF,    2) +
-	       CLASS_TO_INDEX( F_C_NEG_INF,    2) +
-	       CLASS_TO_INDEX( F_C_POS_NORM,   3) +
-	       CLASS_TO_INDEX( F_C_NEG_NORM,   3) +
-	       CLASS_TO_INDEX( F_C_POS_DENORM, 4) +
-	       CLASS_TO_INDEX( F_C_NEG_DENORM, 4) +
-	       CLASS_TO_INDEX( F_C_POS_ZERO,   5) +
-	       CLASS_TO_INDEX( F_C_NEG_ZERO ,  5) );
+           CLASS_TO_INDEX( F_C_POS_INF,    2) +
+           CLASS_TO_INDEX( F_C_NEG_INF,    2) +
+           CLASS_TO_INDEX( F_C_POS_NORM,   3) +
+           CLASS_TO_INDEX( F_C_NEG_NORM,   3) +
+           CLASS_TO_INDEX( F_C_POS_DENORM, 4) +
+           CLASS_TO_INDEX( F_C_NEG_DENORM, 4) +
+           CLASS_TO_INDEX( F_C_POS_ZERO,   5) +
+           CLASS_TO_INDEX( F_C_NEG_ZERO ,  5) );
 
-	    /* Index 2: mapping for y given x was +/- Infinity */
+        /* Index 2: mapping for y given x was +/- Infinity */
 
         PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(4) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,	RETURN_QUIET_NAN, 1) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,	RETURN_VALUE,     1) +
-	      CLASS_TO_ACTION( F_C_POS_INF,	RETURN_ERROR,	  2) +
-	      CLASS_TO_ACTION( F_C_NEG_INF,	RETURN_ERROR,	  2) +
-	      CLASS_TO_ACTION( F_C_POS_NORM,	RETURN_ERROR,	  2) +
-	      CLASS_TO_ACTION( F_C_NEG_NORM,	RETURN_ERROR,	  2) +
-	      CLASS_TO_ACTION( F_C_POS_DENORM,	RETURN_ERROR,	  2) +
-	      CLASS_TO_ACTION( F_C_NEG_DENORM,	RETURN_ERROR,	  2) +
-	      CLASS_TO_ACTION( F_C_POS_ZERO,	RETURN_ERROR,	  3) +
-	      CLASS_TO_ACTION( F_C_NEG_ZERO,	RETURN_ERROR,	  3) );
+          CLASS_TO_ACTION( F_C_SIG_NAN,	RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_QUIET_NAN,	RETURN_VALUE,     1) +
+          CLASS_TO_ACTION( F_C_POS_INF,	RETURN_ERROR,	  2) +
+          CLASS_TO_ACTION( F_C_NEG_INF,	RETURN_ERROR,	  2) +
+          CLASS_TO_ACTION( F_C_POS_NORM,	RETURN_ERROR,	  2) +
+          CLASS_TO_ACTION( F_C_NEG_NORM,	RETURN_ERROR,	  2) +
+          CLASS_TO_ACTION( F_C_POS_DENORM,	RETURN_ERROR,	  2) +
+          CLASS_TO_ACTION( F_C_NEG_DENORM,	RETURN_ERROR,	  2) +
+          CLASS_TO_ACTION( F_C_POS_ZERO,	RETURN_ERROR,	  3) +
+          CLASS_TO_ACTION( F_C_NEG_ZERO,	RETURN_ERROR,	  3) );
 
-	    /* Index 3: mapping for y given x was +/- Norm */
+        /* Index 3: mapping for y given x was +/- Norm */
 
         PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(3) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,	RETURN_QUIET_NAN, 1) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,	RETURN_VALUE,	  1) +
-	      CLASS_TO_ACTION( F_C_POS_INF,	RETURN_VALUE,	  0) +
-	      CLASS_TO_ACTION( F_C_NEG_INF,	RETURN_VALUE,	  0) +
-	      CLASS_TO_ACTION( F_C_POS_NORM,	RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_NORM,	RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_POS_DENORM,	RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_DENORM,	RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_POS_ZERO,	RETURN_ERROR,	  3) +
-	      CLASS_TO_ACTION( F_C_NEG_ZERO,	RETURN_ERROR,	  3) );
+          CLASS_TO_ACTION( F_C_SIG_NAN,	RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_QUIET_NAN,	RETURN_VALUE,	  1) +
+          CLASS_TO_ACTION( F_C_POS_INF,	RETURN_VALUE,	  0) +
+          CLASS_TO_ACTION( F_C_NEG_INF,	RETURN_VALUE,	  0) +
+          CLASS_TO_ACTION( F_C_POS_NORM,	RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_NEG_NORM,	RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_POS_DENORM,	RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_NEG_DENORM,	RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_POS_ZERO,	RETURN_ERROR,	  3) +
+          CLASS_TO_ACTION( F_C_NEG_ZERO,	RETURN_ERROR,	  3) );
 
-	    /* Index 4: mapping for y given x was +/- Denorm */
+        /* Index 4: mapping for y given x was +/- Denorm */
 
         PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,	RETURN_QUIET_NAN, 1) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,	RETURN_VALUE,	  1) +
-	      CLASS_TO_ACTION( F_C_POS_INF,	RETURN_VALUE,	  0) +
-	      CLASS_TO_ACTION( F_C_NEG_INF,	RETURN_VALUE,	  0) +
-	      CLASS_TO_ACTION( F_C_POS_NORM,	RETURN_VALUE,     0) +
-	      CLASS_TO_ACTION( F_C_NEG_NORM,	RETURN_VALUE,     0) +
-	      CLASS_TO_ACTION( F_C_POS_DENORM,	RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_NEG_DENORM,	RETURN_UNPACKED,  1) +
-	      CLASS_TO_ACTION( F_C_POS_ZERO,	RETURN_ERROR,	  3) +
-	      CLASS_TO_ACTION( F_C_NEG_ZERO,	RETURN_ERROR,	  3) );
+          CLASS_TO_ACTION( F_C_SIG_NAN,	RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_QUIET_NAN,	RETURN_VALUE,	  1) +
+          CLASS_TO_ACTION( F_C_POS_INF,	RETURN_VALUE,	  0) +
+          CLASS_TO_ACTION( F_C_NEG_INF,	RETURN_VALUE,	  0) +
+          CLASS_TO_ACTION( F_C_POS_NORM,	RETURN_VALUE,     0) +
+          CLASS_TO_ACTION( F_C_NEG_NORM,	RETURN_VALUE,     0) +
+          CLASS_TO_ACTION( F_C_POS_DENORM,	RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_NEG_DENORM,	RETURN_UNPACKED,  1) +
+          CLASS_TO_ACTION( F_C_POS_ZERO,	RETURN_ERROR,	  3) +
+          CLASS_TO_ACTION( F_C_NEG_ZERO,	RETURN_ERROR,	  3) );
 
-	    /* Index 5: mapping for y given x was +/- zero */
+        /* Index 5: mapping for y given x was +/- zero */
 
         PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,	RETURN_QUIET_NAN, 1) +
-	      CLASS_TO_ACTION( F_C_QUIET_NAN,	RETURN_VALUE,	  1) +
-	      CLASS_TO_ACTION( F_C_POS_INF,	RETURN_VALUE,	  0) +
-	      CLASS_TO_ACTION( F_C_NEG_INF,	RETURN_VALUE,	  0) +
-	      CLASS_TO_ACTION( F_C_POS_NORM,	RETURN_VALUE,     0) +
-	      CLASS_TO_ACTION( F_C_NEG_NORM,	RETURN_VALUE,     0) +
-	      CLASS_TO_ACTION( F_C_POS_DENORM,	RETURN_VALUE,     0) +
-	      CLASS_TO_ACTION( F_C_NEG_DENORM,	RETURN_VALUE,     0) +
-	      CLASS_TO_ACTION( F_C_POS_ZERO,	RETURN_ERROR,	  3) +
-	      CLASS_TO_ACTION( F_C_NEG_ZERO,	RETURN_ERROR,	  3) );
+          CLASS_TO_ACTION( F_C_SIG_NAN,	RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_QUIET_NAN,	RETURN_VALUE,	  1) +
+          CLASS_TO_ACTION( F_C_POS_INF,	RETURN_VALUE,	  0) +
+          CLASS_TO_ACTION( F_C_NEG_INF,	RETURN_VALUE,	  0) +
+          CLASS_TO_ACTION( F_C_POS_NORM,	RETURN_VALUE,     0) +
+          CLASS_TO_ACTION( F_C_NEG_NORM,	RETURN_VALUE,     0) +
+          CLASS_TO_ACTION( F_C_POS_DENORM,	RETURN_VALUE,     0) +
+          CLASS_TO_ACTION( F_C_NEG_DENORM,	RETURN_VALUE,     0) +
+          CLASS_TO_ACTION( F_C_POS_ZERO,	RETURN_ERROR,	  3) +
+          CLASS_TO_ACTION( F_C_NEG_ZERO,	RETURN_ERROR,	  3) );
 
-	    PRINT_U_TBL_ITEM( /* data 1 */ NULL );
-	    PRINT_U_TBL_ITEM( /* data 2 */ infinity_error );
-	    PRINT_U_TBL_ITEM( /* data 3 */ zero_error );
-	}
+        PRINT_U_TBL_ITEM( /* data 1 */ NULL );
+        PRINT_U_TBL_ITEM( /* data 2 */ infinity_error );
+        PRINT_U_TBL_ITEM( /* data 3 */ zero_error );
+    }
 
     TABLE_COMMENT("mod class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "MOD_CLASS_TO_ACTION_MAP");

@@ -48,13 +48,13 @@ BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT64, bid64_ldexp, BID_UINT64, 
 #endif
     if (coefficient_x)
       res = coefficient_x & QUIET_MASK64;
-	else {
+    else {
        exp64 = (BID_SINT64) exponent_x + (BID_SINT64) n;
-	   if(exp64<0) exp64=0;
-	   if(exp64>MAX_DECIMAL_EXPONENT) exp64=MAX_DECIMAL_EXPONENT;
+       if(exp64<0) exp64=0;
+       if(exp64>MAX_DECIMAL_EXPONENT) exp64=MAX_DECIMAL_EXPONENT;
        exponent_x = exp64;
       res = very_fast_get_BID64 (sign_x, exponent_x, coefficient_x);	// 0
-	}
+    }
     BID_RETURN (res);
   }
 
@@ -69,7 +69,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT64, bid64_ldexp, BID_UINT64, 
   if (exp64 > MAX_DECIMAL_EXPONENT) {
     // try to normalize coefficient
     while ((coefficient_x < 1000000000000000ull)
-	   && (exp64 > MAX_DECIMAL_EXPONENT)) {
+       && (exp64 > MAX_DECIMAL_EXPONENT)) {
       // coefficient_x < 10^15, scale by 10
       coefficient_x = (coefficient_x << 1) + (coefficient_x << 3);
       exponent_x--;

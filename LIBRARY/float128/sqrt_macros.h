@@ -47,8 +47,8 @@ They all assume positive finite values.  */
 #       define EXPON_MASK   MAKE_MASK(B_EXP_WIDTH, 0)
 #	define HI_EXP_BIT_MASK   ((EXPON_MASK - 1) << LOC_OF_EXPON)
 #	define GET_SQRT_TABLE_INDEX(exp,index) \
-		index = (exp >> (LOC_OF_EXPON - NUM_FRAC_BITS)); \
-		index &= INDEX_MASK
+        index = (exp >> (LOC_OF_EXPON - NUM_FRAC_BITS)); \
+        index &= INDEX_MASK
 
 #   if ((ARCHITECTURE == alpha) && defined(HAS_LOAD_WRONG_STORE_SIZE_PENALTY))
 #       define V_UNION_64_BIT_STORE \
@@ -58,9 +58,9 @@ They all assume positive finite values.  */
                 v.B_UNSIGNED_LO_64 = 0
 #   else
 #	define V_UNION_64_BIT_STORE \
-		v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) << 31
+        v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) << 31
 #	define V_UNION_128_BIT_STORE \
-		v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) << 31; \
+        v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) << 31; \
                 v.B_UNSIGNED_LO_64 = 0
 #   endif
 
@@ -71,12 +71,12 @@ They all assume positive finite values.  */
 #	define EXP_BITS_OF_ONE_HALF 0x4000
 #	define HI_EXP_BIT_MASK 0x7fe0
 #	define GET_SQRT_TABLE_INDEX(exp,index) \
-		index = ((exp << 3) | ((U_INT_32)exp >> 29)); \
-		index &= INDEX_MASK
+        index = ((exp << 3) | ((U_INT_32)exp >> 29)); \
+        index &= INDEX_MASK
 #	define V_UNION_64_BIT_STORE \
-		v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1
+        v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1
 #	define V_UNION_128_BIT_STORE \
-		v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1 ;\
+        v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1 ;\
                 v.B_UNSIGNED_LO_64 = 0
 
 #endif
@@ -84,22 +84,22 @@ They all assume positive finite values.  */
 #if (ARCHITECTURE == alpha) || (BITS_PER_WORD == 64)
 #     if QUAD_PRECISION
 #	   define STORE_EXP_TO_V_UNION \
-		V_UNION_128_BIT_STORE
+        V_UNION_128_BIT_STORE
 #     else
 #	   define STORE_EXP_TO_V_UNION \
-		V_UNION_64_BIT_STORE
+        V_UNION_64_BIT_STORE
 #     endif
 #else
 #     if QUAD_PRECISION
 #	   define STORE_EXP_TO_V_UNION \
-		v.B_SIGNED_HI_32 = ((U_INT_32)exp) >> 1; \
-		v.B_SIGNED_LO1_32 = 0;\
-		v.B_SIGNED_LO2_32 = 0;\
-		v.B_SIGNED_LO3_32 = 0
+        v.B_SIGNED_HI_32 = ((U_INT_32)exp) >> 1; \
+        v.B_SIGNED_LO1_32 = 0;\
+        v.B_SIGNED_LO2_32 = 0;\
+        v.B_SIGNED_LO3_32 = 0
 #     else
 #	   define STORE_EXP_TO_V_UNION \
-		v.B_SIGNED_HI_32 = ((U_INT_32)exp) >> 1; \
-		v.B_SIGNED_LO_32 = 0
+        v.B_SIGNED_HI_32 = ((U_INT_32)exp) >> 1; \
+        v.B_SIGNED_LO_32 = 0
 #     endif
 #endif
 
@@ -139,47 +139,47 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[];
 
 
 #define SQRT_FIRST_PART(input) \
-	B_UNION u, v; \
-	B_TYPE y, a, b, c; \
-	B_TYPE scaled_x, half_scale; \
-	B_TYPE half  = (B_TYPE)0.5; \
-	B_TYPE one   = (B_TYPE)1.0; \
-	B_TYPE three = (B_TYPE)3.0; \
-	F_TYPE ulp, y_less_1_ulp, y_plus_1_ulp; \
-	F_TYPE f_type_y, truncated_y, truncated_product; \
+    B_UNION u, v; \
+    B_TYPE y, a, b, c; \
+    B_TYPE scaled_x, half_scale; \
+    B_TYPE half  = (B_TYPE)0.5; \
+    B_TYPE one   = (B_TYPE)1.0; \
+    B_TYPE three = (B_TYPE)3.0; \
+    F_TYPE ulp, y_less_1_ulp, y_plus_1_ulp; \
+    F_TYPE f_type_y, truncated_y, truncated_product; \
         LS_INT_TYPE exp; \
         U_LS_INT_TYPE orig_rounding_mode; \
         U_LS_INT_TYPE index; \
         U_LS_INT_TYPE lo_exp_bit_and_hi_frac; \
         U_LS_INT_TYPE hi_exp_mask = HI_EXP_BIT_MASK; \
         U_LS_INT_TYPE exp_of_one_half = EXP_BITS_OF_ONE_HALF; \
-	u.f = (B_TYPE)(input); \
-	exp = u.B_HI_LS_INT_TYPE; \
-	B_COPY_SIGN_AND_EXP((B_TYPE)(input), half, y); \
-	GET_SQRT_TABLE_INDEX(exp,index); \
-	b = (B_TYPE)D_SQRT_TABLE_NAME[index].b; \
-	b *= y;	 \
-	c = (B_TYPE)D_SQRT_TABLE_NAME[index].c; \
-	lo_exp_bit_and_hi_frac = exp & ~hi_exp_mask; \
-	u.B_HI_LS_INT_TYPE = exp_of_one_half | lo_exp_bit_and_hi_frac; \
-	c += b; \
-	scaled_x = u.f; \
-	y *= y; \
-	a = (B_TYPE)D_SQRT_TABLE_NAME[index].a; \
-	exp ^= lo_exp_bit_and_hi_frac; \
-	exp += exp_of_one_half; \
-	y *= a; \
-	STORE_EXP_TO_V_UNION; \
-	y += c; \
-	half_scale = v.f
+    u.f = (B_TYPE)(input); \
+    exp = u.B_HI_LS_INT_TYPE; \
+    B_COPY_SIGN_AND_EXP((B_TYPE)(input), half, y); \
+    GET_SQRT_TABLE_INDEX(exp,index); \
+    b = (B_TYPE)D_SQRT_TABLE_NAME[index].b; \
+    b *= y;	 \
+    c = (B_TYPE)D_SQRT_TABLE_NAME[index].c; \
+    lo_exp_bit_and_hi_frac = exp & ~hi_exp_mask; \
+    u.B_HI_LS_INT_TYPE = exp_of_one_half | lo_exp_bit_and_hi_frac; \
+    c += b; \
+    scaled_x = u.f; \
+    y *= y; \
+    a = (B_TYPE)D_SQRT_TABLE_NAME[index].a; \
+    exp ^= lo_exp_bit_and_hi_frac; \
+    exp += exp_of_one_half; \
+    y *= a; \
+    STORE_EXP_TO_V_UNION; \
+    y += c; \
+    half_scale = v.f
 
 
 #define B_HALF_PREC_SQRT(input, result) { \
-	SQRT_FIRST_PART(input); \
-	a = scaled_x * y; \
-	b = half_scale + half_scale; \
-	y = a * b; \
-	(result) = (B_TYPE)y; \
+    SQRT_FIRST_PART(input); \
+    a = scaled_x * y; \
+    b = half_scale + half_scale; \
+    y = a * b; \
+    (result) = (B_TYPE)y; \
 }
 
 #if (DYNAMIC_ROUNDING_MODES && !FAST_SQRT)
@@ -203,17 +203,17 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[];
 #if ( (F_PRECISION == 24) && PRECISION_BACKUP_AVAILABLE )
 
 
-	/* Make sure the last bit is correctly rounded by computing
-	a double-precision result, and then rounding it to single.  */
+    /* Make sure the last bit is correctly rounded by computing
+    a double-precision result, and then rounding it to single.  */
 
 
 #		define ITERATE_AND_MAYBE_CHECK_LAST_BIT(input) \
-			a = y * scaled_x; \
-			b = a * y; \
-			c = a * half_scale; \
-			b = three - b; \
-			f_type_y = (F_TYPE)(c * b)
-			
+            a = y * scaled_x; \
+            b = a * y; \
+            c = a * half_scale; \
+            b = three - b; \
+            f_type_y = (F_TYPE)(c * b)
+            
 #		define RESULT f_type_y
 
 
@@ -236,43 +236,43 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[];
 
 /* Newton's iteration for 1 / (nth root of x) is:
 
-	y' = y + [ (1 - x * y^n) * y / n ]
+    y' = y + [ (1 - x * y^n) * y / n ]
 
 So, the iteration for 1 / sqrt(x) is:
 
-	y' = y + [ (1 - x * y^2) * y * 0.5 ]
+    y' = y + [ (1 - x * y^2) * y * 0.5 ]
 
 If we want to do one iteration and multiply the result by x
 and multiply the result by a scale factor we get:
 
-	y' = scale   * x     * ( y + [ (1 - x * y^2) * y * 0.5 ] )
-	y' = scale   * x * y * ( 1 + [ (1 - x * y^2) * 0.5 ] )
-	y' = scale/2 * x * y * ( 2 + [ (1 - x * y^2) ] )        gives about 5/4 lsb error
-	y' = scale/2 * x * y * ( 3 - x * y^2 )					gives about 8/4 lsb error
+    y' = scale   * x     * ( y + [ (1 - x * y^2) * y * 0.5 ] )
+    y' = scale   * x * y * ( 1 + [ (1 - x * y^2) * 0.5 ] )
+    y' = scale/2 * x * y * ( 2 + [ (1 - x * y^2) ] )        gives about 5/4 lsb error
+    y' = scale/2 * x * y * ( 3 - x * y^2 )					gives about 8/4 lsb error
 
 So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x).  */
 
 #		define ITERATE_AND_MAYBE_CHECK_LAST_BIT(input) \
-			a = y * scaled_x; \
-			ulp = ULP_FACTOR; \
-			b = a * y; \
-			c = a * half_scale; \
-			b = one - b; \
-			a = c + c; \
-			b = c * b; \
-			ulp *= c; \
-			y = a + b; \
-			y_less_1_ulp = y - ulp; \
-			ASSERT( y_less_1_ulp < y ); \
-			y_plus_1_ulp = y + ulp; \
-			ASSERT( y_plus_1_ulp > y ); \
-			ESTABLISH_KNOWN_ROUNDING_MODE(orig_rounding_mode); \
-			F_MUL_CHOPPED(y, y_less_1_ulp, a); \
-			F_MUL_CHOPPED(y, y_plus_1_ulp, b); \
-			RESTORE_ORIGINAL_ROUNDING_MODE(orig_rounding_mode); \
-			y = ((a >= input) ? y_less_1_ulp : y); \
-			y = ((b <  input) ? y_plus_1_ulp : y); \
-			
+            a = y * scaled_x; \
+            ulp = ULP_FACTOR; \
+            b = a * y; \
+            c = a * half_scale; \
+            b = one - b; \
+            a = c + c; \
+            b = c * b; \
+            ulp *= c; \
+            y = a + b; \
+            y_less_1_ulp = y - ulp; \
+            ASSERT( y_less_1_ulp < y ); \
+            y_plus_1_ulp = y + ulp; \
+            ASSERT( y_plus_1_ulp > y ); \
+            ESTABLISH_KNOWN_ROUNDING_MODE(orig_rounding_mode); \
+            F_MUL_CHOPPED(y, y_less_1_ulp, a); \
+            F_MUL_CHOPPED(y, y_plus_1_ulp, b); \
+            RESTORE_ORIGINAL_ROUNDING_MODE(orig_rounding_mode); \
+            y = ((a >= input) ? y_less_1_ulp : y); \
+            y = ((b <  input) ? y_plus_1_ulp : y); \
+            
 #		define RESULT y
 
 #endif
@@ -281,70 +281,70 @@ So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x).  */
 #if (SINGLE_PRECISION)
 
 #	define F_SQRT(input, result) { \
-		SQRT_FIRST_PART(input); \
-		a = scaled_x * y; \
-		b = half_scale + half_scale; \
-		y = a * b; \
-		(result) = (F_TYPE)y; \
-	}
+        SQRT_FIRST_PART(input); \
+        a = scaled_x * y; \
+        b = half_scale + half_scale; \
+        y = a * b; \
+        (result) = (F_TYPE)y; \
+    }
 
 #	define F_PRECISE_SQRT(input, result) { \
-		SQRT_FIRST_PART(input); \
-		NEWTONS_ITERATION; \
-		NEWTONS_ITERATION; \
-		ITERATE_AND_MAYBE_CHECK_LAST_BIT(input); \
-		(result) = (F_TYPE) RESULT; \
-	}
+        SQRT_FIRST_PART(input); \
+        NEWTONS_ITERATION; \
+        NEWTONS_ITERATION; \
+        ITERATE_AND_MAYBE_CHECK_LAST_BIT(input); \
+        (result) = (F_TYPE) RESULT; \
+    }
 
 #	define F_SQRT_2_LSB(input,result) F_SQRT(input,result)
 
 #	define F_SQRT_2_LSB_NO_SCALE_FINISH_ITERATION(input) \
-		y *= (B_TYPE)(input) \
-		y += y;
+        y *= (B_TYPE)(input) \
+        y += y;
 
 #else
 
 #	define F_SQRT(input, result) { \
-		SQRT_FIRST_PART(input); \
+        SQRT_FIRST_PART(input); \
                 NEWTONS_ITERATION;\
                 NEWTONS_ITERATION;\
-		a = scaled_x * y; \
-		b = a * y; \
-		c = a * half_scale; \
-		b = one - b; \
-		a = c + c; \
-		b = c * b; \
-		y = a + b; \
-		(result) = (F_TYPE)y; \
-	}
+        a = scaled_x * y; \
+        b = a * y; \
+        c = a * half_scale; \
+        b = one - b; \
+        a = c + c; \
+        b = c * b; \
+        y = a + b; \
+        (result) = (F_TYPE)y; \
+    }
 
 #	define F_PRECISE_SQRT(input, result) { \
-		SQRT_FIRST_PART(input); \
+        SQRT_FIRST_PART(input); \
                 NEWTONS_ITERATION;\
                 NEWTONS_ITERATION;\
-		ITERATE_AND_MAYBE_CHECK_LAST_BIT(input); \
-		(result) = (F_TYPE) RESULT; \
-	}
+        ITERATE_AND_MAYBE_CHECK_LAST_BIT(input); \
+        (result) = (F_TYPE) RESULT; \
+    }
 
 #	define F_SQRT_2_LSB(input, result) { \
-		SQRT_FIRST_PART(input); \
+        SQRT_FIRST_PART(input); \
                 NEWTONS_ITERATION; \
                 NEWTONS_ITERATION;\
-		a = scaled_x * y; \
-		b = a * y; \
-		c = a * half_scale; \
-		b = three - b; \
-		y = c * b; \
-		(result) = (F_TYPE)y; \
-	}
+        a = scaled_x * y; \
+        b = a * y; \
+        c = a * half_scale; \
+        b = three - b; \
+        y = c * b; \
+        (result) = (F_TYPE)y; \
+    }
 
 #	define F_SQRT_2_LSB_NO_SCALE_FINISH_ITERATION(input) \
                 NEWTONS_ITERATION_NO_SCALE(input);\
                 NEWTONS_ITERATION_NO_SCALE(input);\
-		a = (B_TYPE)(input) * y; \
-		b = a * y; \
-		b = three - b; \
-		y = a * b
+        a = (B_TYPE)(input) * y; \
+        b = a * y; \
+        b = three - b; \
+        y = a * b
 
 #endif
 
@@ -354,27 +354,27 @@ The input for the polynomial is still scaled, however, because the
 coefficients have a scale factor built into them.  */
 
 #define F_SQRT_2_LSB_NO_SCALE_TIMES_2(input, result) { \
-	B_UNION u; \
-	B_TYPE y, a, b, c; \
-	B_TYPE half  = (B_TYPE)0.5; \
-	B_TYPE one   = (B_TYPE)1.0; \
-	B_TYPE three = (B_TYPE)3.0; \
-	LS_INT_TYPE exp;  \
-	U_LS_INT_TYPE index; \
-	u.f = (B_TYPE)(input); \
-	exp = u.B_HI_LS_INT_TYPE; \
-	B_COPY_SIGN_AND_EXP((B_TYPE)(input), half, y); \
-	GET_SQRT_TABLE_INDEX(exp,index); \
-	b = (B_TYPE)D_SQRT_TABLE_NAME[index].b; \
-	b *= y;	 \
-	c = (B_TYPE)D_SQRT_TABLE_NAME[index].c; \
-	c += b; \
-	y *= y; \
-	a = (B_TYPE)D_SQRT_TABLE_NAME[index].a; \
-	y *= a; \
-	y += c; \
-	F_SQRT_2_LSB_NO_SCALE_FINISH_ITERATION(input); \
-	(result) = (F_TYPE)y; \
+    B_UNION u; \
+    B_TYPE y, a, b, c; \
+    B_TYPE half  = (B_TYPE)0.5; \
+    B_TYPE one   = (B_TYPE)1.0; \
+    B_TYPE three = (B_TYPE)3.0; \
+    LS_INT_TYPE exp;  \
+    U_LS_INT_TYPE index; \
+    u.f = (B_TYPE)(input); \
+    exp = u.B_HI_LS_INT_TYPE; \
+    B_COPY_SIGN_AND_EXP((B_TYPE)(input), half, y); \
+    GET_SQRT_TABLE_INDEX(exp,index); \
+    b = (B_TYPE)D_SQRT_TABLE_NAME[index].b; \
+    b *= y;	 \
+    c = (B_TYPE)D_SQRT_TABLE_NAME[index].c; \
+    c += b; \
+    y *= y; \
+    a = (B_TYPE)D_SQRT_TABLE_NAME[index].a; \
+    y *= a; \
+    y += c; \
+    F_SQRT_2_LSB_NO_SCALE_FINISH_ITERATION(input); \
+    (result) = (F_TYPE)y; \
 }
 
 #endif  /* SQRT_MACROS_H */

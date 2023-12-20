@@ -178,7 +178,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater, BID_UINT64, 
       // x is pos infinity, it is greater, unless y is positive 
       // infinity => return y!=pos_infinity
       res = (((y & MASK_INF) != MASK_INF)
-	     || ((y & MASK_SIGN) == MASK_SIGN));
+         || ((y & MASK_SIGN) == MASK_SIGN));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF) == MASK_INF) {
@@ -277,20 +277,20 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater, BID_UINT64, 
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // if postitive, return whichever significand is larger (converse if neg.)
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       res = 0;
       BID_RETURN (res);
     }
     res = (((sig_n_prime.w[1] > 0)
-	    || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+        || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
     BID_RETURN (res);
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
   // if postitive, return whichever significand is larger 
   //     (converse if negative)
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -298,8 +298,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater, BID_UINT64, 
     BID_RETURN (res);
   }
   res = (((sig_n_prime.w[1] == 0)
-	  && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+      && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
   BID_RETURN (res);
 }
 
@@ -332,7 +332,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater_equal, BID_UI
     if ((x & MASK_SIGN) == MASK_SIGN) {
       // x is -inf, so it is less than y unless y is -inf
       res = (((y & MASK_INF) == MASK_INF)
-	     && (y & MASK_SIGN) == MASK_SIGN);
+         && (y & MASK_SIGN) == MASK_SIGN);
       BID_RETURN (res);
     } else {	// x is pos_inf, no way for it to be less than y
       res = 1;
@@ -429,7 +429,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater_equal, BID_UI
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // return 1 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       res = 1;
@@ -438,13 +438,13 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater_equal, BID_UI
     // if postitive, return whichever significand abs is smaller 
     // (converse if negative)
     res = (((sig_n_prime.w[1] == 0)
-	    && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) !=
-					    MASK_SIGN));
+        && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) !=
+                        MASK_SIGN));
     BID_RETURN (res);
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
   // return 0 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
     res = 1;
@@ -453,8 +453,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater_equal, BID_UI
   // if positive, return whichever significand abs is smaller 
   // (converse if negative)
   res = (((sig_n_prime.w[1] > 0)
-	  || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) !=
-					    MASK_SIGN));
+      || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) !=
+                        MASK_SIGN));
   BID_RETURN (res);
 }
 
@@ -492,7 +492,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater_unordered, BI
       // x is pos infinity, it is greater, unless y is positive infinity => 
       // return y!=pos_infinity
       res = (((y & MASK_INF) != MASK_INF)
-	     || ((y & MASK_SIGN) == MASK_SIGN));
+         || ((y & MASK_SIGN) == MASK_SIGN));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF) == MASK_INF) {
@@ -585,7 +585,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater_unordered, BI
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -593,21 +593,21 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_greater_unordered, BI
       BID_RETURN (res);
     }
     res = (((sig_n_prime.w[1] > 0)
-	    || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+        || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
     BID_RETURN (res);
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
   // if postitive, return whichever significand is larger (converse if negative)
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
     res = 0;
     BID_RETURN (res);
   }
   res = (((sig_n_prime.w[1] == 0)
-	  && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+      && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
   BID_RETURN (res);
 }
 
@@ -640,7 +640,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less, BID_UINT64, x, 
     if ((x & MASK_SIGN) == MASK_SIGN) {
       // x is -inf, so it is less than y unless y is -inf
       res = (((y & MASK_INF) != MASK_INF)
-	     || (y & MASK_SIGN) != MASK_SIGN);
+         || (y & MASK_SIGN) != MASK_SIGN);
       BID_RETURN (res);
     } else {
       // x is pos_inf, no way for it to be less than y
@@ -739,7 +739,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less, BID_UINT64, x, 
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // return 0 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       res = 0;
@@ -748,13 +748,13 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less, BID_UINT64, x, 
     // if postitive, return whichever significand abs is smaller 
     // (converse if negative)
     res = (((sig_n_prime.w[1] == 0)
-	    && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+        && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
     BID_RETURN (res);
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
   // return 0 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
     res = 0;
@@ -763,8 +763,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less, BID_UINT64, x, 
   // if positive, return whichever significand abs is smaller 
   // (converse if negative)
   res = (((sig_n_prime.w[1] > 0)
-	  || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+      || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
   BID_RETURN (res);
 }
 
@@ -802,7 +802,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less_equal, BID_UINT6
       // x is pos infinity, it is greater, unless y is positive infinity => 
       // return y==pos_infinity
       res = !(((y & MASK_INF) != MASK_INF)
-	      || ((y & MASK_SIGN) == MASK_SIGN));
+          || ((y & MASK_SIGN) == MASK_SIGN));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF) == MASK_INF) {
@@ -895,7 +895,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less_equal, BID_UINT6
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // return 1 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       res = 1;
@@ -904,13 +904,13 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less_equal, BID_UINT6
     // if postitive, return whichever significand abs is smaller 
     //     (converse if negative)
     res = (((sig_n_prime.w[1] == 0)
-	    && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+        && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
     BID_RETURN (res);
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
   // return 1 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
     res = 1;
@@ -919,8 +919,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less_equal, BID_UINT6
   // if positive, return whichever significand abs is smaller 
   //     (converse if negative)
   res = (((sig_n_prime.w[1] > 0)
-	  || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+      || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
   BID_RETURN (res);
 }
 
@@ -953,7 +953,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less_unordered, BID_U
     if ((x & MASK_SIGN) == MASK_SIGN) {
       // x is -inf, so it is less than y unless y is -inf
       res = (((y & MASK_INF) != MASK_INF)
-	     || (y & MASK_SIGN) != MASK_SIGN);
+         || (y & MASK_SIGN) != MASK_SIGN);
       BID_RETURN (res);
     } else {
       // x is pos_inf, no way for it to be less than y
@@ -1051,7 +1051,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less_unordered, BID_U
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // return 0 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
       res = 0;
@@ -1060,13 +1060,13 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less_unordered, BID_U
     // if postitive, return whichever significand abs is smaller 
     //     (converse if negative)
     res = (((sig_n_prime.w[1] == 0)
-	    && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+        && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
     BID_RETURN (res);
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
   // return 0 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
     res = 0;
@@ -1075,8 +1075,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_less_unordered, BID_U
   // if positive, return whichever significand abs is smaller 
   //     (converse if negative)
   res = (((sig_n_prime.w[1] > 0)
-	  || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN));
+      || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN));
   BID_RETURN (res);
 }
 
@@ -1233,7 +1233,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_not_greater, BID_UINT
     // infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF) != MASK_INF)
-	      || ((y & MASK_SIGN) == MASK_SIGN));
+          || ((y & MASK_SIGN) == MASK_SIGN));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF) == MASK_INF) {
@@ -1335,7 +1335,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_not_greater, BID_UINT
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // return 1 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -1346,14 +1346,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_not_greater, BID_UINT
     //     (converse if negative)
     {
       res = (((sig_n_prime.w[1] == 0)
-	      && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+          && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // return 1 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -1364,8 +1364,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_not_greater, BID_UINT
   //     (converse if negative)
   {
     res = (((sig_n_prime.w[1] > 0)
-	    || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+        || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -1400,7 +1400,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_not_less, BID_UINT64,
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF) == MASK_INF)
-	     && (y & MASK_SIGN) == MASK_SIGN);
+         && (y & MASK_SIGN) == MASK_SIGN);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -1508,7 +1508,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_not_less, BID_UINT64,
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // return 0 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -1519,14 +1519,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_not_less, BID_UINT64,
     //     (converse if negative)
     {
       res = (((sig_n_prime.w[1] == 0)
-	      && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) !=
-					      MASK_SIGN));
+          && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) !=
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // return 0 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -1537,8 +1537,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_quiet_not_less, BID_UINT64,
   //     (converse if negative)
   {
     res = (((sig_n_prime.w[1] > 0)
-	    || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) !=
-					      MASK_SIGN));
+        || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) !=
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -1613,7 +1613,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater, BID_UINT
     // unless y is positive infinity => return y!=pos_infinity
     else {
       res = (((y & MASK_INF) != MASK_INF)
-	     || ((y & MASK_SIGN) == MASK_SIGN));
+         || ((y & MASK_SIGN) == MASK_SIGN));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF) == MASK_INF) {
@@ -1715,7 +1715,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater, BID_UINT
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
 
     // if postitive, return whichever significand is larger 
@@ -1727,14 +1727,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater, BID_UINT
 
     {
       res = (((sig_n_prime.w[1] > 0)
-	      || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+          || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // if postitive, return whichever significand is larger 
   //     (converse if negative)
@@ -1744,8 +1744,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater, BID_UINT
   }
   {
     res = (((sig_n_prime.w[1] == 0)
-	    && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+        && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -1778,7 +1778,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater_equal, BI
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF) == MASK_INF)
-	     && (y & MASK_SIGN) == MASK_SIGN);
+         && (y & MASK_SIGN) == MASK_SIGN);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -1885,7 +1885,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater_equal, BI
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // return 1 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -1896,14 +1896,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater_equal, BI
     //     (converse if negative)
     {
       res = (((sig_n_prime.w[1] == 0)
-	      && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) !=
-					      MASK_SIGN));
+          && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) !=
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // return 0 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -1914,8 +1914,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater_equal, BI
   //     (converse if negative)
   {
     res = (((sig_n_prime.w[1] > 0)
-	    || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) !=
-					      MASK_SIGN));
+        || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) !=
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -1953,7 +1953,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater_unordered
     // unless y is positive infinity => return y!=pos_infinity
     else {
       res = (((y & MASK_INF) != MASK_INF)
-	     || ((y & MASK_SIGN) == MASK_SIGN));
+         || ((y & MASK_SIGN) == MASK_SIGN));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF) == MASK_INF) {
@@ -2055,7 +2055,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater_unordered
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // if postitive, return whichever significand is larger 
     //     (converse if negative)
@@ -2066,14 +2066,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater_unordered
 
     {
       res = (((sig_n_prime.w[1] > 0)
-	      || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+          || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // if postitive, return whichever significand is larger 
   //     (converse if negative)
@@ -2083,8 +2083,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_greater_unordered
   }
   {
     res = (((sig_n_prime.w[1] == 0)
-	    && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+        && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -2117,7 +2117,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less, BID_UINT64,
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF) != MASK_INF)
-	     || (y & MASK_SIGN) != MASK_SIGN);
+         || (y & MASK_SIGN) != MASK_SIGN);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -2224,7 +2224,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less, BID_UINT64,
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // return 0 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -2235,14 +2235,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less, BID_UINT64,
     //     (converse if negative)
     {
       res = (((sig_n_prime.w[1] == 0)
-	      && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+          && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // return 0 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -2253,8 +2253,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less, BID_UINT64,
   //     (converse if negative)
   {
     res = (((sig_n_prime.w[1] > 0)
-	    || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+        || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -2292,7 +2292,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less_equal, BID_U
     // unless y is positive infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF) != MASK_INF)
-	      || ((y & MASK_SIGN) == MASK_SIGN));
+          || ((y & MASK_SIGN) == MASK_SIGN));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF) == MASK_INF) {
@@ -2393,7 +2393,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less_equal, BID_U
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // return 1 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -2404,14 +2404,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less_equal, BID_U
     //     (converse if negative)
     {
       res = (((sig_n_prime.w[1] == 0)
-	      && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+          && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // return 1 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -2422,8 +2422,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less_equal, BID_U
   //     (converse if negative)
   {
     res = (((sig_n_prime.w[1] > 0)
-	    || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+        || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -2456,7 +2456,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less_unordered, B
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF) != MASK_INF)
-	     || (y & MASK_SIGN) != MASK_SIGN);
+         || (y & MASK_SIGN) != MASK_SIGN);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -2563,7 +2563,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less_unordered, B
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // return 0 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -2574,14 +2574,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less_unordered, B
     //     (converse if negative)
     {
       res = (((sig_n_prime.w[1] == 0)
-	      && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+          && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // return 0 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -2592,8 +2592,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_less_unordered, B
   //     (converse if negative)
   {
     res = (((sig_n_prime.w[1] > 0)
-	    || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+        || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -2631,7 +2631,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_not_greater, BID_
     // unless y is positive infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF) != MASK_INF)
-	      || ((y & MASK_SIGN) == MASK_SIGN));
+          || ((y & MASK_SIGN) == MASK_SIGN));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF) == MASK_INF) {
@@ -2732,7 +2732,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_not_greater, BID_
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // return 1 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -2743,14 +2743,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_not_greater, BID_
     //     (converse if negative)
     {
       res = (((sig_n_prime.w[1] == 0)
-	      && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+          && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // return 1 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -2761,8 +2761,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_not_greater, BID_
   //     (converse if negative)
   {
     res = (((sig_n_prime.w[1] > 0)
-	    || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					      MASK_SIGN));
+        || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }
@@ -2795,7 +2795,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_not_less, BID_UIN
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF) == MASK_INF)
-	     && (y & MASK_SIGN) == MASK_SIGN);
+         && (y & MASK_SIGN) == MASK_SIGN);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -2902,7 +2902,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_not_less, BID_UIN
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
 
     // return 0 if values are equal
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -2913,14 +2913,14 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_not_less, BID_UIN
     //     (converse if negative)
     {
       res = (((sig_n_prime.w[1] == 0)
-	      && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) !=
-					      MASK_SIGN));
+          && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) !=
+                          MASK_SIGN));
       BID_RETURN (res);
     }
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // return 0 if values are equal
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -2931,8 +2931,8 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid64_signaling_not_less, BID_UIN
   //     (converse if negative)
   {
     res = (((sig_n_prime.w[1] > 0)
-	    || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) !=
-					      MASK_SIGN));
+        || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) !=
+                          MASK_SIGN));
     BID_RETURN (res);
   }
 }

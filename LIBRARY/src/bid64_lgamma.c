@@ -68,8 +68,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_lgamma, BID_UINT64, x)
 
   if (__bid_f128_ge(xd, c_half.v) )
    { 
-	 __bid_f128_lgamma(yd,xd);
-	 BIDECIMAL_CALL1(binary128_to_bid64,res,yd); 
+     __bid_f128_lgamma(yd,xd);
+     BIDECIMAL_CALL1(binary128_to_bid64,res,yd); 
      BID_RETURN (res);
    }
 

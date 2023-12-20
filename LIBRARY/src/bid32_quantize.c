@@ -53,7 +53,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
 
     // x=Inf, y=Inf?
     if (((coefficient_x << 1) == 0xf0000000ul)
-	&& ((coefficient_y << 1) == 0xf0000000ul)) {
+    && ((coefficient_y << 1) == 0xf0000000ul)) {
       res = coefficient_x;
       BID_RETURN (res);
     }
@@ -61,17 +61,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
     if ((y & 0x78000000ul) == 0x78000000ul) {
 #ifdef BID_SET_STATUS_FLAGS
       if (((y & SNAN_MASK32) == SNAN_MASK32)	// sNaN
-	  || (((y & NAN_MASK32) == INFINITY_MASK32) &&	//Inf
-	      ((x & NAN_MASK32) < INFINITY_MASK32)))
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+      || (((y & NAN_MASK32) == INFINITY_MASK32) &&	//Inf
+          ((x & NAN_MASK32) < INFINITY_MASK32)))
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       if ((y & NAN_MASK32) != NAN_MASK32)
-	coefficient_y = 0;
+    coefficient_y = 0;
       if ((x & NAN_MASK32) != NAN_MASK32) {
-	res = 0x7c000000ul | (coefficient_y & QUIET_MASK32);
-	if (((y & NAN_MASK32) != NAN_MASK32) && ((x & NAN_MASK32) == INFINITY_MASK32))
-		res = x;
-	BID_RETURN (res);
+    res = 0x7c000000ul | (coefficient_y & QUIET_MASK32);
+    if (((y & NAN_MASK32) != NAN_MASK32) && ((x & NAN_MASK32) == INFINITY_MASK32))
+        res = x;
+    BID_RETURN (res);
       }
     }
   }
@@ -83,11 +83,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
     if ((x & INFINITY_MASK32) == INFINITY_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
       if (((x & SNAN_MASK32) == SNAN_MASK32)	// sNaN
-	  || ((x & NAN_MASK32) == INFINITY_MASK32))	//Inf 
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+      || ((x & NAN_MASK32) == INFINITY_MASK32))	//Inf 
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       if ((x & NAN_MASK32) != NAN_MASK32)
-	coefficient_x = 0;
+    coefficient_x = 0;
       res = NAN_MASK32 | (coefficient_x & QUIET_MASK32);
       BID_RETURN (res);
     }
@@ -133,28 +133,28 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
     // now get P/10^extra_digits: shift C64 right by M[extra_digits]-128
     amount = bid_bid_bid_recip_scale32[extra_digits];
     CT0 = (CT >>32);
-	C64 = CT0 >> amount;
+    C64 = CT0 >> amount;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
     if (rnd_mode == 0)
 #endif
       if (C64 & 1) {
-	// check whether fractional part of initial_P/10^extra_digits 
-	// is exactly .5
-	// this is the same as fractional part of 
-	//   (initial_P + 0.5*10^extra_digits)/10^extra_digits is exactly zero
+    // check whether fractional part of initial_P/10^extra_digits 
+    // is exactly .5
+    // this is the same as fractional part of 
+    //   (initial_P + 0.5*10^extra_digits)/10^extra_digits is exactly zero
 
-	// get remainder
-	amount2 = 32 - amount;
-	remainder_h = 0;
-	remainder_h--;
-	remainder_h >>= amount2;
-	remainder_h = remainder_h & CT0;
+    // get remainder
+    amount2 = 32 - amount;
+    remainder_h = 0;
+    remainder_h--;
+    remainder_h >>= amount2;
+    remainder_h = remainder_h & CT0;
 
-	// test whether fractional part is 0
-	if (!remainder_h && ((BID_UINT32)CT < (BID_UINT32)bid_bid_reciprocals10_32[extra_digits])) {
-	  C64--;
-	}
+    // test whether fractional part is 0
+    if (!remainder_h && ((BID_UINT32)CT < (BID_UINT32)bid_bid_reciprocals10_32[extra_digits])) {
+      C64--;
+    }
       }
 #endif
 
@@ -167,20 +167,20 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
     case BID_ROUNDING_TIES_AWAY:
       // test whether fractional part is 0
       if ((remainder_h == 0x80000000ul)
-	  && ((BID_UINT32)CT < bid_bid_reciprocals10_32[extra_digits]))
-	status = BID_EXACT_STATUS;
+      && ((BID_UINT32)CT < bid_bid_reciprocals10_32[extra_digits]))
+    status = BID_EXACT_STATUS;
       break;
     case BID_ROUNDING_DOWN:
     case BID_ROUNDING_TO_ZERO:
       if (!remainder_h && ((BID_UINT32)CT < bid_bid_reciprocals10_32[extra_digits]))
-	status = BID_EXACT_STATUS;
+    status = BID_EXACT_STATUS;
       break;
     default:
       // round up
-	  carry = ((((BID_UINT32)CT)+((BID_UINT32)bid_bid_reciprocals10_32[extra_digits]))<((BID_UINT32)CT))?1:0;
+      carry = ((((BID_UINT32)CT)+((BID_UINT32)bid_bid_reciprocals10_32[extra_digits]))<((BID_UINT32)CT))?1:0;
       if ((remainder_h >> (32 - amount)) + carry >=
-	  (((BID_UINT32) 1) << amount))
-	status = BID_EXACT_STATUS;
+      (((BID_UINT32) 1) << amount))
+    status = BID_EXACT_STATUS;
       break;
     }
     __set_status_flags (pfpsf, status);

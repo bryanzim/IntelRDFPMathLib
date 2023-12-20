@@ -33,10 +33,10 @@
 #if (DPML_DEBUG)
 
 #define ASSERT(x) { \
-	if (!(x)) { \
-		printf("Assertion %s failed: file %s line %d\n", \
-			STR(x), __FILE__, __LINE__); \
-	} \
+    if (!(x)) { \
+        printf("Assertion %s failed: file %s line %d\n", \
+            STR(x), __FILE__, __LINE__); \
+    } \
 }
 
 #else

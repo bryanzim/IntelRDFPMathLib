@@ -52,8 +52,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
     x.w[1] = x.w[1] & 0xfe003fffffffffffull;	// clear out G[6]-G[16]
     // check for non-canonical NaN payload
     if (((x.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-	(((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-	 (x.w[0] > 0x38c15b09ffffffffull))) {
+    (((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+     (x.w[0] > 0x38c15b09ffffffffull))) {
       x.w[1] = x.w[1] & 0xffffc00000000000ull;
       x.w[0] = 0x0ull;
     }
@@ -68,13 +68,13 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
       x.w[0] = 0x0ull;
     } else {	// G0_G1 != 11
       if ((x.w[1] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-	  ((x.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
-	   && x.w[0] > 0x378d8e63ffffffffull)) {
-	// x is non-canonical if coefficient is larger than 10^34 -1
-	x.w[1] = (x.w[1] & MASK_SIGN) | (x.w[1] & MASK_EXP);
-	x.w[0] = 0x0ull;
+      ((x.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
+       && x.w[0] > 0x378d8e63ffffffffull)) {
+    // x is non-canonical if coefficient is larger than 10^34 -1
+    x.w[1] = (x.w[1] & MASK_SIGN) | (x.w[1] & MASK_EXP);
+    x.w[0] = 0x0ull;
       } else {	// canonical
-	;
+    ;
       }
     }
   }
@@ -83,8 +83,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
     y.w[1] = y.w[1] & 0xfe003fffffffffffull;	// clear out G[6]-G[16]
     // check for non-canonical NaN payload
     if (((y.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-	(((y.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-	 (y.w[0] > 0x38c15b09ffffffffull))) {
+    (((y.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+     (y.w[0] > 0x38c15b09ffffffffull))) {
       y.w[1] = y.w[1] & 0xffffc00000000000ull;
       y.w[0] = 0x0ull;
     }
@@ -99,13 +99,13 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
       y.w[0] = 0x0ull;
     } else {	// G0_G1 != 11
       if ((y.w[1] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-	  ((y.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
-	   && y.w[0] > 0x378d8e63ffffffffull)) {
-	// y is non-canonical if coefficient is larger than 10^34 -1
-	y.w[1] = (y.w[1] & MASK_SIGN) | (y.w[1] & MASK_EXP);
-	y.w[0] = 0x0ull;
+      ((y.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
+       && y.w[0] > 0x378d8e63ffffffffull)) {
+    // y is non-canonical if coefficient is larger than 10^34 -1
+    y.w[1] = (y.w[1] & MASK_SIGN) | (y.w[1] & MASK_EXP);
+    y.w[0] = 0x0ull;
       } else {	// canonical
-	;
+    ;
       }
     }
   }
@@ -119,12 +119,12 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
       res = x;
     } else {	// x is QNaN
       if ((y.w[1] & MASK_NAN) == MASK_NAN) {	// y is NAN
-	if ((y.w[1] & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
-	}
-	res = x;
+    if ((y.w[1] & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
+    }
+    res = x;
       } else {
-	res = y;
+    res = y;
       }
     }
     BID_RETURN (res);
@@ -203,9 +203,9 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
   //    the significands
   if (exp_y == exp_x) {
     res = (((sig_x.w[1] > sig_y.w[1])
-	    || (sig_x.w[1] == sig_y.w[1]
-		&& sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-						 MASK_SIGN)) ? y : x;
+        || (sig_x.w[1] == sig_y.w[1]
+        && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                         MASK_SIGN)) ? y : x;
     BID_RETURN (res);
   }
   // if both components are either bigger or smaller, it is clear what 
@@ -236,11 +236,11 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
       // if postitive, return whichever significand is larger 
       // (converse if negative)
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) ==
-				  MASK_SIGN)) ? y : x;
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) ==
+                  MASK_SIGN)) ? y : x;
       BID_RETURN (res);
     }
     __mul_64x128_to_192 (sig_n_prime192, bid_ten2k64[diff], sig_x);
@@ -248,9 +248,9 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
     // (converse if negative)
     res =
       (((sig_n_prime192.w[2] > 0) || (sig_n_prime192.w[1] > sig_y.w[1])
-	|| (sig_n_prime192.w[1] == sig_y.w[1]
-	    && sig_n_prime192.w[0] >
-	    sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN)) ? y : x;
+    || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN)) ? y : x;
     BID_RETURN (res);
   }
   diff = exp_y - exp_x;
@@ -266,11 +266,11 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
     // (converse if negative)
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) ==
-				 MASK_SIGN)) ? x : y;
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) ==
+                 MASK_SIGN)) ? x : y;
     BID_RETURN (res);
   }
   // adjust the y significand upwards
@@ -279,8 +279,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
   res =
     ((sig_n_prime192.w[2] != 0
       || (sig_n_prime192.w[1] > sig_x.w[1]
-	  || (sig_n_prime192.w[1] == sig_x.w[1]
-	      && sig_n_prime192.w[0] > sig_x.w[0])))
+      || (sig_n_prime192.w[1] == sig_x.w[1]
+          && sig_n_prime192.w[0] > sig_x.w[0])))
      ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN)) ? x : y;
   BID_RETURN (res);
 }
@@ -306,8 +306,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
     x.w[1] = x.w[1] & 0xfe003fffffffffffull;	// clear out G[6]-G[16]
     // check for non-canonical NaN payload
     if (((x.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-	(((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-	 (x.w[0] > 0x38c15b09ffffffffull))) {
+    (((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+     (x.w[0] > 0x38c15b09ffffffffull))) {
       x.w[1] = x.w[1] & 0xffffc00000000000ull;
       x.w[0] = 0x0ull;
     }
@@ -322,13 +322,13 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
       x.w[0] = 0x0ull;
     } else {	// G0_G1 != 11
       if ((x.w[1] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-	  ((x.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
-	   && x.w[0] > 0x378d8e63ffffffffull)) {
-	// x is non-canonical if coefficient is larger than 10^34 -1
-	x.w[1] = (x.w[1] & MASK_SIGN) | (x.w[1] & MASK_EXP);
-	x.w[0] = 0x0ull;
+      ((x.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
+       && x.w[0] > 0x378d8e63ffffffffull)) {
+    // x is non-canonical if coefficient is larger than 10^34 -1
+    x.w[1] = (x.w[1] & MASK_SIGN) | (x.w[1] & MASK_EXP);
+    x.w[0] = 0x0ull;
       } else {	// canonical
-	;
+    ;
       }
     }
   }
@@ -337,8 +337,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
     y.w[1] = y.w[1] & 0xfe003fffffffffffull;	// clear out G[6]-G[16]
     // check for non-canonical NaN payload
     if (((y.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-	(((y.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-	 (y.w[0] > 0x38c15b09ffffffffull))) {
+    (((y.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+     (y.w[0] > 0x38c15b09ffffffffull))) {
       y.w[1] = y.w[1] & 0xffffc00000000000ull;
       y.w[0] = 0x0ull;
     }
@@ -353,13 +353,13 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
       y.w[0] = 0x0ull;
     } else {	// G0_G1 != 11
       if ((y.w[1] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-	  ((y.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
-	   && y.w[0] > 0x378d8e63ffffffffull)) {
-	// y is non-canonical if coefficient is larger than 10^34 -1
-	y.w[1] = (y.w[1] & MASK_SIGN) | (y.w[1] & MASK_EXP);
-	y.w[0] = 0x0ull;
+      ((y.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
+       && y.w[0] > 0x378d8e63ffffffffull)) {
+    // y is non-canonical if coefficient is larger than 10^34 -1
+    y.w[1] = (y.w[1] & MASK_SIGN) | (y.w[1] & MASK_EXP);
+    y.w[0] = 0x0ull;
       } else {	// canonical
-	;
+    ;
       }
     }
   }
@@ -373,12 +373,12 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
       res = x;
     } else {	// x is QNaN
       if ((y.w[1] & MASK_NAN) == MASK_NAN) {	// y is NAN
-	if ((y.w[1] & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
-	}
-	res = x;
+    if ((y.w[1] & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
+    }
+    res = x;
       } else {
-	res = y;
+    res = y;
       }
     }
     BID_RETURN (res);
@@ -404,7 +404,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
     // if x infinity, it has maximum magnitude.
     // Check if magnitudes are equal.  If x is negative, return it.
     res = ((x.w[1] & MASK_SIGN) == MASK_SIGN
-	   && (y.w[1] & MASK_INF) == MASK_INF) ? x : y;
+       && (y.w[1] & MASK_INF) == MASK_INF) ? x : y;
     BID_RETURN (res);
   } else if ((y.w[1] & MASK_INF) == MASK_INF) {
     // x is finite, so if y is infinity, then x is less in magnitude
@@ -447,23 +447,23 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
       BID_RETURN (res);
     }
   } else if (((sig_x.w[1] > sig_y.w[1] || (sig_x.w[1] == sig_y.w[1]
-					   && sig_x.w[0] > sig_y.w[0]))
-	      && exp_x == exp_y)
-	     || ((sig_x.w[1] > sig_y.w[1]
-		  || (sig_x.w[1] == sig_y.w[1]
-		      && sig_x.w[0] >= sig_y.w[0]))
-		 && exp_x > exp_y)) {
+                       && sig_x.w[0] > sig_y.w[0]))
+          && exp_x == exp_y)
+         || ((sig_x.w[1] > sig_y.w[1]
+          || (sig_x.w[1] == sig_y.w[1]
+              && sig_x.w[0] >= sig_y.w[0]))
+         && exp_x > exp_y)) {
     // if both components are either bigger or smaller, it is clear what 
     // needs to be done; also if the magnitudes are equal
     res = y;
     BID_RETURN (res);
   } else if (((sig_y.w[1] > sig_x.w[1] || (sig_y.w[1] == sig_x.w[1]
-					   && sig_y.w[0] > sig_x.w[0]))
-	      && exp_y == exp_x)
-	     || ((sig_y.w[1] > sig_x.w[1]
-		  || (sig_y.w[1] == sig_x.w[1]
-		      && sig_y.w[0] >= sig_x.w[0]))
-		 && exp_y > exp_x)) {
+                       && sig_y.w[0] > sig_x.w[0]))
+          && exp_y == exp_x)
+         || ((sig_y.w[1] > sig_x.w[1]
+          || (sig_y.w[1] == sig_x.w[1]
+              && sig_y.w[0] >= sig_x.w[0]))
+         && exp_y > exp_x)) {
     res = x;
     BID_RETURN (res);
   } else {
@@ -482,30 +482,30 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
       // if positive, return whichever significand is larger 
       // (converse if negative)
       if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	  && sig_n_prime256.w[1] == sig_y.w[1]
-	  && (sig_n_prime256.w[0] == sig_y.w[0])) {
-	res = ((y.w[1] & MASK_SIGN) == MASK_SIGN) ? y : x;	// if equal
-	BID_RETURN (res);
+      && sig_n_prime256.w[1] == sig_y.w[1]
+      && (sig_n_prime256.w[0] == sig_y.w[0])) {
+    res = ((y.w[1] & MASK_SIGN) == MASK_SIGN) ? y : x;	// if equal
+    BID_RETURN (res);
       }
       res = (((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	     || (sig_n_prime256.w[1] > sig_y.w[1])
-	     || (sig_n_prime256.w[1] == sig_y.w[1]
-		 && sig_n_prime256.w[0] > sig_y.w[0])) ? y : x;
+         || (sig_n_prime256.w[1] > sig_y.w[1])
+         || (sig_n_prime256.w[1] == sig_y.w[1]
+         && sig_n_prime256.w[0] > sig_y.w[0])) ? y : x;
       BID_RETURN (res);
     }
     __mul_64x128_to_192 (sig_n_prime192, bid_ten2k64[diff], sig_x);
     // if positive, return whichever significand is larger 
     // (converse if negative)
     if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_y.w[1]
-	&& (sig_n_prime192.w[0] == sig_y.w[0])) {
+    && (sig_n_prime192.w[0] == sig_y.w[0])) {
       // if = in magnitude, return +, (if possible)
       res = ((y.w[1] & MASK_SIGN) == MASK_SIGN) ? y : x;
       BID_RETURN (res);
     }
     res = ((sig_n_prime192.w[2] > 0)
-	   || (sig_n_prime192.w[1] > sig_y.w[1])
-	   || (sig_n_prime192.w[1] == sig_y.w[1]
-	       && sig_n_prime192.w[0] > sig_y.w[0])) ? y : x;
+       || (sig_n_prime192.w[1] > sig_y.w[1])
+       || (sig_n_prime192.w[1] == sig_y.w[1]
+           && sig_n_prime192.w[0] > sig_y.w[0])) ? y : x;
     BID_RETURN (res);
   }
   diff = exp_y - exp_x;
@@ -520,16 +520,16 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
     // if positive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_x.w[1]
-	&& (sig_n_prime256.w[0] == sig_x.w[0])) {
+    && sig_n_prime256.w[1] == sig_x.w[1]
+    && (sig_n_prime256.w[0] == sig_x.w[0])) {
       // if = in magnitude, return +, (if possible)
       res = ((y.w[1] & MASK_SIGN) == MASK_SIGN) ? y : x;
       BID_RETURN (res);
     }
     res = (sig_n_prime256.w[3] == 0 && sig_n_prime256.w[2] == 0
-	   && (sig_n_prime256.w[1] < sig_x.w[1]
-	       || (sig_n_prime256.w[1] == sig_x.w[1]
-		   && sig_n_prime256.w[0] < sig_x.w[0]))) ? y : x;
+       && (sig_n_prime256.w[1] < sig_x.w[1]
+           || (sig_n_prime256.w[1] == sig_x.w[1]
+           && sig_n_prime256.w[0] < sig_x.w[0]))) ? y : x;
     BID_RETURN (res);
   }
   // adjust the y significand upwards
@@ -542,9 +542,9 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
     BID_RETURN (res);
   }
   res = (sig_n_prime192.w[2] == 0
-	 && (sig_n_prime192.w[1] < sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] < sig_x.w[0]))) ? y : x;
+     && (sig_n_prime192.w[1] < sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] < sig_x.w[0]))) ? y : x;
   BID_RETURN (res);
 }
 
@@ -570,8 +570,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
     x.w[1] = x.w[1] & 0xfe003fffffffffffull;	// clear out G[6]-G[16]
     // check for non-canonical NaN payload
     if (((x.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-	(((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-	 (x.w[0] > 0x38c15b09ffffffffull))) {
+    (((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+     (x.w[0] > 0x38c15b09ffffffffull))) {
       x.w[1] = x.w[1] & 0xffffc00000000000ull;
       x.w[0] = 0x0ull;
     }
@@ -586,13 +586,13 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
       x.w[0] = 0x0ull;
     } else {	// G0_G1 != 11
       if ((x.w[1] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-	  ((x.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
-	   && x.w[0] > 0x378d8e63ffffffffull)) {
-	// x is non-canonical if coefficient is larger than 10^34 -1
-	x.w[1] = (x.w[1] & MASK_SIGN) | (x.w[1] & MASK_EXP);
-	x.w[0] = 0x0ull;
+      ((x.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
+       && x.w[0] > 0x378d8e63ffffffffull)) {
+    // x is non-canonical if coefficient is larger than 10^34 -1
+    x.w[1] = (x.w[1] & MASK_SIGN) | (x.w[1] & MASK_EXP);
+    x.w[0] = 0x0ull;
       } else {	// canonical
-	;
+    ;
       }
     }
   }
@@ -601,8 +601,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
     y.w[1] = y.w[1] & 0xfe003fffffffffffull;	// clear out G[6]-G[16]
     // check for non-canonical NaN payload
     if (((y.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-	(((y.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-	 (y.w[0] > 0x38c15b09ffffffffull))) {
+    (((y.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+     (y.w[0] > 0x38c15b09ffffffffull))) {
       y.w[1] = y.w[1] & 0xffffc00000000000ull;
       y.w[0] = 0x0ull;
     }
@@ -617,13 +617,13 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
       y.w[0] = 0x0ull;
     } else {	// G0_G1 != 11
       if ((y.w[1] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-	  ((y.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
-	   && y.w[0] > 0x378d8e63ffffffffull)) {
-	// y is non-canonical if coefficient is larger than 10^34 -1
-	y.w[1] = (y.w[1] & MASK_SIGN) | (y.w[1] & MASK_EXP);
-	y.w[0] = 0x0ull;
+      ((y.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
+       && y.w[0] > 0x378d8e63ffffffffull)) {
+    // y is non-canonical if coefficient is larger than 10^34 -1
+    y.w[1] = (y.w[1] & MASK_SIGN) | (y.w[1] & MASK_EXP);
+    y.w[0] = 0x0ull;
       } else {	// canonical
-	;
+    ;
       }
     }
   }
@@ -637,12 +637,12 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
       res = x;
     } else {	// x is QNaN
       if ((y.w[1] & MASK_NAN) == MASK_NAN) {	// y is NAN
-	if ((y.w[1] & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
-	}
-	res = x;
+    if ((y.w[1] & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
+    }
+    res = x;
       } else {
-	res = y;
+    res = y;
       }
     }
     BID_RETURN (res);
@@ -720,8 +720,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
   // the significands
   if (exp_y == exp_x) {
     res = (((sig_x.w[1] > sig_y.w[1]) || (sig_x.w[1] == sig_y.w[1] &&
-					  sig_x.w[0] >= sig_y.w[0])) ^
-	   ((x.w[1] & MASK_SIGN) == MASK_SIGN)) ? x : y;
+                      sig_x.w[0] >= sig_y.w[0])) ^
+       ((x.w[1] & MASK_SIGN) == MASK_SIGN)) ? x : y;
     BID_RETURN (res);
   }
   // if both components are either bigger or smaller, it is clear what 
@@ -752,11 +752,11 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
       // if postitive, return whichever significand is larger 
       // (converse if negative)
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) ==
-				  MASK_SIGN)) ? x : y;
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) ==
+                  MASK_SIGN)) ? x : y;
       BID_RETURN (res);
     }
     __mul_64x128_to_192 (sig_n_prime192, bid_ten2k64[diff], sig_x);
@@ -764,9 +764,9 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
     // (converse if negative)
     res =
       (((sig_n_prime192.w[2] > 0) || (sig_n_prime192.w[1] > sig_y.w[1])
-	|| (sig_n_prime192.w[1] == sig_y.w[1]
-	    && sig_n_prime192.w[0] >
-	    sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN)) ? x : y;
+    || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN)) ? x : y;
     BID_RETURN (res);
   }
   diff = exp_y - exp_x;
@@ -782,11 +782,11 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
     // (converse if negative)
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) !=
-				 MASK_SIGN)) ? x : y;
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) !=
+                 MASK_SIGN)) ? x : y;
     BID_RETURN (res);
   }
   // adjust the y significand upwards
@@ -795,10 +795,10 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
   res =
     ((sig_n_prime192.w[2] != 0
       || (sig_n_prime192.w[1] > sig_x.w[1]
-	  || (sig_n_prime192.w[1] == sig_x.w[1]
-	      && sig_n_prime192.w[0] >
-	      sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) !=
-			       MASK_SIGN)) ? x : y;
+      || (sig_n_prime192.w[1] == sig_x.w[1]
+          && sig_n_prime192.w[0] >
+          sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) !=
+                   MASK_SIGN)) ? x : y;
   BID_RETURN (res);
 }
 
@@ -823,8 +823,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
     x.w[1] = x.w[1] & 0xfe003fffffffffffull;	// clear out G[6]-G[16]
     // check for non-canonical NaN payload
     if (((x.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-	(((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-	 (x.w[0] > 0x38c15b09ffffffffull))) {
+    (((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+     (x.w[0] > 0x38c15b09ffffffffull))) {
       x.w[1] = x.w[1] & 0xffffc00000000000ull;
       x.w[0] = 0x0ull;
     }
@@ -839,13 +839,13 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
       x.w[0] = 0x0ull;
     } else {	// G0_G1 != 11
       if ((x.w[1] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-	  ((x.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
-	   && x.w[0] > 0x378d8e63ffffffffull)) {
-	// x is non-canonical if coefficient is larger than 10^34 -1
-	x.w[1] = (x.w[1] & MASK_SIGN) | (x.w[1] & MASK_EXP);
-	x.w[0] = 0x0ull;
+      ((x.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull
+       && x.w[0] > 0x378d8e63ffffffffull)) {
+    // x is non-canonical if coefficient is larger than 10^34 -1
+    x.w[1] = (x.w[1] & MASK_SIGN) | (x.w[1] & MASK_EXP);
+    x.w[0] = 0x0ull;
       } else {	// canonical
-	;
+    ;
       }
     }
   }
@@ -854,8 +854,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
     y.w[1] = y.w[1] & 0xfe003fffffffffffull;	// clear out G[6]-G[16]
     // check for non-canonical NaN payload
     if (((y.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-	(((y.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-	 (y.w[0] > 0x38c15b09ffffffffull))) {
+    (((y.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+     (y.w[0] > 0x38c15b09ffffffffull))) {
       y.w[1] = y.w[1] & 0xffffc00000000000ull;
       y.w[0] = 0x0ull;
     }
@@ -870,13 +870,13 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
       y.w[0] = 0x0ull;
     } else {	// G0_G1 != 11
       if ((y.w[1] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-	  ((y.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
-	   y.w[0] > 0x378d8e63ffffffffull)) {
-	// y is non-canonical if coefficient is larger than 10^34 -1
-	y.w[1] = (y.w[1] & MASK_SIGN) | (y.w[1] & MASK_EXP);
-	y.w[0] = 0x0ull;
+      ((y.w[1] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+       y.w[0] > 0x378d8e63ffffffffull)) {
+    // y is non-canonical if coefficient is larger than 10^34 -1
+    y.w[1] = (y.w[1] & MASK_SIGN) | (y.w[1] & MASK_EXP);
+    y.w[0] = 0x0ull;
       } else {	// canonical
-	;
+    ;
       }
     }
   }
@@ -890,12 +890,12 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
       res = x;
     } else {	// x is QNaN
       if ((y.w[1] & MASK_NAN) == MASK_NAN) {	// y is NAN
-	if ((y.w[1] & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
-	}
-	res = x;
+    if ((y.w[1] & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
+    }
+    res = x;
       } else {
-	res = y;
+    res = y;
       }
     }
     BID_RETURN (res);
@@ -920,7 +920,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
   if ((x.w[1] & MASK_INF) == MASK_INF) {
     // if x infinity, it has maximum magnitude
     res = ((x.w[1] & MASK_SIGN) == MASK_SIGN
-	   && (y.w[1] & MASK_INF) == MASK_INF) ? y : x;
+       && (y.w[1] & MASK_INF) == MASK_INF) ? y : x;
     BID_RETURN (res);
   } else if ((y.w[1] & MASK_INF) == MASK_INF) {
     // x is finite, so if y is positive infinity, then x is less, return 0
@@ -964,23 +964,23 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
       BID_RETURN (res);
     }
   } else if (((sig_x.w[1] > sig_y.w[1] || (sig_x.w[1] == sig_y.w[1]
-					   && sig_x.w[0] > sig_y.w[0]))
-	      && exp_x == exp_y)
-	     || ((sig_x.w[1] > sig_y.w[1]
-		  || (sig_x.w[1] == sig_y.w[1]
-		      && sig_x.w[0] >= sig_y.w[0]))
-		 && exp_x > exp_y)) {
+                       && sig_x.w[0] > sig_y.w[0]))
+          && exp_x == exp_y)
+         || ((sig_x.w[1] > sig_y.w[1]
+          || (sig_x.w[1] == sig_y.w[1]
+              && sig_x.w[0] >= sig_y.w[0]))
+         && exp_x > exp_y)) {
     // if both components are either bigger or smaller, it is clear what 
     // needs to be done; also if the magnitudes are equal
     res = x;
     BID_RETURN (res);
   } else if (((sig_y.w[1] > sig_x.w[1] || (sig_y.w[1] == sig_x.w[1]
-					   && sig_y.w[0] > sig_x.w[0]))
-	      && exp_y == exp_x)
-	     || ((sig_y.w[1] > sig_x.w[1]
-		  || (sig_y.w[1] == sig_x.w[1]
-		      && sig_y.w[0] >= sig_x.w[0]))
-		 && exp_y > exp_x)) {
+                       && sig_y.w[0] > sig_x.w[0]))
+          && exp_y == exp_x)
+         || ((sig_y.w[1] > sig_x.w[1]
+          || (sig_y.w[1] == sig_x.w[1]
+              && sig_y.w[0] >= sig_x.w[0]))
+         && exp_y > exp_x)) {
     res = y;
     BID_RETURN (res);
   } else {
@@ -999,29 +999,29 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
       // if postitive, return whichever significand is larger 
       // (converse if negative)
       if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	  && sig_n_prime256.w[1] == sig_y.w[1]
-	  && (sig_n_prime256.w[0] == sig_y.w[0])) {
-	res = ((y.w[1] & MASK_SIGN) == MASK_SIGN) ? x : y;	// if equal
-	BID_RETURN (res);
+      && sig_n_prime256.w[1] == sig_y.w[1]
+      && (sig_n_prime256.w[0] == sig_y.w[0])) {
+    res = ((y.w[1] & MASK_SIGN) == MASK_SIGN) ? x : y;	// if equal
+    BID_RETURN (res);
       }
       res = (((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	     || (sig_n_prime256.w[1] > sig_y.w[1])
-	     || (sig_n_prime256.w[1] == sig_y.w[1]
-		 && sig_n_prime256.w[0] > sig_y.w[0])) ? x : y;
+         || (sig_n_prime256.w[1] > sig_y.w[1])
+         || (sig_n_prime256.w[1] == sig_y.w[1]
+         && sig_n_prime256.w[0] > sig_y.w[0])) ? x : y;
       BID_RETURN (res);
     }
     __mul_64x128_to_192 (sig_n_prime192, bid_ten2k64[diff], sig_x);
     // if postitive, return whichever significand is larger (converse if negative)
     if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_y.w[1]
-	&& (sig_n_prime192.w[0] == sig_y.w[0])) {
+    && (sig_n_prime192.w[0] == sig_y.w[0])) {
       // if equal, return positive magnitude
       res = ((y.w[1] & MASK_SIGN) == MASK_SIGN) ? x : y;
       BID_RETURN (res);
     }
     res = ((sig_n_prime192.w[2] > 0)
-	   || (sig_n_prime192.w[1] > sig_y.w[1])
-	   || (sig_n_prime192.w[1] == sig_y.w[1]
-	       && sig_n_prime192.w[0] > sig_y.w[0])) ? x : y;
+       || (sig_n_prime192.w[1] > sig_y.w[1])
+       || (sig_n_prime192.w[1] == sig_y.w[1]
+           && sig_n_prime192.w[0] > sig_y.w[0])) ? x : y;
     BID_RETURN (res);
   }
   diff = exp_y - exp_x;
@@ -1036,16 +1036,16 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_x.w[1]
-	&& (sig_n_prime256.w[0] == sig_x.w[0])) {
+    && sig_n_prime256.w[1] == sig_x.w[1]
+    && (sig_n_prime256.w[0] == sig_x.w[0])) {
       // if equal, return positive (if possible)
       res = ((y.w[1] & MASK_SIGN) == MASK_SIGN) ? x : y;
       BID_RETURN (res);
     }
     res = (sig_n_prime256.w[3] == 0 && sig_n_prime256.w[2] == 0
-	   && (sig_n_prime256.w[1] < sig_x.w[1]
-	       || (sig_n_prime256.w[1] == sig_x.w[1]
-		   && sig_n_prime256.w[0] < sig_x.w[0]))) ? x : y;
+       && (sig_n_prime256.w[1] < sig_x.w[1]
+           || (sig_n_prime256.w[1] == sig_x.w[1]
+           && sig_n_prime256.w[0] < sig_x.w[0]))) ? x : y;
     BID_RETURN (res);
   }
   // adjust the y significand upwards
@@ -1058,8 +1058,8 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
     BID_RETURN (res);
   }
   res = (sig_n_prime192.w[2] == 0
-	 && (sig_n_prime192.w[1] < sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] < sig_x.w[0]))) ? x : y;
+     && (sig_n_prime192.w[1] < sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] < sig_x.w[0]))) ? x : y;
   BID_RETURN (res);
 }

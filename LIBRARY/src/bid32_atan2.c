@@ -53,7 +53,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_atan2, x, y)
     if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
       if ((x & SNAN_MASK32) == SNAN_MASK32)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN (coefficient_x & QUIET_MASK32);
     }
@@ -66,7 +66,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_atan2, x, y)
     if ((y & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
       if ((y & SNAN_MASK32) == SNAN_MASK32)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN (coefficient_y & QUIET_MASK32);
     }
@@ -75,18 +75,18 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_atan2, x, y)
       ((y & INFINITY_MASK32) == INFINITY_MASK32)) // y is also Infinity
   {   
       if ((x & SIGNMASK32) == 0 && (y & SIGNMASK32) == 0) // x positive, y positive
-	 zd = atan2(1.0, 1.0); 
+     zd = atan2(1.0, 1.0); 
       else if ((x & SIGNMASK32) == SIGNMASK32 && (y & SIGNMASK32) == 0) // x negative, y positive
          zd = atan2(-1.0, 1.0); 
       else if ((x & SIGNMASK32) == SIGNMASK32 && (y & SIGNMASK32) == SIGNMASK32) // x negative, y negative
          zd = atan2(-1.0, -1.0);
       else 
-	 zd = atan2(1.0, -1.0);
+     zd = atan2(1.0, -1.0);
       BIDECIMAL_CALL1(binary64_to_bid32,res,zd);
       BID_RETURN (res);
   }
 
-	}
+    }
 
   BIDECIMAL_CALL1(bid32_to_binary64,xd,x);
   BIDECIMAL_CALL1(bid32_to_binary64,yd,y);

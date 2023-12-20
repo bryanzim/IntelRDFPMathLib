@@ -342,7 +342,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("acosh class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ACOSH_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     1) +
@@ -357,7 +357,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("atanh class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ATANH_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     1) +

@@ -501,7 +501,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
     /* now subtract I*90 from x */
 
 #   define MSD_OF_NINETY	(((UX_FRACTION_DIGIT_TYPE) 45) << \
-				(BITS_PER_UX_FRACTION_DIGIT_TYPE - 6))
+                (BITS_PER_UX_FRACTION_DIGIT_TYPE - 6))
 
     UMULH(tmp_digit, MSD_OF_NINETY, tmp_digit);
     tmp_digit = (current_digit >> 2) - tmp_digit;
@@ -660,7 +660,7 @@ UX_TANCOT(
     if (0 == G_UX_MSD(&reduced_argument))
         { /* reduced argument is zero */
         UX_SET_SIGN_EXP_MSD(unpacked_result, 0, UX_ZERO_EXPONENT, 0);
-	if ( div_flag /* == SWAP */ )
+    if ( div_flag /* == SWAP */ )
             {
             P_UX_EXPONENT(unpacked_result, UX_INFINITY_EXPONENT);
             P_UX_MSD(unpacked_result, UX_MSB);
@@ -742,7 +742,7 @@ C_UX_TRIG(
     overflow_error = trig_eval(
         &unpacked_argument,
         octant,
-	function_code,
+    function_code,
         unpacked_result);
 
     PACK(
@@ -770,18 +770,18 @@ C_UX_TRIG(
 
 #define TRIG_ENTRY(oct, code, map, under)				 \
         X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)          \
-	    {								 \
-	    EXCEPTION_INFO_DECL				                 \
+        {								 \
+        EXCEPTION_INFO_DECL				                 \
             DECLARE_X_FLOAT(packed_result)                               \
-									 \
-	    INIT_EXCEPTION_INFO;					 \
-	    C_UX_TRIG(							 \
+                                     \
+        INIT_EXCEPTION_INFO;					 \
+        C_UX_TRIG(							 \
             PASS_ARG_X_FLOAT(packed_argument),               \
-	        oct, code, map, under,					 \
+            oct, code, map, under,					 \
             PASS_RET_X_FLOAT(packed_result)              \
-	        OPT_EXCEPTION_INFO);					 \
+            OPT_EXCEPTION_INFO);					 \
             RETURN_X_FLOAT(packed_result);                               \
-	    }
+        }
 
 #
 #define TRIG_ENTRY_RR(oct, code, map, under)                 \
@@ -803,11 +803,11 @@ C_UX_TRIG(
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_SIN_NAME
-	TRIG_ENTRY(0, SIN_FUNC, SIN_CLASS_TO_ACTION_MAP, NOT_USED)
+    TRIG_ENTRY(0, SIN_FUNC, SIN_CLASS_TO_ACTION_MAP, NOT_USED)
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_COS_NAME
-	TRIG_ENTRY(2, COS_FUNC, COS_CLASS_TO_ACTION_MAP, NOT_USED)
+    TRIG_ENTRY(2, COS_FUNC, COS_CLASS_TO_ACTION_MAP, NOT_USED)
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_SINCOS_NAME
@@ -816,11 +816,11 @@ C_UX_TRIG(
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_SIND_NAME
-	TRIG_ENTRY(0, SIND_FUNC, SIND_CLASS_TO_ACTION_MAP, SIND_UNDERFLOW)
+    TRIG_ENTRY(0, SIND_FUNC, SIND_CLASS_TO_ACTION_MAP, SIND_UNDERFLOW)
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_COSD_NAME
-	TRIG_ENTRY(2, COSD_FUNC, COSD_CLASS_TO_ACTION_MAP, NOT_USED)
+    TRIG_ENTRY(2, COSD_FUNC, COSD_CLASS_TO_ACTION_MAP, NOT_USED)
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_SINCOSD_NAME
@@ -834,19 +834,19 @@ C_UX_TRIG(
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_TAN_NAME
-	TRIG_ENTRY(0, TAN_FUNC, TAN_CLASS_TO_ACTION_MAP, NOT_USED)
+    TRIG_ENTRY(0, TAN_FUNC, TAN_CLASS_TO_ACTION_MAP, NOT_USED)
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_COT_NAME
-	TRIG_ENTRY(0, COT_FUNC, COT_CLASS_TO_ACTION_MAP, NOT_USED)
+    TRIG_ENTRY(0, COT_FUNC, COT_CLASS_TO_ACTION_MAP, NOT_USED)
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_TAND_NAME
-	TRIG_ENTRY(0, TAND_FUNC, TAND_CLASS_TO_ACTION_MAP, TAND_UNDERFLOW)
+    TRIG_ENTRY(0, TAND_FUNC, TAND_CLASS_TO_ACTION_MAP, TAND_UNDERFLOW)
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_COTD_NAME
-	TRIG_ENTRY(0, COTD_FUNC, COTD_CLASS_TO_ACTION_MAP, NOT_USED)
+    TRIG_ENTRY(0, COTD_FUNC, COTD_CLASS_TO_ACTION_MAP, NOT_USED)
 
 
 #if defined(MAKE_INCLUDE)
@@ -862,7 +862,7 @@ C_UX_TRIG(
     TABLE_COMMENT("sin class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "SIN_CLASS_TO_ACTION_MAP\t");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(6) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     2) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     2) +
@@ -874,7 +874,7 @@ C_UX_TRIG(
     TABLE_COMMENT("cos class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "COS_CLASS_TO_ACTION_MAP\t");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(5) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     3) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     3) +
@@ -898,7 +898,7 @@ C_UX_TRIG(
     TABLE_COMMENT("sind class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "SIND_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(3) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     5) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     5) +
@@ -910,7 +910,7 @@ C_UX_TRIG(
     TABLE_COMMENT("cosd class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "COSD_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     6) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     6) +

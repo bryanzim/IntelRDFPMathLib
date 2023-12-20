@@ -238,20 +238,20 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
      */
 
 #   define	FIND_ROOT(a, b, c, t, p, r) \
-		old_precision = precision; \
-		precision = ceil((p)/MP_RADIX_BITS) + 4; \
-		x1 = (a); x2 = (b); \
-		f1 = F(x1); f2 = F(x2); \
-		while (1) \
-		    { \
-		    r = ((x1*f2 - x2*f1) + (c)*(x2 - x1))/(f2 - f1); \
-		    err = 2*abs((r - x2)/(r + x2)); \
-		    if (err < (t)) \
-		        break; \
-		    x1 = x2; x2 = r; \
-		    f1 = f2; f2 = F(x2); \
-		    } \
-		precision = old_precision;
+        old_precision = precision; \
+        precision = ceil((p)/MP_RADIX_BITS) + 4; \
+        x1 = (a); x2 = (b); \
+        f1 = F(x1); f2 = F(x2); \
+        while (1) \
+            { \
+            r = ((x1*f2 - x2*f1) + (c)*(x2 - x1))/(f2 - f1); \
+            err = 2*abs((r - x2)/(r + x2)); \
+            if (err < (t)) \
+                break; \
+            x1 = x2; x2 = r; \
+            f1 = f2; f2 = F(x2); \
+            } \
+        precision = old_precision;
 
     /* Set working precision an start computing */
     precision = ceil(F_PRECISION/MP_RADIX_BITS) + 4;
@@ -723,21 +723,21 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
         
 #   if !defined(X_SQR_TO_HI_LO)
 #	define X_SQR_TO_HI_LO(x, t, hi, lo) { \
-	    t = (B_TYPE) x; \
-	    t = t*t; \
-	    hi = (F_TYPE) t; \
-	    lo = (F_TYPE)(t - (B_TYPE) hi) ; \
-	    }
+        t = (B_TYPE) x; \
+        t = t*t; \
+        hi = (F_TYPE) t; \
+        lo = (F_TYPE)(t - (B_TYPE) hi) ; \
+        }
 #   endif
 
 #   if !defined(SPECIAL_EXP)
 #	define SPECIAL_EXP(x, t, i, hi, lo) { \
-	    EXP_WORD_TYPE _scale; \
-	    t = F_EXP_SPECIAL_ENTRY_NAME(x, &_scale); \
-	    i = (WORD) _scale; \
-	    hi = (F_TYPE) t; \
-	    lo = (F_TYPE) (t - (B_TYPE)hi); \
-	    }
+        EXP_WORD_TYPE _scale; \
+        t = F_EXP_SPECIAL_ENTRY_NAME(x, &_scale); \
+        i = (WORD) _scale; \
+        hi = (F_TYPE) t; \
+        lo = (F_TYPE) (t - (B_TYPE)hi); \
+        }
 #   endif
 
 #else
@@ -746,19 +746,19 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
 
 #   if !defined(X_SQR_TO_HI_LO)
 #	define X_SQR_TO_HI_LO(x, t, hi, lo) { \
-	    hi = (F_TYPE)((R_TYPE) x); \
-	    lo = x - hi; \
-	    lo = lo*(hi + x); \
-	    hi = hi*hi ; \
-	    }
+        hi = (F_TYPE)((R_TYPE) x); \
+        lo = x - hi; \
+        lo = lo*(hi + x); \
+        hi = hi*hi ; \
+        }
 #   endif
 
 #   if !defined(SPECIAL_EXP)
 #	define SPECIAL_EXP(x, t, i, hi, lo) { \
-	    EXP_WORD_TYPE _scale; \
-	    hi = F_EXP_SPECIAL_ENTRY_NAME(x, &_scale, &lo); \
-	    i = (WORD) _scale; \
-	    }
+        EXP_WORD_TYPE _scale; \
+        hi = F_EXP_SPECIAL_ENTRY_NAME(x, &_scale, &lo); \
+        i = (WORD) _scale; \
+        }
 #   endif
 
 #endif
@@ -773,10 +773,10 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
 #define	EXP_SCALE_MASK			((WORD) ~ MAKE_MASK(POW2_K, 0))
 #if (F_EXP_POS >= POW2_K)
 #   define ADJUST_AND_ALIGN_SCALE(s)	(((s) & EXP_SCALE_MASK) \
-					   << (F_EXP_POS - POW2_K));
+                       << (F_EXP_POS - POW2_K));
 #else
 #   define ADJUST_AND_ALIGN_SCALE(s)	(((s) & EXP_SCALE_MASK) \
-					   >> (POW2_K - F_EXP_POS));
+                       >> (POW2_K - F_EXP_POS));
 #endif
 
 #if defined(MAKE_INCLUDE)
@@ -818,14 +818,14 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
 
 
 #   define F_PRINT_A_DEFINE(name)	PRINT_TABLE_ADDRESS_DEFINE(name, \
-					    TABLE_NAME, offset, F_TYPE)
+                        TABLE_NAME, offset, F_TYPE)
 #   define F_PRINT_V_DEFINE(name)	PRINT_TABLE_VALUE_DEFINE(name, \
-					    TABLE_NAME, offset, F_TYPE)
+                        TABLE_NAME, offset, F_TYPE)
 #   define F_PRINT_ENTRY(value)		PRINT_1_F_TYPE_ENTRY(value, offset)
 #   define PRINT_COEFS(a, n, d)		F_PRINT_A_DEFINE(d); \
-					    TABLE_COMMENT(STR(a)); \
-					    for (i = 0; i <= n; i++) \
-					        { F_PRINT_ENTRY(a[i]); }
+                        TABLE_COMMENT(STR(a)); \
+                        for (i = 0; i <= n; i++) \
+                            { F_PRINT_ENTRY(a[i]); }
 
     printf("\n#include \"dpml_private.h\"\n\n");
     IF_MAKE_COMMON( printf("\n#if !defined(DEFINES_ONLY)\n\n"); )
@@ -942,7 +942,7 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
 
 #if IEEE_FLOATING
 #    define HAS_ABNORMAL_EXP(e)	((((e) + EXP_INC) & \
-				MAKE_MASK(F_EXP_WIDTH - 1, F_EXP_POS + 1)) == 0)
+                MAKE_MASK(F_EXP_WIDTH - 1, F_EXP_POS + 1)) == 0)
 #    define _F_SIGN_BIT_MASK	F_SIGN_BIT_MASK
 #else
 #    if (BITS_PER_WORD <= BITS_PER_F_TYPE)
@@ -959,8 +959,8 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME (F_TYPE x, EXP_OTHER_ARGS);
 
 #if F_COPY_SIGN_IS_FAST
 #   define ADD_IN_ERFC_CONST(i,x,u,z)	F_COPY_SIGN((F_TYPE) 1.0, x, u); \
-					u = (F_TYPE) 1.0 - u; \
-					z += u
+                    u = (F_TYPE) 1.0 - u; \
+                    z += u
 #else
 #   define ADD_IN_ERFC_CONST(i,x,u,z)	if ((i) < 0) z += (F_TYPE) 2.0
 #endif
@@ -1204,23 +1204,23 @@ identity_range:
 
 nan_or_inf:
 
-	/* If x is a NaN, return it. */
+    /* If x is a NaN, return it. */
 
-	if ((s_exp_word & F_MANTISSA_MASK) OR_LOW_BITS_SET(_u_))
-		return x;
+    if ((s_exp_word & F_MANTISSA_MASK) OR_LOW_BITS_SET(_u_))
+        return x;
 
-	/* Otherwise, x is an infinity. Fall through to return_constant. */
+    /* Otherwise, x is an infinity. Fall through to return_constant. */
 
 #endif
 
 
 return_constant:
 
-	if (s_exp_word & _F_SIGN_BIT_MASK)
-		z = (F_TYPE) SELECT( -1.0, 2.0);
-	else
-		z = (F_TYPE) SELECT( 1.0, 0.0);
-	return z;
+    if (s_exp_word & _F_SIGN_BIT_MASK)
+        z = (F_TYPE) SELECT( -1.0, 2.0);
+    else
+        z = (F_TYPE) SELECT( 1.0, 0.0);
+    return z;
 
     }
 

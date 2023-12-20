@@ -33,38 +33,38 @@
 
     static const TABLE_UNION __lgamma_t_table[] = { 
 
-	/* Miscelaneous constants */
-	/* 000 */ DATA_1x2( 0x278b51a7, 0x7f5754d9 ),
-	/* 008 */ DATA_1x2( 0x93c1bb66, 0x41630232 ),
-	/* 016 */ DATA_1x2( 0xc864beb5, 0x3fed67f1 ),
-	/* 024 */ DATA_1x2( 0x25aa1316, 0x3fcce6bb ),
-	/* 032 */ DATA_1x2( 0x54442d18, 0x400921fb ),
+    /* Miscelaneous constants */
+    /* 000 */ DATA_1x2( 0x278b51a7, 0x7f5754d9 ),
+    /* 008 */ DATA_1x2( 0x93c1bb66, 0x41630232 ),
+    /* 016 */ DATA_1x2( 0xc864beb5, 0x3fed67f1 ),
+    /* 024 */ DATA_1x2( 0x25aa1316, 0x3fcce6bb ),
+    /* 032 */ DATA_1x2( 0x54442d18, 0x400921fb ),
 
-	/* Rational Coefficents for Q(x) */
-	/* 040 */ DATA_1x2( 0xe37db0c8, 0xbfb3c467 ),
-	/* 048 */ DATA_1x2( 0x736b184d, 0x3fca92d0 ),
-	/* 056 */ DATA_1x2( 0xd307f71e, 0x3fd64276 ),
-	/* 064 */ DATA_1x2( 0xe0c4c055, 0x3fc6220c ),
-	/* 072 */ DATA_1x2( 0x2b5a189c, 0x3fa23e88 ),
-	/* 080 */ DATA_1x2( 0xd793fd1b, 0x3f67a815 ),
-	/* 088 */ DATA_1x2( 0x062913a2, 0x3f104902 ),
+    /* Rational Coefficents for Q(x) */
+    /* 040 */ DATA_1x2( 0xe37db0c8, 0xbfb3c467 ),
+    /* 048 */ DATA_1x2( 0x736b184d, 0x3fca92d0 ),
+    /* 056 */ DATA_1x2( 0xd307f71e, 0x3fd64276 ),
+    /* 064 */ DATA_1x2( 0xe0c4c055, 0x3fc6220c ),
+    /* 072 */ DATA_1x2( 0x2b5a189c, 0x3fa23e88 ),
+    /* 080 */ DATA_1x2( 0xd793fd1b, 0x3f67a815 ),
+    /* 088 */ DATA_1x2( 0x062913a2, 0x3f104902 ),
 
-	/* 096 */ DATA_1x2( 0x00000000, 0x3ff00000 ),
-	/* 104 */ DATA_1x2( 0xd55bd332, 0x3ff7ccf9 ),
-	/* 112 */ DATA_1x2( 0x220544da, 0x3feabd93 ),
-	/* 120 */ DATA_1x2( 0xa77dd24b, 0x3fcc168b ),
-	/* 128 */ DATA_1x2( 0xe906da19, 0x3f9b84eb ),
-	/* 136 */ DATA_1x2( 0x853dd82d, 0x3f556e14 ),
-	/* 144 */ DATA_1x2( 0x14128311, 0x3eef83a4 ),
+    /* 096 */ DATA_1x2( 0x00000000, 0x3ff00000 ),
+    /* 104 */ DATA_1x2( 0xd55bd332, 0x3ff7ccf9 ),
+    /* 112 */ DATA_1x2( 0x220544da, 0x3feabd93 ),
+    /* 120 */ DATA_1x2( 0xa77dd24b, 0x3fcc168b ),
+    /* 128 */ DATA_1x2( 0xe906da19, 0x3f9b84eb ),
+    /* 136 */ DATA_1x2( 0x853dd82d, 0x3f556e14 ),
+    /* 144 */ DATA_1x2( 0x14128311, 0x3eef83a4 ),
 
-	/* Polynomial Coefficents phi(x) */
-	/* 152 */ DATA_1x2( 0x55555555, 0x3fb55555 ),
-	/* 160 */ DATA_1x2( 0x16c14af4, 0xbf66c16c ),
-	/* 168 */ DATA_1x2( 0x17e88ee8, 0x3f4a01a0 ),
-	/* 176 */ DATA_1x2( 0xe14af2a1, 0xbf438134 ),
-	/* 184 */ DATA_1x2( 0x2d63c94c, 0x3f4b92c9 ),
-	/* 192 */ DATA_1x2( 0xa8dfce6f, 0xbf5ef97f ),
-	/* 200 */ DATA_1x2( 0x735455ae, 0x3f74c37d ),
+    /* Polynomial Coefficents phi(x) */
+    /* 152 */ DATA_1x2( 0x55555555, 0x3fb55555 ),
+    /* 160 */ DATA_1x2( 0x16c14af4, 0xbf66c16c ),
+    /* 168 */ DATA_1x2( 0x17e88ee8, 0x3f4a01a0 ),
+    /* 176 */ DATA_1x2( 0xe14af2a1, 0xbf438134 ),
+    /* 184 */ DATA_1x2( 0x2d63c94c, 0x3f4b92c9 ),
+    /* 192 */ DATA_1x2( 0xa8dfce6f, 0xbf5ef97f ),
+    /* 200 */ DATA_1x2( 0x735455ae, 0x3f74c37d ),
 };
 
 

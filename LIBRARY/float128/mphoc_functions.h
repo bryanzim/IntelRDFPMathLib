@@ -82,11 +82,11 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode)
 #define	MP_B_EXP_BIAS		(B_EXP_BIAS - B_NORM - 1)
 
 #define R_INDEX_RND(v,n,r)	as_int(v, n + R_EXP_WIDTH + 1, R_EXP_WIDTH, \
-				    MP_R_EXP_BIAS, r )
+                    MP_R_EXP_BIAS, r )
 #define F_INDEX_RND(v,n,r)	as_int(v, n + F_EXP_WIDTH + 1, F_EXP_WIDTH, \
-				    MP_F_EXP_BIAS, r )
+                    MP_F_EXP_BIAS, r )
 #define B_INDEX_RND(v,n,r)	as_int(v, n + B_EXP_WIDTH + 1, B_EXP_WIDTH, \
-				    MP_B_EXP_BIAS, r )
+                    MP_B_EXP_BIAS, r )
 
 #define R_INDEX(v,n)		R_INDEX_RND(v,n,MP_RZ)
 #define F_INDEX(v,n)		F_INDEX_RND(v,n,MP_RZ)
@@ -115,11 +115,11 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode)
 #endif
 
 #define R_AS_RND_WORD(v,r)	as_int(v, R_TOT_BITS, R_EXP_WIDTH, \
-				    MP_R_EXP_BIAS, r)
+                    MP_R_EXP_BIAS, r)
 #define F_AS_RND_WORD(v,r)	as_int(v, F_TOT_BITS, F_EXP_WIDTH, \
-				    MP_F_EXP_BIAS, r)
+                    MP_F_EXP_BIAS, r)
 #define B_AS_RND_WORD(v,r)	as_int(v, B_TOT_BITS, B_EXP_WIDTH, \
-				    MP_B_EXP_BIAS, r)
+                    MP_B_EXP_BIAS, r)
 
 #define R_AS_WORD(v)		R_AS_RND_WORD(v, MP_RN)
 #define F_AS_WORD(v)		F_AS_RND_WORD(v, MP_RN)

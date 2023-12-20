@@ -111,47 +111,47 @@ bid32_nextup (BID_UINT32 x
       x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
       q1 = bid_nr_digits[x_nr_bits - 1].digits;
       if (q1 == 0) {
-	q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-	if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
-	  q1++;
+    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q1++;
       }
       // if q1 < P7 then pad the significand with zeros
       if (q1 < P7) {
-	if (x_exp > (BID_UINT32)(P7 - q1)) {
-	  ind = P7 - q1; // 1 <= ind <= P7 - 1
-	  // pad with P7 - q1 zeros, until exponent = emin
-	  // C1 = C1 * 10^ind
-	  C1 = C1 * bid_ten2k64[ind];
-	  x_exp = x_exp - ind;
-	} else { // pad with zeros until the exponent reaches emin
-	  ind = x_exp;
-	  C1 = C1 * bid_ten2k64[ind];
-	  x_exp = EXP_MIN32;
-	}
+    if (x_exp > (BID_UINT32)(P7 - q1)) {
+      ind = P7 - q1; // 1 <= ind <= P7 - 1
+      // pad with P7 - q1 zeros, until exponent = emin
+      // C1 = C1 * 10^ind
+      C1 = C1 * bid_ten2k64[ind];
+      x_exp = x_exp - ind;
+    } else { // pad with zeros until the exponent reaches emin
+      ind = x_exp;
+      C1 = C1 * bid_ten2k64[ind];
+      x_exp = EXP_MIN32;
+    }
       }
       if (!x_sign) {	// x > 0
-	// add 1 ulp (add 1 to the significand)
-	C1++;
-	if (C1 == 0x989680) { // if  C1 = 10^7
-	  C1 = 0x0f4240; // C1 = 10^6
-	  x_exp++;
-	}
-	// Ok, because MAXFP = 9999999 * 10^emax was caught already
+    // add 1 ulp (add 1 to the significand)
+    C1++;
+    if (C1 == 0x989680) { // if  C1 = 10^7
+      C1 = 0x0f4240; // C1 = 10^6
+      x_exp++;
+    }
+    // Ok, because MAXFP = 9999999 * 10^emax was caught already
       } else {	// x < 0
-	// subtract 1 ulp (subtract 1 from the significand)
-	C1--;
-	if (C1 == 0x0f423f && x_exp != 0) { // if  C1 = 10^6 - 1
-	  C1 = 0x98967f; // C1 = 10^7 - 1
-	  x_exp--;
-	}
+    // subtract 1 ulp (subtract 1 from the significand)
+    C1--;
+    if (C1 == 0x0f423f && x_exp != 0) { // if  C1 = 10^6 - 1
+      C1 = 0x98967f; // C1 = 10^7 - 1
+      x_exp--;
+    }
       }
       // assemble the result
       // if significand has 24 bits
       if (C1 & MASK_BINARY_OR2_32) {
-	res = x_sign | (x_exp << 21) | MASK_STEERING_BITS32 | 
+    res = x_sign | (x_exp << 21) | MASK_STEERING_BITS32 | 
             (C1 & MASK_BINARY_SIG2_32);
       } else {	// significand fits in 23 bits
-	res = x_sign | (x_exp << 23) | C1;
+    res = x_sign | (x_exp << 23) | C1;
       }
     } // end -MAXFP <= x <= -MINFP - 1 ulp OR MINFP <= x <= MAXFP - 1 ulp
   } // end x is not special and is not zero
@@ -240,47 +240,47 @@ bid32_nextdown (BID_UINT32 x
       x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
       q1 = bid_nr_digits[x_nr_bits - 1].digits;
       if (q1 == 0) {
-	q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-	if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
-	  q1++;
+    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q1++;
       }
       // if q1 < P7 then pad the significand with zeros
       if (q1 < P7) {
-	if (x_exp > (BID_UINT32)(P7 - q1)) {
-	  ind = P7 - q1; // 1 <= ind <= P7 - 1
-	  // pad with P7 - q1 zeros, until exponent = emin
-	  // C1 = C1 * 10^ind
-	  C1 = C1 * bid_ten2k64[ind];
-	  x_exp = x_exp - ind;
-	} else {	// pad with zeros until the exponent reaches emin
-	  ind = x_exp;
-	  C1 = C1 * bid_ten2k64[ind];
-	  x_exp = EXP_MIN32;
-	}
+    if (x_exp > (BID_UINT32)(P7 - q1)) {
+      ind = P7 - q1; // 1 <= ind <= P7 - 1
+      // pad with P7 - q1 zeros, until exponent = emin
+      // C1 = C1 * 10^ind
+      C1 = C1 * bid_ten2k64[ind];
+      x_exp = x_exp - ind;
+    } else {	// pad with zeros until the exponent reaches emin
+      ind = x_exp;
+      C1 = C1 * bid_ten2k64[ind];
+      x_exp = EXP_MIN32;
+    }
       }
       if (x_sign) {	// x < 0
-	// add 1 ulp (add 1 to the significand)
-	C1++;
-	if (C1 == 0x989680) { // if  C1 = 10^7
-	  C1 = 0x0f4240; // C1 = 10^6
-	  x_exp++;
-	}
+    // add 1 ulp (add 1 to the significand)
+    C1++;
+    if (C1 == 0x989680) { // if  C1 = 10^7
+      C1 = 0x0f4240; // C1 = 10^6
+      x_exp++;
+    }
         // Ok, because -MAXFP = -9999999 * 10^emax was caught already
       } else {	// x > 0
-	// subtract 1 ulp (subtract 1 from the significand)
-	C1--;
-	if (C1 == 0x0f423f && x_exp != 0) { // if  C1 = 10^6 - 1
-	  C1 = 0x98967f; // C1 = 10^7 - 1
-	  x_exp--;
-	}
+    // subtract 1 ulp (subtract 1 from the significand)
+    C1--;
+    if (C1 == 0x0f423f && x_exp != 0) { // if  C1 = 10^6 - 1
+      C1 = 0x98967f; // C1 = 10^7 - 1
+      x_exp--;
+    }
       }
       // assemble the result
       // if significand has 24 bits
       if (C1 & MASK_BINARY_OR2_32) {
-	res = x_sign | (x_exp << 21) | MASK_STEERING_BITS32 | 
+    res = x_sign | (x_exp << 21) | MASK_STEERING_BITS32 | 
             (C1 & MASK_BINARY_SIG2_32);
       } else {	// significand fits in 23 bits
-	res = x_sign | (x_exp << 23) | C1;
+    res = x_sign | (x_exp << 23) | C1;
       }
     }	// end -MAXFP <= x <= -MINFP - 1 ulp OR MINFP <= x <= MAXFP - 1 ulp
   }	// end x is not special and is not zero
@@ -306,44 +306,44 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
 
     if ((x & MASK_NAN32) == MASK_NAN32) { // x is NAN
       if ((x & 0x000fffff) > 999999)
-	x = x & 0xfe000000; // clear G6-G10 and the payload bits
+    x = x & 0xfe000000; // clear G6-G10 and the payload bits
       else
-	x = x & 0xfe0fffff; // clear G6-G10
+    x = x & 0xfe0fffff; // clear G6-G10
       if ((x & MASK_SNAN32) == MASK_SNAN32) { // x is SNAN
-	// set invalid flag
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return quiet (x)
-	res = x & 0xfdffffff;
+    // set invalid flag
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return quiet (x)
+    res = x & 0xfdffffff;
       } else {	// x is QNaN
-	if ((y & MASK_SNAN32) == MASK_SNAN32) {	// y is SNAN
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	}
-	// return x
-	res = x;
+    if ((y & MASK_SNAN32) == MASK_SNAN32) {	// y is SNAN
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+    }
+    // return x
+    res = x;
       }
       BID_RETURN (res);
     } else if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NAN
       if ((y & 0x000fffff) > 999999)
-	y = y & 0xfe000000; // clear G6-G10 and the payload bits
+    y = y & 0xfe000000; // clear G6-G10 and the payload bits
       else
-	y = y & 0xfe0fffff; // clear G6-G10
+    y = y & 0xfe0fffff; // clear G6-G10
       if ((y & MASK_SNAN32) == MASK_SNAN32) { // y is SNAN
-	// set invalid flag
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return quiet (y)
-	res = y & 0xfdffffff;
+    // set invalid flag
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return quiet (y)
+    res = y & 0xfdffffff;
       } else {	// y is QNaN
-	// return y
-	res = y;
+    // return y
+    res = y;
       }
       BID_RETURN (res);
     } else {	// at least one is infinity
       if ((x & MASK_ANY_INF32) == MASK_INF32) { // x = inf
-	x = x & (MASK_SIGN32 | MASK_INF32);
+    x = x & (MASK_SIGN32 | MASK_INF32);
       }
       if ((y & MASK_ANY_INF32) == MASK_INF32) { // y = inf
-	y = y & (MASK_SIGN32 | MASK_INF32);
+    y = y & (MASK_SIGN32 | MASK_INF32);
       }
     }
   }
@@ -356,8 +356,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
       // if the steering bits are 11 (condition will be 0), then
       // the exponent is G[0:7]
       if (((x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32) > 9999999) {
-	// non-canonical
-	x = (x & MASK_SIGN32) | ((x & MASK_BINARY_EXPONENT2_32) << 2);
+    // non-canonical
+    x = (x & MASK_SIGN32) | ((x & MASK_BINARY_EXPONENT2_32) << 2);
       }
     } else { 
       // if ((x & MASK_STEERING_BITS32) != MASK_STEERING_BITS32) x is unchanged

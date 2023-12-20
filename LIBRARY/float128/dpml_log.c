@@ -2399,7 +2399,7 @@ F_ENTRY_NAME(F_TYPE x)
 
                        GET_EXCEPTION_RESULT_1(LOG_NEGATIVE, x, x); 
                                            return x;
-		       }
+               }
 
                else  {             /* sign = negative, exponent not zero */
 
@@ -2407,21 +2407,21 @@ F_ENTRY_NAME(F_TYPE x)
                   if (!m)    /* -inf or negative: return NaN, error */
                       GET_EXCEPTION_RESULT_1(LOG_NEGATIVE, x, x)
                                   return x;
-		  }
+          }
 # else  
-		F_SET_FLAG_IF_NAN( x, m ) ;
-		if ( m )
-		    return x ;
-		else {
-		    WORD func_error_word ;
-		    func_error_word = ERROR_WORD( STATUS_INVALID,
-						  NEG_HUGE_INDEX,
-						  NAN_INDEX,
-						  F_TYPE_ENUM,
-						  DPML_EDOM,
-						  SIGNAL_LOGZERNEG ) ;
-		    RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeLog ) ;
-		    }
+        F_SET_FLAG_IF_NAN( x, m ) ;
+        if ( m )
+            return x ;
+        else {
+            WORD func_error_word ;
+            func_error_word = ERROR_WORD( STATUS_INVALID,
+                          NEG_HUGE_INDEX,
+                          NAN_INDEX,
+                          F_TYPE_ENUM,
+                          DPML_EDOM,
+                          SIGNAL_LOGZERNEG ) ;
+            RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeLog ) ;
+            }
 # endif
             }                      
 
@@ -2430,22 +2430,22 @@ F_ENTRY_NAME(F_TYPE x)
 #if DO_LOG1P
 
 #   if COMPATIBILITY_MODE
-	/*  +0: return -inf, via RAISE */
-	GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x); 
-	return x;
+    /*  +0: return -inf, via RAISE */
+    GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x); 
+    return x;
 #   else  
-	{   WORD func_error_word ;
-	    func_error_word = ERROR_WORD( STATUS_OVERFLOW,
-					  NEG_HUGE_INDEX,
-					  NEG_INFINITY_INDEX,
-					  F_TYPE_ENUM,
-					  DPML_ERANGE,
-					  SIGNAL_LOGZERNEG ) ;
-	    RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeLog ) ;
-	    }
+    {   WORD func_error_word ;
+        func_error_word = ERROR_WORD( STATUS_OVERFLOW,
+                      NEG_HUGE_INDEX,
+                      NEG_INFINITY_INDEX,
+                      F_TYPE_ENUM,
+                      DPML_ERANGE,
+                      SIGNAL_LOGZERNEG ) ;
+        RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeLog ) ;
+        }
 #   endif
 
-	}
+    }
 
 #else  /*  if DO_LOG1P  */
 
@@ -2456,20 +2456,20 @@ F_ENTRY_NAME(F_TYPE x)
 
         DENORM_TO_NORM(x, temp_x);
 
-	if (temp_x == 0.0) {       /*  +0: should return -inf, via RAISE */
+    if (temp_x == 0.0) {       /*  +0: should return -inf, via RAISE */
 
 # if COMPATIBILITY_MODE
-	    GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x); 
-	    return x;
+        GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x); 
+        return x;
 # else  
-	    WORD func_error_word ;
-	    func_error_word = ERROR_WORD( STATUS_OVERFLOW,
-					  NEG_HUGE_INDEX,
-					  NEG_INFINITY_INDEX,
-					  F_TYPE_ENUM,
-					  DPML_ERANGE,
-					  SIGNAL_LOGZERNEG ) ;
-	    RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeLog ) ;
+        WORD func_error_word ;
+        func_error_word = ERROR_WORD( STATUS_OVERFLOW,
+                      NEG_HUGE_INDEX,
+                      NEG_INFINITY_INDEX,
+                      F_TYPE_ENUM,
+                      DPML_ERANGE,
+                      SIGNAL_LOGZERNEG ) ;
+        RETURN_EXCEPTION_RESULT_1( func_error_word, x, F_F, _FpCodeLog ) ;
 # endif
 
              } else {     /* x is positive denorm - scale and compute log */
@@ -2488,7 +2488,7 @@ F_ENTRY_NAME(F_TYPE x)
                  m -= __LOG2_DENORM_SCALE;
 
                  goto denorms_rejoin;
-		 }
+         }
   }
 
 #endif

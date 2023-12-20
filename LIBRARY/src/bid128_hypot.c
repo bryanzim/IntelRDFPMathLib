@@ -37,29 +37,29 @@ BID_UINT64  valid_x, valid_y, sign_x, sign_y, sign_z;
 int exponent_x, exponent_y, cmp_res, exponent_res;
 BID_F128_TYPE rq, xq, yq;
 
-	// take absolute values
-	xn.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
-	yn.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
-	xn.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-	yn.w[BID_LOW_128W] = y.w[BID_LOW_128W];
+    // take absolute values
+    xn.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
+    yn.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
+    xn.w[BID_LOW_128W] = x.w[BID_LOW_128W];
+    yn.w[BID_LOW_128W] = y.w[BID_LOW_128W];
 
     BIDECIMAL_CALL2_NORND (bid128_quiet_greater, 
             cmp_res, yn, xn);
-	if(cmp_res) {
-		tmp.w[BID_HIGH_128W]=x.w[BID_HIGH_128W];  tmp.w[BID_LOW_128W]=x.w[BID_LOW_128W];
+    if(cmp_res) {
+        tmp.w[BID_HIGH_128W]=x.w[BID_HIGH_128W];  tmp.w[BID_LOW_128W]=x.w[BID_LOW_128W];
 
-		x.w[BID_HIGH_128W] = y.w[BID_HIGH_128W];
-		x.w[BID_LOW_128W] = y.w[BID_LOW_128W];
+        x.w[BID_HIGH_128W] = y.w[BID_HIGH_128W];
+        x.w[BID_LOW_128W] = y.w[BID_LOW_128W];
 
-		y.w[BID_HIGH_128W] = tmp.w[BID_HIGH_128W];
-		y.w[BID_LOW_128W] = tmp.w[BID_LOW_128W];
-	}
+        y.w[BID_HIGH_128W] = tmp.w[BID_HIGH_128W];
+        y.w[BID_LOW_128W] = tmp.w[BID_LOW_128W];
+    }
 
 valid_y = unpack_BID128_value_BLE (&sign_y, &exponent_y, &CY, y);
 valid_x = unpack_BID128_value_BLE (&sign_x, &exponent_x, &CX, x);
 
   // unpack arguments, check for NaN or Infinity
-	if (!valid_x) {
+    if (!valid_x) {
     // test if x is NaN
 if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
@@ -68,28 +68,28 @@ if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   if (((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull) ||((y.w[BID_HIGH_128W] & 0x7c00000000000000ull) != 0x7800000000000000ull)) {
-	res.w[BID_HIGH_128W] = (CX.w[BID_HIGH_128W]) & QUIET_MASK64;
-	res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
+    res.w[BID_HIGH_128W] = (CX.w[BID_HIGH_128W]) & QUIET_MASK64;
+    res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
   }
   else {  res.w[BID_HIGH_128W] = 0x7800000000000000ull;   res.w[BID_LOW_128W] = 0;  }
-	BID_RETURN (res);
+    BID_RETURN (res);
   
 }
     // x is Infinity?
 if (((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) && ((y.w[BID_HIGH_128W] & 0x7e00000000000000ull) != 0x7e00000000000000ull)) {
-	  res.w[BID_HIGH_128W] = 0x7800000000000000ull;
-	  res.w[BID_LOW_128W] = 0;
+      res.w[BID_HIGH_128W] = 0x7800000000000000ull;
+      res.w[BID_LOW_128W] = 0;
     BID_RETURN (res);
   }
     // x is 0
   if (valid_y) {
-	 res.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
-	 res.w[BID_LOW_128W] = y.w[BID_LOW_128W];
+     res.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
+     res.w[BID_LOW_128W] = y.w[BID_LOW_128W];
      BID_RETURN (res);
 }
 }
 
-	if (!valid_y) {
+    if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
@@ -105,55 +105,55 @@ if (((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) && (
 
   // y is Infinity?
 if ((y.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-	  res.w[BID_HIGH_128W] = 0x7800000000000000ull;
-	  res.w[BID_LOW_128W] = 0;
+      res.w[BID_HIGH_128W] = 0x7800000000000000ull;
+      res.w[BID_LOW_128W] = 0;
     BID_RETURN (res);
   }
 
   // y is 0
 if(valid_x) {
-	 res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
-	 res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
+     res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
+     res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
 }
 else {
-	 res.w[BID_HIGH_128W] = CX.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
-	 res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
+     res.w[BID_HIGH_128W] = CX.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
+     res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
 }
      BID_RETURN (res);
 }
 
-	// take absolute values
-	x.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
-	y.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
+    // take absolute values
+    x.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
+    y.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
 
-	if(exponent_x - exponent_y >= 35)
-	{
-	 res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W];
-	 res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
+    if(exponent_x - exponent_y >= 35)
+    {
+     res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W];
+     res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
      BID_RETURN (res);
-	}
+    }
 
-	// separate exponent_x (to avoid OF/UF)
-	bid_get_BID128_very_fast_BLE(&xn, 0, DECIMAL_EXPONENT_BIAS_128, CX);
-	bid_get_BID128_very_fast_BLE(&yn, 0, DECIMAL_EXPONENT_BIAS_128+exponent_y-exponent_x, CY);
+    // separate exponent_x (to avoid OF/UF)
+    bid_get_BID128_very_fast_BLE(&xn, 0, DECIMAL_EXPONENT_BIAS_128, CX);
+    bid_get_BID128_very_fast_BLE(&yn, 0, DECIMAL_EXPONENT_BIAS_128+exponent_y-exponent_x, CY);
 
-	BIDECIMAL_CALL1 (bid128_to_binary128, xq, xn);
-	BIDECIMAL_CALL1 (bid128_to_binary128, yq, yn);
-	__bid_f128_hypot(rq, xq, yq);
+    BIDECIMAL_CALL1 (bid128_to_binary128, xq, xn);
+    BIDECIMAL_CALL1 (bid128_to_binary128, yq, yn);
+    __bid_f128_hypot(rq, xq, yq);
     BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 
-	//quick_unpack_BID128_em (&exponent_res, &coeff_res, res);
-	coeff_res.w[0] = res.w[BID_LOW_128W];
-	coeff_res.w[1] = (res.w[BID_HIGH_128W]) & SMALL_COEFF_MASK128;
-	exponent_res = (res.w[BID_HIGH_128W]) >> 49;
-	exponent_res = ((int) exponent_res) & EXPONENT_MASK128;
+    //quick_unpack_BID128_em (&exponent_res, &coeff_res, res);
+    coeff_res.w[0] = res.w[BID_LOW_128W];
+    coeff_res.w[1] = (res.w[BID_HIGH_128W]) & SMALL_COEFF_MASK128;
+    exponent_res = (res.w[BID_HIGH_128W]) >> 49;
+    exponent_res = ((int) exponent_res) & EXPONENT_MASK128;
 
     bid_get_BID128 (&res, 0, exponent_res+exponent_x-DECIMAL_EXPONENT_BIAS_128, coeff_res, &rnd_mode,
-		pfpsf);
+        pfpsf);
 
 #if BID_BIG_ENDIAN
-	BID_SWAP128(res);
+    BID_SWAP128(res);
 #endif
-	BID_RETURN (res);
+    BID_RETURN (res);
 }
 

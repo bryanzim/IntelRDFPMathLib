@@ -25,7 +25,7 @@
         Jun 2018 - Version 2.0 Update 2 - fixed issues in powd64, 
                    acos64, and acos128. Added the llround, llquantexp, 
                    and quantum functions, as well as corresponding new tests.
-		   This version has been tested in Linux, Windows, OSX, and Solaris.
+           This version has been tested in Linux, Windows, OSX, and Solaris.
 
   1. INTRODUCTION
   ===============

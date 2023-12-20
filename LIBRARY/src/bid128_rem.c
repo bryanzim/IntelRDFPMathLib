@@ -168,7 +168,7 @@ if (diff_expon <= 0) {
   CX2.w[0] = CR.w[0] << 1;
   if ((__unsigned_compare_gt_128 (CX2, P256))
       || (CX2.w[1] == P256.w[1] && CX2.w[0] == P256.w[0]
-	  && (CQ.w[0] & 1))) {
+      && (CQ.w[0] & 1))) {
     __sub_128_128 (CR, P256, CR);
     sign_x ^= 0x8000000000000000ull;
   }

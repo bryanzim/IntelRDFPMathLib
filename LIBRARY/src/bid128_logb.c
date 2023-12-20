@@ -45,7 +45,7 @@ BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(int, bid128_ilogb, x)
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	 res =  ((x.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull)? 0x7fffffff : 0x80000000;
+     res =  ((x.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull)? 0x7fffffff : 0x80000000;
      BID_RETURN_VAL (res);
   }
   // find number of digits in coefficient

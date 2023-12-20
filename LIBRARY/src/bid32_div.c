@@ -99,7 +99,7 @@ BID_UINT64 CA, CT, PD;
     if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
       if ((x & SNAN_MASK32) == SNAN_MASK32)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN (coefficient_x & QUIET_MASK32);
     }
@@ -107,22 +107,22 @@ BID_UINT64 CA, CT, PD;
     if ((x & INFINITY_MASK32) == INFINITY_MASK32) {
       // check if y is Inf or NaN
       if ((y & INFINITY_MASK32) == INFINITY_MASK32) {
-	// y==Inf, return NaN 
-	if ((y & NAN_MASK32) == INFINITY_MASK32) {	// Inf/Inf
+    // y==Inf, return NaN 
+    if ((y & NAN_MASK32) == INFINITY_MASK32) {	// Inf/Inf
 #ifdef BID_SET_STATUS_FLAGS
-	  __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+      __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	  BID_RETURN (NAN_MASK32);
-	}
+      BID_RETURN (NAN_MASK32);
+    }
       } else {
-	// otherwise return +/-Inf
-	BID_RETURN (((x ^ y) & 0x80000000) |
-		    INFINITY_MASK32);
+    // otherwise return +/-Inf
+    BID_RETURN (((x ^ y) & 0x80000000) |
+            INFINITY_MASK32);
       }
     }
     // x==0
     if (((y & INFINITY_MASK32) != INFINITY_MASK32)
-	&& !(coefficient_y)) {
+    && !(coefficient_y)) {
       // y==0 , return NaN
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -131,16 +131,16 @@ BID_UINT64 CA, CT, PD;
     }
     if (((y & INFINITY_MASK32) != INFINITY_MASK32)) {
       if ((y & SPECIAL_ENCODING_MASK32) == SPECIAL_ENCODING_MASK32)
-	exponent_y = ((BID_UINT32) (y >> 21)) & 0xff;
+    exponent_y = ((BID_UINT32) (y >> 21)) & 0xff;
       else
-	exponent_y = ((BID_UINT32) (y >> 23)) & 0xff;
+    exponent_y = ((BID_UINT32) (y >> 23)) & 0xff;
       sign_y = y & 0x80000000;
 
       exponent_x = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS_32;
       if (exponent_x > DECIMAL_MAX_EXPON_32)
-	exponent_x = DECIMAL_MAX_EXPON_32;
+    exponent_x = DECIMAL_MAX_EXPON_32;
       else if (exponent_x < 0)
-	exponent_x = 0;
+    exponent_x = 0;
       BID_RETURN ((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 23));
     }
 
@@ -152,7 +152,7 @@ BID_UINT64 CA, CT, PD;
     if ((y & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
       if ((y & SNAN_MASK32) == SNAN_MASK32)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN (coefficient_y & QUIET_MASK32);
     }
@@ -202,14 +202,14 @@ BID_UINT64 CA, CT, PD;
     R = coefficient_x - coefficient_y * Q;
 
     // will use to get number of dec. digits of Q
-	tempq.d = (float)Q;
+    tempq.d = (float)Q;
     bin_expon_cx = (tempq.i >> 23) - 0x7f;
 
     // exact result ?
     if (R == 0) {
       res =
-	get_BID32 (sign_x ^ sign_y, diff_expon, Q, rnd_mode,
-		   pfpsf);
+    get_BID32 (sign_x ^ sign_y, diff_expon, Q, rnd_mode,
+           pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -222,7 +222,7 @@ BID_UINT64 CA, CT, PD;
     ed2 = 7 - bid_estimate_decimal_digits[bin_expon_cx] - (int) DU;
 
     T = bid_power10_table_128[ed2].w[0];
-	CA = ((BID_UINT64)R) * T;
+    CA = ((BID_UINT64)R) * T;
     B = coefficient_y;
 
     Q *= (BID_UINT32)bid_power10_table_128[ed2].w[0];
@@ -263,53 +263,53 @@ BID_UINT64 CA, CT, PD;
       // difference in powers of 5 bid_factors
       d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
       if (d5 < nzeros)
-	nzeros = d5;
+    nzeros = d5;
 
-	  if(nzeros) {
+      if(nzeros) {
       CT = ((BID_UINT64)Q) * bid_bid_reciprocals10_32[nzeros];
-	  CT >>= 32;
+      CT >>= 32;
 
       // now get P/10^extra_digits: shift C64 right by M[extra_digits]-128
       amount = bid_bid_bid_recip_scale32[nzeros];
       Q = (BID_UINT32)(CT >> amount);
 
       diff_expon += nzeros;
-	  }
+      }
     } 
-	else {
+    else {
       nzeros = 0;
 
-	// decompose digit
-	PD = (BID_UINT64) Q *0x068DB8BBull;
-	digit_h = (BID_UINT32) (PD >> 40);
-	digit_low = Q - digit_h * 10000;
+    // decompose digit
+    PD = (BID_UINT64) Q *0x068DB8BBull;
+    digit_h = (BID_UINT32) (PD >> 40);
+    digit_low = Q - digit_h * 10000;
 
-	if (!digit_low)
-	  nzeros += 4;
-	else
-	  digit_h = digit_low;
+    if (!digit_low)
+      nzeros += 4;
+    else
+      digit_h = digit_low;
 
-	if (!(digit_h & 1)) {
-	  nzeros +=
-	    3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			  (digit_h & 7));
+    if (!(digit_h & 1)) {
+      nzeros +=
+        3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+              (digit_h & 7));
       }
 
       if (nzeros) {
-	     CT = (BID_UINT64)Q * bid_bid_reciprocals10_32[nzeros];
-		 CT >>=32;
+         CT = (BID_UINT64)Q * bid_bid_reciprocals10_32[nzeros];
+         CT >>=32;
 
-	// now get P/10^extra_digits: shift C64 right by M[extra_digits]-128
-	amount = bid_bid_bid_recip_scale32[nzeros];
-	Q = (BID_UINT32)(CT >> amount);
+    // now get P/10^extra_digits: shift C64 right by M[extra_digits]-128
+    amount = bid_bid_bid_recip_scale32[nzeros];
+    Q = (BID_UINT32)(CT >> amount);
       }
       diff_expon += nzeros;
 
     }
     if (diff_expon >= 0) {
       res =
-	get_BID32 (sign_x ^ sign_y, diff_expon, Q,
-				 rnd_mode, pfpsf);
+    get_BID32 (sign_x ^ sign_y, diff_expon, Q,
+                 rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -379,7 +379,7 @@ BID_UINT64 CA, CT, PD;
 
     res =
       get_BID32 (sign_x ^ sign_y, diff_expon, Q, rnd_mode,
-			       pfpsf);
+                   pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif

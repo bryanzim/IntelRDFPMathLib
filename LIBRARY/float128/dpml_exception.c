@@ -112,14 +112,14 @@
 
 #   if IEEE_EXCEPTION_BEHAVIOR
 #       define DPML_GET_ENVIRONMENT(e) \
-			P_EXCPT_REC_ENVIRONMENT(p, DPML_GET_FPCSR(e))
+            P_EXCPT_REC_ENVIRONMENT(p, DPML_GET_FPCSR(e))
 #   else
 #       define DPML_GET_ENVIRONMENT(e) \
-			P_EXCPT_REC_ENVIRONMENT(p, ( ENABLE_FLUSH_TO_ZERO \
-						   | ENABLE_SINGULARITY \
-						   | ENABLE_OVERFLOW \
-						   | ENABLE_INVALID \
-						   | ENABLE_LOST_SIGNIFICANCE ))
+            P_EXCPT_REC_ENVIRONMENT(p, ( ENABLE_FLUSH_TO_ZERO \
+                           | ENABLE_SINGULARITY \
+                           | ENABLE_OVERFLOW \
+                           | ENABLE_INVALID \
+                           | ENABLE_LOST_SIGNIFICANCE ))
 #   endif
 #endif
 
@@ -157,12 +157,12 @@
 #   if  !defined(DPML_UPDATE_STICKY_BITS)
 
 #       define DPML_UPDATE_STICKY_BITS(p)	\
-		    { \
-		    FP_CSR_TYPE fpcsr; \
-		    DPML_GET_FPCSR(fpcsr); \
-		    fpcsr |= FPCSR_STICKY_BITS(G_EXCPT_REC_DPML_ECODE(p)); \
-		    DPML_SET_FPCSR(fpcsr); \
-		    }
+            { \
+            FP_CSR_TYPE fpcsr; \
+            DPML_GET_FPCSR(fpcsr); \
+            fpcsr |= FPCSR_STICKY_BITS(G_EXCPT_REC_DPML_ECODE(p)); \
+            DPML_SET_FPCSR(fpcsr); \
+            }
 #   endif
 #else
 #    define DPML_UPDATE_STICKY_BITS(p)
@@ -195,34 +195,34 @@
 
 #if !defined(GET_DPML_EXCEPTION_AND_VALUE)
 
-	/*
-	 * NOTE: This should be fixed.  The response table should
-	 * have only one set of (err,value) pairs if only one
-	 * behavior is supportted.
-	 */
+    /*
+     * NOTE: This should be fixed.  The response table should
+     * have only one set of (err,value) pairs if only one
+     * behavior is supportted.
+     */
 
 #   if IEEE_EXCEPTION_BEHAVIOR
 
 #       define	GET_DPML_EXCEPTION_AND_VALUE(p) \
-			{ \
-			WORD e, v, t; \
-			e = G_EXCPT_REC_FUNC_ECODE(p); \
-			P_EXCPT_REC_DPML_ECODE(p, GET_IEEE_ERROR(e)); \
-			v = GET_IEEE_VALUE(e); \
-			t = G_EXCPT_REC_DATA_TYPE(p); \
-			P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t,v)); \
-			}
+            { \
+            WORD e, v, t; \
+            e = G_EXCPT_REC_FUNC_ECODE(p); \
+            P_EXCPT_REC_DPML_ECODE(p, GET_IEEE_ERROR(e)); \
+            v = GET_IEEE_VALUE(e); \
+            t = G_EXCPT_REC_DATA_TYPE(p); \
+            P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t,v)); \
+            }
 #   else
 
 #       define	GET_DPML_EXCEPTION_AND_VALUE(p) \
-			{ \
-			WORD e, v, t; \
-			e = G_EXCPT_REC_FUNC_ECODE(p); \
-			P_EXCPT_REC_DPML_ECODE(p, GET_FAST_ERROR(e)); \
-			v = GET_FAST_VALUE(e); \
-			t = G_EXCPT_REC_DATA_TYPE(p); \
-			P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t,v)); \
-			}
+            { \
+            WORD e, v, t; \
+            e = G_EXCPT_REC_FUNC_ECODE(p); \
+            P_EXCPT_REC_DPML_ECODE(p, GET_FAST_ERROR(e)); \
+            v = GET_FAST_VALUE(e); \
+            t = G_EXCPT_REC_DATA_TYPE(p); \
+            P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t,v)); \
+            }
 #   endif
 
 #endif

@@ -176,7 +176,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater, BID_UINT32, 
       // x is pos infinity, it is greater, unless y is positive 
       // infinity => return y!=pos_infinity
       res = (((y & MASK_INF32) != MASK_INF32)
-	     || ((y & MASK_SIGN32) == MASK_SIGN32));
+         || ((y & MASK_SIGN32) == MASK_SIGN32));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {
@@ -325,7 +325,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_equal, BID_UI
     if ((x & MASK_SIGN32) == MASK_SIGN32) {
       // x is -inf, so it is less than y unless y is -inf
       res = (((y & MASK_INF32) == MASK_INF32)
-	     && (y & MASK_SIGN32) == MASK_SIGN32);
+         && (y & MASK_SIGN32) == MASK_SIGN32);
       BID_RETURN (res);
     } else {	// x is pos_inf, no way for it to be less than y
       res = 1;
@@ -479,7 +479,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_unordered, BI
       // x is pos infinity, it is greater, unless y is positive infinity => 
       // return y!=pos_infinity
       res = (((y & MASK_INF32) != MASK_INF32)
-	     || ((y & MASK_SIGN32) == MASK_SIGN32));
+         || ((y & MASK_SIGN32) == MASK_SIGN32));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {
@@ -621,7 +621,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less, BID_UINT32, x, 
     if ((x & MASK_SIGN32) == MASK_SIGN32) {
       // x is -inf, so it is less than y unless y is -inf
       res = (((y & MASK_INF32) != MASK_INF32)
-	     || (y & MASK_SIGN32) != MASK_SIGN32);
+         || (y & MASK_SIGN32) != MASK_SIGN32);
       BID_RETURN (res);
     } else {
       // x is pos_inf, no way for it to be less than y
@@ -777,7 +777,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_equal, BID_UINT3
       // x is pos infinity, it is greater, unless y is positive infinity => 
       // return y==pos_infinity
       res = !(((y & MASK_INF32) != MASK_INF32)
-	      || ((y & MASK_SIGN32) == MASK_SIGN32));
+          || ((y & MASK_SIGN32) == MASK_SIGN32));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {
@@ -922,7 +922,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_less_unordered, BID_U
     if ((x & MASK_SIGN32) == MASK_SIGN32) {
       // x is -inf, so it is less than y unless y is -inf
       res = (((y & MASK_INF32) != MASK_INF32)
-	     || (y & MASK_SIGN32) != MASK_SIGN32);
+         || (y & MASK_SIGN32) != MASK_SIGN32);
       BID_RETURN (res);
     } else {
       // x is pos_inf, no way for it to be less than y
@@ -1196,7 +1196,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_greater, BID_UINT
     // infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF32) != MASK_INF32)
-	      || ((y & MASK_SIGN32) == MASK_SIGN32));
+          || ((y & MASK_SIGN32) == MASK_SIGN32));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {
@@ -1357,7 +1357,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_not_less, BID_UINT32,
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF32) == MASK_INF32)
-	     && (y & MASK_SIGN32) == MASK_SIGN32);
+         && (y & MASK_SIGN32) == MASK_SIGN32);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -1564,7 +1564,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater, BID_UINT
     // unless y is positive infinity => return y!=pos_infinity
     else {
       res = (((y & MASK_INF32) != MASK_INF32)
-	     || ((y & MASK_SIGN32) == MASK_SIGN32));
+         || ((y & MASK_SIGN32) == MASK_SIGN32));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {
@@ -1723,7 +1723,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_equal, BI
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF32) == MASK_INF32)
-	     && (y & MASK_SIGN32) == MASK_SIGN32);
+         && (y & MASK_SIGN32) == MASK_SIGN32);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -1892,7 +1892,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater_unordered
     // unless y is positive infinity => return y!=pos_infinity
     else {
       res = (((y & MASK_INF32) != MASK_INF32)
-	     || ((y & MASK_SIGN32) == MASK_SIGN32));
+         || ((y & MASK_SIGN32) == MASK_SIGN32));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {
@@ -2050,7 +2050,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less, BID_UINT32,
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF32) != MASK_INF32)
-	     || (y & MASK_SIGN32) != MASK_SIGN32);
+         || (y & MASK_SIGN32) != MASK_SIGN32);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -2219,7 +2219,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_equal, BID_U
     // unless y is positive infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF32) != MASK_INF32)
-	      || ((y & MASK_SIGN32) == MASK_SIGN32));
+          || ((y & MASK_SIGN32) == MASK_SIGN32));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {
@@ -2377,7 +2377,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_less_unordered, B
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF32) != MASK_INF32)
-	     || (y & MASK_SIGN32) != MASK_SIGN32);
+         || (y & MASK_SIGN32) != MASK_SIGN32);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y
@@ -2546,7 +2546,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_greater, BID_
     // unless y is positive infinity => return y==pos_infinity
     else {
       res = !(((y & MASK_INF32) != MASK_INF32)
-	      || ((y & MASK_SIGN32) == MASK_SIGN32));
+          || ((y & MASK_SIGN32) == MASK_SIGN32));
       BID_RETURN (res);
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {
@@ -2704,7 +2704,7 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_not_less, BID_UIN
       // x is -inf, so it is less than y unless y is -inf
     {
       res = (((y & MASK_INF32) == MASK_INF32)
-	     && (y & MASK_SIGN32) == MASK_SIGN32);
+         && (y & MASK_SIGN32) == MASK_SIGN32);
       BID_RETURN (res);
     } else
       // x is pos_inf, no way for it to be less than y

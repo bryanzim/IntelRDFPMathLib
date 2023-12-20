@@ -445,7 +445,7 @@ bit_shift:
 #define TYPE_MASK		MAKE_MASK(TYPE_WIDTH-1, TYPE_POS)
 #undef  ADD_ERR_CODE_TYPE
 #define ADD_ERR_CODE_TYPE(e)	(((F_TYPE_ENUM << TYPE_POS) & TYPE_MASK) \
-				  | ((e) & (~TYPE_MASK)))
+                  | ((e) & (~TYPE_MASK)))
 
 WORD
 UNPACK_X_OR_Y(
@@ -541,7 +541,7 @@ UNPACK_X_OR_Y(
                    G_UX_MSD(unpacked_argument) - UX_MSB);
                 UX_INCR_EXPONENT(unpacked_argument, 1);
                 NORMALIZE(unpacked_argument);
-	        fp_class = F_C_POS_DENORM;
+            fp_class = F_C_POS_DENORM;
                 }
             }
         else
@@ -592,25 +592,25 @@ UNPACK_X_OR_Y(
         return fp_class;
 //printf("UNPACK %llx, %llx\n", (long long)fp_class, index);
 
-	/*
+    /*
     ** If index is not 0 or 1, then the base return value is in the class to
     ** action mapping table.  Otherwise, the base value is the input argument
     ** or the auxiliary argument.
     */
 
     if (index <= index_limit)
-	{
+    {
         digit_ptr = (UX_FRACTION_DIGIT_TYPE *) (index == 0 ?
           packed_x : packed_y);
-	}
+    }
     else
-	{
+    {
         index = WORDS_PER_CLASS_TO_ACTION_MAP*(disp & 0xf) + index - 1;
         index = class_to_action_map[ index ];
         digit_ptr = (UX_FRACTION_DIGIT_TYPE *)
                         & ((_X_FLOAT *) PACKED_CONSTANT_TABLE)[index];
  //printf("UNPACK 3 %llx, %llx d= %llx, %llx\n", (long long)fp_class, index, digit_ptr[0],digit_ptr[1]);
-	}
+    }
 
     /*
     ** If this is an error action, process the exception and get the final
@@ -883,13 +883,13 @@ PACK (
         {
 
 #       define IEEE_SPECIAL_ENCODING_MASK	( (1 << F_C_QUIET_NAN)	\
-						| (1 << F_C_SIG_NAN)	\
-						| (1 << F_C_POS_INF)	\
-						| (1 << F_C_NEG_INF)	\
-						| (1 << F_C_POS_DENORM)	\
-						| (1 << F_C_NEG_DENORM)	)
+                        | (1 << F_C_SIG_NAN)	\
+                        | (1 << F_C_POS_INF)	\
+                        | (1 << F_C_NEG_INF)	\
+                        | (1 << F_C_POS_DENORM)	\
+                        | (1 << F_C_NEG_DENORM)	)
 #       define INPUT_WAS_IEEE_SPECIAL_ENCODING	\
-		((EXCPTN_INFO->arg_classes & IEEE_SPECIAL_ENCODING_MASK) != 0)
+        ((EXCPTN_INFO->arg_classes & IEEE_SPECIAL_ENCODING_MASK) != 0)
 
 
         if ( 
@@ -950,21 +950,21 @@ PACK (
 #    define COPY_MIDDLE_DIGITS(coef, ux)
 #else
 #    define COPY_MIDDLE_DIGITS(coef, ux)			\
-		P_UX_FRACTION_DIGIT(ux, 2, coef->digits[1]);	\
-		P_UX_FRACTION_DIGIT(ux, 1, coef->digits[2])
+        P_UX_FRACTION_DIGIT(ux, 2, coef->digits[1]);	\
+        P_UX_FRACTION_DIGIT(ux, 1, coef->digits[2])
 #endif
 
 #define UNPACK_COEF_TO_UX(coef, ux, mask, bias, scale, op)		\
-		{							\
-		UX_FRACTION_DIGIT_TYPE lsd;				\
-									\
-		P_UX_FRACTION_DIGIT(ux, 0, coef->digits[LSD_NUM]);	\
-		COPY_MIDDLE_DIGITS(coef, ux);				\
-		lsd = coef->digits[0];					\
-		P_UX_FRACTION_DIGIT(ux, LSD_NUM, lsd & ~mask);		\
-		op = lsd & 1;						\
-		scale = (((lsd >> 1) & mask) - bias);			\
-		}
+        {							\
+        UX_FRACTION_DIGIT_TYPE lsd;				\
+                                    \
+        P_UX_FRACTION_DIGIT(ux, 0, coef->digits[LSD_NUM]);	\
+        COPY_MIDDLE_DIGITS(coef, ux);				\
+        lsd = coef->digits[0];					\
+        P_UX_FRACTION_DIGIT(ux, LSD_NUM, lsd & ~mask);		\
+        op = lsd & 1;						\
+        scale = (((lsd >> 1) & mask) - bias);			\
+        }
 
 
 void

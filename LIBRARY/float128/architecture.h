@@ -277,8 +277,8 @@
 
 
 #elif ( defined(alpha) || defined(ALPHA) \
-	|| defined(__alpha) || defined(__ALPHA) \
-	|| defined(_ALPHA_) || defined(__Alpha_AXP) )
+    || defined(__alpha) || defined(__ALPHA) \
+    || defined(_ALPHA_) || defined(__Alpha_AXP) )
 
 #	undef  vax
 #	undef  mips

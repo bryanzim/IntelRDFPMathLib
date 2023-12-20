@@ -61,7 +61,7 @@
 #define DEFINES
 #include STR(FOUR_OVER_PI_BUILD_FILE_NAME)
 
-
+ 
 /*
 ** BASIC ALGORITHM:
 ** ----------------
@@ -207,9 +207,9 @@
 #endif
 
 #define DIV_REM_BY_L(n,q,r)	(q) = (n) >> __LOG2(BITS_PER_DIGIT); \
-				(r) = (n) & (BITS_PER_DIGIT - 1)
+                (r) = (n) & (BITS_PER_DIGIT - 1)
 
-
+ 
 /******************************************************************************/
 /*									      */
 /*		Generate code for multi-precision multiplication	      */
@@ -439,7 +439,7 @@
         i = DIGIT_BIT(p);	/* to 'add 1' at position p */
         m = DIGIT_MASK(num_extra_bits + 1, p + 1);
 
-	printf("#define W_HAS_M_BIT_LOSS\t"
+    printf("#define W_HAS_M_BIT_LOSS\t"
            "(((MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)\n", i, m);
         }
 
@@ -588,10 +588,10 @@
     */
 
 #   define PRINT_DECL_DEF(tag,name,k)					\
-	/* define 'name'0 thru 'name''k-1' */				\
-	printf("#define " tag STR(name) "0");				\
-	for (i = 1; i < k; i++) printf(", " STR(name) "%i", i);		\
-	    printf("\n")
+    /* define 'name'0 thru 'name''k-1' */				\
+    printf("#define " tag STR(name) "0");				\
+    for (i = 1; i < k; i++) printf(", " STR(name) "%i", i);		\
+        printf("\n")
 
     PRINT_DECL_DEF("G_DIGITS\t", g, num_g_digits);
     PRINT_DECL_DEF("F_DIGITS\t", F, num_f_digits);
@@ -694,7 +694,7 @@
 
     if (num_g_digits == 1)
 
-	printf("\t" "g0 = F0*g0\n");
+    printf("\t" "g0 = F0*g0\n");
 
     else if (num_f_digits == 1) {
 
@@ -732,7 +732,7 @@
             printf(sMAC2 "MUL_ADD(g0,F%i,t%i)", i, i);
 
         /* Move the low bits of t to w */
-	printf(sMAC2 "g0 = t0");
+    printf(sMAC2 "g0 = t0");
 
         /*
         ** Now multiply by the remaining digits of g.  In the code that
@@ -807,7 +807,7 @@
             }
 
             /* Move low digit of t to W */
-	    printf(sMAC2 "g%i = t%i", i, first);
+        printf(sMAC2 "g%i = t%i", i, first);
         }
     }
     print;
@@ -821,7 +821,7 @@
     printf("#define GET_NEXT_PRODUCT(g, w, c)");
     if (num_g_digits == 1)
 
-	printf("\t" "XMUL_XADD(g,F0,g0,w,g0,w)");
+    printf("\t" "XMUL_XADD(g,F0,g0,w,g0,w)");
 
     else {
 
@@ -829,7 +829,7 @@
 
         msd_of_mul_add = 1;
         for (i = 1; i < num_f_digits; i++) {
-	    j = i-1;
+        j = i-1;
 
             if (msd_of_mul_add < num_w_digits)
                 printf(sMAC2
@@ -847,7 +847,7 @@
                 break;
             msd_of_mul_add++;
         }
-	printf(";");
+    printf(";");
 
         /*
         ** If there was a carry out on the last add and we are not past the
@@ -956,7 +956,7 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
             ADDSUB(x, UX_PI_OVER_FOUR,  j  < 0 ? SUB : ADD, reduced_argument);
         else
             UX_COPY(x, reduced_argument);
-	return quadrant;
+    return quadrant;
         }
 
     /*
@@ -992,11 +992,11 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
     scale = 0;
 
     do {
-	/*
-	**  If there isn't enough significance in w, then:
-	**  get more bits from the table, form the new digit into TMP_DIGIT,
-	**  and add the partial product F*TMP_DIGIT to w.
-	*/
+    /*
+    **  If there isn't enough significance in w, then:
+    **  get more bits from the table, form the new digit into TMP_DIGIT,
+    **  and add the partial product F*TMP_DIGIT to w.
+    */
 
         if ( !W_HAS_M_BIT_LOSS )
             break;
@@ -1011,10 +1011,10 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
         **  We're done if the there are fewer than L bits of 0's or 1's.
         */
 
-	TMP_DIGIT = ( SECOND_MSD_OF_W >> (BITS_PER_DIGIT - NUM_EXTRA_BITS - 3))
+    TMP_DIGIT = ( SECOND_MSD_OF_W >> (BITS_PER_DIGIT - NUM_EXTRA_BITS - 3))
            | (MSD_OF_W << (NUM_EXTRA_BITS + 3));
         TMP_DIGIT ^= ((SIGNED_DIGIT_TYPE) TMP_DIGIT >> (BITS_PER_DIGIT - 1));
-	if ( TMP_DIGIT )
+    if ( TMP_DIGIT )
             break;
 
         /*

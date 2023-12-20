@@ -62,9 +62,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
     if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
       // if the steering bits are 11, then the exponent is G[0:w+1]
       if (((x & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
     }	// else canonical 
   }
@@ -82,9 +82,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
     if ((y & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
       // if the steering bits are 11, then the exponent is G[0:w+1]
       if (((y & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	y = (y & MASK_SIGN) | ((y & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    y = (y & MASK_SIGN) | ((y & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
     }	// else canonical
   }
@@ -98,12 +98,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
       res = x;
     } else {	// x is QNaN
       if ((y & MASK_NAN) == MASK_NAN) {	// y is NAN
-	if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
-	}
-	res = x;
+    if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
+    }
+    res = x;
       } else {
-	res = y;
+    res = y;
       }
     }
     BID_RETURN (res);
@@ -220,7 +220,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
 
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -229,13 +229,13 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
     }
 
     res = (((sig_n_prime.w[1] > 0)
-	    || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN)) ? y : x;
+        || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN)) ? y : x;
     BID_RETURN (res);
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // if postitive, return whichever significand is larger (converse if negative)
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -243,8 +243,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
     BID_RETURN (res);
   }
   res = (((sig_n_prime.w[1] == 0)
-	  && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN)) ? y : x;
+      && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN)) ? y : x;
   BID_RETURN (res);
 }
 
@@ -272,9 +272,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
     if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
       // if the steering bits are 11, then the exponent is G[0:w+1]
       if (((x & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
     }	// else canonical 
   }
@@ -292,9 +292,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
     if ((y & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
       // if the steering bits are 11, then the exponent is G[0:w+1]
       if (((y & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	y = (y & MASK_SIGN) | ((y & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    y = (y & MASK_SIGN) | ((y & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
     }	// else canonical
   }
@@ -308,12 +308,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
       res = x;
     } else {	// x is QNaN
       if ((y & MASK_NAN) == MASK_NAN) {	// y is NAN
-	if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
-	}
-	res = x;
+    if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
+    }
+    res = x;
       } else {
-	res = y;
+    res = y;
       }
     }
     BID_RETURN (res);
@@ -339,7 +339,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
     // x is infinity, its magnitude is greater than or equal to y
     // return x only if y is infinity and x is negative
     res = ((x & MASK_SIGN) == MASK_SIGN
-	   && (y & MASK_INF) == MASK_INF) ? x : y;
+       && (y & MASK_INF) == MASK_INF) ? x : y;
     BID_RETURN (res);
   } else if ((y & MASK_INF) == MASK_INF) {
     // y is infinity, then it must be greater in magnitude, return x
@@ -404,7 +404,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // now, sig_n_prime has: sig_x * 10^(exp_x-exp_y), this is 
     // the compensated signif.
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -419,7 +419,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
   }
   // exp_y must be greater than exp_x, thus adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
     res = ((y & MASK_SIGN) == MASK_SIGN) ? y : x;
@@ -456,9 +456,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
     if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
       // if the steering bits are 11, then the exponent is G[0:w+1]
       if (((x & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
     }	// else canonical 
   }
@@ -476,9 +476,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
     if ((y & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
       // if the steering bits are 11, then the exponent is G[0:w+1]
       if (((y & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	y = (y & MASK_SIGN) | ((y & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    y = (y & MASK_SIGN) | ((y & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
     }	// else canonical
   }
@@ -492,12 +492,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
       res = x;
     } else {	// x is QNaN
       if ((y & MASK_NAN) == MASK_NAN) {	// y is NAN
-	if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
-	}
-	res = x;
+    if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
+    }
+    res = x;
       } else {
-	res = y;
+    res = y;
       }
     }
     BID_RETURN (res);
@@ -613,7 +613,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -621,13 +621,13 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
       BID_RETURN (res);
     }
     res = (((sig_n_prime.w[1] > 0)
-	    || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN)) ? x : y;
+        || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN)) ? x : y;
     BID_RETURN (res);
   }
   // adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   // if postitive, return whichever significand is larger (converse if negative)
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
@@ -635,8 +635,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
     BID_RETURN (res);
   }
   res = (((sig_n_prime.w[1] == 0)
-	  && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
-					    MASK_SIGN)) ? x : y;
+      && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+                        MASK_SIGN)) ? x : y;
   BID_RETURN (res);
 }
 
@@ -664,9 +664,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
     if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
       // if the steering bits are 11, then the exponent is G[0:w+1]
       if (((x & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    x = (x & MASK_SIGN) | ((x & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
     }	// else canonical 
   }
@@ -684,9 +684,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
     if ((y & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
       // if the steering bits are 11, then the exponent is G[0:w+1]
       if (((y & MASK_BINARY_SIG2) | MASK_BINARY_OR2) >
-	  9999999999999999ull) {
-	// non-canonical
-	y = (y & MASK_SIGN) | ((y & MASK_BINARY_EXPONENT2) << 2);
+      9999999999999999ull) {
+    // non-canonical
+    y = (y & MASK_SIGN) | ((y & MASK_BINARY_EXPONENT2) << 2);
       }	// else canonical
     }	// else canonical
   }
@@ -700,12 +700,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
       res = x;
     } else {	// x is QNaN
       if ((y & MASK_NAN) == MASK_NAN) {	// y is NAN
-	if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
-	  *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
-	}
-	res = x;
+    if ((y & MASK_SNAN) == MASK_SNAN) {	// y is SNAN
+      *pfpsf |= BID_INVALID_EXCEPTION;	// set invalid flag
+    }
+    res = x;
       } else {
-	res = y;
+    res = y;
       }
     }
     BID_RETURN (res);
@@ -731,7 +731,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
     // x is infinity, its magnitude is greater than or equal to y
     // return y as long as x isn't negative infinity
     res = ((x & MASK_SIGN) == MASK_SIGN
-	   && (y & MASK_INF) == MASK_INF) ? y : x;
+       && (y & MASK_INF) == MASK_INF) ? y : x;
     BID_RETURN (res);
   } else if ((y & MASK_INF) == MASK_INF) {
     // y is infinity, then it must be greater in magnitude
@@ -796,7 +796,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
   if (exp_x > exp_y) {	// to simplify the loop below,
     // otherwise adjust the x significand upwards
     __mul_64x64_to_128MACH (sig_n_prime, sig_x,
-			    bid_mult_factor[exp_x - exp_y]);
+                bid_mult_factor[exp_x - exp_y]);
     // now, sig_n_prime has: sig_x * 10^(exp_x-exp_y), 
     // this is the compensated signif.
     if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
@@ -811,7 +811,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
   }
   // exp_y must be greater than exp_x, thus adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
-			  bid_mult_factor[exp_y - exp_x]);
+              bid_mult_factor[exp_y - exp_x]);
 
   if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
     res = ((y & MASK_SIGN) == MASK_SIGN) ? x : y;

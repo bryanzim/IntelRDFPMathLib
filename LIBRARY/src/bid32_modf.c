@@ -34,14 +34,14 @@
 
 #if DECIMAL_CALL_BY_REFERENCE
 void bid32_modf (BID_UINT32 * pres, BID_UINT32 * px, BID_UINT32 * iptr
-		 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		_EXC_INFO_PARAM){
+         _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+        _EXC_INFO_PARAM){
 BID_UINT32 x=*px;
 #else
 DFP_WRAPFN_DFP_DFP_POINTER(32, bid32_modf, 32, 32)
 BID_UINT32 bid32_modf (BID_UINT32 x, BID_UINT32 * iptr
-		   _EXC_FLAGS_PARAM
-		  _EXC_MASKS_PARAM _EXC_INFO_PARAM){
+           _EXC_FLAGS_PARAM
+          _EXC_MASKS_PARAM _EXC_INFO_PARAM){
 
 #endif
 
@@ -52,18 +52,18 @@ BID_UINT32 xi, res;
   rnd_mode=0;
 #endif
 
-	BIDECIMAL_CALL1_NORND(bid32_round_integral_zero, xi, x);
+    BIDECIMAL_CALL1_NORND(bid32_round_integral_zero, xi, x);
 
-	// check for Infinity
-	if((x & 0x7c000000) == 0x78000000)
-		res = (x & 0x80000000) | 0x5f800000;
-	else
-		BIDECIMAL_CALL2 (bid32_sub, res, x, xi);
+    // check for Infinity
+    if((x & 0x7c000000) == 0x78000000)
+        res = (x & 0x80000000) | 0x5f800000;
+    else
+        BIDECIMAL_CALL2 (bid32_sub, res, x, xi);
 
-	*iptr = (xi) | (x & 0x80000000);
-	res |= (x & 0x80000000);
+    *iptr = (xi) | (x & 0x80000000);
+    res |= (x & 0x80000000);
 
-	BID_RETURN (res);
+    BID_RETURN (res);
 
 }
 

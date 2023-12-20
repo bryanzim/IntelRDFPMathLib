@@ -286,13 +286,13 @@ endif
 # =============================================================================
 
 BID_COMMON_LIBM := \
-	acos acosh asin asinh atan atan2 atanh cbrt cos cosh erf erfc exp    \
-	exp10 exp2 expm1 hypot lgamma log log10 log1p log2 pow sin sinh tan  \
-	tanh tgamma
+    acos acosh asin asinh atan atan2 atanh cbrt cos cosh erf erfc exp    \
+    exp10 exp2 expm1 hypot lgamma log log10 log1p log2 pow sin sinh tan  \
+    tanh tgamma
 
 BID_COMMON_OPS := \
         add compare div fdimd fma fmod frexp ldexp llrintd logb logbd lrintd \
-	lround minmax modf mul nearbyintd next nexttowardd noncomp quantexpd \
+    lround minmax modf mul nearbyintd next nexttowardd noncomp quantexpd \
         quantize rem round_integral scalb scalbl sqrt string to_int16        \
         to_int32 to_int64 to_int8 to_uint16 to_uint32 to_uint64 to_uint8     \
         llround llquantexpd quantumd
@@ -313,17 +313,17 @@ BID     := \
 BID_MISC := bid128
 
 BID_TRANS_OBJS := \
-	$(call CrossCat5, $(OBJ_DIR)/bid,64 128,_,$(BID_COMMON_LIBM),.$O)
+    $(call CrossCat5, $(OBJ_DIR)/bid,64 128,_,$(BID_COMMON_LIBM),.$O)
 
 BID_INTERNAL_OBJS := \
-	$(call CrossCat5, $(OBJ_DIR)/bid,32 64 128,_,$(BID_COMMON_OPS),.$O) \
-	$(call CrossCat4, $(OBJ_DIR)/,$(COMMON),32 64 128,.$O)              \
-	$(call CrossCat3, $(OBJ_DIR)/bid32_, $(BID_COMMON_LIBM),.$O)        \
-	$(call CrossCat5, $(OBJ_DIR)/bid32_, $(BID_32),.$O)                 \
-	$(call CrossCat3, $(OBJ_DIR)/bid64_, $(BID_64),.$O)                 \
-	$(call CrossCat3, $(OBJ_DIR)/bid128_,$(BID_128),.$O)                \
-	$(call CrossCat3, $(OBJ_DIR)/bid_,   $(BID),.$O)                    \
-	$(call CrossCat3, $(OBJ_DIR)/,       $(BID_MISC),.$O)
+    $(call CrossCat5, $(OBJ_DIR)/bid,32 64 128,_,$(BID_COMMON_OPS),.$O) \
+    $(call CrossCat4, $(OBJ_DIR)/,$(COMMON),32 64 128,.$O)              \
+    $(call CrossCat3, $(OBJ_DIR)/bid32_, $(BID_COMMON_LIBM),.$O)        \
+    $(call CrossCat5, $(OBJ_DIR)/bid32_, $(BID_32),.$O)                 \
+    $(call CrossCat3, $(OBJ_DIR)/bid64_, $(BID_64),.$O)                 \
+    $(call CrossCat3, $(OBJ_DIR)/bid128_,$(BID_128),.$O)                \
+    $(call CrossCat3, $(OBJ_DIR)/bid_,   $(BID),.$O)                    \
+    $(call CrossCat3, $(OBJ_DIR)/,       $(BID_MISC),.$O)
        
 ALL_BID_OBJS := $(BID_TRANS_OBJS) $(BID_INTERNAL_OBJS)
 
@@ -349,22 +349,22 @@ $(OBJ_DIR)/bid32_sqrt.$O   :: $(SRC_DIR)/bid_sqrt_macros.h
 $(OBJ_DIR)/bid32_div.$O    :: $(SRC_DIR)/bid_div_macros.h
 
 $(BID_TRANS_OBJS)    :: $(OBJ_DIR)/%.$O : $(SRC_DIR)/%.c $(SRC_DIR)/bid_trans.h
-	$(CC) -c $(FO)$@ $(CFLAGS) $(BID_BLD_FLAGS) $<
+    $(CC) -c $(FO)$@ $(CFLAGS) $(BID_BLD_FLAGS) $<
 
 
 $(BID_INTERNAL_OBJS) :: $(OBJ_DIR)/%.$O : $(SRC_DIR)/%.c \
                         $(SRC_DIR)/bid_internal.h
-	$(CC) -c $(FO)$@ $(CFLAGS) $(BID_BLD_FLAGS) $<
+    $(CC) -c $(FO)$@ $(CFLAGS) $(BID_BLD_FLAGS) $<
 
 $(SRC_DIR)/bid_trans.h : $(SRC_DIR)/bid_internal.h
-	touch $@
+    touch $@
 
 $(SRC_DIR)/bid_internal.h : $(SRC_DIR)/bid_conf.h $(SRC_DIR)/bid_functions.h
-	touch $@
+    touch $@
 
 ifeq ($(CC),gcc)
 $(SRC_DIR)/bid_functions.h : $(SRC_DIR)/bid_gcc_intrinsics.h
-	touch $@
+    touch $@
 endif
 
 BID_LIB = $(LIB_DIR)/libbid.$A
@@ -374,15 +374,15 @@ lib : $(BID_LIB)
 $(BID_LIB) :: $(LIB_DIR)/.directory_exists
 
 $(BID_LIB) :: $(ALL_BID_OBJS)
-	$(AR_CMD) $(AR_OUT)$@ $^
+    $(AR_CMD) $(AR_OUT)$@ $^
 
 .PHONY : cleanLib realCleanLib
 
 cleanLib :
-	$(RM) $(ALL_BID_OBJS)
+    $(RM) $(ALL_BID_OBJS)
 
 realCleanLib : cleanLib
-	$(RM) $(BID_LIB)
+    $(RM) $(BID_LIB)
 
 # =============================================================================
 # Targets for the non-native binary transcendental functions.
@@ -409,13 +409,13 @@ F128_HDR_OBJS := $(call PrefixSuffix, $(OBJ_DIR)/dpml_ux_,$(F128_HDR_NAMES),.$O)
 $(F128_DIR)/dpml_ux.h : $(F128_DIR)/dpml_private.h  \
                         $(F128_DIR)/dpml_ux_32_64.h \
                         $(F128_DIR)/dpml_cons_x.h
-	touch $@
+    touch $@
 
 $(F128_DIR)/dpml_private.h : $(call PrefixSuffix, $(F128_DIR)/,               \
                                build op_system compiler architecture i_format \
                                f_format mtc_macros mphoc_macros poly_macros   \
                                assert dpml_names dpml_exception ix86_macros, .h)
-	touch $@
+    touch $@
 
 $(OBJ_DIR)/dpml_globals.$O :: $(call PrefixSuffix, $(F128_DIR)/,             \
                               build op_system compiler architecture f_format \
@@ -430,7 +430,7 @@ $(OBJ_DIR)/dpml_exception.$O :: $(call PrefixSuffix, $(F128_DIR)/, \
 $(F128_HDR_OBJS) :: $(OBJ_DIR)/dpml_ux_%.$O : $(F128_DIR)/dpml_%_x.h
 
 $(F128_OBJS) :: $(OBJ_DIR)/%.$O : $(F128_DIR)/%.c $(F128_DIR)/dpml_ux.h
-	$(CC) -c $(FO)$@ $(F128_CFLAGS) $<
+    $(CC) -c $(FO)$@ $(F128_CFLAGS) $<
 
 
 # =============================================================================
@@ -451,58 +451,58 @@ $(OBJ_DIR)/dpml_asinh_t.$O  :: $(F128_DIR)/sqrt_tab_t.c
 $(OBJ_DIR)/dpml_erf_t.$O \
 $(OBJ_DIR)/dpml_asinh_t.$O  :: $(OBJ_DIR)/dpml_%_t.$O : $(F128_DIR)/dpml_%.c \
                                $(F128_DIR)/dpml_%_t.h
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $(D_F_NAME) \
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $(D_F_NAME) \
              -DBUILD_FILE_NAME=$(BUILD_FILE_NAME) $<
  
 $(OBJ_DIR)/dpml_rt_lgamma_t.$O :: $(F128_DIR)/dpml_lgamma.c \
                                   $(F128_DIR)/dpml_lgamma_t.h
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) -DT_FLOAT -DBUILD_FILE_NAME=dpml_lgamma_t.h $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) -DT_FLOAT -DBUILD_FILE_NAME=dpml_lgamma_t.h $<
  
 $(OBJ_DIR)/dpml_lgamma_t.$O :: $(F128_DIR)/dpml_lgamma.c \
                                   $(F128_DIR)/dpml_lgamma_t.h
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_TYPE) -DDO_LGAMMA -DHACK_GAMMA_INLINE=0 \
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_TYPE) -DDO_LGAMMA -DHACK_GAMMA_INLINE=0 \
              -DBUILD_FILE_NAME=dpml_lgamma_t.h $<
  
 $(OBJ_DIR)/dpml_acosh_t.$O :: $(F128_DIR)/dpml_asinh.c $(F128_DIR)/dpml_acosh_t.h \
                               $(F128_DIR)/sqrt_tab_t.c
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
  
 $(OBJ_DIR)/dpml_erfc_t.$O  :: $(F128_DIR)/dpml_erf.c   $(F128_DIR)/dpml_erf_t.h
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) \
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) \
         -DBUILD_FILE_NAME=dpml_erf_t.h $<
  
 $(OBJ_DIR)/dpml_log1p_t.$O :: $(F128_DIR)/dpml_log.c $(F128_DIR)/dpml_log_t.h
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
  
 $(OBJ_DIR)/dpml_log2_t.$O :: $(F128_DIR)/dpml_log.c $(F128_DIR)/dpml_log_t.h
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
  
 $(OBJ_DIR)/dpml_cbrt_t.$O :: $(F128_DIR)/dpml_cbrt.c $(F128_DIR)/dpml_cbrt_t_table.c
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) \
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) \
         -DBUILD_FILE_NAME=dpml_cbrt_t_table.c $<
  
 $(OBJ_DIR)/dpml_exp10_t.$O \
 $(OBJ_DIR)/dpml_exp2_t.$O  :: $(F128_DIR)/dpml_exp.c $(F128_DIR)/dpml_pow_t_table.c
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) -DUSE_CONTROL87 $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) -DUSE_CONTROL87 $<
 
 $(OBJ_DIR)/dpml_expm1_t.$O :: $(F128_DIR)/dpml_expm1.c $(F128_DIR)/dpml_pow_t_table.c
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) -DUSE_CONTROL87 $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) -DUSE_CONTROL87 $<
 
 $(OBJ_DIR)/dpml_tgamma_t.$O :: $(F128_DIR)/dpml_tgamma.c $(F128_DIR)/dpml_special_exp.h
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_NAME) $(D_F_TYPE) $<
  
 $(OBJ_DIR)/dpml_special_exp_t.$O :: $(F128_DIR)/dpml_exp.c \
                                   $(F128_DIR)/dpml_pow_t_table.c
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) -DSPECIAL_EXP -DT_FLOAT $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) -DSPECIAL_EXP -DT_FLOAT $<
  
  
 $(OBJ_DIR)/dpml_pow_t_table.$O \
 $(OBJ_DIR)/dpml_cbrt_t_table.$O :: $(OBJ_DIR)/%.$O : $(F128_DIR)/%.c
-	$(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_TYPE) $<
+    $(CC) -c $(FO)$@ $(F53_CFLAGS) $(D_F_TYPE) $<
 
                                                            
 cleanBinary :
-	$(RM) $(F128_OBJS) $(F53_OBJS)
+    $(RM) $(F128_OBJS) $(F53_OBJS)
 
 
 # =============================================================================
@@ -520,14 +520,14 @@ cleanBinary :
 # =============================================================================
 
 clean : 
-	$(RM) $(BID_LIB) *.$O
+    $(RM) $(BID_LIB) *.$O
 
 
 #realClean : realCleanLib cleanBinary
 
 
 .directory_exists:
-	touch $@
+    touch $@
 
 
 # =============================================================================

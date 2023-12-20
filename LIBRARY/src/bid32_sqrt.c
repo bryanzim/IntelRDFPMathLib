@@ -71,14 +71,14 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
       res = coefficient_x;
       if ((coefficient_x & SSNAN_MASK32) == SINFINITY_MASK32)	// -Infinity
       {
-	res = NAN_MASK32;
+    res = NAN_MASK32;
 #ifdef BID_SET_STATUS_FLAGS
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       }
 #ifdef BID_SET_STATUS_FLAGS
       if ((x & SNAN_MASK32) == SNAN_MASK32)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN (res & QUIET_MASK32);
     }
@@ -118,7 +118,7 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
   if (QE * QE == A10) {
     res =
       very_fast_get_BID32 (0, (exponent_x + DECIMAL_EXPONENT_BIAS_32) >> 1,
-			   QE);
+               QE);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif

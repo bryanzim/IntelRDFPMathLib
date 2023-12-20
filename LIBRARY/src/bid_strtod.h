@@ -57,15 +57,15 @@ char * ps0, *ps, *ptail;
 
    if(!ps_in)
    {
-		   if(endptr) *endptr=NULL;
-		   return NULL;
+           if(endptr) *endptr=NULL;
+           return NULL;
    }
    while(isspace(*ps_in)) ps_in++;
    ps = malloc((strlen(ps_in)+2)*sizeof(char));
    if(!ps)
    {
-		   set_str_end(endptr, ps_in);
-		   return NULL;
+           set_str_end(endptr, ps_in);
+           return NULL;
    }
    strcpy(ps, ps_in);
    ptail = (char*)ps_in;
@@ -74,42 +74,42 @@ char * ps0, *ps, *ptail;
 
        // Infinity?
    if ((tolower_macro (ps[0]) == 'i' && tolower_macro (ps[1]) == 'n' && 
-	   tolower_macro (ps[2]) == 'f')) {
-		   if(tolower_macro (ps[3]) == 'i' && 
+       tolower_macro (ps[2]) == 'f')) {
+           if(tolower_macro (ps[3]) == 'i' && 
               tolower_macro (ps[4]) == 'n' && tolower_macro (ps[5]) == 'i' && 
               tolower_macro (ps[6]) == 't' && tolower_macro (ps[7]) == 'y')
-		   { ps+=8;  ptail+=8;  set_str_end(endptr, ptail); }
-		   else { ps+=3; ptail+=3; set_str_end(endptr, ptail);}
-	   }
+           { ps+=8;  ptail+=8;  set_str_end(endptr, ptail); }
+           else { ps+=3; ptail+=3; set_str_end(endptr, ptail);}
+       }
    else if(tolower_macro (ps[0]) == 'n' && tolower_macro (ps[1]) == 'a' && 
-	   tolower_macro (ps[2]) == 'n') {
-		   ps+=3; ptail+=3;
-		   while(isdigit_macro(*ps)) { ps++; ptail ++; }
-		   set_str_end(endptr, ptail);
-		   if(*ps0=='-') strcpy(ps0,"-QNAN");
-		   else strcpy(ps0, "QNAN");
-	   }
+       tolower_macro (ps[2]) == 'n') {
+           ps+=3; ptail+=3;
+           while(isdigit_macro(*ps)) { ps++; ptail ++; }
+           set_str_end(endptr, ptail);
+           if(*ps0=='-') strcpy(ps0,"-QNAN");
+           else strcpy(ps0, "QNAN");
+       }
    else {
-	   if(!isdigit_macro(*ps) && ((*ps)!='.')) {
-		   if(endptr) *endptr=(char*)ps_in;
-		   free(ps0);
-		   return NULL;  // no conversion
-	   }
-	   while(isdigit_macro(*ps)) { ps++; ptail++; }
-	   if((*ps) == '.') { 
-		   if((ps0!=ps) || isdigit_macro(ps[1])) {
-			   ps++; ptail++; while(isdigit_macro(*ps)) {ps++; ptail++;} }
-		   else {
-			   if(endptr) *endptr=(char*)ps_in;
-			   free(ps0);
-			   return NULL;  // no conversion
-		   }
-	   }
-	   if(tolower_macro(*ps) == 'e') { 
-		   if((ps[1]=='+') || (ps[1]=='-') || (isdigit_macro(ps[1]))) { ps+=2; ptail+=2;
-		   while(isdigit_macro(*ps)) {ps++; ptail++;} }
-	   }
-		   set_str_end(endptr, ptail);
+       if(!isdigit_macro(*ps) && ((*ps)!='.')) {
+           if(endptr) *endptr=(char*)ps_in;
+           free(ps0);
+           return NULL;  // no conversion
+       }
+       while(isdigit_macro(*ps)) { ps++; ptail++; }
+       if((*ps) == '.') { 
+           if((ps0!=ps) || isdigit_macro(ps[1])) {
+               ps++; ptail++; while(isdigit_macro(*ps)) {ps++; ptail++;} }
+           else {
+               if(endptr) *endptr=(char*)ps_in;
+               free(ps0);
+               return NULL;  // no conversion
+           }
+       }
+       if(tolower_macro(*ps) == 'e') { 
+           if((ps[1]=='+') || (ps[1]=='-') || (isdigit_macro(ps[1]))) { ps+=2; ptail+=2;
+           while(isdigit_macro(*ps)) {ps++; ptail++;} }
+       }
+           set_str_end(endptr, ptail);
    }
 
    *ps = '\0';
@@ -127,16 +127,16 @@ int i,k;
 
    if(!ps_in)
    {
-		   if(endptr) *endptr=NULL;
-		   return NULL;
+           if(endptr) *endptr=NULL;
+           return NULL;
    }
    while(iswspace(*ps_in)) ps_in++;
    k = 1+wcslen(ps_in);
    ps = malloc((k+1)*sizeof(wchar_t));
    if(!ps)
    {
-		   set_wcs_end(endptr,ps_in);
-		   return NULL;
+           set_wcs_end(endptr,ps_in);
+           return NULL;
    }
    wcscpy(ps, ps_in);
    ptail = (wchar_t*)ps_in;
@@ -145,21 +145,21 @@ int i,k;
 
        // Infinity?
    if ((towlower_macro (ps[0]) == L'i' && towlower_macro (ps[1]) == L'n' && 
-	   towlower_macro (ps[2]) == L'f')) {
-		   if(towlower_macro (ps[3]) == L'i' && 
+       towlower_macro (ps[2]) == L'f')) {
+           if(towlower_macro (ps[3]) == L'i' && 
               towlower_macro (ps[4]) == L'n' && towlower_macro (ps[5]) == L'i' && 
               towlower_macro (ps[6]) == L't' && towlower_macro (ps[7]) == L'y')
-		   { ps+=8; ptail+=8; set_wcs_end(endptr, ptail); k=9; }
-		   else { ps+=3; ptail+=3; set_wcs_end(endptr, ptail); k=4; }
-	   }
+           { ps+=8; ptail+=8; set_wcs_end(endptr, ptail); k=9; }
+           else { ps+=3; ptail+=3; set_wcs_end(endptr, ptail); k=4; }
+       }
    else if(towlower_macro (ps[0]) == L'n' && towlower_macro (ps[1]) == L'a' && 
-	   towlower_macro (ps[2]) == L'n') {
-		   ps+=3; ptail+=3;
-		   while(iswdigit_macro(*ps)) {ps++; ptail++;}
-		   set_wcs_end(endptr, ptail);
-		   if(*ps0==L'-') {
-		      ps0[0] = L'-';
-			  ps0[1] = L'Q'; 
+       towlower_macro (ps[2]) == L'n') {
+           ps+=3; ptail+=3;
+           while(iswdigit_macro(*ps)) {ps++; ptail++;}
+           set_wcs_end(endptr, ptail);
+           if(*ps0==L'-') {
+              ps0[0] = L'-';
+              ps0[1] = L'Q'; 
               ps0[2] = L'N'; 
               ps0[3] = L'A'; 
               ps0[4] = L'N'; 
@@ -172,29 +172,29 @@ int i,k;
               ps0[3] = L'N'; 
               ps0[4] = L'\0'; 
               k=5; }
-	   }
+       }
    else {
-	   k=1;
-	   if(!iswdigit_macro(*ps) && ((*ps)!=L'.')) {
-		   if(endptr) *endptr=(wchar_t*)ps_in;
-		   free(ps0);
-		   return NULL;  // no conversion
-	   }
-	   while(iswdigit_macro(*ps)) { ps++; ptail++; k++; }
-	   if((*ps) == L'.') { 
-		   if((ps0!=ps) || iswdigit_macro(ps[1])) {
-			   ps++; ptail++; k++; while(iswdigit_macro(*ps)) { ps++; ptail++; k++; } }
-		   else {
-			   if(endptr) *endptr=(wchar_t*)ps_in;
-			   free(ps0);
-			   return NULL;  // no conversion
-		   }
-	   }
-	   if(towlower_macro(*ps) == L'e') { 
-		   if((ps[1]=='+') || (ps[1]=='-') || (iswdigit_macro(ps[1]))) { { ps+=2; ptail+=2; k+=2; }
-		       while(iswdigit_macro(*ps)) { ps++; ptail++; k++; } }
-	   }
-		   set_wcs_end(endptr, ptail);
+       k=1;
+       if(!iswdigit_macro(*ps) && ((*ps)!=L'.')) {
+           if(endptr) *endptr=(wchar_t*)ps_in;
+           free(ps0);
+           return NULL;  // no conversion
+       }
+       while(iswdigit_macro(*ps)) { ps++; ptail++; k++; }
+       if((*ps) == L'.') { 
+           if((ps0!=ps) || iswdigit_macro(ps[1])) {
+               ps++; ptail++; k++; while(iswdigit_macro(*ps)) { ps++; ptail++; k++; } }
+           else {
+               if(endptr) *endptr=(wchar_t*)ps_in;
+               free(ps0);
+               return NULL;  // no conversion
+           }
+       }
+       if(towlower_macro(*ps) == L'e') { 
+           if((ps[1]=='+') || (ps[1]=='-') || (iswdigit_macro(ps[1]))) { { ps+=2; ptail+=2; k+=2; }
+               while(iswdigit_macro(*ps)) { ps++; ptail++; k++; } }
+       }
+           set_wcs_end(endptr, ptail);
    }
 
    *ps = L'\0';
@@ -202,7 +202,7 @@ int i,k;
    if(!ps0_c)
    { free(ps0); return NULL;}
    for(i=0; i<=k; i++)
-	   ps0_c[i] = (ps0[i] - L'0') + '0';
+       ps0_c[i] = (ps0[i] - L'0') + '0';
    free(ps0);
 
    return ps0_c;

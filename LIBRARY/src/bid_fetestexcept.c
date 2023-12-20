@@ -35,7 +35,7 @@ int bid_fetestexcept( int excepts _EXC_FLAGS_PARAM )
     /* Take only supported exceptions */
     excepts &= DEC_FE_ALL_EXCEPT;
 
-	return get_bid_sw() & excepts;
+    return get_bid_sw() & excepts;
 
 }
 

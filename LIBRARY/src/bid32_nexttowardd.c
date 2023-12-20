@@ -53,21 +53,21 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
 
     if ((x & MASK_NAN32) == MASK_NAN32) { // x is NAN
       if ((x & 0x000fffff) > 999999)
-	x = x & 0xfe000000; // clear G6-G10 and the payload bits
+    x = x & 0xfe000000; // clear G6-G10 and the payload bits
       else
-	x = x & 0xfe0fffff; // clear G6-G10
+    x = x & 0xfe0fffff; // clear G6-G10
       if ((x & MASK_SNAN32) == MASK_SNAN32) { // x is SNAN
-	// set invalid flag
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return quiet (x)
-	res = x & 0xfdffffff;
+    // set invalid flag
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return quiet (x)
+    res = x & 0xfdffffff;
       } else {	// x is QNaN
-	if ((y.w[BID_HIGH_128W] & MASK_SNAN) == MASK_SNAN) { // y is SNAN
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	}
-	// return x
-	res = x;
+    if ((y.w[BID_HIGH_128W] & MASK_SNAN) == MASK_SNAN) { // y is SNAN
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+    }
+    // return x
+    res = x;
       }
       BID_RETURN (res);
     } else if ((y.w[BID_HIGH_128W] & MASK_NAN) == MASK_NAN) { // y is NAN then res = Q (y)
@@ -94,10 +94,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
       BID_RETURN (res);
     } else {	// at least one is infinity
       if ((x & MASK_ANY_INF32) == MASK_INF32) { // x = inf
-	x = x & (MASK_SIGN32 | MASK_INF32);
+    x = x & (MASK_SIGN32 | MASK_INF32);
       }
       if ((y.w[BID_HIGH_128W] & MASK_ANY_INF) == MASK_INF) { // y = inf
-	y.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & (MASK_SIGN | MASK_INF);
+    y.w[BID_HIGH_128W] = y.w[BID_HIGH_128W] & (MASK_SIGN | MASK_INF);
         y.w[BID_LOW_128W] = 0x0ull;
       }
     }
@@ -111,8 +111,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
       // if the steering bits are 11 (condition will be 0), then
       // the exponent is G[0:7]
       if (((x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32) > 9999999) {
-	// non-canonical
-	x = (x & MASK_SIGN32) | ((x & MASK_BINARY_EXPONENT2_32) << 2);
+    // non-canonical
+    x = (x & MASK_SIGN32) | ((x & MASK_BINARY_EXPONENT2_32) << 2);
       }
     } else { 
       // if ((x & MASK_STEERING_BITS32) != MASK_STEERING_BITS32) x is unchanged

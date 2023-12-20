@@ -72,9 +72,9 @@
 #endif
 
 #define NORMALIZE(x,f)	BACKUP_SELECT(					\
-				B_COPY_SIGN_AND_EXP(x, ONE, f),		\
+                B_COPY_SIGN_AND_EXP(x, ONE, f),		\
                                 F_COPY_SIGN_AND_EXP((B_TYPE) x, ONE, f)	\
-				)
+                )
 /*
 ** For IEEE types, we get the index bits for the log table by shifting
 ** right.  But for VAX types we need to do a PDP_SHUFFLE and shift left
@@ -95,8 +95,8 @@
 #   define POSITION_BITS(ix, exp_pos)	(ix >> (exp_pos - LOG_INDEX_SHIFT))
 #else
 #   define POSITION_BITS(ix, exp_pos)					\
-		((ix << (LOG_INDEX_SHIFT - (exp_pos))) |		\
-		 ((U_INT_32)ix >> ((exp_pos) + (32 - LOG_INDEX_SHIFT)))) 
+        ((ix << (LOG_INDEX_SHIFT - (exp_pos))) |		\
+         ((U_INT_32)ix >> ((exp_pos) + (32 - LOG_INDEX_SHIFT)))) 
 #endif
 
 /*
@@ -148,10 +148,10 @@
 #   define GET_LOW_32_BITS(i,u)	i = (WORD) ( (INT_32) u.B_LO_WORD )
 #else
 #   define GET_LOW_32_BITS(i,u)	{					\
-				U_INT_32 u32;				\
-				u32 = ( U_INT_32) (u.uw[0] >>		\
-				    (BITS_PER_WORD - 32));		\
-				u32 = ((u32 >> 16) | (u32 << 16));	\
-				i = (WORD) ((INT_32) u32);		\
-				} 
+                U_INT_32 u32;				\
+                u32 = ( U_INT_32) (u.uw[0] >>		\
+                    (BITS_PER_WORD - 32));		\
+                u32 = ((u32 >> 16) | (u32 << 16));	\
+                i = (WORD) ((INT_32) u32);		\
+                } 
 #endif

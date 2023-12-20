@@ -85,7 +85,7 @@
 #define VOC	0		/* have a 'variable-octant' parameter */
 #define BIX	1		/* have a 'binary scaling' parameter */
 
-
+ 
 /*
  * BASIC ALGORITHM:
  * ----------------
@@ -298,10 +298,10 @@
 #if !defined DIV_REM_BY_L
 #   if IS_POW_TWO( BITS_PER_DIGIT )
 #       define DIV_REM_BY_L(n,q,r)	(q) = (n) >> __LOG2(BITS_PER_DIGIT); \
-					(r) = (n) & (BITS_PER_DIGIT - 1)
+                    (r) = (n) & (BITS_PER_DIGIT - 1)
 #   else
 #       define DIV_REM_BY_L(n,q,r)	(q) = (n) / BITS_PER_DIGIT; \
-					(r) = (n) - (q)*BITS_PER_DIGIT
+                    (r) = (n) - (q)*BITS_PER_DIGIT
 #   endif
 #endif
 
@@ -319,7 +319,7 @@
 #    define MAC2	" \\\n\t"
 #    define MAC3	"\n\n"
 
-
+ 
 /******************************************************************************/
 /*									      */
 /*			Produce the four_ov_pi table			      */
@@ -408,7 +408,7 @@
     digits_per_row = floor(292/(BITS_PER_DIGIT + 16));
 
     for (n = 0; n < num_4_ov_pi_digits; n++) {
-	if (mod(n,digits_per_row) == 0) printf ("\n       ");
+    if (mod(n,digits_per_row) == 0) printf ("\n       ");
         t = bldexp(t, BITS_PER_DIGIT);
         digit = floor(t);
         t -= digit;	/* NB: precision is reduced, but this works! */
@@ -446,7 +446,7 @@
 
 #endif
 
-
+ 
 /******************************************************************************/
 /*									      */
 /*		Generate code for multi-precision multiplication	      */
@@ -523,26 +523,26 @@
  * represented in at least ceil(P/L) and D = ceil(N/L) digits respectively.
  */
 
-	/*
-	 *  How many digits are in F, G, and W?
-	 *  (num_req_bits is N in the dicussion above)
-	 */
-	num_f_digits =	ceil(BITS_PER_F_TYPE/BITS_PER_DIGIT);
-	num_req_bits =	(2*F_PRECISION + MIN_OVERHANG + NUM_OCTANT_BITS);
-	num_w_digits =	ceil(NUM_REQ_BITS/BITS_PER_DIGIT);
-	num_g_digits =	num_w_digits;
+    /*
+     *  How many digits are in F, G, and W?
+     *  (num_req_bits is N in the dicussion above)
+     */
+    num_f_digits =	ceil(BITS_PER_F_TYPE/BITS_PER_DIGIT);
+    num_req_bits =	(2*F_PRECISION + MIN_OVERHANG + NUM_OCTANT_BITS);
+    num_w_digits =	ceil(NUM_REQ_BITS/BITS_PER_DIGIT);
+    num_g_digits =	num_w_digits;
 
-	printf("#define NUM_F_DIGITS\t%i\n", num_f_digits);
-	printf("#define NUM_G_DIGITS\t%i\n", num_g_digits);
-	printf("#define NUM_W_DIGITS\t%i\n", num_w_digits);
-	printf("#define NUM_REQ_BITS\t%i\n", num_req_bits);
-	print;
+    printf("#define NUM_F_DIGITS\t%i\n", num_f_digits);
+    printf("#define NUM_G_DIGITS\t%i\n", num_g_digits);
+    printf("#define NUM_W_DIGITS\t%i\n", num_w_digits);
+    printf("#define NUM_REQ_BITS\t%i\n", num_req_bits);
+    print;
 
-	/*
-	 *  Note that 'num_f_digits = ceil(F_PRECISION/BITS_PER_DIGIT)'
-	 *  doesn't suffice; we declare _u.i[NUM_F_DIGITS], and expect to
-	 *  get the sign and exponent from one of these 'f' digits.
-	 */
+    /*
+     *  Note that 'num_f_digits = ceil(F_PRECISION/BITS_PER_DIGIT)'
+     *  doesn't suffice; we declare _u.i[NUM_F_DIGITS], and expect to
+     *  get the sign and exponent from one of these 'f' digits.
+     */
 
 
 /*
@@ -715,8 +715,8 @@ procedure bit_loss(s,t)
         i = DIGIT_BIT(p);	/* to 'add 1' at position p */
         m = DIGIT_MASK(t, p);	/* mask of the t bits */
         printf(
-	    MAC2 "(((MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)"
-	    MAC3, i, m-i);
+        MAC2 "(((MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)"
+        MAC3, i, m-i);
 
     } else if (BITS_PER_DIGIT <= s && b < 2*BITS_PER_DIGIT) {
         /*
@@ -726,54 +726,54 @@ procedure bit_loss(s,t)
         i = DIGIT_BIT(p);
         m = DIGIT_MASK(t, p);
         printf(
-	    MAC2 "(((SECOND_MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)"
-	    MAC3, i, m-i);
+        MAC2 "(((SECOND_MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)"
+        MAC3, i, m-i);
 
     } else if (b <= 2*BITS_PER_DIGIT) {
-	/*
-	 *  Test bits in both MSD_OF_W and SECOND_MSD_OF_W.
-	 */
-	p = 2*BITS_PER_DIGIT - b;
-	i = DIGIT_BIT(p);
-	m = DIGIT_MASK(BITS_PER_DIGIT - p, p);
-	printf("( ");
-	printf(MAC2);
-	if (m == i) printf("/* ");
-	printf(
-	    "(((SECOND_MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)",
-	    i, m-i);
-	printf(" && ");
-	if (m == i) printf(" */");
-	m = DIGIT_MASK(BITS_PER_DIGIT - s, 0);
-	printf(
-	    MAC2 "(("
-		 "( ((SIGNED_DIGIT_TYPE)SECOND_MSD_OF_W >> %i) - MSD_OF_W )"
-		 " & 0x%..16i) == 0)",
-	    p, m);
-	printf(" )" MAC3);
+    /*
+     *  Test bits in both MSD_OF_W and SECOND_MSD_OF_W.
+     */
+    p = 2*BITS_PER_DIGIT - b;
+    i = DIGIT_BIT(p);
+    m = DIGIT_MASK(BITS_PER_DIGIT - p, p);
+    printf("( ");
+    printf(MAC2);
+    if (m == i) printf("/* ");
+    printf(
+        "(((SECOND_MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)",
+        i, m-i);
+    printf(" && ");
+    if (m == i) printf(" */");
+    m = DIGIT_MASK(BITS_PER_DIGIT - s, 0);
+    printf(
+        MAC2 "(("
+         "( ((SIGNED_DIGIT_TYPE)SECOND_MSD_OF_W >> %i) - MSD_OF_W )"
+         " & 0x%..16i) == 0)",
+        p, m);
+    printf(" )" MAC3);
 
     } else {
         fatal("bit_loss: s + t > 2*BITS_PER_DIGIT");
     }
 }
 
-	/*
-	 *  Test for m+2 bits of all 0's or all 1's.
-	 *  Recall that m is the number of bits we've got in W,
-	 *  above and beyond what's required for accurate trig reduction.
-	 */
-	m = (num_w_digits*BITS_PER_DIGIT - num_req_bits);
-	printf("#define W_HAS_M_BIT_LOSS ");
-	bit_loss(0, NUM_OCTANT_BITS-1 + m+2);
+    /*
+     *  Test for m+2 bits of all 0's or all 1's.
+     *  Recall that m is the number of bits we've got in W,
+     *  above and beyond what's required for accurate trig reduction.
+     */
+    m = (num_w_digits*BITS_PER_DIGIT - num_req_bits);
+    printf("#define W_HAS_M_BIT_LOSS ");
+    bit_loss(0, NUM_OCTANT_BITS-1 + m+2);
 #if 0
-	/*
-	 *  Test for L+1 bits of all 0's or all 1's.
-	 *  It's insufficient to test just L bits, because then when
-	 *  we 'collapse' L bits, we'd lose information -- we wouldn't
-	 *  know whether they were all 0's or all 1's that were removed.
-	 */
-	printf("#define W_HAS_L_BIT_LOSS ");
-	bit_loss(NUM_OCTANT_BITS-1, BITS_PER_DIGIT+1);
+    /*
+     *  Test for L+1 bits of all 0's or all 1's.
+     *  It's insufficient to test just L bits, because then when
+     *  we 'collapse' L bits, we'd lose information -- we wouldn't
+     *  know whether they were all 0's or all 1's that were removed.
+     */
+    printf("#define W_HAS_L_BIT_LOSS ");
+    bit_loss(NUM_OCTANT_BITS-1, BITS_PER_DIGIT+1);
 #endif
 
 /*
@@ -950,10 +950,10 @@ procedure bit_loss(s,t)
      *  Print macros for declaring the appropriate number of digits
      */
 #   define PRINT_DECL_DEF(tag,name,k)	\
-	/* define 'name'0 thru 'name''k-1' */ \
-	printf("#define " tag STR(name) "0"); \
-	for (i = 1; i < k; i++) printf(", " STR(name) "%i", i); \
-	printf("\n")
+    /* define 'name'0 thru 'name''k-1' */ \
+    printf("#define " tag STR(name) "0"); \
+    for (i = 1; i < k; i++) printf(", " STR(name) "%i", i); \
+    printf("\n")
     PRINT_DECL_DEF("G_DIGITS\t", g, num_g_digits);
     PRINT_DECL_DEF("F_DIGITS\t", F, num_f_digits);
     PRINT_DECL_DEF("TMP_DIGITS\t", t, num_t_digits);
@@ -979,23 +979,23 @@ procedure bit_loss(s,t)
      *  if a DIGIT_TYPE crosses a 16-bit boundary.
      */
 #   if (VAX_FLOATING && BITS_PER_DIGIT > 16)
-	needs_pdp_shuffle = 1;
+    needs_pdp_shuffle = 1;
 #   else
-	needs_pdp_shuffle = 0;
+    needs_pdp_shuffle = 0;
 #   endif
 
     /*
      *  GET_F_DIGITS(x) fetches the initial digits of f from x
      */
     printf("#define GET_F_DIGITS(x)"
-	MAC2 "{"
-	MAC2 "union { DIGIT_TYPE i[NUM_F_DIGITS]; F_TYPE f; } _u;"
+    MAC2 "{"
+    MAC2 "union { DIGIT_TYPE i[NUM_F_DIGITS]; F_TYPE f; } _u;"
         MAC2 "_u.f = x;");
 
     if (BITS_PER_F_TYPE < BITS_PER_DIGIT) {
 
         printf(MAC2 "F0 = _u.i[0] & DIGIT_MASK(%i, 0);", BITS_PER_F_TYPE);
-	if (needs_pdp_shuffle) printf("_PDP_SHUFFLE(F0);");
+    if (needs_pdp_shuffle) printf("_PDP_SHUFFLE(F0);");
 
     } else {
 
@@ -1009,7 +1009,7 @@ procedure bit_loss(s,t)
 
         for (i = num_f_digits - 1; i >= 0; i--) {
             printf(MAC2 "F%i = _u.i[%i]; ", i, j);
-	    if (needs_pdp_shuffle) printf("_PDP_SHUFFLE(F%i);", i);
+        if (needs_pdp_shuffle) printf("_PDP_SHUFFLE(F%i);", i);
             j += j_inc;
         }
 
@@ -1059,7 +1059,7 @@ procedure bit_loss(s,t)
 
     if (num_g_digits == 1)
 
-	printf("\t" "g0 = F0*g0\n");
+    printf("\t" "g0 = F0*g0\n");
 
     else if (num_f_digits == 1) {
 
@@ -1096,7 +1096,7 @@ procedure bit_loss(s,t)
             printf(sMAC2 "MUL_ADD(g0,F%i,t%i)", i, i);
 
         /* Move the low bits of t to w */
-	printf(sMAC2 "g0 = t0");
+    printf(sMAC2 "g0 = t0");
 
         /*
          * Now multiply by the remaining digits of g.  In the code that
@@ -1171,7 +1171,7 @@ procedure bit_loss(s,t)
             }
 
             /* Move low digit of t to W */
-	    printf(sMAC2 "g%i = t%i", i, first);
+        printf(sMAC2 "g%i = t%i", i, first);
         }
     }
     print;
@@ -1185,7 +1185,7 @@ procedure bit_loss(s,t)
     printf("#define GET_NEXT_PRODUCT(g, w, c)");
     if (num_g_digits == 1)
 
-	printf("\t" "XMUL_XADD(g,F0,g0,w,g0,w)");
+    printf("\t" "XMUL_XADD(g,F0,g0,w,g0,w)");
 
     else {
 
@@ -1193,7 +1193,7 @@ procedure bit_loss(s,t)
 
         msd_of_mul_add = 1;
         for (i = 1; i < num_f_digits; i++) {
-	    j = i-1;
+        j = i-1;
 
             if (msd_of_mul_add < num_w_digits)
                 printf(sMAC2
@@ -1211,7 +1211,7 @@ procedure bit_loss(s,t)
                 break;
             msd_of_mul_add++;
         }
-	printf(";");
+    printf(";");
 
         /*
          * If there was a carry out on the last add and we are not past the
@@ -1334,75 +1334,75 @@ procedure bit_loss(s,t)
                            i,     i,                i-1);
         else
             printf(MAC2 "g0 = (g0 << (lshift)) | (EXTRA_W_DIGIT >> (rshift))");
-	printf(MAC3);
+    printf(MAC3);
 
     }
 
 #   if PRECISION_BACKUP_AVAILABLE
 
-	/*
-	 *  CVT_W_TO_B_TYPE(t) does as it says -- w is converted to a B_TYPE t.
+    /*
+     *  CVT_W_TO_B_TYPE(t) does as it says -- w is converted to a B_TYPE t.
          *  The 'binary point' in this conversion is just after MSD_OF_W (which
-	 *  is treated as a signed digit).
-	 */
+     *  is treated as a signed digit).
+     */
         printf("#define CVT_W_TO_B_TYPE(t)");
-	printf(MAC2 "t = TO_B_TYPE((SIGNED_DIGIT_TYPE) g%i)", num_w_digits-1);
+    printf(MAC2 "t = TO_B_TYPE((SIGNED_DIGIT_TYPE) g%i)", num_w_digits-1);
         j = 0;
         for (i = num_w_digits-2; i >= lsd_of_w; i--)
             printf(MAC2 "  + SCALE_TAB(%i)*TO_B_TYPE(g%i)", j++, i);
         printf(MAC3);
 
-	overhang = B_PRECISION - F_PRECISION;
+    overhang = B_PRECISION - F_PRECISION;
 
 #   else
 
-	/*
-	 *  CVT_W_TO_HI_LO(hi, lo, tmp_digit) converts w to two F_TYPEs:
-	 *  hi and lo, with the same conventions as CVT_W_TO_B_TYPE.
-	 *  The high part is 'shortened' to half_precision, to make
-	 *  hi*PI_OVER_4_HI exact (PI_OVER_4_HI = bround(pi/4,half_precision). 
-	 *
-	 *  For hi, we'll take the 1+half_precision high bits of w (recall
-	 *  that the highest bit is just a 'sign' bit).
-	 */
+    /*
+     *  CVT_W_TO_HI_LO(hi, lo, tmp_digit) converts w to two F_TYPEs:
+     *  hi and lo, with the same conventions as CVT_W_TO_B_TYPE.
+     *  The high part is 'shortened' to half_precision, to make
+     *  hi*PI_OVER_4_HI exact (PI_OVER_4_HI = bround(pi/4,half_precision). 
+     *
+     *  For hi, we'll take the 1+half_precision high bits of w (recall
+     *  that the highest bit is just a 'sign' bit).
+     */
         half_precision = floor(F_PRECISION/2);
-	hi_bits = 1+half_precision;
+    hi_bits = 1+half_precision;
         num_digits_per_half_precision = ceil(hi_bits/BITS_PER_DIGIT);
         extra_bits = num_digits_per_half_precision*BITS_PER_DIGIT - hi_bits;
-	/*
-	 *  The digit containing the lowest of the hi_bits is split --
-	 *  move the low bits to tmp_digit, and keep the rest.
-	 */
+    /*
+     *  The digit containing the lowest of the hi_bits is split --
+     *  move the low bits to tmp_digit, and keep the rest.
+     */
         half_precision_digit = num_w_digits - num_digits_per_half_precision;
         printf("#define CVT_W_TO_HI_LO(hi, lo, tmp_digit)");
-	printf(MAC2 "tmp_digit = g%i & " DIGIT_HEX_FMT_SPEC ";",
+    printf(MAC2 "tmp_digit = g%i & " DIGIT_HEX_FMT_SPEC ";",
             half_precision_digit, (1 << extra_bits) - 1);
         printf(MAC2 "g%i ^= tmp_digit;", half_precision_digit);
-	/*
-	 *  Now compute hi and lo.  Note that we needn't worry about inexact
-	 *  conversions from DIGIT_TYPE to F_TYPE.
-	 */
-	if (half_precision_digit < lsd_of_w) fatal("we never set lo");
-	j = 0;
+    /*
+     *  Now compute hi and lo.  Note that we needn't worry about inexact
+     *  conversions from DIGIT_TYPE to F_TYPE.
+     */
+    if (half_precision_digit < lsd_of_w) fatal("we never set lo");
+    j = 0;
         for (i = num_w_digits - 1; i >= lsd_of_w; i--) {
             if (j == 0)
-		printf(MAC2 "hi = TO_F_TYPE((SIGNED_DIGIT_TYPE) g%i)", i);
-	    else
+        printf(MAC2 "hi = TO_F_TYPE((SIGNED_DIGIT_TYPE) g%i)", i);
+        else
                 printf(MAC2 "   + SCALE_TAB(%i)*g%i", j-1, i);
-	    if (i == half_precision_digit) {
-		printf(sMAC2 "lo = TO_F_TYPE(tmp_digit)");
-		if (j > 0) printf("*SCALE_TAB(%i)", j-1);
-	    }
-	    j++;
-	}
+        if (i == half_precision_digit) {
+        printf(sMAC2 "lo = TO_F_TYPE(tmp_digit)");
+        if (j > 0) printf("*SCALE_TAB(%i)", j-1);
+        }
+        j++;
+    }
         printf(MAC3);
 
-	overhang = half_precision + F_PRECISION;
+    overhang = half_precision + F_PRECISION;
 
 #endif
 
     if (MIN_OVERHANG >= overhang)
-	fatal("MIN_OVERHANG too big");
+    fatal("MIN_OVERHANG too big");
 
     /* Make sure there are enough good bits in pi/4 */
     precision = ceil(3/2*(F_PRECISION+MIN_OVERHANG)/MP_RADIX_BITS) + 4;
@@ -1451,16 +1451,16 @@ procedure bit_loss(s,t)
 #   define AT_OFFSET  "(((char*)TRIG_RED_TABLE_NAME) + %i)"
 #   if PRECISION_BACKUP_AVAILABLE
         printf("#define PI_OVER_4 "
-	    "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n", pi_offset);
+        "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n", pi_offset);
 #   else
         printf("#define PI_OVER_4_HI "
-	    "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n", pi_offset);
+        "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n", pi_offset);
         printf("#define PI_OVER_4_LO "
-	    "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n", pi_lo_offset);
+        "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n", pi_lo_offset);
 #   endif
 
     printf("#define SCALE_TAB(j) " 
-	"*(((" STR(ENTRY_TYPE) "*)" AT_OFFSET ") + j)\n", scale_offset);
+    "*(((" STR(ENTRY_TYPE) "*)" AT_OFFSET ") + j)\n", scale_offset);
 
     @end_divert
     @eval my $outText    = MphocEval( GetStream( "divertText" ) );	\
@@ -1516,17 +1516,17 @@ procedure bit_loss(s,t)
 
 #   if (BITS_PER_DIGIT == 32)
 #       define _PDP_SHUFFLE(i) \
-	    (i) = ( ((DIGIT_TYPE)(i)<<16) \
-	          | ((DIGIT_TYPE)(i)>>16) )
+        (i) = ( ((DIGIT_TYPE)(i)<<16) \
+              | ((DIGIT_TYPE)(i)>>16) )
 
 #   elif (BITS_PER_F_TYPE == 32 && 32 <= BITS_PER_DIGIT)
 #       define _PDP_SHUFFLE(i) \
             (i) = ( ((DIGIT_TYPE)((i) & 0xffff) << 16) \
-		  | ((DIGIT_TYPE)(i) >> 16) )
+          | ((DIGIT_TYPE)(i) >> 16) )
 
 #   elif (BITS_PER_DIGIT == 64)
 #       define _PDP_SHUFFLE(i) \
-	    (i) = (  ((DIGIT_TYPE)(i) << 48) \
+        (i) = (  ((DIGIT_TYPE)(i) << 48) \
                   |  ((DIGIT_TYPE)(i) >> 48) \
                   | (((DIGIT_TYPE)(i) >> 16) & ((DIGIT_TYPE)0xffff << 16)) \
                   | (((DIGIT_TYPE)(i) << 16) & ((DIGIT_TYPE)0xffff << 32)) )
@@ -1563,12 +1563,12 @@ procedure bit_loss(s,t)
 WORD
 F_ENTRY_NAME(F_TYPE x,
 #   if VOC
-	WORD voc,
+    WORD voc,
 #   endif
 #   if BIX
-	WORD bix,
+    WORD bix,
 #   endif
-	F_TYPE *hi, F_TYPE *lo)
+    F_TYPE *hi, F_TYPE *lo)
 {
     WORD octant, offset, scale, j;
     DIGIT_TYPE F_DIGITS;		/* declare F0, ... Fm		*/
@@ -1595,7 +1595,7 @@ F_ENTRY_NAME(F_TYPE x,
     TMP_DIGIT = MSD_OF_F & DIGIT_MASK(F_EXP_WIDTH + 1, EXP_DIGIT_POS);
 #else
     TMP_DIGIT = MSD_OF_F & DIGIT_MASK(BITS_PER_DIGIT - EXP_DIGIT_POS,
-						       EXP_DIGIT_POS);
+                               EXP_DIGIT_POS);
 #endif
     MSD_OF_F = (MSD_OF_F ^ TMP_DIGIT) | DIGIT_BIT(EXP_DIGIT_POS);
     TMP_DIGIT = (TMP_DIGIT >> EXP_DIGIT_POS) & DIGIT_MASK(F_EXP_WIDTH,0);
@@ -1615,8 +1615,8 @@ F_ENTRY_NAME(F_TYPE x,
      *	interesting bit in the 4/pi table.
      */
     offset = TMP_DIGIT - F_EXP_OF_ONE - (F_PRECISION-1)
-		- (NUM_OCTANT_BITS-1)
-		+ FOUR_OV_PI_ZERO_PAD_LEN;
+        - (NUM_OCTANT_BITS-1)
+        + FOUR_OV_PI_ZERO_PAD_LEN;
 
     /*
      *  A negative offset would have us access memory before the start of
@@ -1628,9 +1628,9 @@ F_ENTRY_NAME(F_TYPE x,
         *hi = x;
         *lo = 0;
 #	if VOC
-	    return voc << NUM_INDEX_BITS;
+        return voc << NUM_INDEX_BITS;
 #	else
-	    return 0;
+        return 0;
 #	endif
     }
 
@@ -1680,27 +1680,27 @@ F_ENTRY_NAME(F_TYPE x,
     scale = 0;
 
     do {
-	/*
-	 *  If there isn't enough significance in w, then:
-	 *  get more bits from the table, form the new digit into TMP_DIGIT,
-	 *  and add the partial product F*TMP_DIGIT to w.
-	 *
-	 *  Once W_HAS_M_BIT_LOSS becomes false, it'll stay false, and we'll
-	 *  do no more partial products.  But we'll stay in the loop so the
-	 *  left shifts will ensure MSD_OF_W is not all 0's or 1's.
-	 */
+    /*
+     *  If there isn't enough significance in w, then:
+     *  get more bits from the table, form the new digit into TMP_DIGIT,
+     *  and add the partial product F*TMP_DIGIT to w.
+     *
+     *  Once W_HAS_M_BIT_LOSS becomes false, it'll stay false, and we'll
+     *  do no more partial products.  But we'll stay in the loop so the
+     *  left shifts will ensure MSD_OF_W is not all 0's or 1's.
+     */
         if (W_HAS_M_BIT_LOSS) {
             TMP_DIGIT = next_g_digit;
             next_g_digit = *p++;
             if (offset) TMP_DIGIT = (TMP_DIGIT << offset) | (next_g_digit >> j);
             GET_NEXT_PRODUCT(TMP_DIGIT, EXTRA_W_DIGIT, CARRY_DIGIT);
-	}
+    }
 
         /*
          *  We're done if the there are fewer than L+1 bits of 0's or 1's.
          */
-	TMP_DIGIT = (SIGNED_DIGIT_TYPE)SECOND_MSD_OF_W >> (BITS_PER_DIGIT-1);
-	if (MSD_OF_W != TMP_DIGIT) break;
+    TMP_DIGIT = (SIGNED_DIGIT_TYPE)SECOND_MSD_OF_W >> (BITS_PER_DIGIT-1);
+    if (MSD_OF_W != TMP_DIGIT) break;
 
         /*
          *  Shift w left a digit, and keep w*2^scale invariant.
@@ -1787,9 +1787,9 @@ F_ENTRY_NAME(F_TYPE x,
         *hi = t;
         *lo = *hi - t;
     } else {
-	*hi = -t;
-	*lo = t + *hi;
-	octant = ((1 << (NUM_OCTANT_BITS+NUM_INDEX_BITS))-1) - octant;
+    *hi = -t;
+    *lo = t + *hi;
+    octant = ((1 << (NUM_OCTANT_BITS+NUM_INDEX_BITS))-1) - octant;
     }
   }
 #else
@@ -1816,9 +1816,9 @@ F_ENTRY_NAME(F_TYPE x,
         *hi = t;
         *lo = s;
     } else {
-	*hi = -t;
-	*lo = -s;
-	octant = ((1 << (NUM_OCTANT_BITS+NUM_INDEX_BITS))-1) - octant;
+    *hi = -t;
+    *lo = -s;
+    octant = ((1 << (NUM_OCTANT_BITS+NUM_INDEX_BITS))-1) - octant;
     }
   }
 #endif

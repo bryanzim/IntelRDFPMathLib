@@ -79,7 +79,7 @@ bid___div_128_by_128 (BID_UINT128 * pCQ, BID_UINT128 * pCR, BID_UINT128 CX, BID_
       __add_carry_out ((pCQ->w[0]), carry, Ql, Ql2);
       pCQ->w[1] = Qh + carry;
     
-	  return;
+      return;
     }
   }
   // now CY.w[1] > 0 or CY.[0]>=13*2^(60)
@@ -115,8 +115,8 @@ bid___div_128_by_128 (BID_UINT128 * pCQ, BID_UINT128 * pCR, BID_UINT128 CX, BID_
       __sub_128_128 (CA, CA, CY);
       pCQ->w[0]++;
       if (__unsigned_compare_ge_128 (CA, CY)) {
-	__sub_128_128 (CA, CA, CY);
-	pCQ->w[0]++;
+    __sub_128_128 (CA, CA, CY);
+    pCQ->w[0]++;
       }
     }
     pCR->w[1] = CA.w[1];
@@ -192,21 +192,21 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
   // CQ2Y <= (*pCA4) ?
   if (CQ2Y.w[3] < (*pCA4).w[3]
       || (CQ2Y.w[3] == (*pCA4).w[3]
-	  && (CQ2Y.w[2] < (*pCA4).w[2]
-	      || (CQ2Y.w[2] == (*pCA4).w[2]
-		  && (CQ2Y.w[1] < (*pCA4).w[1]
-		      || (CQ2Y.w[1] == (*pCA4).w[1]
-			  && (CQ2Y.w[0] <= (*pCA4).w[0]))))))) {
+      && (CQ2Y.w[2] < (*pCA4).w[2]
+          || (CQ2Y.w[2] == (*pCA4).w[2]
+          && (CQ2Y.w[1] < (*pCA4).w[1]
+              || (CQ2Y.w[1] == (*pCA4).w[1]
+              && (CQ2Y.w[0] <= (*pCA4).w[0]))))))) {
 
     // (*pCA4) -CQ2Y, guaranteed below 5*2^49*CY < 5*2^(49+128)
     __sub_borrow_out ((*pCA4).w[0], carry64, (*pCA4).w[0], CQ2Y.w[0]);
     __sub_borrow_in_out ((*pCA4).w[1], carry64, (*pCA4).w[1], CQ2Y.w[1],
-			 carry64);
+             carry64);
     (*pCA4).w[2] = (*pCA4).w[2] - CQ2Y.w[2] - carry64;
 
     lx = ((BINARY80) (*pCA4).w[2] * l128 +
-	  ((BINARY80) (*pCA4).w[1] * l64 +
-	   (BINARY80) (*pCA4).w[0])) * l64;
+      ((BINARY80) (*pCA4).w[1] * l64 +
+       (BINARY80) (*pCA4).w[0])) * l64;
     lq = lx / ly;
     Q3 = (BID_UINT64) lq;
 
@@ -217,17 +217,17 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
       (*pCA4).w[1] = (*pCA4).w[1] - CQ3Y.w[1] - carry64;
 
       if ((*pCA4).w[1] > CY.w[1]
-	  || ((*pCA4).w[1] == CY.w[1] && (*pCA4).w[0] >= CY.w[0])) {
-	Q3++;
-	__sub_borrow_out ((*pCA4).w[0], carry64, (*pCA4).w[0], CY.w[0]);
-	(*pCA4).w[1] = (*pCA4).w[1] - CY.w[1] - carry64;
-	if ((*pCA4).w[1] > CY.w[1]
-	    || ((*pCA4).w[1] == CY.w[1] && (*pCA4).w[0] >= CY.w[0])) {
-	  Q3++;
-	  __sub_borrow_out ((*pCA4).w[0], carry64, (*pCA4).w[0],
-			    CY.w[0]);
-	  (*pCA4).w[1] = (*pCA4).w[1] - CY.w[1] - carry64;
-	}
+      || ((*pCA4).w[1] == CY.w[1] && (*pCA4).w[0] >= CY.w[0])) {
+    Q3++;
+    __sub_borrow_out ((*pCA4).w[0], carry64, (*pCA4).w[0], CY.w[0]);
+    (*pCA4).w[1] = (*pCA4).w[1] - CY.w[1] - carry64;
+    if ((*pCA4).w[1] > CY.w[1]
+        || ((*pCA4).w[1] == CY.w[1] && (*pCA4).w[0] >= CY.w[0])) {
+      Q3++;
+      __sub_borrow_out ((*pCA4).w[0], carry64, (*pCA4).w[0],
+                CY.w[0]);
+      (*pCA4).w[1] = (*pCA4).w[1] - CY.w[1] - carry64;
+    }
       }
       // add Q3 to Q2
       __add_carry_out (CQ2.w[0], carry64, Q3, CQ2.w[0]);
@@ -237,7 +237,7 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
     // CQ2Y - (*pCA4), guaranteed below 5*2^(49+128)
     __sub_borrow_out ((*pCA4).w[0], carry64, CQ2Y.w[0], (*pCA4).w[0]);
     __sub_borrow_in_out ((*pCA4).w[1], carry64, CQ2Y.w[1], (*pCA4).w[1],
-			 carry64);
+             carry64);
     (*pCA4).w[2] = CQ2Y.w[2] - (*pCA4).w[2] - carry64;
 
     lx =
@@ -251,7 +251,7 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
     (*pCA4).w[1] = CQ3Y.w[1] - (*pCA4).w[1] - carry64;
 
     if ((BID_SINT64) (*pCA4).w[1] > (BID_SINT64) CY.w[1]
-	|| ((*pCA4).w[1] == CY.w[1] && (*pCA4).w[0] >= CY.w[0])) {
+    || ((*pCA4).w[1] == CY.w[1] && (*pCA4).w[0] >= CY.w[0])) {
       Q3--;
       __sub_borrow_out ((*pCA4).w[0], carry64, (*pCA4).w[0], CY.w[0]);
       (*pCA4).w[1] = (*pCA4).w[1] - CY.w[1] - carry64;
@@ -375,7 +375,7 @@ bid___div_128_by_128 (BID_UINT128 * pCQ, BID_UINT128 * pCR, BID_UINT128 CX0, BID
       Q--;
       CX.w[0] += CY.w[0];
       if (CX.w[0] < CY.w[0])
-	CX.w[1]++;
+    CX.w[1]++;
       CX.w[1] += CY.w[1];
     }
   } else if (__unsigned_compare_ge_128 (CX, CY)) {
@@ -418,8 +418,8 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
   d128 = t64.d * t64.d;
   d192 = d128 * t64.d;
   lx = (double) CA4.w[3] * d192 + ((double) CA4.w[2] * d128 +
-				   ((double) CA4.w[1] * t64.d +
-				    (double) CA4.w[0]));
+                   ((double) CA4.w[1] * t64.d +
+                    (double) CA4.w[0]));
   ly = (double) CY.w[1] * t64.d + (double) CY.w[0];
   lq = lx / ly;
 
@@ -433,8 +433,8 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
   // Q >= 2^100 ?
   if (CA4.w[3] > CY36.w[2]
       || (CA4.w[3] == CY36.w[2]
-	  && (CA4.w[2] > CY36.w[1]
-	      || (CA4.w[2] == CY36.w[1] && CA4.w[1] >= CY36.w[0])))) {
+      && (CA4.w[2] > CY36.w[1]
+          || (CA4.w[2] == CY36.w[1] && CA4.w[1] >= CY36.w[0])))) {
     // 2^(-60)*CA4/CY
     d60.i = 0x3c30000000000000ull;
     lq *= d60.d;
@@ -452,11 +452,11 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
     // CA4 -= CA2
     __sub_borrow_out (CA4.w[0], carry64, CA4.w[0], CA2.w[0]);
     __sub_borrow_in_out (CA4.w[1], carry64, CA4.w[1], CA2.w[1],
-			 carry64);
+             carry64);
     CA4.w[2] = CA4.w[2] - CA2.w[2] - carry64;
 
     lx = ((double) CA4.w[2] * d128 +
-	  ((double) CA4.w[1] * t64.d + (double) CA4.w[0]));
+      ((double) CA4.w[1] * t64.d + (double) CA4.w[0]));
     lq = lx / ly;
 
     CQT.w[1] = Q >> (64 - 60);
@@ -469,8 +469,8 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
   CY51.w[0] = CY.w[0] << 51;
 
   if (CA4.w[2] > CY51.w[2] || ((CA4.w[2] == CY51.w[2])
-			       &&
-			       (__unsigned_compare_gt_128 (CA4, CY51))))
+                   &&
+                   (__unsigned_compare_gt_128 (CA4, CY51))))
   {
     // Q > 2^51 
 
@@ -494,7 +494,7 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
 
     __sub_borrow_out (CA4.w[0], carry64, CA4.w[0], CA2.w[0]);
     __sub_borrow_in_out (CA4.w[1], carry64, CA4.w[1], CA2.w[1],
-			 carry64);
+             carry64);
     CA4.w[2] = CA4.w[2] - CA2.w[2] - carry64;
 
     CQT.w[1] = Q >> (64 - 49);
@@ -502,7 +502,7 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
     __add_128_128 (CQ, CQ, CQT);
 
     lx = ((double) CA4.w[2] * d128 +
-	  ((double) CA4.w[1] * t64.d + (double) CA4.w[0]));
+      ((double) CA4.w[1] * t64.d + (double) CA4.w[0]));
     lq = lx / ly;
   }
 
@@ -521,7 +521,7 @@ bid___div_256_by_128 (BID_UINT128 * pCQ, BID_UINT256 * pCA4, BID_UINT128 CY) {
       Q--;
       CA4.w[0] += CY.w[0];
       if (CA4.w[0] < CY.w[0])
-	CA4.w[1]++;
+    CA4.w[1]++;
       CA4.w[1] += CY.w[1];
     }
   } else if (__unsigned_compare_ge_128 (CA4, CY)) {

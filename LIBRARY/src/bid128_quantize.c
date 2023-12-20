@@ -129,7 +129,7 @@ if (CX.w[1]) {
 digits_x = bid_estimate_decimal_digits[bin_expon_cx];
 if (CX.w[1] > bid_power10_table_128[digits_x].w[1]
     || (CX.w[1] == bid_power10_table_128[digits_x].w[1]
-	&& CX.w[0] >= bid_power10_table_128[digits_x].w[0]))
+    && CX.w[0] >= bid_power10_table_128[digits_x].w[0]))
   digits_x++;
 
 expon_diff = exponent_x - exponent_y;
@@ -182,16 +182,16 @@ if ((BID_UINT32) total_digits <= 34) {
 
       // get remainder
       if (amount >= 64) {
-	remainder_h = CX2.w[0] | (CX2.w[1] << (128 - amount));
+    remainder_h = CX2.w[0] | (CX2.w[1] << (128 - amount));
       } else
-	remainder_h = CX2.w[0] << (64 - amount);
+    remainder_h = CX2.w[0] << (64 - amount);
 
       // test whether fractional part is 0
       if (!remainder_h
-	  && (CT.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-	      || (CT.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-		  && CT.w[0] < bid_reciprocals10_128[extra_digits].w[0]))) {
-	CR.w[0]--;
+      && (CT.w[1] < bid_reciprocals10_128[extra_digits].w[1]
+          || (CT.w[1] == bid_reciprocals10_128[extra_digits].w[1]
+          && CT.w[0] < bid_reciprocals10_128[extra_digits].w[0]))) {
+    CR.w[0]--;
       }
     }
 #endif
@@ -213,25 +213,25 @@ if ((BID_UINT32) total_digits <= 34) {
   case BID_ROUNDING_TIES_AWAY:
     // test whether fractional part is 0
     if (REM_H.w[1] == 0x8000000000000000ull && !REM_H.w[0]
-	&& (CT.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-	    || (CT.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-		&& CT.w[0] < bid_reciprocals10_128[extra_digits].w[0])))
+    && (CT.w[1] < bid_reciprocals10_128[extra_digits].w[1]
+        || (CT.w[1] == bid_reciprocals10_128[extra_digits].w[1]
+        && CT.w[0] < bid_reciprocals10_128[extra_digits].w[0])))
       status = BID_EXACT_STATUS;
     break;
   case BID_ROUNDING_DOWN:
   case BID_ROUNDING_TO_ZERO:
     if (!(REM_H.w[1] | REM_H.w[0])
-	&& (CT.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-	    || (CT.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-		&& CT.w[0] < bid_reciprocals10_128[extra_digits].w[0])))
+    && (CT.w[1] < bid_reciprocals10_128[extra_digits].w[1]
+        || (CT.w[1] == bid_reciprocals10_128[extra_digits].w[1]
+        && CT.w[0] < bid_reciprocals10_128[extra_digits].w[0])))
       status = BID_EXACT_STATUS;
     break;
   default:
     // round up
     __add_carry_out (Stemp.w[0], CY64, CT.w[0],
-		     bid_reciprocals10_128[extra_digits].w[0]);
+             bid_reciprocals10_128[extra_digits].w[0]);
     __add_carry_in_out (Stemp.w[1], carry, CT.w[1],
-			bid_reciprocals10_128[extra_digits].w[1], CY64);
+            bid_reciprocals10_128[extra_digits].w[1], CY64);
     if (amount < 64) {
       C2N.w[1] = 0;
       C2N.w[0] = ((BID_UINT64) 1) << amount;

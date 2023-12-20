@@ -231,11 +231,11 @@
 #endif
 
 #define IS_UNIX ( \
-	OP_SYSTEM == hp_ux || \
-	OP_SYSTEM == linux || \
-	OP_SYSTEM == osf || \
-	OP_SYSTEM == ultrix || \
-	OP_SYSTEM == unicos \
+    OP_SYSTEM == hp_ux || \
+    OP_SYSTEM == linux || \
+    OP_SYSTEM == osf || \
+    OP_SYSTEM == ultrix || \
+    OP_SYSTEM == unicos \
 )
 
 #endif  /* OP_SYSTEM_H */

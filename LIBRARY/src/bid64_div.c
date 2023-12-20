@@ -102,7 +102,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     if ((x & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
       if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN_VAL (coefficient_x & QUIET_MASK64);
     }
@@ -110,22 +110,22 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     if ((x & INFINITY_MASK64) == INFINITY_MASK64) {
       // check if y is Inf or NaN
       if ((y & INFINITY_MASK64) == INFINITY_MASK64) {
-	// y==Inf, return NaN 
-	if ((y & NAN_MASK64) == INFINITY_MASK64) {	// Inf/Inf
+    // y==Inf, return NaN 
+    if ((y & NAN_MASK64) == INFINITY_MASK64) {	// Inf/Inf
 #ifdef BID_SET_STATUS_FLAGS
-	  __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+      __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	  BID_RETURN_VAL (NAN_MASK64);
-	}
+      BID_RETURN_VAL (NAN_MASK64);
+    }
       } else {
-	// otherwise return +/-Inf
-	BID_RETURN_VAL (((x ^ y) & 0x8000000000000000ull) |
-		    INFINITY_MASK64);
+    // otherwise return +/-Inf
+    BID_RETURN_VAL (((x ^ y) & 0x8000000000000000ull) |
+            INFINITY_MASK64);
       }
     }
     // x==0
     if (((y & INFINITY_MASK64) != INFINITY_MASK64)
-	&& !(coefficient_y)) {
+    && !(coefficient_y)) {
       // y==0 , return NaN
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -134,16 +134,16 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     }
     if (((y & INFINITY_MASK64) != INFINITY_MASK64)) {
       if ((y & SPECIAL_ENCODING_MASK64) == SPECIAL_ENCODING_MASK64)
-	exponent_y = ((BID_UINT32) (y >> 51)) & 0x3ff;
+    exponent_y = ((BID_UINT32) (y >> 51)) & 0x3ff;
       else
-	exponent_y = ((BID_UINT32) (y >> 53)) & 0x3ff;
+    exponent_y = ((BID_UINT32) (y >> 53)) & 0x3ff;
       sign_y = y & 0x8000000000000000ull;
 
       exponent_x = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS;
       if (exponent_x > DECIMAL_MAX_EXPON_64)
-	exponent_x = DECIMAL_MAX_EXPON_64;
+    exponent_x = DECIMAL_MAX_EXPON_64;
       else if (exponent_x < 0)
-	exponent_x = 0;
+    exponent_x = 0;
       BID_RETURN_VAL ((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 53));
     }
 
@@ -155,7 +155,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     if ((y & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
       if ((y & SNAN_MASK64) == SNAN_MASK64)	// sNaN
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN_VAL (coefficient_y & QUIET_MASK64);
     }
@@ -231,8 +231,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     if (((BID_SINT64) R) <= 0) {
       // can have R==-1 for coeff_y==1
       res =
-	get_BID64 (sign_x ^ sign_y, diff_expon, (Q + R), rnd_mode,
-		   pfpsf);
+    get_BID64 (sign_x ^ sign_y, diff_expon, (Q + R), rnd_mode,
+           pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -338,7 +338,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
       // difference in powers of 5 bid_factors
       d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
       if (d5 < nzeros)
-	nzeros = d5;
+    nzeros = d5;
 
       __mul_64x64_to_128 (CT, Q, bid_reciprocals10_64[nzeros]);
 
@@ -355,53 +355,53 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
       nzeros = 0;
 
       for (j = 0; QX32; j++, QX32 >>= 7) {
-	k = (QX32 & 127);
-	tdigit[0] += bid_convert_table[j][k][0];
-	tdigit[1] += bid_convert_table[j][k][1];
-	if (tdigit[0] >= 100000000) {
-	  tdigit[0] -= 100000000;
-	  tdigit[1]++;
-	}
+    k = (QX32 & 127);
+    tdigit[0] += bid_convert_table[j][k][0];
+    tdigit[1] += bid_convert_table[j][k][1];
+    if (tdigit[0] >= 100000000) {
+      tdigit[0] -= 100000000;
+      tdigit[1]++;
+    }
       }
 
       digit = tdigit[0];
       if (!digit && !tdigit[1])
-	nzeros += 16;
+    nzeros += 16;
       else {
-	if (!digit) {
-	  nzeros += 8;
-	  digit = tdigit[1];
-	}
-	// decompose digit
-	PD = (BID_UINT64) digit *0x068DB8BBull;
-	digit_h = (BID_UINT32) (PD >> 40);
-	digit_low = digit - digit_h * 10000;
+    if (!digit) {
+      nzeros += 8;
+      digit = tdigit[1];
+    }
+    // decompose digit
+    PD = (BID_UINT64) digit *0x068DB8BBull;
+    digit_h = (BID_UINT32) (PD >> 40);
+    digit_low = digit - digit_h * 10000;
 
-	if (!digit_low)
-	  nzeros += 4;
-	else
-	  digit_h = digit_low;
+    if (!digit_low)
+      nzeros += 4;
+    else
+      digit_h = digit_low;
 
-	if (!(digit_h & 1))
-	  nzeros +=
-	    3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			  (digit_h & 7));
+    if (!(digit_h & 1))
+      nzeros +=
+        3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+              (digit_h & 7));
       }
 
       if (nzeros) {
-	__mul_64x64_to_128 (CT, Q, bid_reciprocals10_64[nzeros]);
+    __mul_64x64_to_128 (CT, Q, bid_reciprocals10_64[nzeros]);
 
-	// now get P/10^extra_digits: shift C64 right by M[extra_digits]-128
-	amount = bid_short_recip_scale[nzeros];
-	Q = CT.w[1] >> amount;
+    // now get P/10^extra_digits: shift C64 right by M[extra_digits]-128
+    amount = bid_short_recip_scale[nzeros];
+    Q = CT.w[1] >> amount;
       }
       diff_expon += nzeros;
 
     }
     if (diff_expon >= 0) {
       res =
-	fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, Q,
-				 rnd_mode, pfpsf);
+    fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, Q,
+                 rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -471,7 +471,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
 
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, Q, rnd_mode,
-			       pfpsf);
+                   pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -513,12 +513,12 @@ unsigned rmode;
 
 valid_y = unpack_BID128_value (&sign_y, &exponent_y, &CY, y);
 
-	// unpack arguments, check for NaN or Infinity
+    // unpack arguments, check for NaN or Infinity
 CX.w[1] = 0;
 if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], (x))) {
 #ifdef BID_SET_STATUS_FLAGS
     if (((y.w[1] & SNAN_MASK64) == SNAN_MASK64) ||	// y is sNaN
-		((x & SNAN_MASK64) == SNAN_MASK64))
+        ((x & SNAN_MASK64) == SNAN_MASK64))
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   // test if x is NaN
@@ -538,12 +538,12 @@ if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], (x))) {
       res = 0x7c00000000000000ull;
       BID_RETURN_VAL (res);
     }
-	if (((y.w[1] & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
+    if (((y.w[1] & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
     // otherwise return +/-Inf
     res =
       (((x) ^ y.w[1]) & 0x8000000000000000ull) | 0x7800000000000000ull;
     BID_RETURN_VAL (res);
-	}
+    }
   }
   // x is 0
   if ((y.w[1] & INFINITY_MASK64) != INFINITY_MASK64) {
@@ -657,7 +657,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 //  if (digits_q <= 16) {
     if (!CR.w[1] && !CR.w[0]) {
       res = get_BID64 (sign_x ^ sign_y, diff_expon,
-		       CQ.w[0], rnd_mode, pfpsf);
+               CQ.w[0], rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -701,7 +701,7 @@ if (!done) {
       // difference in powers of 5 bid_factors
       d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
       if (d5 < nzeros)
-	nzeros = d5;
+    nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
       __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
 
@@ -715,67 +715,67 @@ if (!done) {
       Q_low = CQ.w[0];
 
       {
-	tdigit[0] = Q_low & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_low >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_low & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_low >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  // get P*(2^M[extra_digits])/10^extra_digits
-	  __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
+    if (nzeros) {
+      // get P*(2^M[extra_digits])/10^extra_digits
+      __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
 
-	  // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
-	  amount = bid_recip_scale[nzeros];
-	  __shr_128 (CQ, Qh, amount);
-	}
-	diff_expon += nzeros;
+      // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
+      amount = bid_recip_scale[nzeros];
+      __shr_128 (CQ, Qh, amount);
+    }
+    diff_expon += nzeros;
 
       }
     }
-	if(diff_expon>=0){
+    if(diff_expon>=0){
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0],
-			       rnd_mode, pfpsf);
+                   rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
     BID_RETURN_VAL (res);
-	}
+    }
   }
 #endif
 
@@ -852,7 +852,7 @@ if (!done) {
   
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0], rnd_mode,
-			       pfpsf);
+                   pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -898,13 +898,13 @@ unsigned rmode;
 
 valid_y = unpack_BID64 (&sign_y, &exponent_y, &CY.w[0], (y));
 
-	// unpack arguments, check for NaN or Infinity
+    // unpack arguments, check for NaN or Infinity
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
   // test if x is NaN
   if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
     if ((x.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull ||	// sNaN
-	(y & 0x7e00000000000000ull) == 0x7e00000000000000ull)
+    (y & 0x7e00000000000000ull) == 0x7e00000000000000ull)
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       Tmp.w[1] = (CX.w[1] & 0x00003fffffffffffull);
@@ -928,16 +928,16 @@ if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
       res = 0x7c00000000000000ull;
       BID_RETURN_VAL (res);
     }
-	if (((y & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
+    if (((y & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
     // otherwise return +/-Inf
     res =
       ((x.w[1] ^ (y)) & 0x8000000000000000ull) | 0x7800000000000000ull;
     BID_RETURN_VAL (res);
-	}
+    }
   }
   // x is 0
   if (((y & INFINITY_MASK64) != INFINITY_MASK64)) {
-	  if (!CY.w[0]) {
+      if (!CY.w[0]) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -1043,7 +1043,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   if (digits_q <= 16) {
     if (!CR.w[1] && !CR.w[0]) {
       res = get_BID64 (sign_x ^ sign_y, diff_expon,
-		       CQ.w[0], rnd_mode, pfpsf);
+               CQ.w[0], rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1080,9 +1080,9 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
       CA4.w[0] |= 1;*/
     done = 1;
 //printf("CA4=%016I64x,%016I64x, CY=%016I64x %016I64x, p=%I64x\n",CA4.w[1], CA4.w[0],CY.w[1],CY.w[0],power10_table_128[ed2].w[0]);
-	if(CA4.w[1]|CA4.w[0]) {
+    if(CA4.w[1]|CA4.w[0]) {
     __mul_64x128_low(CY, (bid_power10_table_128[ed2].w[0]),CY);
-	}
+    }
 
   }
 
@@ -1108,7 +1108,7 @@ if (!done) {
 #ifndef LEAVE_TRAILING_ZEROS
     // check whether result is exact
   {
-	  if(!done) {
+      if(!done) {
     // check whether CX, CY are short
     if (!CX.w[1] && !CY.w[1] && (CX.w[0] <= 1024) && (CY.w[0] <= 1024)) {
       i = (int) CY.w[0] - 1;
@@ -1118,7 +1118,7 @@ if (!done) {
       // difference in powers of 5 bid_factors
       d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
       if (d5 < nzeros)
-		nzeros = d5;
+        nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
       __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
       //__mul_128x128_to_256(P256, CQ, bid_reciprocals10_128[nzeros]);Qh.w[1]=P256.w[3];Qh.w[0]=P256.w[2];
@@ -1134,68 +1134,68 @@ if (!done) {
       Q_low = CQ.w[0];
 
       {
-	tdigit[0] = Q_low & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_low >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_low & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_low >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  // get P*(2^M[extra_digits])/10^extra_digits
-	  __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
+    if (nzeros) {
+      // get P*(2^M[extra_digits])/10^extra_digits
+      __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
 
-	  // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
-	  amount = bid_recip_scale[nzeros];
-	  __shr_128 (CQ, Qh, amount);
-	}
-	diff_expon += nzeros;
+      // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
+      amount = bid_recip_scale[nzeros];
+      __shr_128 (CQ, Qh, amount);
+    }
+    diff_expon += nzeros;
 
       }
     }
-	  }
-	if(diff_expon>=0){
+      }
+    if(diff_expon>=0){
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0],
-			       rnd_mode, pfpsf);
+                   rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
     BID_RETURN_VAL (res);
-	}
+    }
   }
 #endif
 
@@ -1276,7 +1276,7 @@ if (!done) {
  
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0], rnd_mode,
-			       pfpsf);
+                   pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1327,13 +1327,13 @@ unsigned rmode;
 
 valid_y = unpack_BID128_value (&sign_y, &exponent_y, &CY, y);
 
-	// unpack arguments, check for NaN or Infinity
+    // unpack arguments, check for NaN or Infinity
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
   // test if x is NaN
   if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
     if ((x.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull ||	// sNaN
-	(y.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull)
+    (y.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull)
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       Tmp.w[1] = (CX.w[1] & 0x00003fffffffffffull);
@@ -1357,13 +1357,13 @@ if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
       res = 0x7c00000000000000ull;
       BID_RETURN_VAL (res);
     }
-	if (((y.w[1] & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
+    if (((y.w[1] & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
     // otherwise return +/-Inf
     res =
       ((x.w[1] ^ y.
-	w[1]) & 0x8000000000000000ull) | 0x7800000000000000ull;
+    w[1]) & 0x8000000000000000ull) | 0x7800000000000000ull;
     BID_RETURN_VAL (res);
-	}
+    }
   }
   // x is 0
   if (((y.w[1] & 0x7800000000000000ull) != 0x7800000000000000ull)) {
@@ -1474,7 +1474,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   if (digits_q <= 16) {
     if (!CR.w[1] && !CR.w[0]) {
       res = get_BID64 (sign_x ^ sign_y, diff_expon,
-		       CQ.w[0], rnd_mode, pfpsf);
+               CQ.w[0], rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1507,9 +1507,9 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
     /*if (CR.w[0] || CR.w[1])
       CA4.w[0] |= 1;*/
     done = 1;
-	if(CA4.w[1]|CA4.w[0]) {
+    if(CA4.w[1]|CA4.w[0]) {
     __mul_64x128_low(CY, (bid_power10_table_128[ed2].w[0]),CY);
-	}
+    }
   }
 
 }
@@ -1536,7 +1536,7 @@ if (!done) {
 #ifndef LEAVE_TRAILING_ZEROS
     // check whether result is exact
   {
-	  if(!done) {
+      if(!done) {
     // check whether CX, CY are short
     if (!CX.w[1] && !CY.w[1] && (CX.w[0] <= 1024) && (CY.w[0] <= 1024)) {
       i = (int) CY.w[0] - 1;
@@ -1546,7 +1546,7 @@ if (!done) {
       // difference in powers of 5 bid_factors
       d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
       if (d5 < nzeros)
-	nzeros = d5;
+    nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
       __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
       //__mul_128x128_to_256(P256, CQ, bid_reciprocals10_128[nzeros]);Qh.w[1]=P256.w[3];Qh.w[0]=P256.w[2];
@@ -1562,68 +1562,68 @@ if (!done) {
       Q_low = CQ.w[0];
 
       {
-	tdigit[0] = Q_low & 0x3ffffff;
-	tdigit[1] = 0;
-	QX = Q_low >> 26;
-	QX32 = QX;
-	nzeros = 0;
+    tdigit[0] = Q_low & 0x3ffffff;
+    tdigit[1] = 0;
+    QX = Q_low >> 26;
+    QX32 = QX;
+    nzeros = 0;
 
-	for (j = 0; QX32; j++, QX32 >>= 7) {
-	  k = (QX32 & 127);
-	  tdigit[0] += bid_convert_table[j][k][0];
-	  tdigit[1] += bid_convert_table[j][k][1];
-	  if (tdigit[0] >= 100000000) {
-	    tdigit[0] -= 100000000;
-	    tdigit[1]++;
-	  }
-	}
+    for (j = 0; QX32; j++, QX32 >>= 7) {
+      k = (QX32 & 127);
+      tdigit[0] += bid_convert_table[j][k][0];
+      tdigit[1] += bid_convert_table[j][k][1];
+      if (tdigit[0] >= 100000000) {
+        tdigit[0] -= 100000000;
+        tdigit[1]++;
+      }
+    }
 
-	digit = tdigit[0];
-	if (!digit && !tdigit[1])
-	  nzeros += 16;
-	else {
-	  if (!digit) {
-	    nzeros += 8;
-	    digit = tdigit[1];
-	  }
-	  // decompose digit
-	  PD = (BID_UINT64) digit *0x068DB8BBull;
-	  digit_h = (BID_UINT32) (PD >> 40);
-	  digit_low = digit - digit_h * 10000;
+    digit = tdigit[0];
+    if (!digit && !tdigit[1])
+      nzeros += 16;
+    else {
+      if (!digit) {
+        nzeros += 8;
+        digit = tdigit[1];
+      }
+      // decompose digit
+      PD = (BID_UINT64) digit *0x068DB8BBull;
+      digit_h = (BID_UINT32) (PD >> 40);
+      digit_low = digit - digit_h * 10000;
 
-	  if (!digit_low)
-	    nzeros += 4;
-	  else
-	    digit_h = digit_low;
+      if (!digit_low)
+        nzeros += 4;
+      else
+        digit_h = digit_low;
 
-	  if (!(digit_h & 1))
-	    nzeros +=
-	      3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
-			    (digit_h & 7));
-	}
+      if (!(digit_h & 1))
+        nzeros +=
+          3 & (BID_UINT32) (bid_packed_10000_zeros[digit_h >> 3] >>
+                (digit_h & 7));
+    }
 
-	if (nzeros) {
-	  // get P*(2^M[extra_digits])/10^extra_digits
-	  __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
+    if (nzeros) {
+      // get P*(2^M[extra_digits])/10^extra_digits
+      __mul_128x128_full (Qh, Ql, CQ, bid_reciprocals10_128[nzeros]);
 
-	  // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
-	  amount = bid_recip_scale[nzeros];
-	  __shr_128 (CQ, Qh, amount);
-	}
-	diff_expon += nzeros;
+      // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
+      amount = bid_recip_scale[nzeros];
+      __shr_128 (CQ, Qh, amount);
+    }
+    diff_expon += nzeros;
 
       }
     }
-	  }
-	if(diff_expon>=0){
+      }
+    if(diff_expon>=0){
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0],
-			       rnd_mode, pfpsf);
+                   rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
     BID_RETURN_VAL (res);
-	}
+    }
   }
 #endif
 
@@ -1704,7 +1704,7 @@ if (!done) {
   
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, diff_expon, CQ.w[0], rnd_mode,
-			       pfpsf);
+                   pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif

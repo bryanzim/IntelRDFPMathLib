@@ -2973,13 +2973,13 @@ typedef unsigned short int fexcept_t;
          _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM);
                     
      BID_EXTERN_C void bid32_quantum (BID_UINT32 *pres, BID_UINT32 *px
-				      _EXC_MASKS_PARAM _EXC_INFO_PARAM);
+                      _EXC_MASKS_PARAM _EXC_INFO_PARAM);
      BID_EXTERN_C void bid64_quantum (BID_UINT64 *pres, BID_UINT64 *px
-				      _EXC_MASKS_PARAM _EXC_INFO_PARAM);
+                      _EXC_MASKS_PARAM _EXC_INFO_PARAM);
      BID_EXTERN_C void bid128_quantum (BID_UINT128 *pres, BID_UINT128 *px
-				       _EXC_MASKS_PARAM _EXC_INFO_PARAM);
+                       _EXC_MASKS_PARAM _EXC_INFO_PARAM);
      BID_EXTERN_C void bid32_llquantexp (long long int *pres, BID_UINT32 *px
-	_EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM);
+    _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM);
      BID_EXTERN_C void bid64_llquantexp (long long int *pres, BID_UINT64 *px
         _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM);
      BID_EXTERN_C void bid128_llquantexp (long long int *pres, BID_UINT128 *px

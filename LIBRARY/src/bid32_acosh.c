@@ -51,8 +51,8 @@ if ((x & 0x7c000000) == 0x7c000000) {
   if ((x & 0x7e000000) == 0x7e000000)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	res = (coefficient_x) & QUIET_MASK32;
-	BID_RETURN (res);
+    res = (coefficient_x) & QUIET_MASK32;
+    BID_RETURN (res);
 }
     // x is Infinity?
 if ((x & 0x78000000) == 0x78000000) {
@@ -66,39 +66,39 @@ if ((x & 0x78000000) == 0x78000000) {
     // x is 0
 }
            
-	 // calculate asinh(sqrt(x*x-1)) for x near 1 (x<1+1/32 = (10^5 + 5^5)/10^5 )
-	 near_one = 0x300192d5;
+     // calculate asinh(sqrt(x*x-1)) for x near 1 (x<1+1/32 = (10^5 + 5^5)/10^5 )
+     near_one = 0x300192d5;
 
-	 BIDECIMAL_CALL2_NORND (bid32_quiet_less, 
+     BIDECIMAL_CALL2_NORND (bid32_quiet_less, 
             cmp_res, x, near_one);
-	 if(cmp_res) {
-		 // x<1+1/32
-		one = 0x32800001; 
+     if(cmp_res) {
+         // x<1+1/32
+        one = 0x32800001; 
 
-		BIDECIMAL_CALL2_NORND (bid32_quiet_greater, 
+        BIDECIMAL_CALL2_NORND (bid32_quiet_greater, 
             cmp_res, one, x);
-		if(cmp_res) {
-			// x < 1
+        if(cmp_res) {
+            // x < 1
 #ifdef BID_SET_STATUS_FLAGS
-			__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+            __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-			res = 0x7c000000;
-			BID_RETURN (res);
-		}
+            res = 0x7c000000;
+            BID_RETURN (res);
+        }
 
-		// -1
-		one = 0xb2800001;
+        // -1
+        one = 0xb2800001;
 
-		// x*x-1
-		BIDECIMAL_CALL3(bid32_fma, z2, x, x, one);
-		// sqrt(x*x-1)
-		BIDECIMAL_CALL1 (bid32_sqrt, z, z2);
+        // x*x-1
+        BIDECIMAL_CALL3(bid32_fma, z2, x, x, one);
+        // sqrt(x*x-1)
+        BIDECIMAL_CALL1 (bid32_sqrt, z, z2);
 
-		BIDECIMAL_CALL1 (bid32_to_binary64, xd, z);
-		zd = asinh(xd);
-		BIDECIMAL_CALL1 (binary64_to_bid32, res, zd);
-		BID_RETURN (res);
-	 }
+        BIDECIMAL_CALL1 (bid32_to_binary64, xd, z);
+        zd = asinh(xd);
+        BIDECIMAL_CALL1 (binary64_to_bid32, res, zd);
+        BID_RETURN (res);
+     }
 
   BIDECIMAL_CALL1(bid32_to_binary64,xd,x);
   zd = acosh(xd);

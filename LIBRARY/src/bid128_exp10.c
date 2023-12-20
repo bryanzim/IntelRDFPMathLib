@@ -38,91 +38,91 @@ BID_F128_TYPE rq, xq;
 int exponent_x, cmp_res, k, k2;
 
   // unpack arguments, check for NaN or Infinity
-	if (!unpack_BID128_value_BLE (&sign_x, &exponent_x, &CX, x)) {
+    if (!unpack_BID128_value_BLE (&sign_x, &exponent_x, &CX, x)) {
     // test if x is NaN
 if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
   if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	res.w[BID_HIGH_128W] = (CX.w[BID_HIGH_128W]) & QUIET_MASK64;
-	res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
-	BID_RETURN (res);
+    res.w[BID_HIGH_128W] = (CX.w[BID_HIGH_128W]) & QUIET_MASK64;
+    res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
+    BID_RETURN (res);
 }
     // x is Infinity?
 if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-	  res.w[BID_HIGH_128W] = sign_x? 0: 0x7800000000000000ull;
-	  res.w[BID_LOW_128W] = 0;
+      res.w[BID_HIGH_128W] = sign_x? 0: 0x7800000000000000ull;
+      res.w[BID_LOW_128W] = 0;
     BID_RETURN (res);
   }
     // x is 0, return 1.0
-	 res.w[BID_HIGH_128W] = 0x3040000000000000ull;
-	 res.w[BID_LOW_128W] = 1;
+     res.w[BID_HIGH_128W] = 0x3040000000000000ull;
+     res.w[BID_LOW_128W] = 1;
      BID_RETURN (res);
 }
 
     threshold.w[BID_HIGH_128W] = 0x3040000000000000ull;
-	threshold.w[BID_LOW_128W] = 0x17df;   // 6111 = emax - bias
+    threshold.w[BID_LOW_128W] = 0x17df;   // 6111 = emax - bias
 
-	xn.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] ^ sign_x;
-	xn.w[BID_LOW_128W] = x.w[BID_LOW_128W];
+    xn.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] ^ sign_x;
+    xn.w[BID_LOW_128W] = x.w[BID_LOW_128W];
 
-	// compare |x| to threshold
+    // compare |x| to threshold
     BIDECIMAL_CALL2_NORND (bid128_quiet_less, cmp_res, threshold, xn);
 
-	if(cmp_res)
-	{
-		// compare to 6400 
-		threshold.w[BID_HIGH_128W] = 0x3040000000000000ull;
-		threshold.w[BID_LOW_128W] = 0x1900;   // 6400
-		// compare |x| to threshold
-		BIDECIMAL_CALL2_NORND (bid128_quiet_less, cmp_res, threshold, xn);
+    if(cmp_res)
+    {
+        // compare to 6400 
+        threshold.w[BID_HIGH_128W] = 0x3040000000000000ull;
+        threshold.w[BID_LOW_128W] = 0x1900;   // 6400
+        // compare |x| to threshold
+        BIDECIMAL_CALL2_NORND (bid128_quiet_less, cmp_res, threshold, xn);
 
-		if(cmp_res) {
-			// |x|>6400, overflow or underflow case
-			if(sign_x)
-				tmp.w[BID_HIGH_128W] = 0x1100000000000000ull;
-			else tmp.w[BID_HIGH_128W] = 0x4f80000000000000ull;
-			tmp.w[BID_LOW_128W] = 1;
+        if(cmp_res) {
+            // |x|>6400, overflow or underflow case
+            if(sign_x)
+                tmp.w[BID_HIGH_128W] = 0x1100000000000000ull;
+            else tmp.w[BID_HIGH_128W] = 0x4f80000000000000ull;
+            tmp.w[BID_LOW_128W] = 1;
 
-			// dummy op to set the result and flags
-			BIDECIMAL_CALL2 (bid128_mul, res, tmp, tmp);
-			BID_RETURN (res);
-		}
+            // dummy op to set the result and flags
+            BIDECIMAL_CALL2 (bid128_mul, res, tmp, tmp);
+            BID_RETURN (res);
+        }
 
-		// get k=(int)(|x|)
-		BIDECIMAL_CALL1_NORND (bid128_to_int32_rnint, k, xn);
-		// tmp = -(int)(x)
-		tmp.w[BID_HIGH_128W] = sign_x ^ 0xb040000000000000ull;
-		tmp.w[BID_LOW_128W] = k;
-	    // fd = x - (int)(x)
-		BIDECIMAL_CALL2 (bid128_add, fd, x, tmp);
-	    // 10^fd
-	    BIDECIMAL_CALL1 (bid128_to_binary128, xq, fd);
-		__bid_f128_exp10(rq, xq);
-		BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
+        // get k=(int)(|x|)
+        BIDECIMAL_CALL1_NORND (bid128_to_int32_rnint, k, xn);
+        // tmp = -(int)(x)
+        tmp.w[BID_HIGH_128W] = sign_x ^ 0xb040000000000000ull;
+        tmp.w[BID_LOW_128W] = k;
+        // fd = x - (int)(x)
+        BIDECIMAL_CALL2 (bid128_add, fd, x, tmp);
+        // 10^fd
+        BIDECIMAL_CALL1 (bid128_to_binary128, xq, fd);
+        __bid_f128_exp10(rq, xq);
+        BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 
-		if(sign_x) k = -k;
+        if(sign_x) k = -k;
 
         k2 = k>>1;  k -= k2;
-		k2l = (BID_SINT64)k2;  kl = (BID_SINT64)k;
+        k2l = (BID_SINT64)k2;  kl = (BID_SINT64)k;
 
-		res.w[BID_HIGH_128W] += (k2l<<49);  // first scaling
+        res.w[BID_HIGH_128W] += (k2l<<49);  // first scaling
 
-		tmp.w[BID_HIGH_128W] = 0x3040000000000000ull + (kl<<49);
-		tmp.w[BID_LOW_128W] = 1;
-		// second scaling will set flags and result correctly
-		BIDECIMAL_CALL2 (bid128_mul, res, res, tmp);
+        tmp.w[BID_HIGH_128W] = 0x3040000000000000ull + (kl<<49);
+        tmp.w[BID_LOW_128W] = 1;
+        // second scaling will set flags and result correctly
+        BIDECIMAL_CALL2 (bid128_mul, res, res, tmp);
 
-		BID_RETURN (res);
-	}
+        BID_RETURN (res);
+    }
 
    // get k=(int)(|x|)
-	BIDECIMAL_CALL1_NORND (bid128_to_int32_rnint, k, xn);
+    BIDECIMAL_CALL1_NORND (bid128_to_int32_rnint, k, xn);
 
-	// tmp = -(int)(x)
-	tmp.w[BID_HIGH_128W] = sign_x ^ 0xb040000000000000ull;
-	tmp.w[BID_LOW_128W] = k;
+    // tmp = -(int)(x)
+    tmp.w[BID_HIGH_128W] = sign_x ^ 0xb040000000000000ull;
+    tmp.w[BID_LOW_128W] = k;
 
    // fd = x - (int)(|x|)
    BIDECIMAL_CALL2 (bid128_add, fd, x, tmp);

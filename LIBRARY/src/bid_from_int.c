@@ -36,7 +36,7 @@
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_from_int32 (BID_UINT64 * pres,
-		  int *px _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+          int *px _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   int x = *px;
 #else
 DFP_WRAPFN_OTHERTYPE(64, bid64_from_int32, int)
@@ -61,7 +61,7 @@ bid64_from_int32 (int x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_from_uint32 (BID_UINT64 * pres, unsigned int *px
-		   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+           _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   unsigned int x = *px;
 #else
 DFP_WRAPFN_OTHERTYPE(64, bid64_from_uint32, unsigned int)
@@ -77,8 +77,8 @@ bid64_from_uint32 (unsigned int x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_from_int64 (BID_UINT64 * pres, BID_SINT64 * px
-		  _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		  _EXC_INFO_PARAM) {
+          _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+          _EXC_INFO_PARAM) {
   BID_SINT64 x = *px;
 #if !DECIMAL_GLOBAL_ROUNDING
   unsigned int rnd_mode = *prnd_mode;
@@ -87,8 +87,8 @@ bid64_from_int64 (BID_UINT64 * pres, BID_SINT64 * px
 DFP_WRAPFN_OTHERTYPE(64, bid64_from_int64, BID_SINT64)
 BID_UINT64
 bid64_from_int64 (BID_SINT64 x
-		  _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		  _EXC_INFO_PARAM) {
+          _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+          _EXC_INFO_PARAM) {
 #endif
 
   BID_UINT64 res;
@@ -109,7 +109,7 @@ bid64_from_int64 (BID_SINT64 x
       res = x_sign | 0x31c0000000000000ull | C;
     } else {	// C >= 2^53
       res =
-	x_sign | 0x6c70000000000000ull | (C & 0x0007ffffffffffffull);
+    x_sign | 0x6c70000000000000ull | (C & 0x0007ffffffffffffull);
     }
   } else {	// |C| >= 10^16 and the result may be inexact 
     // the smallest |C| is 10^16 which has 17 decimal digits
@@ -127,54 +127,54 @@ bid64_from_int64 (BID_SINT64 x
     // overflow and underflow are not possible
     // Note: performance can be improved by inlining this call
     bid_round64_2_18 (	// will work for 19 digits too if C fits in 64 bits
-		   q, ind, C, &res, &incr_exp,
-		   &is_midpoint_lt_even, &is_midpoint_gt_even,
-		   &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+           q, ind, C, &res, &incr_exp,
+           &is_midpoint_lt_even, &is_midpoint_gt_even,
+           &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     if (incr_exp)
       ind++;
     // set the inexact flag
     if (is_inexact_lt_midpoint || is_inexact_gt_midpoint ||
-	is_midpoint_lt_even || is_midpoint_gt_even)
+    is_midpoint_lt_even || is_midpoint_gt_even)
       *pfpsf |= BID_INEXACT_EXCEPTION;
     // general correction from RN to RA, RM, RP, RZ; result uses ind for exp
     if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
       if ((!x_sign
-	   && ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint)
-	       ||
-	       ((rnd_mode == BID_ROUNDING_TIES_AWAY
-		 || rnd_mode == BID_ROUNDING_UP) && is_midpoint_gt_even)))
-	  || (x_sign
-	      && ((rnd_mode == BID_ROUNDING_DOWN && is_inexact_lt_midpoint)
-		  ||
-		  ((rnd_mode == BID_ROUNDING_TIES_AWAY
-		    || rnd_mode == BID_ROUNDING_DOWN)
-		   && is_midpoint_gt_even)))) {
-	res = res + 1;
-	if (res == 0x002386f26fc10000ull) {	// res = 10^16 => rounding overflow
-	  res = 0x00038d7ea4c68000ull;	// 10^15
-	  ind = ind + 1;
-	}
+       && ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint)
+           ||
+           ((rnd_mode == BID_ROUNDING_TIES_AWAY
+         || rnd_mode == BID_ROUNDING_UP) && is_midpoint_gt_even)))
+      || (x_sign
+          && ((rnd_mode == BID_ROUNDING_DOWN && is_inexact_lt_midpoint)
+          ||
+          ((rnd_mode == BID_ROUNDING_TIES_AWAY
+            || rnd_mode == BID_ROUNDING_DOWN)
+           && is_midpoint_gt_even)))) {
+    res = res + 1;
+    if (res == 0x002386f26fc10000ull) {	// res = 10^16 => rounding overflow
+      res = 0x00038d7ea4c68000ull;	// 10^15
+      ind = ind + 1;
+    }
       } else if ((is_midpoint_lt_even || is_inexact_gt_midpoint) &&
-		 ((x_sign && (rnd_mode == BID_ROUNDING_UP ||
-			      rnd_mode == BID_ROUNDING_TO_ZERO)) ||
-		  (!x_sign && (rnd_mode == BID_ROUNDING_DOWN ||
-			       rnd_mode == BID_ROUNDING_TO_ZERO)))) {
-	res = res - 1;
-	// check if we crossed into the lower decade
-	if (res == 0x00038d7ea4c67fffull) {	// 10^15 - 1
-	  res = 0x002386f26fc0ffffull;	// 10^16 - 1
-	  ind = ind - 1;
-	}
+         ((x_sign && (rnd_mode == BID_ROUNDING_UP ||
+                  rnd_mode == BID_ROUNDING_TO_ZERO)) ||
+          (!x_sign && (rnd_mode == BID_ROUNDING_DOWN ||
+                   rnd_mode == BID_ROUNDING_TO_ZERO)))) {
+    res = res - 1;
+    // check if we crossed into the lower decade
+    if (res == 0x00038d7ea4c67fffull) {	// 10^15 - 1
+      res = 0x002386f26fc0ffffull;	// 10^16 - 1
+      ind = ind - 1;
+    }
       } else {
-	;	// exact, the result is already correct
+    ;	// exact, the result is already correct
       }
     }
     if (res < 0x0020000000000000ull) {	// res < 2^53
       res = x_sign | (((BID_UINT64) ind + 398) << 53) | res;
     } else {	// res >= 2^53 
       res =
-	x_sign | 0x6000000000000000ull | (((BID_UINT64) ind + 398) << 51) |
-	(res & 0x0007ffffffffffffull);
+    x_sign | 0x6000000000000000ull | (((BID_UINT64) ind + 398) << 51) |
+    (res & 0x0007ffffffffffffull);
     }
   }
   BID_RETURN (res);
@@ -183,8 +183,8 @@ bid64_from_int64 (BID_SINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_from_uint64 (BID_UINT64 * pres, BID_UINT64 * px
-		   _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		   _EXC_INFO_PARAM) {
+           _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+           _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #if !DECIMAL_GLOBAL_ROUNDING
   unsigned int rnd_mode = *prnd_mode;
@@ -193,8 +193,8 @@ bid64_from_uint64 (BID_UINT64 * pres, BID_UINT64 * px
 DFP_WRAPFN_OTHERTYPE(64, bid64_from_uint64, BID_UINT64)
 BID_UINT64
 bid64_from_uint64 (BID_UINT64 x
-		   _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		   _EXC_INFO_PARAM) {
+           _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+           _EXC_INFO_PARAM) {
 #endif
 
   BID_UINT64 res;
@@ -230,51 +230,51 @@ bid64_from_uint64 (BID_UINT64 x
     // Note: performance can be improved by inlining this call
     if (q <= 19) {
       bid_round64_2_18 (	// will work for 20 digits too if x fits in 64 bits
-		     q, ind, x, &res, &incr_exp,
-		     &is_midpoint_lt_even, &is_midpoint_gt_even,
-		     &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+             q, ind, x, &res, &incr_exp,
+             &is_midpoint_lt_even, &is_midpoint_gt_even,
+             &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     } else {	// q = 20
       x128.w[1] = 0x0;
       x128.w[0] = x;
       bid_round128_19_38 (q, ind, x128, &res128, &incr_exp,
-		      &is_midpoint_lt_even, &is_midpoint_gt_even,
-		      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+              &is_midpoint_lt_even, &is_midpoint_gt_even,
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       res = res128.w[0];	// res.w[1] is 0
     }
     if (incr_exp)
       ind++;
     // set the inexact flag
     if (is_inexact_lt_midpoint || is_inexact_gt_midpoint ||
-	is_midpoint_lt_even || is_midpoint_gt_even)
+    is_midpoint_lt_even || is_midpoint_gt_even)
       *pfpsf |= BID_INEXACT_EXCEPTION;
     // general correction from RN to RA, RM, RP, RZ; result uses ind for exp
     if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
       if ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint) ||
-	  ((rnd_mode == BID_ROUNDING_TIES_AWAY || rnd_mode == BID_ROUNDING_UP)
-	   && is_midpoint_gt_even)) {
-	res = res + 1;
-	if (res == 0x002386f26fc10000ull) {	// res = 10^16 => rounding overflow
-	  res = 0x00038d7ea4c68000ull;	// 10^15
-	  ind = ind + 1;
-	}
+      ((rnd_mode == BID_ROUNDING_TIES_AWAY || rnd_mode == BID_ROUNDING_UP)
+       && is_midpoint_gt_even)) {
+    res = res + 1;
+    if (res == 0x002386f26fc10000ull) {	// res = 10^16 => rounding overflow
+      res = 0x00038d7ea4c68000ull;	// 10^15
+      ind = ind + 1;
+    }
       } else if ((is_midpoint_lt_even || is_inexact_gt_midpoint) &&
-		 (rnd_mode == BID_ROUNDING_DOWN ||
-		  rnd_mode == BID_ROUNDING_TO_ZERO)) {
-	res = res - 1;
-	// check if we crossed into the lower decade
-	if (res == 0x00038d7ea4c67fffull) {	// 10^15 - 1
-	  res = 0x002386f26fc0ffffull;	// 10^16 - 1
-	  ind = ind - 1;
-	}
+         (rnd_mode == BID_ROUNDING_DOWN ||
+          rnd_mode == BID_ROUNDING_TO_ZERO)) {
+    res = res - 1;
+    // check if we crossed into the lower decade
+    if (res == 0x00038d7ea4c67fffull) {	// 10^15 - 1
+      res = 0x002386f26fc0ffffull;	// 10^16 - 1
+      ind = ind - 1;
+    }
       } else {
-	;	// exact, the result is already correct
+    ;	// exact, the result is already correct
       }
     }
     if (res < 0x0020000000000000ull) {	// res < 2^53
       res = (((BID_UINT64) ind + 398) << 53) | res;
     } else {	// res >= 2^53 
       res = 0x6000000000000000ull | (((BID_UINT64) ind + 398) << 51) |
-	(res & 0x0007ffffffffffffull);
+    (res & 0x0007ffffffffffffull);
     }
   }
   BID_RETURN (res);
@@ -283,7 +283,7 @@ bid64_from_uint64 (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid128_from_int32 (BID_UINT128 * pres,
-		   int *px _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+           int *px _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   int x = *px;
 #else
 DFP_WRAPFN_OTHERTYPE(128, bid128_from_int32, int)
@@ -306,7 +306,7 @@ bid128_from_int32 (int x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid128_from_uint32 (BID_UINT128 * pres, unsigned int *px
-		    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+            _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   unsigned int x = *px;
 #else
 DFP_WRAPFN_OTHERTYPE(128, bid128_from_uint32, unsigned int)
@@ -323,7 +323,7 @@ bid128_from_uint32 (unsigned int x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid128_from_int64 (BID_UINT128 * pres, BID_SINT64 * px
-		   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+           _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_SINT64 x = *px;
 #else
 DFP_WRAPFN_OTHERTYPE(128, bid128_from_int64, BID_SINT64)
@@ -347,7 +347,7 @@ bid128_from_int64 (BID_SINT64 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid128_from_uint64 (BID_UINT128 * pres, BID_UINT64 * px
-		    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+            _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 DFP_WRAPFN_OTHERTYPE(128, bid128_from_uint64, BID_UINT64)
@@ -415,46 +415,46 @@ bid32_from_int32 (BID_SINT32 x
     // overflow and underflow are not possible
     // Note: performance can be improved by inlining this call
     bid_round64_2_18 (q, ind, C, &res64, &incr_exp,
-		   &is_midpoint_lt_even, &is_midpoint_gt_even,
-		   &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+           &is_midpoint_lt_even, &is_midpoint_gt_even,
+           &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     res = (BID_UINT32)res64;
     if (incr_exp)
       ind++;
     // set the inexact flag
     if (is_inexact_lt_midpoint || is_inexact_gt_midpoint ||
-	is_midpoint_lt_even || is_midpoint_gt_even)
+    is_midpoint_lt_even || is_midpoint_gt_even)
       *pfpsf |= BID_INEXACT_EXCEPTION;
     // general correction from RN to RA, RM, RP, RZ; result uses ind for exp
     if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
       if ((!x_sign
-	   && ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint)
-	       ||
-	       ((rnd_mode == BID_ROUNDING_TIES_AWAY
-		 || rnd_mode == BID_ROUNDING_UP) && is_midpoint_gt_even)))
-	  || (x_sign
-	      && ((rnd_mode == BID_ROUNDING_DOWN && is_inexact_lt_midpoint)
-		  ||
-		  ((rnd_mode == BID_ROUNDING_TIES_AWAY
-		    || rnd_mode == BID_ROUNDING_DOWN)
-		   && is_midpoint_gt_even)))) {
-	res = res + 1;
-	if (res == 10000000) { // res = 10^7 => rounding overflow
-	  res = 1000000; // 10^6
-	  ind = ind + 1;
-	}
+       && ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint)
+           ||
+           ((rnd_mode == BID_ROUNDING_TIES_AWAY
+         || rnd_mode == BID_ROUNDING_UP) && is_midpoint_gt_even)))
+      || (x_sign
+          && ((rnd_mode == BID_ROUNDING_DOWN && is_inexact_lt_midpoint)
+          ||
+          ((rnd_mode == BID_ROUNDING_TIES_AWAY
+            || rnd_mode == BID_ROUNDING_DOWN)
+           && is_midpoint_gt_even)))) {
+    res = res + 1;
+    if (res == 10000000) { // res = 10^7 => rounding overflow
+      res = 1000000; // 10^6
+      ind = ind + 1;
+    }
       } else if ((is_midpoint_lt_even || is_inexact_gt_midpoint) &&
-		 ((x_sign && (rnd_mode == BID_ROUNDING_UP ||
-			      rnd_mode == BID_ROUNDING_TO_ZERO)) ||
-		  (!x_sign && (rnd_mode == BID_ROUNDING_DOWN ||
-			       rnd_mode == BID_ROUNDING_TO_ZERO)))) {
-	res = res - 1;
-	// check if we crossed into the lower decade
-	if (res == 999999) { // 10^6 - 1
-	  res = 9999999; // 10^7 - 1
-	  ind = ind - 1;
-	}
+         ((x_sign && (rnd_mode == BID_ROUNDING_UP ||
+                  rnd_mode == BID_ROUNDING_TO_ZERO)) ||
+          (!x_sign && (rnd_mode == BID_ROUNDING_DOWN ||
+                   rnd_mode == BID_ROUNDING_TO_ZERO)))) {
+    res = res - 1;
+    // check if we crossed into the lower decade
+    if (res == 999999) { // 10^6 - 1
+      res = 9999999; // 10^7 - 1
+      ind = ind - 1;
+    }
       } else {
-	; // exact, the result is already correct
+    ; // exact, the result is already correct
       }
     }
     if (res < 0x00800000) { // res < 2^23
@@ -519,29 +519,29 @@ bid32_from_uint32 (BID_UINT32 x
       ind++;
     // set the inexact flag
     if (is_inexact_lt_midpoint || is_inexact_gt_midpoint ||
-	is_midpoint_lt_even || is_midpoint_gt_even)
+    is_midpoint_lt_even || is_midpoint_gt_even)
       *pfpsf |= BID_INEXACT_EXCEPTION;
     // general correction from RN to RA, RM, RP, RZ; result uses ind for exp
     if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
       if ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint) ||
-	  ((rnd_mode == BID_ROUNDING_TIES_AWAY || rnd_mode == BID_ROUNDING_UP)
-	   && is_midpoint_gt_even)) {
-	res = res + 1;
-	if (res == 10000000) { // res = 10^7 => rounding overflow
-	  res = 1000000; // 10^6
-	  ind = ind + 1;
-	}
+      ((rnd_mode == BID_ROUNDING_TIES_AWAY || rnd_mode == BID_ROUNDING_UP)
+       && is_midpoint_gt_even)) {
+    res = res + 1;
+    if (res == 10000000) { // res = 10^7 => rounding overflow
+      res = 1000000; // 10^6
+      ind = ind + 1;
+    }
       } else if ((is_midpoint_lt_even || is_inexact_gt_midpoint) &&
-		 (rnd_mode == BID_ROUNDING_DOWN ||
-		  rnd_mode == BID_ROUNDING_TO_ZERO)) {
-	res = res - 1;
-	// check if we crossed into the lower decade
-	if (res == 999999) { // 10^6 - 1
-	  res = 9999999; // 10^7 - 1
-	  ind = ind - 1;
-	}
+         (rnd_mode == BID_ROUNDING_DOWN ||
+          rnd_mode == BID_ROUNDING_TO_ZERO)) {
+    res = res - 1;
+    // check if we crossed into the lower decade
+    if (res == 999999) { // 10^6 - 1
+      res = 9999999; // 10^7 - 1
+      ind = ind - 1;
+    }
       } else {
-	; // exact, the result is already correct
+    ; // exact, the result is already correct
       }
     }
     if (res < 0x00800000) { // res < 2^23
@@ -634,47 +634,47 @@ bid32_from_int64 (BID_SINT64 x
     // overflow and underflow are not possible
     // Note: performance can be improved by inlining this call
     bid_round64_2_18 ( // will work for 19 digits too if C fits in 64 bits
-		   q, ind, C, &res64, &incr_exp,
-		   &is_midpoint_lt_even, &is_midpoint_gt_even,
-		   &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+           q, ind, C, &res64, &incr_exp,
+           &is_midpoint_lt_even, &is_midpoint_gt_even,
+           &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     res = (BID_UINT32)res64;
     if (incr_exp)
       ind++;
     // set the inexact flag
     if (is_inexact_lt_midpoint || is_inexact_gt_midpoint ||
-	is_midpoint_lt_even || is_midpoint_gt_even)
+    is_midpoint_lt_even || is_midpoint_gt_even)
       *pfpsf |= BID_INEXACT_EXCEPTION;
     // general correction from RN to RA, RM, RP, RZ; result uses ind for exp
     if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
       if ((!x_sign
-	   && ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint)
-	       ||
-	       ((rnd_mode == BID_ROUNDING_TIES_AWAY
-		 || rnd_mode == BID_ROUNDING_UP) && is_midpoint_gt_even)))
-	  || (x_sign
-	      && ((rnd_mode == BID_ROUNDING_DOWN && is_inexact_lt_midpoint)
-		  ||
-		  ((rnd_mode == BID_ROUNDING_TIES_AWAY
-		    || rnd_mode == BID_ROUNDING_DOWN)
-		   && is_midpoint_gt_even)))) {
-	res = res + 1;
-	if (res == 10000000) { // res = 10^7 => rounding overflow
-	  res = 1000000; // 10^6
-	  ind = ind + 1;
-	}
+       && ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint)
+           ||
+           ((rnd_mode == BID_ROUNDING_TIES_AWAY
+         || rnd_mode == BID_ROUNDING_UP) && is_midpoint_gt_even)))
+      || (x_sign
+          && ((rnd_mode == BID_ROUNDING_DOWN && is_inexact_lt_midpoint)
+          ||
+          ((rnd_mode == BID_ROUNDING_TIES_AWAY
+            || rnd_mode == BID_ROUNDING_DOWN)
+           && is_midpoint_gt_even)))) {
+    res = res + 1;
+    if (res == 10000000) { // res = 10^7 => rounding overflow
+      res = 1000000; // 10^6
+      ind = ind + 1;
+    }
       } else if ((is_midpoint_lt_even || is_inexact_gt_midpoint) &&
-		 ((x_sign && (rnd_mode == BID_ROUNDING_UP ||
-			      rnd_mode == BID_ROUNDING_TO_ZERO)) ||
-		  (!x_sign && (rnd_mode == BID_ROUNDING_DOWN ||
-			       rnd_mode == BID_ROUNDING_TO_ZERO)))) {
-	res = res - 1;
-	// check if we crossed into the lower decade
-	if (res == 999999) { // 10^6 - 1
-	  res = 9999999; // 10^7 - 1
-	  ind = ind - 1;
-	}
+         ((x_sign && (rnd_mode == BID_ROUNDING_UP ||
+                  rnd_mode == BID_ROUNDING_TO_ZERO)) ||
+          (!x_sign && (rnd_mode == BID_ROUNDING_DOWN ||
+                   rnd_mode == BID_ROUNDING_TO_ZERO)))) {
+    res = res - 1;
+    // check if we crossed into the lower decade
+    if (res == 999999) { // 10^6 - 1
+      res = 9999999; // 10^7 - 1
+      ind = ind - 1;
+    }
       } else {
-	; // exact, the result is already correct
+    ; // exact, the result is already correct
       }
     }
     if (res < 0x00800000) { // res < 2^23
@@ -763,45 +763,45 @@ bid32_from_uint64 (BID_UINT64 x
     // Note: performance can be improved by inlining this call
     if (q <= 19) {
       bid_round64_2_18 ( // would work for 20 digits too if x fits in 64 bits
-		     q, ind, x, &res64, &incr_exp,
-		     &is_midpoint_lt_even, &is_midpoint_gt_even,
-		     &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+             q, ind, x, &res64, &incr_exp,
+             &is_midpoint_lt_even, &is_midpoint_gt_even,
+             &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       res = (BID_UINT32)res64;
     } else { // q = 20
       x128.w[1] = 0x0;
       x128.w[0] = x;
       bid_round128_19_38 (q, ind, x128, &res128, &incr_exp,
-		      &is_midpoint_lt_even, &is_midpoint_gt_even,
-		      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+              &is_midpoint_lt_even, &is_midpoint_gt_even,
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       res = (BID_UINT32)res128.w[0]; // res.w[1] is 0
     }
     if (incr_exp)
       ind++;
     // set the inexact flag
     if (is_inexact_lt_midpoint || is_inexact_gt_midpoint ||
-	is_midpoint_lt_even || is_midpoint_gt_even)
+    is_midpoint_lt_even || is_midpoint_gt_even)
       *pfpsf |= BID_INEXACT_EXCEPTION;
     // general correction from RN to RA, RM, RP, RZ; result uses ind for exp
     if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
       if ((rnd_mode == BID_ROUNDING_UP && is_inexact_lt_midpoint) ||
-	  ((rnd_mode == BID_ROUNDING_TIES_AWAY || rnd_mode == BID_ROUNDING_UP)
-	   && is_midpoint_gt_even)) {
-	res= res+ 1;
-	if (res== 10000000) { // res = 10^7 => rounding overflow
-	  res = 1000000; // 10^6
-	  ind = ind + 1;
-	}
+      ((rnd_mode == BID_ROUNDING_TIES_AWAY || rnd_mode == BID_ROUNDING_UP)
+       && is_midpoint_gt_even)) {
+    res= res+ 1;
+    if (res== 10000000) { // res = 10^7 => rounding overflow
+      res = 1000000; // 10^6
+      ind = ind + 1;
+    }
       } else if ((is_midpoint_lt_even || is_inexact_gt_midpoint) &&
-		 (rnd_mode == BID_ROUNDING_DOWN ||
-		  rnd_mode == BID_ROUNDING_TO_ZERO)) {
-	res = res - 1;
-	// check if we crossed into the lower decade
-	if (res == 999999) { // 10^6 - 1
-	  res = 9999999; // 10^7 - 1
-	  ind = ind - 1;
-	}
+         (rnd_mode == BID_ROUNDING_DOWN ||
+          rnd_mode == BID_ROUNDING_TO_ZERO)) {
+    res = res - 1;
+    // check if we crossed into the lower decade
+    if (res == 999999) { // 10^6 - 1
+      res = 9999999; // 10^7 - 1
+      ind = ind - 1;
+    }
       } else {
-	; // exact, the result is already correct
+    ; // exact, the result is already correct
       }
     }
     if (res < 0x00800000) { // res < 2^23

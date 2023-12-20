@@ -54,7 +54,7 @@ short_sqrt128 (BID_UINT128 A10) {
 typedef union BID_ALIGN (16)
      {
        BID_UINT64 w[2];
-	   long double d; 
+       long double d; 
      } int_dext;
 
 
@@ -100,14 +100,14 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
     tmp_dext.d = lS;
 
 #if BID_BIG_ENDIAN
-	tmp_dext.w[0] &= 0xffffffffffff0000ull;
-	tmp_dext.w[1] = 0;
+    tmp_dext.w[0] &= 0xffffffffffff0000ull;
+    tmp_dext.w[1] = 0;
 #else
   //lSH = lS;
   //*((BID_UINT64 *) & lSH) &= 0xffffffff00000000ull;
-	tmp_dext.w[0] &= 0xffffffff00000000ull;
+    tmp_dext.w[0] &= 0xffffffff00000000ull;
 #endif
-	lSH = tmp_dext.d;
+    lSH = tmp_dext.d;
 
   // correction for C256 rounding
   lCl = FENCE (l3 - lx);

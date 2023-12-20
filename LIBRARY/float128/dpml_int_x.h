@@ -33,22 +33,22 @@
 
     static const TABLE_UNION TABLE_NAME[] = { 
 
-	/* floor class-to-action-mapping */
-	/* 000 */ DATA_1x2( 0x00410408, 0x44106910 ),
+    /* floor class-to-action-mapping */
+    /* 000 */ DATA_1x2( 0x00410408, 0x44106910 ),
 
-	/* ceil class-to-action-mapping */
-	/* 008 */ DATA_1x2( 0x00410408, 0x34106520 ),
+    /* ceil class-to-action-mapping */
+    /* 008 */ DATA_1x2( 0x00410408, 0x34106520 ),
 
-	/* trunc, nint, rint and modf class-to-action-mapping */
-	/* 016 */ DATA_1x2( 0x00410408, 0x24104510 ),
+    /* trunc, nint, rint and modf class-to-action-mapping */
+    /* 016 */ DATA_1x2( 0x00410408, 0x24104510 ),
 
-	/* this class-to-action-mapping used by modf only */
-	/* 024 */ DATA_1x2( 0x00451408, 0x14104100 ),
+    /* this class-to-action-mapping used by modf only */
+    /* 024 */ DATA_1x2( 0x00451408, 0x14104100 ),
 
-	/* data for the above class to action mappings */
-	/* 032 */ DATA_1x2( 0x00000000, 0x00000000 ),
-	/* 040 */ DATA_1x2( 0x00000001, 0x00000000 ),
-	};
+    /* data for the above class to action mappings */
+    /* 032 */ DATA_1x2( 0x00000000, 0x00000000 ),
+    /* 040 */ DATA_1x2( 0x00000001, 0x00000000 ),
+    };
 
 #define	FLOOR_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 0))
 #define	CEIL_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 8))

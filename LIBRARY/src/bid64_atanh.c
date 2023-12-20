@@ -47,70 +47,70 @@ if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
   if ((x & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	res = (coefficient_x) & QUIET_MASK64;
-	BID_RETURN (res);
+    res = (coefficient_x) & QUIET_MASK64;
+    BID_RETURN (res);
 }
     // x is Infinity?
 if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	  res = 0x7c00000000000000ull;
+      res = 0x7c00000000000000ull;
       BID_RETURN (res);
   }
     // x is 0
-	 res = sign_x | coefficient_x;
+     res = sign_x | coefficient_x;
      BID_RETURN (res);
 }
 
-	
+    
     if(exponent_x <= DECIMAL_EXPONENT_BIAS - 24)
-	{
-		res = x;
-		BID_RETURN (res);
-	}
+    {
+        res = x;
+        BID_RETURN (res);
+    }
 
-	// |x| 
-	xn = x & 0x7fffffffffffffffull;
+    // |x| 
+    xn = x & 0x7fffffffffffffffull;
 
-	// 1.0
-	one = 0x31c0000000000001ull;    
+    // 1.0
+    one = 0x31c0000000000001ull;    
 
-	// 1 - |x|
-	BIDECIMAL_CALL2 (bid64_sub, one_m_x, one, xn);
+    // 1 - |x|
+    BIDECIMAL_CALL2 (bid64_sub, one_m_x, one, xn);
 
-	if(one_m_x & 0x8000000000000000ull)
-	{
-		// |x|>1
+    if(one_m_x & 0x8000000000000000ull)
+    {
+        // |x|>1
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	  res = 0x7c00000000000000ull;
+      res = 0x7c00000000000000ull;
       BID_RETURN (res);
   }
 
   if(!(one_m_x<<(64-53)) && ((one_m_x & SPECIAL_ENCODING_MASK64)!=SPECIAL_ENCODING_MASK64))
   {
-	  // |x|==1
+      // |x|==1
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-	  res = sign_x | 0x7800000000000000ull;
+      res = sign_x | 0x7800000000000000ull;
       BID_RETURN (res);
   }
 
-	// (2*|x|)/(1-|x|)
-	BIDECIMAL_CALL2 (bid64_div, tmp, xn, one_m_x);
-	BIDECIMAL_CALL2 (bid64_add, y, tmp, tmp);
+    // (2*|x|)/(1-|x|)
+    BIDECIMAL_CALL2 (bid64_div, tmp, xn, one_m_x);
+    BIDECIMAL_CALL2 (bid64_add, y, tmp, tmp);
 
-	BIDECIMAL_CALL1 (bid64_to_binary80, xq, y);
-	__bid_f80_log1p(rq, xq);
-	__bid_f80_mul( rq,rq, c_half.v );
-	BIDECIMAL_CALL1 (binary80_to_bid64, res, rq);
+    BIDECIMAL_CALL1 (bid64_to_binary80, xq, y);
+    __bid_f80_log1p(rq, xq);
+    __bid_f80_mul( rq,rq, c_half.v );
+    BIDECIMAL_CALL1 (binary80_to_bid64, res, rq);
 
-	res ^= sign_x;
+    res ^= sign_x;
 
-	BID_RETURN (res);
+    BID_RETURN (res);
 }
 
 

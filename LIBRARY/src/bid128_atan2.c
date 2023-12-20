@@ -54,7 +54,7 @@ BID_F128_TYPE rq, zq;
 valid_y = unpack_BID128_value_BLE (&sign_y, &exponent_y, &CY, y);
 
   // unpack arguments, check for NaN or Infinity
-	if (!unpack_BID128_value_BLE (&sign_x, &exponent_x, &CX, x)) {
+    if (!unpack_BID128_value_BLE (&sign_x, &exponent_x, &CX, x)) {
     // test if x is NaN
 if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
@@ -72,14 +72,14 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   if (((y.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull))
     // return NaN 
   {
-	  if(sign_y) {
-		  res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI34.w[BID_HIGH_128W];
-		  res.w[BID_LOW_128W] = BID128_DEC_PI34.w[BID_LOW_128W];
-	  }
-	  else {
-		  res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI14.w[BID_HIGH_128W];
-		  res.w[BID_LOW_128W] = BID128_DEC_PI14.w[BID_LOW_128W];
-	  }
+      if(sign_y) {
+          res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI34.w[BID_HIGH_128W];
+          res.w[BID_LOW_128W] = BID128_DEC_PI34.w[BID_LOW_128W];
+      }
+      else {
+          res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI14.w[BID_HIGH_128W];
+          res.w[BID_LOW_128W] = BID128_DEC_PI14.w[BID_LOW_128W];
+      }
     BID_RETURN (res);
   }
   // y is NaN?
@@ -87,27 +87,27 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // not NaN 
   {
     // return +/-pi/2
-		  res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI12.w[BID_HIGH_128W];
-		  res.w[BID_LOW_128W] = BID128_DEC_PI12.w[BID_LOW_128W];
-		BID_RETURN (res);
+          res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI12.w[BID_HIGH_128W];
+          res.w[BID_LOW_128W] = BID128_DEC_PI12.w[BID_LOW_128W];
+        BID_RETURN (res);
   }
 }
     // x is 0
 if(valid_y) {
-	if(sign_y)
-	{
-		res.w[BID_HIGH_128W] = sign_x^BID128_DEC_PI.w[BID_HIGH_128W];
-		res.w[BID_LOW_128W] = BID128_DEC_PI.w[BID_LOW_128W];
-	}
-	else {
-		res.w[BID_HIGH_128W] = sign_x;
-		res.w[BID_LOW_128W] = 0;
-	}
+    if(sign_y)
+    {
+        res.w[BID_HIGH_128W] = sign_x^BID128_DEC_PI.w[BID_HIGH_128W];
+        res.w[BID_LOW_128W] = BID128_DEC_PI.w[BID_LOW_128W];
+    }
+    else {
+        res.w[BID_HIGH_128W] = sign_x;
+        res.w[BID_LOW_128W] = 0;
+    }
   BID_RETURN (res);
 }
 }
 
-	if (!valid_y) {
+    if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
@@ -122,78 +122,78 @@ if(valid_y) {
   }
   // y is Infinity?
   if ((y.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-	  if(sign_y) {
-		res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI.w[BID_HIGH_128W];
-		res.w[BID_LOW_128W] = BID128_DEC_PI.w[BID_LOW_128W];
-	  }
-	  else {
-		res.w[BID_HIGH_128W] = sign_x;
-		res.w[BID_LOW_128W] = 0;
-	  }
+      if(sign_y) {
+        res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI.w[BID_HIGH_128W];
+        res.w[BID_LOW_128W] = BID128_DEC_PI.w[BID_LOW_128W];
+      }
+      else {
+        res.w[BID_HIGH_128W] = sign_x;
+        res.w[BID_LOW_128W] = 0;
+      }
     BID_RETURN (res);
   }
   // y is 0
   if(!(CX.w[BID_HIGH_128W]|CX.w[BID_LOW_128W]))
   {
-	if(sign_y)
-	{
-		res.w[BID_HIGH_128W] = sign_x^BID128_DEC_PI.w[BID_HIGH_128W];
-		res.w[BID_LOW_128W] = BID128_DEC_PI.w[BID_LOW_128W];
-	}
-	else {
-		res.w[BID_HIGH_128W] = sign_x;
-		res.w[BID_LOW_128W] = 0;
-	}
+    if(sign_y)
+    {
+        res.w[BID_HIGH_128W] = sign_x^BID128_DEC_PI.w[BID_HIGH_128W];
+        res.w[BID_LOW_128W] = BID128_DEC_PI.w[BID_LOW_128W];
+    }
+    else {
+        res.w[BID_HIGH_128W] = sign_x;
+        res.w[BID_LOW_128W] = 0;
+    }
   }
   else {
-	  // x finite, return +/-pi/2
-		res.w[BID_HIGH_128W] = sign_x^BID128_DEC_PI12.w[BID_HIGH_128W];
-		res.w[BID_LOW_128W] = BID128_DEC_PI12.w[BID_LOW_128W];
+      // x finite, return +/-pi/2
+        res.w[BID_HIGH_128W] = sign_x^BID128_DEC_PI12.w[BID_HIGH_128W];
+        res.w[BID_LOW_128W] = BID128_DEC_PI12.w[BID_LOW_128W];
   }
   BID_RETURN (res);
 }
 
-	save_flags = *pfpsf;
+    save_flags = *pfpsf;
 
     BIDECIMAL_CALL2 (bid128_div, z, x, y);
-	zabs.w[BID_HIGH_128W] = z.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
-	zabs.w[BID_LOW_128W] = z.w[BID_LOW_128W];
+    zabs.w[BID_HIGH_128W] = z.w[BID_HIGH_128W] & 0x7fffffffffffffffull;
+    zabs.w[BID_LOW_128W] = z.w[BID_LOW_128W];
 
-	*pfpsf = save_flags;    // avoided incorrect OF/UF
+    *pfpsf = save_flags;    // avoided incorrect OF/UF
 
     BIDECIMAL_CALL2_NORND (bid128_quiet_greater, 
             cmp_res, zabs, BID128_10POW36);
-	if(cmp_res) {
-		// |x/y|>10^36
-		res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI12.w[BID_HIGH_128W];
-		res.w[BID_LOW_128W] = BID128_DEC_PI12.w[BID_LOW_128W];
-		BID_RETURN (res);
-	}
+    if(cmp_res) {
+        // |x/y|>10^36
+        res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI12.w[BID_HIGH_128W];
+        res.w[BID_LOW_128W] = BID128_DEC_PI12.w[BID_LOW_128W];
+        BID_RETURN (res);
+    }
     BIDECIMAL_CALL2_NORND (bid128_quiet_less, 
             cmp_res, zabs, BID128_10POW_M36);
-	if(cmp_res) {
-		// |x/y|<10^(-36)
-		if(sign_y) {
-			res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI.w[BID_HIGH_128W];
-			res.w[BID_LOW_128W] = BID128_DEC_PI.w[BID_LOW_128W];
-		}
-		else {
-			// Here could set UF correctly based on flags set in bid128_div
-			res.w[BID_HIGH_128W] = z.w[BID_HIGH_128W];
-			res.w[BID_LOW_128W] = z.w[BID_LOW_128W];
-		}
-		BID_RETURN (res);
-	}
+    if(cmp_res) {
+        // |x/y|<10^(-36)
+        if(sign_y) {
+            res.w[BID_HIGH_128W] = sign_x ^ BID128_DEC_PI.w[BID_HIGH_128W];
+            res.w[BID_LOW_128W] = BID128_DEC_PI.w[BID_LOW_128W];
+        }
+        else {
+            // Here could set UF correctly based on flags set in bid128_div
+            res.w[BID_HIGH_128W] = z.w[BID_HIGH_128W];
+            res.w[BID_LOW_128W] = z.w[BID_LOW_128W];
+        }
+        BID_RETURN (res);
+    }
 
-	BIDECIMAL_CALL1 (bid128_to_binary128, zq, zabs);
-	__bid_f128_atan(rq, zq);
+    BIDECIMAL_CALL1 (bid128_to_binary128, zq, zabs);
+    __bid_f128_atan(rq, zq);
     BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 
-	if(sign_y) {
-		BIDECIMAL_CALL2 (bid128_sub, res, BID128_DEC_PI, res);
-	}
+    if(sign_y) {
+        BIDECIMAL_CALL2 (bid128_sub, res, BID128_DEC_PI, res);
+    }
 
     res.w[BID_HIGH_128W] |= sign_x;
 
-	BID_RETURN (res);
+    BID_RETURN (res);
 }

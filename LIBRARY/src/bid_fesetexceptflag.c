@@ -42,12 +42,12 @@ _IDEC_flags new_sw;
 
     if( excepts ) {     /* Do we have anything to do? */
 
-		// clear exceptions in the given mask
-		new_sw = get_bid_sw() & ~excepts;
-		// set flags according to *flagp parameter
-		new_sw |= (*flagp & excepts);
-		// set BID status word
-		set_bid_sw(new_sw);
+        // clear exceptions in the given mask
+        new_sw = get_bid_sw() & ~excepts;
+        // set flags according to *flagp parameter
+        new_sw |= (*flagp & excepts);
+        // set BID status word
+        set_bid_sw(new_sw);
 
     }
 

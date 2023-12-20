@@ -162,15 +162,15 @@
 #define MAP_BIT_WIDTH			0x2
 #define MAP_MASK			MAKE_MASK(MAP_BIT_WIDTH, 0)
 #define MAP_IT(a,b,c,s)		 			\
-		((a << (7*MAP_BIT_WIDTH)) |		\
-		 (a << (6*MAP_BIT_WIDTH)) |		\
-		 (a << (5*MAP_BIT_WIDTH)) |		\
-		 (b << (4*MAP_BIT_WIDTH)) |		\
-		 (c << (3*MAP_BIT_WIDTH)) |		\
-		 (c << (2*MAP_BIT_WIDTH)) |		\
-		 (c << (1*MAP_BIT_WIDTH)) |		\
-		 (b << (0*MAP_BIT_WIDTH)) |		\
-		 s)
+        ((a << (7*MAP_BIT_WIDTH)) |		\
+         (a << (6*MAP_BIT_WIDTH)) |		\
+         (a << (5*MAP_BIT_WIDTH)) |		\
+         (b << (4*MAP_BIT_WIDTH)) |		\
+         (c << (3*MAP_BIT_WIDTH)) |		\
+         (c << (2*MAP_BIT_WIDTH)) |		\
+         (c << (1*MAP_BIT_WIDTH)) |		\
+         (b << (0*MAP_BIT_WIDTH)) |		\
+         s)
 
 #define ERFC_INTERVAL_TO_CONSTANT_MAP 	MAP_IT(3, 2, 1, UX_SIGN_BIT)
 #define ERF_INTERVAL_TO_CONSTANT_MAP 	MAP_IT(0, 1, 2, 0)
@@ -252,11 +252,11 @@ C_UX_ERF(
     eval_result = & tmp[0];
     switch (index)
         {
-	case INTERVAL(4):
+    case INTERVAL(4):
             sign ^= UX_SIGN_BIT;
             /* Fall through */
 
-	case INTERVAL(0):
+    case INTERVAL(0):
             EVALUATE_RATIONAL(
                 &unpacked_argument,
                 ERF_COEF_ARRAY,
@@ -264,13 +264,13 @@ C_UX_ERF(
                 NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY)
                   | DENOMINATOR_FLAGS(SQUARE_TERM),
                 eval_result);
-	    break;
+        break;
 
-	case INTERVAL(1):
+    case INTERVAL(1):
             sign ^= UX_SIGN_BIT;
             /* Fall through */
 
-	case INTERVAL(5):
+    case INTERVAL(5):
              EVALUATE_PACKED_POLY( &unpacked_argument,
                  MID_NUM_COEF_ARRAY_DEGREE, MID_NUM_COEF_ARRAY,
                  MID_NUM_SCALE_MASK, MID_NUM_SCALE_BIAS, &tmp[1]);
@@ -279,9 +279,9 @@ C_UX_ERF(
                  MID_DEN_SCALE_MASK, MID_DEN_SCALE_BIAS, &tmp[2]);
              DIVIDE(&tmp[1], &tmp[2], FULL_PRECISION, eval_result);
              goto multiply_by_exp_m_x_sqr;
-	     break;
+         break;
 
-	case INTERVAL(2):
+    case INTERVAL(2):
              if (IS_ERF_EVALUATION(interval_to_constant_map))
                  goto default_label;
 
@@ -319,20 +319,20 @@ C_UX_ERF(
              ADDSUB(&tmp[1], &tmp[2], SUB | NO_NORMALIZATION, &tmp[1]);
 
              MULTIPLY(&tmp[1], eval_result, eval_result);
-	     break;
+         break;
 
-	case INTERVAL(3):
+    case INTERVAL(3):
              if (IS_ERFC_EVALUATION(interval_to_constant_map))
                  { /* Dummy up underflow result and "zero" index */
                  UX_SET_SIGN_EXP_MSD(&tmp[0], 0, UX_UNDERFLOW_EXPONENT, UX_MSB);
-	         break;
+             break;
                  }
              /* Fall through */
 
         default:
         default_label:
              eval_result = UX_ZERO;
-	     break;
+         break;
         }
 
     /* Adjust sign of the evaluation and add in constant */
@@ -409,7 +409,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("erf class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ERF_CLASS_TO_ACTION_MAP\t");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_NEGATIVE,  1) +

@@ -208,7 +208,7 @@
 #define ATAN_MAP_WIDTH		4
 #define ATAN_MAP_FIELD(i,c)	((c) << ((i)*ATAN_MAP_WIDTH))
 #define INV_TRIG_CONS(index)	\
-		(UX_FLOAT *)((char *) INV_TRIG_CONS_BASE + (index))
+        (UX_FLOAT *)((char *) INV_TRIG_CONS_BASE + (index))
 
 
 
@@ -390,7 +390,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x)
     INIT_EXCEPTION_INFO;
     C_UX_ATAN2(
         PASS_ARG_X_FLOAT(packed_x),
-	NULL,
+    NULL,
         RADIAN_EVALUATION,
         ATAN_CLASS_TO_ACTION_MAP,
         NOT_USED,
@@ -435,7 +435,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x)
     INIT_EXCEPTION_INFO;
     C_UX_ATAN2(
         PASS_ARG_X_FLOAT(packed_x),
-	NULL,
+    NULL,
         DEGREE_EVALUATION,
         ATAND_CLASS_TO_ACTION_MAP,
         NOT_USED,
@@ -686,17 +686,17 @@ pack_it:
 #undef  F_ENTRY_NAME
 #define	F_ENTRY_NAME	F_ASIN_NAME
 
-         		             /* Interval   Constant Index    t  s */
+                             /* Interval   Constant Index    t  s */
 #define ASIN_INTERVAL_MAP ( ASIN_MAP_FIELD( 3,   UX_PI_OVER_2_INDEX, 1, 1) + \
-			    ASIN_MAP_FIELD( 2,     UX_ZERO_INDEX,    0, 1) + \
-			    ASIN_MAP_FIELD( 0,     UX_ZERO_INDEX,    0, 0) + \
-			    ASIN_MAP_FIELD( 1,   UX_PI_OVER_2_INDEX, 1, 0) )
+                ASIN_MAP_FIELD( 2,     UX_ZERO_INDEX,    0, 1) + \
+                ASIN_MAP_FIELD( 0,     UX_ZERO_INDEX,    0, 0) + \
+                ASIN_MAP_FIELD( 1,   UX_PI_OVER_2_INDEX, 1, 0) )
 
-				     /* Interval    Constant Index    t  s */
+                     /* Interval    Constant Index    t  s */
 #define ACOS_INTERVAL_MAP ( ASIN_MAP_FIELD( 3,        UX_PI_INDEX,    1, 0) + \
-			    ASIN_MAP_FIELD( 2,    UX_PI_OVER_2_INDEX, 0, 0) + \
-			    ASIN_MAP_FIELD( 0,    UX_PI_OVER_2_INDEX, 1, 0) + \
-			    ASIN_MAP_FIELD( 1,       UX_ZERO_INDEX,   0, 0) )
+                ASIN_MAP_FIELD( 2,    UX_PI_OVER_2_INDEX, 0, 0) + \
+                ASIN_MAP_FIELD( 0,    UX_PI_OVER_2_INDEX, 1, 0) + \
+                ASIN_MAP_FIELD( 1,       UX_ZERO_INDEX,   0, 0) )
 
 X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     {
@@ -798,7 +798,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("asin class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ASIN_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM(  CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     1) +
@@ -812,7 +812,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("acos class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ACOS_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM(  CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     1) +
@@ -826,7 +826,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("asind class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ASIND_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM(  CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     1) +
@@ -840,7 +840,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("acosd class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ACOSD_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM(  CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     1) +
@@ -855,7 +855,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("atan class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ATAN_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM(  CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_NEGATIVE,  1) +
@@ -868,7 +868,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("atand class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ATAND_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM(  CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_NEGATIVE,  1) +
@@ -880,29 +880,29 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("atan2(y,x) class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ATAN2_CLASS_TO_ACTION_MAP");
 
-	  /* Index 0: class-to-action for y */
+      /* Index 0: class-to-action for y */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(8) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) );
 
-	   /* Index 1: class-to-index mapping */
+       /* Index 1: class-to-index mapping */
 
     PRINT_64_TBL_ITEM( 
-	       CLASS_TO_INDEX( F_C_POS_INF,    2) +
-	       CLASS_TO_INDEX( F_C_NEG_INF,    2) +
-	       CLASS_TO_INDEX( F_C_POS_NORM,   3) +
-	       CLASS_TO_INDEX( F_C_NEG_NORM,   3) +
-	       CLASS_TO_INDEX( F_C_POS_DENORM, 3) +
-	       CLASS_TO_INDEX( F_C_NEG_DENORM, 3) +
-	       CLASS_TO_INDEX( F_C_POS_ZERO,   4) +
-	       CLASS_TO_INDEX( F_C_NEG_ZERO,   5) );
+           CLASS_TO_INDEX( F_C_POS_INF,    2) +
+           CLASS_TO_INDEX( F_C_NEG_INF,    2) +
+           CLASS_TO_INDEX( F_C_POS_NORM,   3) +
+           CLASS_TO_INDEX( F_C_NEG_NORM,   3) +
+           CLASS_TO_INDEX( F_C_POS_DENORM, 3) +
+           CLASS_TO_INDEX( F_C_NEG_DENORM, 3) +
+           CLASS_TO_INDEX( F_C_POS_ZERO,   4) +
+           CLASS_TO_INDEX( F_C_NEG_ZERO,   5) );
 
           /* index 2: mapping for x when y is +/- Inf */
 
 #if defined(INTEL_CLASS_ACTION)
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(4) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,       1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_CPYSN_ARG_0, 2) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_CPYSN_ARG_0, 3) +
@@ -914,7 +914,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
               CLASS_TO_ACTION( F_C_NEG_ZERO,   RETURN_CPYSN_ARG_0, 4) );
 #else
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(4) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,       1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,       2) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,       2) +
@@ -929,7 +929,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
           /* index 3: mapping for x when y is +/-Norm or +/-Denorm */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(3) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,       1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_CPYSN_ARG_0, 5) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_CPYSN_ARG_0, 6) +
@@ -944,7 +944,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
           /* index 4: mapping for x when y is +Zero */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,       1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,       0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_CPYSN_ARG_0, 6) +
@@ -958,7 +958,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 
           /* index 5: mapping for x when y is -Zero */
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,       1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,       0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_CPYSN_ARG_0, 6) +
@@ -972,7 +972,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
           /* index 4: mapping for x when y is +Zero */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,       1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,       0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_CPYSN_ARG_0, 6) +
@@ -985,7 +985,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 
           /* index 5: mapping for x when y is -Zero */
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN,   1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,       1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,       0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_CPYSN_ARG_0, 6) +
@@ -996,44 +996,44 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
               CLASS_TO_ACTION( F_C_POS_ZERO,   RETURN_ERROR,       3) +
               CLASS_TO_ACTION( F_C_NEG_ZERO,   RETURN_ERROR,       3) );
 #endif
-	PRINT_U_TBL_ITEM( /* data 1 */            NULL );
+    PRINT_U_TBL_ITEM( /* data 1 */            NULL );
 #if defined(INTEL_CLASS_ACTION)
-	PRINT_U_TBL_ITEM( /* data 2 */       PI_OVER_4 );
-	PRINT_U_TBL_ITEM( /* data 3 */ THREE_PI_OVER_4 );
+    PRINT_U_TBL_ITEM( /* data 2 */       PI_OVER_4 );
+    PRINT_U_TBL_ITEM( /* data 3 */ THREE_PI_OVER_4 );
 #else
-	PRINT_U_TBL_ITEM( /* data 2 */  ATAN2_BOTH_INF );
-	PRINT_U_TBL_ITEM( /* data 3 */ ATAN2_BOTH_ZERO );
+    PRINT_U_TBL_ITEM( /* data 2 */  ATAN2_BOTH_INF );
+    PRINT_U_TBL_ITEM( /* data 3 */ ATAN2_BOTH_ZERO );
 #endif
-	PRINT_U_TBL_ITEM( /* data 4 */       PI_OVER_2 );
-	PRINT_U_TBL_ITEM( /* data 5 */            ZERO );
-	PRINT_U_TBL_ITEM( /* data 6 */              PI );
+    PRINT_U_TBL_ITEM( /* data 4 */       PI_OVER_2 );
+    PRINT_U_TBL_ITEM( /* data 5 */            ZERO );
+    PRINT_U_TBL_ITEM( /* data 6 */              PI );
 
 
     TABLE_COMMENT("atan2d(y,x) class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "ATAND2_CLASS_TO_ACTION_MAP");
 
-	  /* Index 0: class-to-action for y */
+      /* Index 0: class-to-action for y */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(7) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) );
 
-	   /* Index 1: class-to-index mapping */
+       /* Index 1: class-to-index mapping */
 
     PRINT_64_TBL_ITEM( 
-	       CLASS_TO_INDEX( F_C_POS_INF,    2) +
-	       CLASS_TO_INDEX( F_C_NEG_INF,    3) +
-	       CLASS_TO_INDEX( F_C_POS_NORM,   4) +
-	       CLASS_TO_INDEX( F_C_NEG_NORM,   5) +
-	       CLASS_TO_INDEX( F_C_POS_DENORM, 4) +
-	       CLASS_TO_INDEX( F_C_NEG_DENORM, 5) +
-	       CLASS_TO_INDEX( F_C_POS_ZERO,   6) +
-	       CLASS_TO_INDEX( F_C_NEG_ZERO,   7) );
+           CLASS_TO_INDEX( F_C_POS_INF,    2) +
+           CLASS_TO_INDEX( F_C_NEG_INF,    3) +
+           CLASS_TO_INDEX( F_C_POS_NORM,   4) +
+           CLASS_TO_INDEX( F_C_NEG_NORM,   5) +
+           CLASS_TO_INDEX( F_C_POS_DENORM, 4) +
+           CLASS_TO_INDEX( F_C_NEG_DENORM, 5) +
+           CLASS_TO_INDEX( F_C_POS_ZERO,   6) +
+           CLASS_TO_INDEX( F_C_NEG_ZERO,   7) );
 
           /* index 2: mapping for x when y is +Inf */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(6) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     2) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     2) +
@@ -1047,7 +1047,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
           /* index 3: mapping for x when y is -Inf */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(5) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     2) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     2) +
@@ -1061,7 +1061,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
           /* index 4: mapping for x when y is +Norm or +Denorm */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(4) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     5) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_VALUE,     6) +
@@ -1075,7 +1075,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
           /* index 5: mapping for x when y is -Norm or -Denorm */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(3) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_NEGATIVE,  5) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_NEGATIVE,  6) +
@@ -1089,7 +1089,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
           /* index 6: mapping for x when y is +Zero */
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_VALUE,     6) +
@@ -1105,7 +1105,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 #if defined(INTEL_CLASS_ACTION)
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_NEGATIVE,  6) +
@@ -1118,7 +1118,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 #else
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 1) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_NEGATIVE,  6) +
@@ -1130,12 +1130,12 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
               CLASS_TO_ACTION( F_C_NEG_ZERO,   RETURN_ERROR,     3 ) );
 #endif
 
-	PRINT_U_TBL_ITEM( /* data 1 */             NULL );
-	PRINT_U_TBL_ITEM( /* data 2 */  ATAND2_BOTH_INF );
-	PRINT_U_TBL_ITEM( /* data 3 */ ATAND2_BOTH_ZERO );
-	PRINT_U_TBL_ITEM( /* data 4 */           NINETY );
-	PRINT_U_TBL_ITEM( /* data 5 */             ZERO );
-	PRINT_U_TBL_ITEM( /* data 6 */       ONE_EIGHTY );
+    PRINT_U_TBL_ITEM( /* data 1 */             NULL );
+    PRINT_U_TBL_ITEM( /* data 2 */  ATAND2_BOTH_INF );
+    PRINT_U_TBL_ITEM( /* data 3 */ ATAND2_BOTH_ZERO );
+    PRINT_U_TBL_ITEM( /* data 4 */           NINETY );
+    PRINT_U_TBL_ITEM( /* data 5 */             ZERO );
+    PRINT_U_TBL_ITEM( /* data 6 */       ONE_EIGHTY );
 
     /*
     ** The following code generates the "table" of constants that the
@@ -1149,8 +1149,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     inv_trig_cons_base = MP_BIT_OFFSET;
 
 #   define PRINT_BYTE_OFFSET(name)			\
-		printf("#define " name "\t%i\n",	\
-		   BYTES(MP_BIT_OFFSET - inv_trig_cons_base))
+        printf("#define " name "\t%i\n",	\
+           BYTES(MP_BIT_OFFSET - inv_trig_cons_base))
 
     PRINT_UX_TBL_ADEF("UX_ZERO\t\t\t\t" );
     PRINT_BYTE_OFFSET( "UX_ZERO_INDEX\t\t" );         PRINT_UX_TBL_ITEM(0);

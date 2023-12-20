@@ -287,14 +287,14 @@
     **/
 
 #   define SET_POLY_GLOBALS(k, s, xs, fs)	\
-		first_term       = (k);		\
-		first_term_value = (s);		\
-		x_scale          = (xs);	\
-		final_scale      = (fs)
+        first_term       = (k);		\
+        first_term_value = (s);		\
+        x_scale          = (xs);	\
+        final_scale      = (fs)
 
 #   define PRINT_TBL_COM_ADEF_ARRAY(com, def, deg) \
-		PRINT_TBL_COM_ADEF(com, def); \
-		print_array(deg)
+        PRINT_TBL_COM_ADEF(com, def); \
+        print_array(deg)
 
     procedure print_array(n)
         {
@@ -412,15 +412,15 @@
     */
 
 #   define __PRINT_TABLE_VALUE(tchar, value)			\
-		printf( "\t/* %4i */ %#.4" STR(tchar) ",\n",	\
-		  BYTES(MP_BIT_OFFSET), value);			\
-		MP_BIT_OFFSET += CHAR_TO_BITS(tchar)
+        printf( "\t/* %4i */ %#.4" STR(tchar) ",\n",	\
+          BYTES(MP_BIT_OFFSET), value);			\
+        MP_BIT_OFFSET += CHAR_TO_BITS(tchar)
 
 #   define __PRINT_TABLE_DEF(name, tchar, disp)				 \
-		printf("#define " name "\t*((" STR(CHAR_TO_TYPE(tchar))	\
-		     " *) ((char *) " STR(MP_TABLE_NAME) 		\
-		     " + %i + (j)))\n",	BYTES(disp));			\
-		disp += CHAR_TO_BITS(tchar)
+        printf("#define " name "\t*((" STR(CHAR_TO_TYPE(tchar))	\
+             " *) ((char *) " STR(MP_TABLE_NAME) 		\
+             " + %i + (j)))\n",	BYTES(disp));			\
+        disp += CHAR_TO_BITS(tchar)
 
 #   if (USE_BACKUP)
 
@@ -428,38 +428,38 @@
               "\n\t * Tj = 2^(j/2^POW2_K)"				\
               "\n\t *"							\
               "\n\t * offset                                   row"	\
-	      "\n\t"	
+          "\n\t"	
 
 #       define PRINT_POW2_TABLE_ACCESS_MACROS(disp)			\
-        	PRINT_LOG_TABLE_DEF("GET_POW2(j)\t",   B_CHAR, disp)
+            PRINT_LOG_TABLE_DEF("GET_POW2(j)\t",   B_CHAR, disp)
 
 #       define POW2_INDEX_POS		(__LOG2(BITS_PER_B_TYPE) - 3)
 
 #       define PRINT_POW2_TABLE_ENTRY(j, Pj)				\
-		printf( "\t/* %4i */ %#.4" STR(B_CHAR), ", /* %3i */",	\
-		   BYTES(MP_BIT_OFFSET), Pj, j);			\
-		MP_BIT_OFFSET += BITS_PER_B_TYPE
+        printf( "\t/* %4i */ %#.4" STR(B_CHAR), ", /* %3i */",	\
+           BYTES(MP_BIT_OFFSET), Pj, j);			\
+        MP_BIT_OFFSET += BITS_PER_B_TYPE
 
 #   else /* USE_BACKUP */
 
 #       define POW2_TABLE_BANNER					   \
-	  "\n\t * Tj = 2^(j/2^POW2_K) and Rj = [2^(j/2^POW2_K) - Tj]/Tj."  \
+      "\n\t * Tj = 2^(j/2^POW2_K) and Rj = [2^(j/2^POW2_K) - Tj]/Tj."  \
           "\n\t *"							   \
           "\n\t * offset                            row"		   \
-	  "\n\t"
+      "\n\t"
 
 #       define PRINT_POW2_TABLE_ACCESS_MACROS(disp)			  \
-        	__PRINT_TABLE_DEF("POW2_HI(j)\t",          F_CHAR, disp); \
-        	__PRINT_TABLE_DEF("POW2_LO_OV_POW2_HI(j)", F_CHAR, disp)
+            __PRINT_TABLE_DEF("POW2_HI(j)\t",          F_CHAR, disp); \
+            __PRINT_TABLE_DEF("POW2_LO_OV_POW2_HI(j)", F_CHAR, disp)
 
 #       define POW2_INDEX_POS		(__LOG2(BITS_PER_F_TYPE) - 2)
 
 #       define PRINT_POW2_TABLE_ENTRY(j, Pj)				\
-		Pj_hi = bround(Pj, F_PRECISION);			\
-		printf("\t/* %4i */ %#.4" STR(F_CHAR) ", /* %3i */\n",  \
-		  BYTES(MP_BIT_OFFSET), Pj, j);				\
-		MP_BIT_OFFSET += BITS_PER_F_TYPE;			\
-		__PRINT_TABLE_VALUE(F_CHAR, (Pj - Pj_hi)/Pj)
+        Pj_hi = bround(Pj, F_PRECISION);			\
+        printf("\t/* %4i */ %#.4" STR(F_CHAR) ", /* %3i */\n",  \
+          BYTES(MP_BIT_OFFSET), Pj, j);				\
+        MP_BIT_OFFSET += BITS_PER_F_TYPE;			\
+        __PRINT_TABLE_VALUE(F_CHAR, (Pj - Pj_hi)/Pj)
 
 #endif
 
@@ -1217,11 +1217,11 @@
 
 #   define GEN_SINH_COSH_COEFS(max_x, prec, deg, com, tag)		\
                 {							\
-		remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT +	\
-		   REMES_SQUARE_ARG, 0, max_x, sinh_cosh_poly,		\
-		    prec, &deg, &coefs);				\
-		PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);		\
-		}
+        remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT +	\
+           REMES_SQUARE_ARG, 0, max_x, sinh_cosh_poly,		\
+            prec, &deg, &coefs);				\
+        PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);		\
+        }
 
 
     if (USE_BACKUP)
@@ -1600,19 +1600,19 @@
         }
 
 #   define __GEN_LOG_COEFS(term, min, max, func, prec, deg, com, tag)	\
-		{							\
-		remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + 	\
-		  (term), min, max, func, prec, &deg, &coefs);		\
-		PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);		\
-		}
+        {							\
+        remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + 	\
+          (term), min, max, func, prec, &deg, &coefs);		\
+        PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);		\
+        }
 
 #   define GEN_DIV_LOG_COEFS(max, prec, deg, com, tag)			\
-			__GEN_LOG_COEFS(REMES_SQUARE_ARG, 0., max,	\
-			    divide_log2_poly, prec, deg, com, tag)
+            __GEN_LOG_COEFS(REMES_SQUARE_ARG, 0., max,	\
+                divide_log2_poly, prec, deg, com, tag)
 
 #   define GEN_NO_DIV_LOG_COEFS(min, max, prec, deg, com, tag)	\
-			__GEN_LOG_COEFS(REMES_LINEAR_ARG, min, max,	\
-			     no_divide_log2_poly, prec, deg, com, tag)
+            __GEN_LOG_COEFS(REMES_LINEAR_ARG, min, max,	\
+                 no_divide_log2_poly, prec, deg, com, tag)
 
     log2_table_size = 2^LOG2_K;
     min_arg = -1/((2*log2_table_size + 2)*ln2);
@@ -1767,27 +1767,27 @@
         */
 
 #       define LOG_TABLE_BANNER						\
-	  "\n\t * Fj, hi(log2(Fj)) and lo(log2(Fj) in base precision"	\
+      "\n\t * Fj, hi(log2(Fj)) and lo(log2(Fj) in base precision"	\
           "\n\t *\n\t * offset"						\
           "                                                     row"	\
-	  "\n\t"
+      "\n\t"
 
 #       define PRINT_LOG_TABLE_ACCESS_MACROS(disp)			\
-		printf("#define POW_EVAL_FLAGS\t\tUSE_DIVIDE\n");	\
-        	__PRINT_TABLE_DEF("GET_F(j)\t",     F_CHAR, disp);	\
-        	__PRINT_TABLE_DEF("LOG_F_HI(j)\t",  F_CHAR, disp);	\
-        	__PRINT_TABLE_DEF("LOG_F_LO(j)\t",  F_CHAR, disp)
+        printf("#define POW_EVAL_FLAGS\t\tUSE_DIVIDE\n");	\
+            __PRINT_TABLE_DEF("GET_F(j)\t",     F_CHAR, disp);	\
+            __PRINT_TABLE_DEF("LOG_F_HI(j)\t",  F_CHAR, disp);	\
+            __PRINT_TABLE_DEF("LOG_F_LO(j)\t",  F_CHAR, disp)
 
 #       define LOG_INDEX_BASE_POS	(__LOG2(BITS_PER_F_TYPE) - 3)
 #       define LOG_INDEX_SCALE		3
 
 #       define PRINT_LOG_TABLE_ENTRY(j, Fj, Rj, Lj)			\
-		printf( "\t/* %4i */ %#.4" STR(F_CHAR) ", /* %3i */\n",	\
-		    BYTES(MP_BIT_OFFSET), Fj, j);			\
-		MP_BIT_OFFSET += BITS_PER_F_TYPE;			\
-		Lj_hi = bround(Lj, F_HI_HALF_PRECISION);		\
-		__PRINT_TABLE_VALUE(F_CHAR, Lj_hi);			\
-		__PRINT_TABLE_VALUE(F_CHAR, Lj - Lj_hi)
+        printf( "\t/* %4i */ %#.4" STR(F_CHAR) ", /* %3i */\n",	\
+            BYTES(MP_BIT_OFFSET), Fj, j);			\
+        MP_BIT_OFFSET += BITS_PER_F_TYPE;			\
+        Lj_hi = bround(Lj, F_HI_HALF_PRECISION);		\
+        __PRINT_TABLE_VALUE(F_CHAR, Lj_hi);			\
+        __PRINT_TABLE_VALUE(F_CHAR, Lj - Lj_hi)
 
 #   elif !(ONE_TYPE || NO_FAST || NO_ACC || USE_DIVIDE)
 
@@ -1798,33 +1798,33 @@
         */
 
 #       define LOG_TABLE_BANNER						    \
-	  "\n\t * Fj, Rj = 1/(Fj*ln2) and Lj = log2(Fj).  Lj and Rj are"    \
-	  "\n\t * given in hi and low parts.  Fj and the hi part or Lj are" \
-	  "\n\t * in reduced precision; Rj, lo(Rj) and lo(Lj) in standard"  \
+      "\n\t * Fj, Rj = 1/(Fj*ln2) and Lj = log2(Fj).  Lj and Rj are"    \
+      "\n\t * given in hi and low parts.  Fj and the hi part or Lj are" \
+      "\n\t * in reduced precision; Rj, lo(Rj) and lo(Lj) in standard"  \
           "\n\t * precision with hi(Rj) = Rj - lo(Rj)"			    \
           "\n\t *"							    \
           "\n\t * offset                             row"		    \
-	  "\n\t"
+      "\n\t"
 
 #       define PRINT_LOG_TABLE_ACCESS_MACROS(disp)			\
-        	__PRINT_TABLE_DEF("GET_F(j)\t",      R_CHAR, disp);	\
-        	__PRINT_TABLE_DEF("LOG_F_HI(j)\t",   R_CHAR, disp);	\
-        	__PRINT_TABLE_DEF("RECIP_F(j)\t",    F_CHAR, disp);	\
-        	__PRINT_TABLE_DEF("RECIP_F_LO(j)\t", F_CHAR, disp);	\
-        	__PRINT_TABLE_DEF("LOG_F_LO(j)\t",   F_CHAR, disp)
+            __PRINT_TABLE_DEF("GET_F(j)\t",      R_CHAR, disp);	\
+            __PRINT_TABLE_DEF("LOG_F_HI(j)\t",   R_CHAR, disp);	\
+            __PRINT_TABLE_DEF("RECIP_F(j)\t",    F_CHAR, disp);	\
+            __PRINT_TABLE_DEF("RECIP_F_LO(j)\t", F_CHAR, disp);	\
+            __PRINT_TABLE_DEF("LOG_F_LO(j)\t",   F_CHAR, disp)
 
 #       define LOG_INDEX_BASE_POS	(__LOG2(BITS_PER_F_TYPE) - 1)
 #       define LOG_INDEX_SCALE		1
 
 #       define PRINT_LOG_TABLE_ENTRY(j, Fj, Rj, Lj)			\
-		Lj_hi = bround(Lj, R_PRECISION);			\
-		printf( "\t/* %4i */ %#.4" STR(R_CHAR) ", %#.4"		\
-		  STR(R_CHAR) ", /* %3i */\n", BYTES(MP_BIT_OFFSET),	\
-		  Fj, Lj_hi, j);					\
-		MP_BIT_OFFSET += 2*BITS_PER_R_TYPE;			\
-		__PRINT_TABLE_VALUE(F_CHAR, Rj);			\
-		__PRINT_TABLE_VALUE(F_CHAR, Rj - bround(Rj, LOG2_K));	\
-		__PRINT_TABLE_VALUE(F_CHAR, Lj - Lj_hi)
+        Lj_hi = bround(Lj, R_PRECISION);			\
+        printf( "\t/* %4i */ %#.4" STR(R_CHAR) ", %#.4"		\
+          STR(R_CHAR) ", /* %3i */\n", BYTES(MP_BIT_OFFSET),	\
+          Fj, Lj_hi, j);					\
+        MP_BIT_OFFSET += 2*BITS_PER_R_TYPE;			\
+        __PRINT_TABLE_VALUE(F_CHAR, Rj);			\
+        __PRINT_TABLE_VALUE(F_CHAR, Rj - bround(Rj, LOG2_K));	\
+        __PRINT_TABLE_VALUE(F_CHAR, Lj - Lj_hi)
 #   else
 
 #       error "ERROR: Log table generation for this set of switches NYI"

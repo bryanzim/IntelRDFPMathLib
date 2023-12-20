@@ -38,15 +38,15 @@
 #include "bid128_2_str_macros.h"
 
 BID_EXTERN_C int bid128_bid_coeff_2_string (BID_UINT64 X_hi, BID_UINT64 X_lo,
-				  char *char_ptr);
+                  char *char_ptr);
 
 #if DECIMAL_CALL_BY_REFERENCE
 
 void
 bid128_to_string (char *str,
-		  BID_UINT128 *
-		  px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		  _EXC_INFO_PARAM) {
+          BID_UINT128 *
+          px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+          _EXC_INFO_PARAM) {
   BID_UINT128 x;
 #else
 
@@ -81,33 +81,33 @@ bid128_to_string (char *str, BID_UINT128 x
     // x is special
     if ((x.w[1] & MASK_NAN) == MASK_NAN) { // x is NAN
       if ((x.w[1] & MASK_SNAN) == MASK_SNAN) { // x is SNAN
-	// set invalid flag
+    // set invalid flag
     str[0] = ((BID_SINT64)x.w[1]<0)? '-':'+'; 
-	str[1] = 'S';
-	str[2] = 'N';
-	str[3] = 'a';
-	str[4] = 'N';
-	str[5] = '\0';
+    str[1] = 'S';
+    str[2] = 'N';
+    str[3] = 'a';
+    str[4] = 'N';
+    str[5] = '\0';
       } else { // x is QNaN
     str[0] = ((BID_SINT64)x.w[1]<0)? '-':'+'; 
-	str[1] = 'N';
-	str[2] = 'a';
-	str[3] = 'N';
-	str[4] = '\0';
+    str[1] = 'N';
+    str[2] = 'a';
+    str[3] = 'N';
+    str[4] = '\0';
       }
     } else { // x is not a NaN, so it must be infinity
       if ((x.w[1] & MASK_SIGN) == 0x0ull) { // x is +inf
-	str[0] = '+';
-	str[1] = 'I';
-	str[2] = 'n';
-	str[3] = 'f';
-	str[4] = '\0';
+    str[0] = '+';
+    str[1] = 'I';
+    str[2] = 'n';
+    str[3] = 'f';
+    str[4] = '\0';
       } else { // x is -inf 
-	str[0] = '-';
-	str[1] = 'I';
-	str[2] = 'n';
-	str[3] = 'f';
-	str[4] = '\0';
+    str[0] = '-';
+    str[1] = 'I';
+    str[2] = 'n';
+    str[3] = 'f';
+    str[4] = '\0';
       }
     }
     return;
@@ -125,9 +125,9 @@ bid128_to_string (char *str, BID_UINT128 x
 
     // extract the exponent and print
     exp = (int) (((x.w[1] & MASK_EXP) >> 49) - 6176);
-	if(exp > (((0x5ffe)>>1) - (6176))) {
-		exp = (int) ((((x.w[1]<<2) & MASK_EXP) >> 49) - 6176);
-	}
+    if(exp > (((0x5ffe)>>1) - (6176))) {
+        exp = (int) ((((x.w[1]<<2) & MASK_EXP) >> 49) - 6176);
+    }
     if (exp >= 0) {
       str[len++] = '+';
       len += sprintf (str + len, "%u", exp);// should not use sprintf (should 
@@ -199,19 +199,19 @@ bid128_to_string (char *str, BID_UINT128 x
       // Lo_18Dig = {C1.w[0]{58:0}}
 
       while (Tmp) {
-	midi_ind = (int) (Tmp & 0x000000000000003FLL);
-	midi_ind <<= 1;
-	Tmp >>= 6;
-	HI_18Dig += mod10_18_tbl[k_lcv][midi_ind++];
-	LO_18Dig += mod10_18_tbl[k_lcv++][midi_ind];
-	__L0_Normalize_10to18 (HI_18Dig, LO_18Dig);
+    midi_ind = (int) (Tmp & 0x000000000000003FLL);
+    midi_ind <<= 1;
+    Tmp >>= 6;
+    HI_18Dig += mod10_18_tbl[k_lcv][midi_ind++];
+    LO_18Dig += mod10_18_tbl[k_lcv++][midi_ind];
+    __L0_Normalize_10to18 (HI_18Dig, LO_18Dig);
       }
       ptr = MiDi;
       if (HI_18Dig == 0LL) {
-	__L1_Split_MiDi_6_Lead (LO_18Dig, ptr);
+    __L1_Split_MiDi_6_Lead (LO_18Dig, ptr);
       } else {
-	__L1_Split_MiDi_6_Lead (HI_18Dig, ptr);
-	__L1_Split_MiDi_6 (LO_18Dig, ptr);
+    __L1_Split_MiDi_6_Lead (HI_18Dig, ptr);
+    __L1_Split_MiDi_6 (LO_18Dig, ptr);
       }
       len = ptr - MiDi;
       c_ptr_start = &(str[k]);
@@ -220,7 +220,7 @@ bid128_to_string (char *str, BID_UINT128 x
       /* now convert the MiDi into character strings */
       __L0_MiDi2Str_Lead (MiDi[0], c_ptr);
       for (k_lcv = 1; k_lcv < len; k_lcv++) {
-	__L0_MiDi2Str (MiDi[k_lcv], c_ptr);
+    __L0_MiDi2Str (MiDi[k_lcv], c_ptr);
       }
       k = k + (c_ptr - c_ptr_start);
     }
@@ -248,16 +248,16 @@ bid128_to_string (char *str, BID_UINT128 x
       str[k++] = bid_char_table3[ind + 2];
     } else { // 0 <= exp <= 999 => d0 = 0
       if (d123 < 10) { // 0 <= exp <= 9 => 1 digit to return
-	str[k++] = d123 + 0x30;// ASCII
+    str[k++] = d123 + 0x30;// ASCII
       } else if (d123 < 100) { // 10 <= exp <= 99 => 2 digits to return
-	ind = 2 * (d123 - 10);
-	str[k++] = bid_char_table2[ind];
-	str[k++] = bid_char_table2[ind + 1];
+    ind = 2 * (d123 - 10);
+    str[k++] = bid_char_table2[ind];
+    str[k++] = bid_char_table2[ind + 1];
       } else { // 100 <= exp <= 999 => 3 digits to return
-	ind = 3 * d123;
-	str[k++] = bid_char_table3[ind];
-	str[k++] = bid_char_table3[ind + 1];
-	str[k++] = bid_char_table3[ind + 2];
+    ind = 3 * d123;
+    str[k++] = bid_char_table3[ind];
+    str[k++] = bid_char_table3[ind + 1];
+    str[k++] = bid_char_table3[ind + 2];
       }
     }
     str[k] = '\0';
@@ -398,8 +398,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     BID_RETURN (res);
   }
   if(c=='.') {
-	  rdx_pt_enc=1;
-	  ps++;
+      rdx_pt_enc=1;
+      ps++;
   }
 
   // detect zero (and eliminate/ignore leading zeros)
@@ -438,7 +438,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
           BID_RETURN (res);
         }
       } else if (!*(ps)) {
-		if(right_radix_leading_zeros>6176) right_radix_leading_zeros=6176;
+        if(right_radix_leading_zeros>6176) right_radix_leading_zeros=6176;
         res.w[1] =
           (0x3040000000000000ull -
            (right_radix_leading_zeros << 49)) | sign_x;
@@ -461,7 +461,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
            /*&& ndigits_before < MAX_STRING_DIGITS_128*/) {
       if(ndigits_before < MAX_FORMAT_DIGITS_128) buffer[ndigits_before] = c; 
       else if(ndigits_before < MAX_STRING_DIGITS_128) { buffer[ndigits_before] = c; if(c>'0') set_inexact=1; }
-	  else if(c>'0') set_inexact=1;
+      else if(c>'0') set_inexact=1;
       ps++;
       c = *ps;
       ndigits_before++;
@@ -477,7 +477,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
                /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
           if(ndigits_total < MAX_FORMAT_DIGITS_128) buffer[ndigits_total] = c;
           else if(ndigits_total < MAX_STRING_DIGITS_128) { buffer[ndigits_total] = c; if(c>'0') set_inexact=1; }
-	      else if(c>'0') set_inexact=1;
+          else if(c>'0') set_inexact=1;
           ps++;
           c = *ps;
           ndigits_total++;
@@ -495,8 +495,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     while ((unsigned) (c - '0') <= 9
            /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
       if(ndigits_total < MAX_FORMAT_DIGITS_128)  buffer[ndigits_total] = c; 
-	  else if(ndigits_total < MAX_STRING_DIGITS_128)  { buffer[ndigits_total] = c; if(c>'0') set_inexact=1; }
-	  else if(c>'0') set_inexact=1;
+      else if(ndigits_total < MAX_STRING_DIGITS_128)  { buffer[ndigits_total] = c; if(c>'0') set_inexact=1; }
+      else if(c>'0') set_inexact=1;
       ps++;
       c = *ps;
       ndigits_total++;
@@ -538,12 +538,12 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       i = 1;
       ps++;
 
-	  if(!dec_expon) {
-		  while((*ps)=='0') ps++;
-	  }
+      if(!dec_expon) {
+          while((*ps)=='0') ps++;
+      }
       c = (*ps) - '0';
 
-	  while (((unsigned) c) <= 9 && i < 7) {
+      while (((unsigned) c) <= 9 && i < 7) {
         d2 = dec_expon + dec_expon;
         dec_expon = (d2 << 2) + d2 + c;
         ps++;
@@ -620,8 +620,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       coeff_l2 = coeff_low + coeff_low;
       coeff_low = (coeff_l2 << 2) + coeff_l2 + buffer[i] - '0';
     }
-	switch(rnd_mode) {
-	case BID_ROUNDING_TO_NEAREST:
+    switch(rnd_mode) {
+    case BID_ROUNDING_TO_NEAREST:
     carry = ((unsigned) ('4' - buffer[i])) >> 31;
     if ((buffer[i] == '5' && !(coeff_low & 1)) || dec_expon < 0) {
       if (dec_expon >= 0) {
@@ -635,30 +635,30 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
         }
       }
     }
-	break;
+    break;
 
-	case BID_ROUNDING_DOWN:
-		if(sign_x) 
+    case BID_ROUNDING_DOWN:
+        if(sign_x) 
       for (; i < ndigits_total; i++) {
         if (buffer[i] > '0') {
           carry = 1;
           break;
         }
       }
-		break;
-	case BID_ROUNDING_UP:
-		if(!sign_x) 
+        break;
+    case BID_ROUNDING_UP:
+        if(!sign_x) 
       for (; i < ndigits_total; i++) {
         if (buffer[i] > '0') {
           carry = 1;
           break;
         }
       }
-		break;
-	case BID_ROUNDING_TO_ZERO:
-		carry=0;
-		break;
-	case BID_ROUNDING_TIES_AWAY:
+        break;
+    case BID_ROUNDING_TO_ZERO:
+        carry=0;
+        break;
+    case BID_ROUNDING_TIES_AWAY:
     carry = ((unsigned) ('4' - buffer[i])) >> 31;
     if (dec_expon < 0) {
       for (; i < ndigits_total; i++) {
@@ -668,10 +668,10 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
         }
       }
     }
-		break;
+        break;
 
 
-	}
+    }
     // now form the coefficient as coeff_high*10^17+coeff_low+carry
     scale_high = 100000000000000000ull;
     if (dec_expon < 0) {
@@ -693,7 +693,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       CX.w[1]++;
 
 #ifdef BID_SET_STATUS_FLAGS
-	if(set_inexact)
+    if(set_inexact)
       __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
 #endif
 

@@ -85,7 +85,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //   If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -103,7 +103,7 @@ sig_y.w[0] = y.w[0];
   // If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -150,11 +150,11 @@ if (exp_y - exp_x > 33) {
 if (exp_y - exp_x > 19) {
   // recalculate y's significand upwards
   __mul_128x128_to_256 (sig_n_prime256, sig_y,
-			bid_ten2k128[exp_y - exp_x - 20]);
+            bid_ten2k128[exp_y - exp_x - 20]);
   {
     res = ((sig_n_prime256.w[3] == 0) && (sig_n_prime256.w[2] == 0)
-	   && (sig_n_prime256.w[1] == sig_x.w[1])
-	   && (sig_n_prime256.w[0] == sig_x.w[0]));
+       && (sig_n_prime256.w[1] == sig_x.w[1])
+       && (sig_n_prime256.w[0] == sig_x.w[0]));
     BID_RETURN_VAL (res);
   }
 
@@ -164,14 +164,14 @@ if (exp_y - exp_x > 19) {
 __mul_64x128_to_192 (sig_n_prime192, bid_ten2k64[exp_y - exp_x], sig_y);
 {
   res = ((sig_n_prime192.w[2] == 0)
-	 && (sig_n_prime192.w[1] == sig_x.w[1])
-	 && (sig_n_prime192.w[0] == sig_x.w[0]));
+     && (sig_n_prime192.w[1] == sig_x.w[1])
+     && (sig_n_prime192.w[0] == sig_x.w[0]));
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_greater, x,
-					  y)
+                      y)
 
      int res;
      int exp_x, exp_y;
@@ -212,7 +212,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
   // return y!=pos_infinity
   else {
     res = (((y.w[1] & MASK_INF) != MASK_INF)
-	   || ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+       || ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 } else if ((y.w[1] & MASK_INF) == MASK_INF) {
@@ -235,7 +235,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -253,7 +253,7 @@ sig_y.w[0] = y.w[0];
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -297,9 +297,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -338,17 +338,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 0;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -364,10 +364,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0) ||
-	    (sig_n_prime192.w[1] > sig_y.w[1]) ||
-	    (sig_n_prime192.w[1] == sig_y.w[1] &&
-	     sig_n_prime192.w[0] > sig_y.w[0])) ^
-	   ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+        (sig_n_prime192.w[1] > sig_y.w[1]) ||
+        (sig_n_prime192.w[1] == sig_y.w[1] &&
+         sig_n_prime192.w[0] > sig_y.w[0])) ^
+       ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -394,10 +394,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   }	// if equal, return 0
   {
     res = ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0 ||
-	    (sig_n_prime256.w[1] > sig_x.w[1] ||
-	     (sig_n_prime256.w[1] == sig_x.w[1] &&
-	      sig_n_prime256.w[0] > sig_x.w[0]))) ^
-	   ((x.w[1] & MASK_SIGN) != MASK_SIGN));
+        (sig_n_prime256.w[1] > sig_x.w[1] ||
+         (sig_n_prime256.w[1] == sig_x.w[1] &&
+          sig_n_prime256.w[0] > sig_x.w[0]))) ^
+       ((x.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -414,17 +414,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_quiet_greater_equal, x,
-					  y)
+                      bid128_quiet_greater_equal, x,
+                      y)
 
      int res;
      int exp_x, exp_y;
@@ -461,7 +461,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
     // x is -inf, so it is less than y unless y is -inf
   {
     res = (((y.w[1] & MASK_INF) == MASK_INF)
-	   && (y.w[1] & MASK_SIGN) == MASK_SIGN);
+       && (y.w[1] & MASK_SIGN) == MASK_SIGN);
     BID_RETURN_VAL (res);
   } else
     // x is pos_inf, no way for it to be less than y
@@ -489,7 +489,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -507,7 +507,7 @@ sig_y.w[0] = y.w[0];
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -551,9 +551,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -587,17 +587,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 1;
       BID_RETURN_VAL (res);
     }	// if equal, return 1
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -613,10 +613,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 1
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -644,11 +644,11 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   }	// if equal, return 1
   {
     res = ((sig_n_prime256.w[3] == 0 && sig_n_prime256.w[2] == 0
-	    && (sig_n_prime256.w[1] < sig_x.w[1]
-		|| (sig_n_prime256.w[1] == sig_x.w[1]
-		    && sig_n_prime256.w[0] <
-		    sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) ==
-				     MASK_SIGN));
+        && (sig_n_prime256.w[1] < sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+            && sig_n_prime256.w[0] <
+            sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) ==
+                     MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -665,17 +665,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 1
 {
   res = (sig_n_prime192.w[2] == 0
-	 && (sig_n_prime192.w[1] < sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] <
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     && (sig_n_prime192.w[1] < sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] <
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_quiet_greater_unordered,
-					  x, y)
+                      bid128_quiet_greater_unordered,
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -717,7 +717,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
   // return y!=pos_infinity
   else {
     res = (((y.w[1] & MASK_INF) != MASK_INF)
-	   || ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+       || ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 } else if ((y.w[1] & MASK_INF) == MASK_INF) {
@@ -740,7 +740,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -758,7 +758,7 @@ sig_y.w[0] = y.w[0];
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -802,9 +802,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -838,17 +838,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 0;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -864,10 +864,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -895,11 +895,11 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   }	// if equal, return 0
   {
     res = ((sig_n_prime256.w[3] == 0 && sig_n_prime256.w[2] == 0
-	    && (sig_n_prime256.w[1] < sig_x.w[1]
-		|| (sig_n_prime256.w[1] == sig_x.w[1]
-		    && sig_n_prime256.w[0] <
-		    sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) ==
-				     MASK_SIGN));
+        && (sig_n_prime256.w[1] < sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+            && sig_n_prime256.w[0] <
+            sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) ==
+                     MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -916,10 +916,10 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] == 0
-	 && (sig_n_prime192.w[1] < sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] <
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     && (sig_n_prime192.w[1] < sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] <
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
@@ -961,7 +961,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
     // x is -inf, so it is less than y unless y is -inf
   {
     res = (((y.w[1] & MASK_INF) != MASK_INF)
-	   || (y.w[1] & MASK_SIGN) != MASK_SIGN);
+       || (y.w[1] & MASK_SIGN) != MASK_SIGN);
     BID_RETURN_VAL (res);
   } else
     // x is pos_inf, no way for it to be less than y
@@ -989,7 +989,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -1007,7 +1007,7 @@ sig_y.w[0] = y.w[0];
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -1051,9 +1051,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -1089,17 +1089,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 0;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -1115,10 +1115,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -1145,11 +1145,11 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   }	// if equal, return 1
   {
     res = ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	    || (sig_n_prime256.w[1] > sig_x.w[1]
-		|| (sig_n_prime256.w[1] == sig_x.w[1]
-		    && sig_n_prime256.w[0] >
-		    sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) ==
-				     MASK_SIGN));
+        || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+            && sig_n_prime256.w[0] >
+            sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) ==
+                     MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -1166,16 +1166,16 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_less_equal,
-					  x, y)
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -1216,7 +1216,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
   // return y!=pos_infinity
   else {
     res = (((y.w[1] & MASK_INF) == MASK_INF)
-	   && ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+       && ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 } else if ((y.w[1] & MASK_INF) == MASK_INF) {
@@ -1239,7 +1239,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -1257,7 +1257,7 @@ sig_y.w[0] = y.w[0];
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -1301,11 +1301,11 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1]) || (sig_x.w[1] == sig_y.w[1] &&
-					sig_x.w[0] >=
-					sig_y.w[0])) ^ ((x.
-							 w[1] &
-							 MASK_SIGN) !=
-							MASK_SIGN));
+                    sig_x.w[0] >=
+                    sig_y.w[0])) ^ ((x.
+                             w[1] &
+                             MASK_SIGN) !=
+                            MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -1341,17 +1341,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 1;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -1367,10 +1367,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -1399,10 +1399,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -1419,17 +1419,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_quiet_less_unordered,
-					  x, y)
+                      bid128_quiet_less_unordered,
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -1465,7 +1465,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
     // x is -inf, so it is less than y unless y is -inf
   {
     res = (((y.w[1] & MASK_INF) != MASK_INF)
-	   || (y.w[1] & MASK_SIGN) != MASK_SIGN);
+       || (y.w[1] & MASK_SIGN) != MASK_SIGN);
     BID_RETURN_VAL (res);
   } else
     // x is pos_inf, no way for it to be less than y
@@ -1493,7 +1493,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -1511,7 +1511,7 @@ sig_y.w[0] = y.w[0];
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -1555,9 +1555,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -1593,17 +1593,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 0;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -1619,10 +1619,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -1651,10 +1651,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -1671,16 +1671,16 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_not_equal,
-					  x, y)
+                      x, y)
 
      int res;
      int exp_x, exp_y, exp_t;
@@ -1735,7 +1735,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -1753,7 +1753,7 @@ sig_y.w[0] = y.w[0];
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -1800,11 +1800,11 @@ if (exp_y - exp_x > 33) {
 if (exp_y - exp_x > 19) {
   // recalculate y's significand upwards
   __mul_128x128_to_256 (sig_n_prime256, sig_y,
-			bid_ten2k128[exp_y - exp_x - 20]);
+            bid_ten2k128[exp_y - exp_x - 20]);
   {
     res = ((sig_n_prime256.w[3] != 0) || (sig_n_prime256.w[2] != 0)
-	   || (sig_n_prime256.w[1] != sig_x.w[1])
-	   || (sig_n_prime256.w[0] != sig_x.w[0]));
+       || (sig_n_prime256.w[1] != sig_x.w[1])
+       || (sig_n_prime256.w[0] != sig_x.w[0]));
     BID_RETURN_VAL (res);
   }
 
@@ -1814,14 +1814,14 @@ if (exp_y - exp_x > 19) {
 __mul_64x128_to192 (sig_n_prime192, bid_ten2k64[exp_y - exp_x], sig_y);
 {
   res = ((sig_n_prime192.w[2] != 0)
-	 || (sig_n_prime192.w[1] != sig_x.w[1])
-	 || (sig_n_prime192.w[0] != sig_x.w[0]));
+     || (sig_n_prime192.w[1] != sig_x.w[1])
+     || (sig_n_prime192.w[0] != sig_x.w[0]));
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_not_greater,
-					  x, y)
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -1861,7 +1861,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
   // x is pos infinity, it is greater, unless y is positive infinity => return y!=pos_infinity
   else {
     res = (((y.w[1] & MASK_INF) == MASK_INF)
-	   && ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+       && ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 } else if ((y.w[1] & MASK_INF) == MASK_INF) {
@@ -1884,7 +1884,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -1902,7 +1902,7 @@ sig_y.w[0] = y.w[0];
   //    If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -1946,9 +1946,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -1984,17 +1984,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 1;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -2010,10 +2010,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -2042,10 +2042,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -2062,16 +2062,16 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_not_less, x,
-					  y)
+                      y)
 
      int res;
      int exp_x, exp_y;
@@ -2108,7 +2108,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
     // x is -inf, so it is less than y unless y is -inf
   {
     res = (((y.w[1] & MASK_INF) == MASK_INF)
-	   && (y.w[1] & MASK_SIGN) == MASK_SIGN);
+       && (y.w[1] & MASK_SIGN) == MASK_SIGN);
     BID_RETURN_VAL (res);
   } else
     // x is pos_inf, no way for it to be less than y
@@ -2136,7 +2136,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -2154,7 +2154,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -2199,9 +2199,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -2235,17 +2235,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 1;
       BID_RETURN_VAL (res);
     }	// if equal, return 1
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -2261,10 +2261,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 1
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -2293,10 +2293,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] == 0 && sig_n_prime256.w[2] == 0
-	&& (sig_n_prime256.w[1] < sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] <
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    && (sig_n_prime256.w[1] < sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] <
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -2313,16 +2313,16 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 1
 {
   res = (sig_n_prime192.w[2] == 0
-	 && (sig_n_prime192.w[1] < sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] <
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     && (sig_n_prime192.w[1] < sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] <
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_ordered, x,
-					  y)
+                      y)
 
      int res;
 
@@ -2346,7 +2346,7 @@ if ((x.w[1] & MASK_SNAN) == MASK_SNAN
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_unordered,
-					  x, y)
+                      x, y)
 
      int res;
 
@@ -2370,7 +2370,7 @@ if ((x.w[1] & MASK_SNAN) == MASK_SNAN
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_signaling_greater,
-					  x, y)
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -2407,7 +2407,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
   // x is pos infinity, it is greater, unless y is positive infinity => return y!=pos_infinity
   else {
     res = (((y.w[1] & MASK_INF) != MASK_INF)
-	   || ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+       || ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 } else if ((y.w[1] & MASK_INF) == MASK_INF) {
@@ -2430,7 +2430,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -2448,7 +2448,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -2492,9 +2492,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -2533,17 +2533,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 0;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -2559,10 +2559,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -2590,10 +2590,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) != MASK_SIGN));
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -2610,17 +2610,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_signaling_greater_equal,
-					  x, y)
+                      bid128_signaling_greater_equal,
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -2654,7 +2654,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
     // x is -inf, so it is less than y unless y is -inf
   {
     res = (((y.w[1] & MASK_INF) == MASK_INF)
-	   && (y.w[1] & MASK_SIGN) == MASK_SIGN);
+       && (y.w[1] & MASK_SIGN) == MASK_SIGN);
     BID_RETURN_VAL (res);
   } else
     // x is pos_inf, no way for it to be less than y
@@ -2682,7 +2682,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -2700,7 +2700,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -2744,9 +2744,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -2780,17 +2780,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 1;
       BID_RETURN_VAL (res);
     }	// if equal, return 1
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -2806,10 +2806,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 1
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -2838,10 +2838,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] == 0 && sig_n_prime256.w[2] == 0
-	&& (sig_n_prime256.w[1] < sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] <
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    && (sig_n_prime256.w[1] < sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] <
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -2858,17 +2858,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 1
 {
   res = (sig_n_prime192.w[2] == 0
-	 && (sig_n_prime192.w[1] < sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] <
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     && (sig_n_prime192.w[1] < sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] <
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_signaling_greater_unordered,
-					  x, y)
+                      bid128_signaling_greater_unordered,
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -2905,7 +2905,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
   // x is pos infinity, it is greater, unless y is positive infinity => return y!=pos_infinity
   else {
     res = (((y.w[1] & MASK_INF) != MASK_INF)
-	   || ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+       || ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 } else if ((y.w[1] & MASK_INF) == MASK_INF) {
@@ -2928,7 +2928,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -2946,7 +2946,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -2990,9 +2990,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -3026,17 +3026,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 0;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -3052,10 +3052,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -3084,10 +3084,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] == 0 && sig_n_prime256.w[2] == 0
-	&& (sig_n_prime256.w[1] < sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] <
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    && (sig_n_prime256.w[1] < sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] <
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -3104,16 +3104,16 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] == 0
-	 && (sig_n_prime192.w[1] < sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] <
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     && (sig_n_prime192.w[1] < sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] <
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_signaling_less, x,
-					  y)
+                      y)
 
      int res;
      int exp_x, exp_y;
@@ -3147,7 +3147,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
     // x is -inf, so it is less than y unless y is -inf
   {
     res = (((y.w[1] & MASK_INF) != MASK_INF)
-	   || (y.w[1] & MASK_SIGN) != MASK_SIGN);
+       || (y.w[1] & MASK_SIGN) != MASK_SIGN);
     BID_RETURN_VAL (res);
   } else
     // x is pos_inf, no way for it to be less than y
@@ -3175,7 +3175,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -3193,7 +3193,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -3237,9 +3237,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -3275,17 +3275,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 0;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -3301,10 +3301,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -3333,10 +3333,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -3353,17 +3353,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_signaling_less_equal,
-					  x, y)
+                      bid128_signaling_less_equal,
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -3400,7 +3400,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
   // x is pos infinity, it is greater, unless y is positive infinity => return y!=pos_infinity
   else {
     res = (((y.w[1] & MASK_INF) == MASK_INF)
-	   && ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+       && ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 } else if ((y.w[1] & MASK_INF) == MASK_INF) {
@@ -3423,7 +3423,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -3441,7 +3441,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -3485,9 +3485,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -3523,17 +3523,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 1;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -3549,10 +3549,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -3581,10 +3581,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -3601,17 +3601,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_signaling_less_unordered,
-					  x, y)
+                      bid128_signaling_less_unordered,
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -3644,7 +3644,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
     // x is -inf, so it is less than y unless y is -inf
   {
     res = (((y.w[1] & MASK_INF) != MASK_INF)
-	   || (y.w[1] & MASK_SIGN) != MASK_SIGN);
+       || (y.w[1] & MASK_SIGN) != MASK_SIGN);
     BID_RETURN_VAL (res);
   } else
     // x is pos_inf, no way for it to be less than y
@@ -3672,7 +3672,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -3690,7 +3690,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -3734,9 +3734,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -3772,17 +3772,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 0;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -3798,10 +3798,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -3830,10 +3830,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -3849,17 +3849,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_signaling_not_greater,
-					  x, y)
+                      bid128_signaling_not_greater,
+                      x, y)
 
      int res;
      int exp_x, exp_y;
@@ -3896,7 +3896,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
   // x is pos infinity, it is greater, unless y is positive infinity => return y!=pos_infinity
   else {
     res = (((y.w[1] & MASK_INF) == MASK_INF)
-	   && ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+       && ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 } else if ((y.w[1] & MASK_INF) == MASK_INF) {
@@ -3919,7 +3919,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -3937,7 +3937,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -3981,9 +3981,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) !=
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -4019,17 +4019,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 1;
       BID_RETURN_VAL (res);
     }	// if equal, return 0
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -4045,10 +4045,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 0
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) != MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -4076,10 +4076,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] != 0 || sig_n_prime256.w[2] != 0
-	|| (sig_n_prime256.w[1] > sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] >
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    || (sig_n_prime256.w[1] > sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] >
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -4096,17 +4096,17 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 0
 {
   res = (sig_n_prime192.w[2] != 0
-	 || (sig_n_prime192.w[1] > sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] >
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     || (sig_n_prime192.w[1] > sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] >
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }
 
 BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
-					  bid128_signaling_not_less, x,
-					  y)
+                      bid128_signaling_not_less, x,
+                      y)
 
      int res;
      int exp_x, exp_y;
@@ -4140,7 +4140,7 @@ if ((x.w[1] & MASK_INF) == MASK_INF) {
     // x is -inf, so it is less than y unless y is -inf
   {
     res = (((y.w[1] & MASK_INF) == MASK_INF)
-	   && (y.w[1] & MASK_SIGN) == MASK_SIGN);
+       && (y.w[1] & MASK_SIGN) == MASK_SIGN);
     BID_RETURN_VAL (res);
   } else
     // x is pos_inf, no way for it to be less than y
@@ -4168,7 +4168,7 @@ exp_x = (x.w[1] >> 49) & 0x000000000003fffull;
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_x.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_x.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_x.w[0] > 0x378d8e63ffffffffull))
+    && (sig_x.w[0] > 0x378d8e63ffffffffull))
     || ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_x = 1;
 else
@@ -4186,7 +4186,7 @@ sig_y.w[0] = y.w[0];
   //     If the value exceeds that, it is interpreted as 0.
 if ((sig_y.w[1] > 0x0001ed09bead87c0ull)
     || ((sig_y.w[1] == 0x0001ed09bead87c0ull)
-	&& (sig_y.w[0] > 0x378d8e63ffffffffull))
+    && (sig_y.w[0] > 0x378d8e63ffffffffull))
     || ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull))
   non_canon_y = 1;
 else
@@ -4231,9 +4231,9 @@ if (((x.w[1] ^ y.w[1]) & MASK_SIGN) == MASK_SIGN) {
   // of the significands
 if (exp_y == exp_x) {
   res = (((sig_x.w[1] > sig_y.w[1])
-	  || (sig_x.w[1] == sig_y.w[1]
-	      && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
-					       MASK_SIGN));
+      || (sig_x.w[1] == sig_y.w[1]
+          && sig_x.w[0] >= sig_y.w[0])) ^ ((x.w[1] & MASK_SIGN) ==
+                           MASK_SIGN));
   BID_RETURN_VAL (res);
 }
   // if both components are either bigger or smaller, 
@@ -4267,17 +4267,17 @@ if (diff > 0) {	// to simplify the loop below,
     // if postitive, return whichever significand is larger 
     // (converse if negative)
     if (sig_n_prime256.w[3] == 0 && (sig_n_prime256.w[2] == 0)
-	&& sig_n_prime256.w[1] == sig_y.w[1]
-	&& (sig_n_prime256.w[0] == sig_y.w[0])) {
+    && sig_n_prime256.w[1] == sig_y.w[1]
+    && (sig_n_prime256.w[0] == sig_y.w[0])) {
       res = 1;
       BID_RETURN_VAL (res);
     }	// if equal, return 1
     {
       res = ((((sig_n_prime256.w[3] > 0) || sig_n_prime256.w[2] > 0)
-	      || (sig_n_prime256.w[1] > sig_y.w[1])
-	      || (sig_n_prime256.w[1] == sig_y.w[1]
-		  && sig_n_prime256.w[0] >
-		  sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+          || (sig_n_prime256.w[1] > sig_y.w[1])
+          || (sig_n_prime256.w[1] == sig_y.w[1]
+          && sig_n_prime256.w[0] >
+          sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
       BID_RETURN_VAL (res);
     }
   }
@@ -4293,10 +4293,10 @@ if (diff > 0) {	// to simplify the loop below,
   }	// if equal, return 1
   {
     res = (((sig_n_prime192.w[2] > 0)
-	    || (sig_n_prime192.w[1] > sig_y.w[1])
-	    || (sig_n_prime192.w[1] == sig_y.w[1]
-		&& sig_n_prime192.w[0] >
-		sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
+        || (sig_n_prime192.w[1] > sig_y.w[1])
+        || (sig_n_prime192.w[1] == sig_y.w[1]
+        && sig_n_prime192.w[0] >
+        sig_y.w[0])) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -4325,10 +4325,10 @@ if (diff > 19) {	//128 by 128 bit multiply -> 256 bits
   {
     res =
       ((sig_n_prime256.w[3] == 0 && sig_n_prime256.w[2] == 0
-	&& (sig_n_prime256.w[1] < sig_x.w[1]
-	    || (sig_n_prime256.w[1] == sig_x.w[1]
-		&& sig_n_prime256.w[0] <
-		sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
+    && (sig_n_prime256.w[1] < sig_x.w[1]
+        || (sig_n_prime256.w[1] == sig_x.w[1]
+        && sig_n_prime256.w[0] <
+        sig_x.w[0]))) ^ ((x.w[1] & MASK_SIGN) == MASK_SIGN));
     BID_RETURN_VAL (res);
   }
 }
@@ -4344,10 +4344,10 @@ if ((sig_n_prime192.w[2] == 0) && sig_n_prime192.w[1] == sig_x.w[1]
 }	// if equal, return 1
 {
   res = (sig_n_prime192.w[2] == 0
-	 && (sig_n_prime192.w[1] < sig_x.w[1]
-	     || (sig_n_prime192.w[1] == sig_x.w[1]
-		 && sig_n_prime192.w[0] <
-		 sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
+     && (sig_n_prime192.w[1] < sig_x.w[1]
+         || (sig_n_prime192.w[1] == sig_x.w[1]
+         && sig_n_prime192.w[0] <
+         sig_x.w[0]))) ^ ((y.w[1] & MASK_SIGN) == MASK_SIGN);
   BID_RETURN_VAL (res);
 }
 }

@@ -515,19 +515,19 @@ specific macro definitions included above.  */
 
 #ifndef F_SET_FLAG_IF_DENORM
 #define F_SET_FLAG_IF_DENORM(x,flag) { \
-		F_UNION u; \
-		u.f = (x); \
-		flag = (!(u.F_HI_WORD & F_EXP_MASK) \
-			&&  ((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u))); \
+        F_UNION u; \
+        u.f = (x); \
+        flag = (!(u.F_HI_WORD & F_EXP_MASK) \
+            &&  ((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u))); \
 }
 #endif
 
 #ifndef F_SET_FLAG_IF_INF
 #define F_SET_FLAG_IF_INF(x,flag) { \
-		F_UNION u; \
-		u.f = (x); \
-		(flag) = (((u.F_HI_WORD & F_EXP_MASK) == F_EXP_MASK) \
-			&&  (!((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u)))); \
+        F_UNION u; \
+        u.f = (x); \
+        (flag) = (((u.F_HI_WORD & F_EXP_MASK) == F_EXP_MASK) \
+            &&  (!((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u)))); \
 }
 #endif
 
@@ -541,10 +541,10 @@ specific macro definitions included above.  */
 
 #ifndef F_SET_FLAG_IF_NAN
 #define F_SET_FLAG_IF_NAN(x,flag) { \
-		F_UNION u; \
-		u.f = (x); \
-		(flag) = (((u.F_HI_WORD & F_EXP_MASK) == F_EXP_MASK) \
-			&&    ((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u))); \
+        F_UNION u; \
+        u.f = (x); \
+        (flag) = (((u.F_HI_WORD & F_EXP_MASK) == F_EXP_MASK) \
+            &&    ((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u))); \
 }
 #endif
 
@@ -578,8 +578,8 @@ specific macro definitions included above.  */
                 else { \
                         u.F_HI_WORD &= F_MANTISSA_MASK; \
                         if (u.F_HI_WORD OR_LOW_BITS_SET(u)) { \
-								(class) = (((U_WORD)u.F_HI_WORD >> F_MSB_POS) & 0x1); \
-						} else \
+                                (class) = (((U_WORD)u.F_HI_WORD >> F_MSB_POS) & 0x1); \
+                        } else \
                                 (class) += F_C_POS_INF; \
                 } \
         } else { \
@@ -604,7 +604,7 @@ specific macro definitions included above.  */
                 else { \
                         u.F_HI_WORD &= F_MANTISSA_MASK; \
                         if (u.F_HI_WORD OR_LOW_BITS_SET(u)) { \
-								(class) = (((U_WORD)u.F_HI_WORD >> F_MSB_POS) & 0x1); \
+                                (class) = (((U_WORD)u.F_HI_WORD >> F_MSB_POS) & 0x1); \
                         } else \
                                 (class) += F_C_POS_INF; \
                 } \
@@ -871,12 +871,12 @@ them down will make the combination faster, go ahead and do it. */
 #undef  S_COPY_SIGN_IS_FAST
 #define S_COPY_SIGN(value,sign,result) { \
         if ((sign) < 0.0) \
-	{ \
-	        S_ABS((value), (result)); \
+    { \
+            S_ABS((value), (result)); \
                 S_NEGATE(result); \
-	} \
-	else \
-	        S_ABS((value), (result)); \
+    } \
+    else \
+            S_ABS((value), (result)); \
 }
 #endif
 
@@ -884,12 +884,12 @@ them down will make the combination faster, go ahead and do it. */
 #undef  D_COPY_SIGN_IS_FAST
 #define D_COPY_SIGN(value,sign,result) { \
         if ((sign) < 0.0) \
-	{ \
-	        D_ABS((value), (result)); \
+    { \
+            D_ABS((value), (result)); \
                 D_NEGATE(result); \
-	} \
-	else \
-	        D_ABS((value), (result)); \
+    } \
+    else \
+            D_ABS((value), (result)); \
 }
 #endif
 
@@ -897,12 +897,12 @@ them down will make the combination faster, go ahead and do it. */
 #undef  F_COPY_SIGN_IS_FAST
 #define F_COPY_SIGN(value,sign,result) { \
         if ((sign) < 0.0) \
-	{ \
-	        F_ABS((value), (result)); \
+    { \
+            F_ABS((value), (result)); \
                 F_NEGATE(result); \
-	} \
-	else \
-	        F_ABS((value), (result)); \
+    } \
+    else \
+            F_ABS((value), (result)); \
 }
 #endif
 
@@ -910,12 +910,12 @@ them down will make the combination faster, go ahead and do it. */
 #undef  B_COPY_SIGN_IS_FAST
 #define B_COPY_SIGN(value,sign,result) { \
         if ((sign) < 0.0) \
-	{ \
-	        B_ABS((value), (result)); \
+    { \
+            B_ABS((value), (result)); \
                 B_NEGATE(result); \
-	} \
-	else \
-	        B_ABS((value), (result)); \
+    } \
+    else \
+            B_ABS((value), (result)); \
 }
 #endif
 
@@ -2051,11 +2051,11 @@ These do not yet have generic definitions:
 #endif
 #ifndef Q_RECEIVE_COMPLEX_RESULT
 #    define	Q_RECEIVE_COMPLEX_RESULT(a,b,f) \
-				{ Q_COMPLEX _t = f; a = _t.r; b = _t.i; }
+                { Q_COMPLEX _t = f; a = _t.r; b = _t.i; }
 #endif
 #ifndef Q_RETURN_COMPLEX_RESULT
 #    define	Q_RETURN_COMPLEX_RESULT(a,b) \
-				{ Q_COMPLEX _t; _t.r = a; _t.i = b; return _t; }
+                { Q_COMPLEX _t; _t.r = a; _t.i = b; return _t; }
 #endif
 
 
@@ -2083,17 +2083,17 @@ These do not yet have generic definitions:
 
 #ifndef ADD_SUB_BIG
 #	define ADD_SUB_BIG(x,big) \
-		(x) += (big); (x) -= (big)
+        (x) += (big); (x) -= (big)
 #endif
 
 #ifndef SHORTEN_VIA_CASTS
 #	define SHORTEN_VIA_CASTS(in,out) \
-		(out) = (F_TYPE)((R_TYPE)(in))
+        (out) = (F_TYPE)((R_TYPE)(in))
 #endif
 
 #ifndef ASSIGN_WITH_F_TYPE_PRECISION
 #	define ASSIGN_WITH_F_TYPE_PRECISION(x,y) \
-		(y) = (F_TYPE)(x)
+        (y) = (F_TYPE)(x)
 #endif
 
 /*
@@ -2157,19 +2157,19 @@ These do not yet have generic definitions:
 
 #undef  __DENORM_SCALE_UNBIASED_EXP
 #define __DENORM_SCALE_UNBIASED_EXP	ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE \
-					  - F_NORM)
+                      - F_NORM)
 #undef  __DENORM_SCALE_BIASED_EXP
 #define __DENORM_SCALE_BIASED_EXP	ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE \
-					  - F_NORM + F_EXP_BIAS)
+                      - F_NORM + F_EXP_BIAS)
 
 #undef  __LOG2_DENORM_SCALE_ALIGNED_W_EXP
 #define __LOG2_DENORM_SCALE_ALIGNED_W_EXP \
-					ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE)
+                    ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE)
 
 #define	__LOG2_DENORM_CONST		(__LOG2_DENORM_SCALE + F_NORM + \
-					   F_MIN_BIN_EXP)
+                       F_MIN_BIN_EXP)
 #define	__DENORM_CONST_BIASED_EXP	ALIGN_W_EXP_FIELD(__LOG2_DENORM_CONST \
-					  - F_NORM + F_EXP_BIAS)
+                      - F_NORM + F_EXP_BIAS)
 
 #if F_COPY_SIGN_AND_EXP_IS_FAST && \
      (__LOG2_DENORM_CONST >= 0) && (__LOG2_DENORM_CONST <= __MAX_F_POW_2_EXP)
@@ -2179,44 +2179,44 @@ These do not yet have generic definitions:
 
 #   if defined(__NEED_SIGNED_DENORM_TO_NORM)
 #       define DENORM_TO_NORM(p,q) \
-				{ \
-				F_TYPE __denorm_const; \
-				F_COPY_SIGN(__DENORM_CONST,p,__denorm_const); \
-				F_COPY_SIGN_AND_EXP(p, __denorm_const, q); \
+                { \
+                F_TYPE __denorm_const; \
+                F_COPY_SIGN(__DENORM_CONST,p,__denorm_const); \
+                F_COPY_SIGN_AND_EXP(p, __denorm_const, q); \
                                 q -= __denorm_const; \
-				}
+                }
 #   else
 #       define DENORM_TO_NORM(p,q) \
-				{ \
-				F_COPY_SIGN_AND_EXP(p, __DENORM_CONST, q); \
+                { \
+                F_COPY_SIGN_AND_EXP(p, __DENORM_CONST, q); \
                                 q -= __DENORM_CONST; \
-				}
+                }
 #   endif
 
 #   define DENORM_TO_NORM_AND_EXP(p,e,q)  \
-				{ DENORM_TO_NORM(p,q); GET_EXP_FIELD(q,e) }
+                { DENORM_TO_NORM(p,q); GET_EXP_FIELD(q,e) }
 
 #else
 
 #   define __DENORM_TO_NORM_EXP	ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE + \
-				  F_NORM + F_EXP_BIAS + F_MIN_BIN_EXP)
+                  F_NORM + F_EXP_BIAS + F_MIN_BIN_EXP)
 #   define __DENORM_TO_NORM(p,q) \
-				F_UNION u; \
-				u.f = p; \
-				u.F_HI_WORD = (u.F_HI_WORD & ~F_EXP_MASK) | \
-				  __DENORM_TO_NORM_EXP; \
-				q = u.f; \
-				u.F_HI_WORD &= F_SIGN_EXP_MASK; \
-				CLEAR_LOW_BITS(u); \
+                F_UNION u; \
+                u.f = p; \
+                u.F_HI_WORD = (u.F_HI_WORD & ~F_EXP_MASK) | \
+                  __DENORM_TO_NORM_EXP; \
+                q = u.f; \
+                u.F_HI_WORD &= F_SIGN_EXP_MASK; \
+                CLEAR_LOW_BITS(u); \
                                 q -= u.f
 
 #   define DENORM_TO_NORM(p,q)	{ __DENORM_TO_NORM(p,q); }
 
 #   define DENORM_TO_NORM_AND_EXP(p,e,q)  \
-				{ \
-				__DENORM_TO_NORM(p,q); \
-				u.f = q; \
-				e = u.F_HI_WORD & F_EXP_MASK; \
+                { \
+                __DENORM_TO_NORM(p,q); \
+                u.f = q; \
+                e = u.F_HI_WORD & F_EXP_MASK; \
                                 }
 
 #endif
@@ -2248,75 +2248,75 @@ These do not yet have generic definitions:
 
 
 #   define XMUL_XADDC_W_C_IN(F, g, w_hi, w_lo, c_in, c_out, z_hi, z_lo) \
-		{ \
-		U_WORD prod, addend, t; \
-		\
-		prod = ((U_WORD) F)*((U_WORD) g); \
-		addend = ((U_WORD)w_hi << BITS_PER_DIGIT) + (U_WORD) w_lo; \
-		t = (U_WORD) c_in << BITS_PER_DIGIT; \
-		prod += t; /* no carry out possible */ \
-		prod += addend; \
-		c_out = (prod < addend); \
-		z_hi = prod >> BITS_PER_DIGIT; \
-		z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
-		}
+        { \
+        U_WORD prod, addend, t; \
+        \
+        prod = ((U_WORD) F)*((U_WORD) g); \
+        addend = ((U_WORD)w_hi << BITS_PER_DIGIT) + (U_WORD) w_lo; \
+        t = (U_WORD) c_in << BITS_PER_DIGIT; \
+        prod += t; /* no carry out possible */ \
+        prod += addend; \
+        c_out = (prod < addend); \
+        z_hi = prod >> BITS_PER_DIGIT; \
+        z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
+        }
 
 #   define XMUL_XADD_W_C_IN(F, g, w_hi, w_lo, c_in, z_hi, z_lo) \
-		{ \
-		U_WORD prod, addend, t; \
-		\
-		prod = ((U_WORD) F)*((U_WORD) g); \
-		addend = ((U_WORD) w_hi << BITS_PER_DIGIT) + (U_WORD) w_lo; \
-		t = (U_WORD) c_in << BITS_PER_DIGIT; \
-		prod += t; /* no carry out possible */ \
-		prod += addend; \
-		z_hi = prod >> BITS_PER_DIGIT; \
-		z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
-		}
+        { \
+        U_WORD prod, addend, t; \
+        \
+        prod = ((U_WORD) F)*((U_WORD) g); \
+        addend = ((U_WORD) w_hi << BITS_PER_DIGIT) + (U_WORD) w_lo; \
+        t = (U_WORD) c_in << BITS_PER_DIGIT; \
+        prod += t; /* no carry out possible */ \
+        prod += addend; \
+        z_hi = prod >> BITS_PER_DIGIT; \
+        z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
+        }
 
 #   define XMUL_XADDC(F, g, w_hi, w_lo, c_out, z_hi, z_lo) \
-		{ \
-		U_WORD prod, addend; \
-		\
-		prod = ((U_WORD) F)*((U_WORD) g); \
-		addend = ((U_WORD) w_hi << BITS_PER_DIGIT) + (U_WORD) w_lo; \
-		prod += addend; \
-		c_out = (prod < addend); \
-		z_hi = prod >> BITS_PER_DIGIT; \
-		z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
-		}
+        { \
+        U_WORD prod, addend; \
+        \
+        prod = ((U_WORD) F)*((U_WORD) g); \
+        addend = ((U_WORD) w_hi << BITS_PER_DIGIT) + (U_WORD) w_lo; \
+        prod += addend; \
+        c_out = (prod < addend); \
+        z_hi = prod >> BITS_PER_DIGIT; \
+        z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
+        }
 
 #   define XMUL_XADD(F, g, w_hi, w_lo, z_hi, z_lo) \
-		{ \
-		U_WORD prod, addend; \
-		\
-		prod = ((U_WORD) F)*((U_WORD) g); \
-		addend = ((U_WORD) w_hi << BITS_PER_DIGIT) + (U_WORD) w_lo; \
-		prod += addend; \
-		z_hi = prod >> BITS_PER_DIGIT; \
-		z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
-		}
+        { \
+        U_WORD prod, addend; \
+        \
+        prod = ((U_WORD) F)*((U_WORD) g); \
+        addend = ((U_WORD) w_hi << BITS_PER_DIGIT) + (U_WORD) w_lo; \
+        prod += addend; \
+        z_hi = prod >> BITS_PER_DIGIT; \
+        z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
+        }
 
 #   define XMUL_ADD(F, g, w_lo, z_hi, z_lo) \
-		{ \
-		U_WORD prod; \
-		\
-		prod = ((U_WORD) F)*((U_WORD) g); \
-		prod += (U_WORD) w_lo; \
-		z_hi = prod >> BITS_PER_DIGIT; \
-		z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
-		}
+        { \
+        U_WORD prod; \
+        \
+        prod = ((U_WORD) F)*((U_WORD) g); \
+        prod += (U_WORD) w_lo; \
+        z_hi = prod >> BITS_PER_DIGIT; \
+        z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
+        }
 
 #   define MUL_ADD(F, g, w_lo, z_lo)	z_lo = F*g + w_lo
     
 #   define XMUL(F, g, z_hi, z_lo) \
-		{ \
-		U_WORD prod; \
-		\
-		prod = ((U_WORD) F)*((U_WORD) g); \
-		z_hi = prod >> BITS_PER_DIGIT; \
-		z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
-		}
+        { \
+        U_WORD prod; \
+        \
+        prod = ((U_WORD) F)*((U_WORD) g); \
+        z_hi = prod >> BITS_PER_DIGIT; \
+        z_lo = prod & MAKE_MASK(BITS_PER_DIGIT, 0); \
+        }
 
 #endif /* !defined(BITS_PER_DIGIT) */
 

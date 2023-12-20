@@ -1043,7 +1043,7 @@
 
 #ifndef F_EXP_SPECIAL_ENTRY_NAME
 #   define F_EXP_SPECIAL_ENTRY_NAME \
-		PASTE_2(__F_INTERNAL_NAME(EXP_BASE_NAME), _special_entry_point)
+        PASTE_2(__F_INTERNAL_NAME(EXP_BASE_NAME), _special_entry_point)
 #endif
 
 #ifndef F_EXPM1_NAME
@@ -1729,7 +1729,7 @@
 
 #ifndef B_EXP_SPECIAL_ENTRY_NAME
 #   define B_EXP_SPECIAL_ENTRY_NAME \
-		PASTE_2(__B_INTERNAL_NAME(EXP_BASE_NAME), _special_entry_point)
+        PASTE_2(__B_INTERNAL_NAME(EXP_BASE_NAME), _special_entry_point)
 #endif
 
 #ifndef B_EXPM1_NAME
@@ -2326,7 +2326,7 @@
 
 #ifndef FOUR_OVER_PI_BUILD_FILE_NAME
 #    define FOUR_OVER_PI_BUILD_FILE_NAME \
-	ADD_EXTENSION(ADD_BUILD_PREFIX(four_over_pi),c)
+    ADD_EXTENSION(ADD_BUILD_PREFIX(four_over_pi),c)
 #endif
 
 #ifndef POW_ANSI_C_ERROR_BUILD_FILE_NAME

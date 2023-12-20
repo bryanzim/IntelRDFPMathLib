@@ -36,15 +36,15 @@
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_rnint (int *pres,
-		      BID_UINT32*
-		      px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              BID_UINT32*
+              px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+              _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_rnint, 32)
 int
 bid32_to_int32_rnint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -208,32 +208,32 @@ bid32_to_int32_rnint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // it will need a correction
       // check for midpoints
       if ((fstar.w[1] == 0) && fstar.w[0]
-	  && (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
-	// bid_ten2mk128trunc[ind -1].w[1] is identical to 
-	// bid_ten2mk128[ind -1].w[1]
-	// the result is a midpoint; round to nearest
-	if (Cstar & 0x01) {	// Cstar is odd; MP in [EVEN, ODD]
-	  // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
-	  Cstar--;	// Cstar is now even
-	}	// else MP in [ODD, EVEN]
+      && (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
+    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+    // bid_ten2mk128[ind -1].w[1]
+    // the result is a midpoint; round to nearest
+    if (Cstar & 0x01) {	// Cstar is odd; MP in [EVEN, ODD]
+      // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
+      Cstar--;	// Cstar is now even
+    }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -246,15 +246,15 @@ bid32_to_int32_rnint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_xrnint (int *pres,
-		       BID_UINT32*
-		       px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               BID_UINT32*
+               px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xrnint, 32)
 int
 bid32_to_int32_xrnint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -423,67 +423,67 @@ bid32_to_int32_xrnint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // else // if (f* - 1/2 > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-	if (fstar.w[0] > 0x8000000000000000ull) {
-	  // f* > 1/2 and the result may be exact
-	  tmp64 = fstar.w[0] - 0x8000000000000000ull;	// f* - 1/2
-	  if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
-	    // bid_ten2mk128[ind -1].w[1]
-	    // set the inexact flag
-	    *pfpsf |= BID_INEXACT_EXCEPTION;
-	  }	// else the result is exact
-	} else {	// the result is inexact; f2* <= 1/2
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}
+    if (fstar.w[0] > 0x8000000000000000ull) {
+      // f* > 1/2 and the result may be exact
+      tmp64 = fstar.w[0] - 0x8000000000000000ull;	// f* - 1/2
+      if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+        // bid_ten2mk128[ind -1].w[1]
+        // set the inexact flag
+        *pfpsf |= BID_INEXACT_EXCEPTION;
+      }	// else the result is exact
+    } else {	// the result is inexact; f2* <= 1/2
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] > bid_onehalf128[ind - 1] ||
-	    (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
-	  // f2* > 1/2 and the result may be exact
-	  // Calculate f2* - 1/2
-	  tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
-	  if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
-	    // bid_ten2mk128[ind -1].w[1]
-	    // set the inexact flag
-	    *pfpsf |= BID_INEXACT_EXCEPTION;
-	  }	// else the result is exact
-	} else {	// the result is inexact; f2* <= 1/2
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}
+    if (fstar.w[1] > bid_onehalf128[ind - 1] ||
+        (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
+      // f2* > 1/2 and the result may be exact
+      // Calculate f2* - 1/2
+      tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
+      if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+        // bid_ten2mk128[ind -1].w[1]
+        // set the inexact flag
+        *pfpsf |= BID_INEXACT_EXCEPTION;
+      }	// else the result is exact
+    } else {	// the result is inexact; f2* <= 1/2
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }
       }
 
       // if the result was a midpoint it was rounded away from zero, so
       // it will need a correction
       // check for midpoints
       if ((fstar.w[1] == 0) && fstar.w[0]
-	  && (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
-	// bid_ten2mk128trunc[ind -1].w[1] is identical to 
-	// bid_ten2mk128[ind -1].w[1]
-	// the result is a midpoint; round to nearest
-	if (Cstar & 0x01) {	// Cstar is odd; MP in [EVEN, ODD]
-	  // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
-	  Cstar--;	// Cstar is now even
-	}	// else MP in [ODD, EVEN]
+      && (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
+    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+    // bid_ten2mk128[ind -1].w[1]
+    // the result is a midpoint; round to nearest
+    if (Cstar & 0x01) {	// Cstar is odd; MP in [EVEN, ODD]
+      // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
+      Cstar--;	// Cstar is now even
+    }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -496,15 +496,15 @@ bid32_to_int32_xrnint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_floor (int *pres,
-		      BID_UINT32*
-		      px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              BID_UINT32*
+              px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+              _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_floor, 32)
 int
 bid32_to_int32_floor (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -652,40 +652,40 @@ bid32_to_int32_floor (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  if (x_sign) {	// negative and inexact
-	    Cstar++;
-	  }
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      if (x_sign) {	// negative and inexact
+        Cstar++;
+      }
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  if (x_sign) {	// negative and inexact
-	    Cstar++;
-	  }
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      if (x_sign) {	// negative and inexact
+        Cstar++;
+      }
+    }	// else the result is exact
       }
 
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -698,15 +698,15 @@ bid32_to_int32_floor (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_xfloor (int *pres,
-		       BID_UINT32*
-		       px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               BID_UINT32*
+               px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xfloor, 32)
 int
 bid32_to_int32_xfloor (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -856,44 +856,44 @@ bid32_to_int32_xfloor (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  if (x_sign) {	// negative and inexact
-	    Cstar++;
-	  }
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      if (x_sign) {	// negative and inexact
+        Cstar++;
+      }
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  if (x_sign) {	// negative and inexact
-	    Cstar++;
-	  }
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      if (x_sign) {	// negative and inexact
+        Cstar++;
+      }
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       }
 
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -906,15 +906,15 @@ bid32_to_int32_xfloor (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_ceil (int *pres,
-		     BID_UINT32*
-		     px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		     _EXC_INFO_PARAM) {
+             BID_UINT32*
+             px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+             _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_ceil, 32)
 int
 bid32_to_int32_ceil (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		     _EXC_INFO_PARAM) {
+             _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -1062,40 +1062,40 @@ bid32_to_int32_ceil (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  if (!x_sign) {	// positive and inexact
-	    Cstar++;
-	  }
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      if (!x_sign) {	// positive and inexact
+        Cstar++;
+      }
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  if (!x_sign) {	// positive and inexact 
-	    Cstar++;
-	  }
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      if (!x_sign) {	// positive and inexact 
+        Cstar++;
+      }
+    }	// else the result is exact
       }
 
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -1108,15 +1108,15 @@ bid32_to_int32_ceil (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_xceil (int *pres,
-		      BID_UINT32*
-		      px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              BID_UINT32*
+              px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+              _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xceil, 32)
 int
 bid32_to_int32_xceil (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -1266,44 +1266,44 @@ bid32_to_int32_xceil (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  if (!x_sign) {	// positive and inexact
-	    Cstar++;
-	  }
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      if (!x_sign) {	// positive and inexact
+        Cstar++;
+      }
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  if (!x_sign) {	// positive and inexact 
-	    Cstar++;
-	  }
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      if (!x_sign) {	// positive and inexact 
+        Cstar++;
+      }
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       }
 
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -1316,15 +1316,15 @@ bid32_to_int32_xceil (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_int (int *pres,
-		    BID_UINT32*
-		    px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		    _EXC_INFO_PARAM) {
+            BID_UINT32*
+            px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_int, 32)
 int
 bid32_to_int32_int (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		    _EXC_INFO_PARAM) {
+            _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -1461,22 +1461,22 @@ bid32_to_int32_int (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       shift = bid_shiftright128[ind - 1];	// 0 <= shift <= 39
       Cstar = Cstar >> shift;
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -1489,15 +1489,15 @@ bid32_to_int32_int (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_xint (int *pres,
-		     BID_UINT32*
-		     px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		     _EXC_INFO_PARAM) {
+             BID_UINT32*
+             px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+             _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xint, 32)
 int
 bid32_to_int32_xint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		     _EXC_INFO_PARAM) {
+             _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -1644,38 +1644,38 @@ bid32_to_int32_xint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       }
 
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -1688,15 +1688,15 @@ bid32_to_int32_xint (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_rninta (int *pres,
-		       BID_UINT32*
-		       px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               BID_UINT32*
+               px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_rninta, 32)
 int
 bid32_to_int32_rninta (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -1849,22 +1849,22 @@ bid32_to_int32_rninta (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);
@@ -1877,15 +1877,15 @@ bid32_to_int32_rninta (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_to_int32_xrninta (int *pres,
-			BID_UINT32*
-			px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			_EXC_INFO_PARAM) {
+            BID_UINT32*
+            px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xrninta, 32)
 int
 bid32_to_int32_xrninta (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			_EXC_INFO_PARAM) {
+            _EXC_INFO_PARAM) {
 #endif
   int res;
  BID_UINT32 x_sign;
@@ -2048,55 +2048,55 @@ bid32_to_int32_xrninta (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // else // if (f* - 1/2 > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-	if (fstar.w[0] > 0x8000000000000000ull) {
-	  // f* > 1/2 and the result may be exact
-	  tmp64 = fstar.w[0] - 0x8000000000000000ull;	// f* - 1/2
-	  if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	    // bid_ten2mk128[ind -1].w[1]
-	    // set the inexact flag
-	    *pfpsf |= BID_INEXACT_EXCEPTION;
-	  }	// else the result is exact
-	} else {	// the result is inexact; f2* <= 1/2
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}
+    if (fstar.w[0] > 0x8000000000000000ull) {
+      // f* > 1/2 and the result may be exact
+      tmp64 = fstar.w[0] - 0x8000000000000000ull;	// f* - 1/2
+      if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to
+        // bid_ten2mk128[ind -1].w[1]
+        // set the inexact flag
+        *pfpsf |= BID_INEXACT_EXCEPTION;
+      }	// else the result is exact
+    } else {	// the result is inexact; f2* <= 1/2
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] > bid_onehalf128[ind - 1] ||
-	    (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
-	  // f2* > 1/2 and the result may be exact
-	  // Calculate f2* - 1/2
-	  tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
-	  if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	    // bid_ten2mk128[ind -1].w[1]
-	    // set the inexact flag
-	    *pfpsf |= BID_INEXACT_EXCEPTION;
-	  }	// else the result is exact
-	} else {	// the result is inexact; f2* <= 1/2
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}
+    if (fstar.w[1] > bid_onehalf128[ind - 1] ||
+        (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
+      // f2* > 1/2 and the result may be exact
+      // Calculate f2* - 1/2
+      tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
+      if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to
+        // bid_ten2mk128[ind -1].w[1]
+        // set the inexact flag
+        *pfpsf |= BID_INEXACT_EXCEPTION;
+      }	// else the result is exact
+    } else {	// the result is inexact; f2* <= 1/2
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }
       }
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-	res = -Cstar;
+    res = -Cstar;
       else
-	res = Cstar;
+    res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-	res = -C1;
+    res = -C1;
       else
-	res = C1;
+    res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-	res = -C1 * bid_ten2k64[exp];
+    res = -C1 * bid_ten2k64[exp];
       else
-	res = C1 * bid_ten2k64[exp];
+    res = C1 * bid_ten2k64[exp];
     }
   }
   BID_RETURN (res);

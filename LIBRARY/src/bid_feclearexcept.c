@@ -37,11 +37,11 @@ _IDEC_flags new_sw;
     /* Take only supported exceptions */
     excepts &= DEC_FE_ALL_EXCEPT;
 
-	if (excepts) { /* Do we have anyting to do? */
-		new_sw = get_bid_sw() & ~excepts;
-		// set BID status word
-		set_bid_sw(new_sw);
-	}
+    if (excepts) { /* Do we have anyting to do? */
+        new_sw = get_bid_sw() & ~excepts;
+        // set BID status word
+        set_bid_sw(new_sw);
+    }
 
 }
 

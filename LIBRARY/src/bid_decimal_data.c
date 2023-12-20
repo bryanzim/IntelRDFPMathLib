@@ -1170,28 +1170,28 @@ BID_UINT64 bid_reciprocals10_64[] = {
 
 int bid_bid_bid_recip_scale32 [] = 
 {
-	1, 
-	33-32,
-	35-32,
-	39-32,
-	43-32,
-	46-32,
-	50-32, 
-	53-32,
-	57-32
+    1, 
+    33-32,
+    35-32,
+    39-32,
+    43-32,
+    46-32,
+    50-32, 
+    53-32,
+    57-32
 };
 
 
 BID_UINT64 bid_bid_reciprocals10_32[] = {
-	1ull, //dummy,
-	0x33333334ull,
-	0x147AE148ull,
+    1ull, //dummy,
+    0x33333334ull,
+    0x147AE148ull,
     0x20C49BA6ull,
-	0x346DC5D7ull, //4
-	0x29F16B12ull,
-	0x431BDE83ull,
-	0x35AFE536ull,
-	0x55E63B89ull
+    0x346DC5D7ull, //4
+    0x29F16B12ull,
+    0x431BDE83ull,
+    0x35AFE536ull,
+    0x55E63B89ull
 };
 
 

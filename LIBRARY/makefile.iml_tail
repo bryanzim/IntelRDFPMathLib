@@ -54,11 +54,11 @@ endif
 # ==============================================================================
 
 $(DIR_EXISTS):
-	touch $@
+    touch $@
 
 %/$(DIR_EXISTS):
-	mkdir -p $*
-	touch $@
+    mkdir -p $*
+    touch $@
 
 # ==============================================================================
 # Standard clean, realClean and clobber commands. Note that these targets use
@@ -76,13 +76,13 @@ CleanIt = $(if $1,rm -f $1,)
 .PHONY: clean realClean clobber
 
 clean::
-	$(call CleanIt,$(CLEAN_LIST))
+    $(call CleanIt,$(CLEAN_LIST))
 
 realClean:: clean
-	$(call CleanIt,$(REAL_CLEAN_LIST))
+    $(call CleanIt,$(REAL_CLEAN_LIST))
 
 clobber:: realClean
-	$(call CleanIt,$(CLOBBER_LIST))
+    $(call CleanIt,$(CLOBBER_LIST))
 
 endif
 
@@ -101,54 +101,54 @@ endif
 .PHONY: Info
 
 INFO      ?= \
-	IML_HOST_OS \
-	IML_HOST_OS_TYPE \
-	IML_HOST_ARCH \
-	IML_HOST_ARCH_TYPE \
-	IML_TARGET_OS \
-	IML_TARGET_OS_TYPE \
-	IML_TARGET_ARCH \
-	IML_TARGET_ARCH_TYPE \
-	OBJ_DIR \
-	SRC_DIR \
-	INC_DIR \
-	PRE_DIR \
-	EXE_DIR \
-	WRK_DIR \
-	LIB_DIR \
-	LIBM_DIR \
-	TSRC_DIR \
-	TOBJ_DIR \
-	OS_CHOICE \
-	O \
-	A \
-	SHR \
-	EXE \
-	IEXT \
-	FO \
-	RECOGN \
-	QOPT \
-	CC_NAME \
-	CC \
-	FO \
-	RM \
-	AR_CMD \
-	AR_OUT \
-	LD_CMD \
-	LD_OUT \
-	LD_FLAGS \
-	CPP \
-	PERL \
-	DIR_EXISTS \
-	CLEAN_LIST \
-	REAL_CLEAN_LIST \
-	CLOBBER_LIST \
+    IML_HOST_OS \
+    IML_HOST_OS_TYPE \
+    IML_HOST_ARCH \
+    IML_HOST_ARCH_TYPE \
+    IML_TARGET_OS \
+    IML_TARGET_OS_TYPE \
+    IML_TARGET_ARCH \
+    IML_TARGET_ARCH_TYPE \
+    OBJ_DIR \
+    SRC_DIR \
+    INC_DIR \
+    PRE_DIR \
+    EXE_DIR \
+    WRK_DIR \
+    LIB_DIR \
+    LIBM_DIR \
+    TSRC_DIR \
+    TOBJ_DIR \
+    OS_CHOICE \
+    O \
+    A \
+    SHR \
+    EXE \
+    IEXT \
+    FO \
+    RECOGN \
+    QOPT \
+    CC_NAME \
+    CC \
+    FO \
+    RM \
+    AR_CMD \
+    AR_OUT \
+    LD_CMD \
+    LD_OUT \
+    LD_FLAGS \
+    CPP \
+    PERL \
+    DIR_EXISTS \
+    CLEAN_LIST \
+    REAL_CLEAN_LIST \
+    CLOBBER_LIST \
 
 
 INFO := $(call CleanList,$(INFO))
 
 Info :
-	@$(foreach v,$(INFO),echo "	$v($(origin $v)) = $($v)";)
+    @$(foreach v,$(INFO),echo "	$v($(origin $v)) = $($v)";)
 
 # ==============================================================================
 # Pull in any local targets

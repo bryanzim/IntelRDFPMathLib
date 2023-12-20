@@ -215,7 +215,7 @@ BID128_FUNCTION_ARG1 (bid128_erfc, x)
   __bid_f128_mul(pd, xi2, pd);
   __bid_f128_add(pd, c_one.v, pd);	// pd = 1.0Q + xi2 * pd;
   __bid_f128_mul(rt, xdi, c_1_ov_sqrt_pi.v);
-					// rt = xdi / sqrt(pi)
+                    // rt = xdi / sqrt(pi)
   __bid_f128_mul(pd, rt, pd);		// pd = pd*xdi/sqrt(pi)
   BIDECIMAL_CALL1(binary128_to_bid128,y_lo,pd);
 

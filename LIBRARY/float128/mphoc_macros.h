@@ -195,27 +195,27 @@
 #define	BYTES(n)		((n) >> 3)
 
 #define	START_STATIC_TABLE(name, offset) \
-		printf("    static const TABLE_UNION " STR(name) "[] = { \n"); \
-		offset = 0
+        printf("    static const TABLE_UNION " STR(name) "[] = { \n"); \
+        offset = 0
 #define	START_GLOBAL_TABLE(name, offset) \
-		printf("    const " STR(TABLE_WORD) " " STR(name) "[] = { \n"); \
-		offset = 0
+        printf("    const " STR(TABLE_WORD) " " STR(name) "[] = { \n"); \
+        offset = 0
 #define	END_TABLE			printf("};\n\n")
 
 #define	TABLE_COMMENT(s)		printf("\n\t/* " s " */\n")
 #define	PRINT_1_TYPE_ENTRY(c,x,o)	printf("\t/* %3i */ %#.4" STR(c) ",\n", BYTES(o), x); \
-		                        o += PASTE(BITS_PER_, c)
+                                o += PASTE(BITS_PER_, c)
 #define	PRINT_2_TYPE_ENTRY(c,x,y,o)	printf("\t/* %3i */ %#.4" STR(c) \
-					  ", %#.4" STR(c) ", \n", BYTES(o), x, y); \
-		                        o += 2*PASTE(BITS_PER_, c)
+                      ", %#.4" STR(c) ", \n", BYTES(o), x, y); \
+                                o += 2*PASTE(BITS_PER_, c)
 
 #define	PRINT_1_F_TYPE_ENTRY(x,o)	PRINT_1_TYPE_ENTRY(F_CHAR, x, o)
 #define	PRINT_2_F_TYPE_ENTRY(x,y,o)	PRINT_2_TYPE_ENTRY(F_CHAR, x, y, o)
 #define	PAD_IF_NEEDED(o, i)		while ((i)*floor(o/(i)) != o) { \
-					    printf( "\t/* padding for alignment */ " \
-					    "0x00000000,\n"); \
-					    o += BITS_PER_TABLE_WORD; }
-					
+                        printf( "\t/* padding for alignment */ " \
+                        "0x00000000,\n"); \
+                        o += BITS_PER_TABLE_WORD; }
+                    
 
 #define	BITS_PER_f		BITS_PER_FLOAT
 #define	BITS_PER_s		BITS_PER_FLOAT
@@ -225,15 +225,15 @@
 #define	BITS_PER_w		BITS_PER_WORD
 
 #define	PRINT_TABLE_DEFINE(name,table,offset,type,xxx) \
-		printf("#define\t" STR(name) "\t" xxx \
-		"((" STR(type) " *) ((char *)" STR(table) \
-		" + %i))\n", BYTES(offset))
+        printf("#define\t" STR(name) "\t" xxx \
+        "((" STR(type) " *) ((char *)" STR(table) \
+        " + %i))\n", BYTES(offset))
 
 #define	PRINT_TABLE_VALUE_DEFINE(name,table,offset,type) \
-		PRINT_TABLE_DEFINE(name,table,offset,type,"*")
+        PRINT_TABLE_DEFINE(name,table,offset,type,"*")
 
 #define	PRINT_TABLE_ADDRESS_DEFINE(name,table,offset,type) \
-		PRINT_TABLE_DEFINE(name,table,offset,type,"")
+        PRINT_TABLE_DEFINE(name,table,offset,type,"")
 
 #define	BREAK_INTO_HI_LO(x,h,l,p)	h = TRUNCATE(x, p); l = x - h
 
@@ -319,39 +319,39 @@
 #   define	CHAR_TO_FMT(tchar)	PASTE(tchar, _FMT)
 
 #   define PRINT_TBL_DEF(name, table, offset, tchar, xxx) \
-		 printf("#define\t" name "\t" xxx "((" STR(CHAR_TO_TYPE(tchar)) \
-		    " *) ((char *) " STR(table) " + %i))\n", BYTES(offset))
+         printf("#define\t" name "\t" xxx "((" STR(CHAR_TO_TYPE(tchar)) \
+            " *) ((char *) " STR(table) " + %i))\n", BYTES(offset))
 
 #   define PRINT_TYPED_TBL_ITEM(v,tchar)			\
-		printf( "\t/* %3i */ " CHAR_TO_FMT(tchar)	\
-		   ",\n", BYTES(MP_BIT_OFFSET), v);		\
-		MP_BIT_OFFSET += CHAR_TO_BITS(tchar)
+        printf( "\t/* %3i */ " CHAR_TO_FMT(tchar)	\
+           ",\n", BYTES(MP_BIT_OFFSET), v);		\
+        MP_BIT_OFFSET += CHAR_TO_BITS(tchar)
 
 #   define PRINT_TYPED_TBL_VDEF(name, tchar) \
-		PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, \
-		    tchar, "*")
+        PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, \
+            tchar, "*")
 
 #   define PRINT_TYPED_TBL_ADEF(name, tchar)	\
-		PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, \
-		    tchar, "") 
+        PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, \
+            tchar, "") 
 
 #   define PRINT_TYPED_TBL_VDEF_ITEM(n,v,tchar) \
-		PRINT_TYPED_TBL_VDEF(n, tchar); PRINT_TYPED_TBL_ITEM(v, tchar)
+        PRINT_TYPED_TBL_VDEF(n, tchar); PRINT_TYPED_TBL_ITEM(v, tchar)
 
 #   define PRINT_TYPED_TBL_ADEF_ITEM(n,v,tchar) \
-		PRINT_TYPED_TBL_ADEF(n, tchar); PRINT_TYPED_TBL_ITEM(v, tchar)
+        PRINT_TYPED_TBL_ADEF(n, tchar); PRINT_TYPED_TBL_ITEM(v, tchar)
 
 #   define PRINT_TYPED_COM_VDEF(c,n,tchar) \
-		TABLE_COMMENT(c); PRINT_TYPED_TBL_VDEF(n,tchar)
+        TABLE_COMMENT(c); PRINT_TYPED_TBL_VDEF(n,tchar)
 
 #   define PRINT_TYPED_COM_ADEF(c,n,tchar) \
-		TABLE_COMMENT(c); PRINT_TYPED_TBL_ADEF(n,tchar)
+        TABLE_COMMENT(c); PRINT_TYPED_TBL_ADEF(n,tchar)
 
 #   define PRINT_TYPED_TBL_COM_VDEF_ITEM(c,n,v,tchar) \
-		TABLE_COMMENT(c); PRINT_TYPED_TBL_VDEF_ITEM(n,v,tchar)
+        TABLE_COMMENT(c); PRINT_TYPED_TBL_VDEF_ITEM(n,v,tchar)
 
 #   define PRINT_TYPED_TBL_COM_ADEF_ITEM(c,n,v,tchar) \
-		TABLE_COMMENT(c); PRINT_TYPED_BL_ADEF_ITEM(n,v,tchar)
+        TABLE_COMMENT(c); PRINT_TYPED_BL_ADEF_ITEM(n,v,tchar)
 
 #   define PRINT_TBL_ITEM(v)                PRINT_TYPED_TBL_ITEM(v, MP_T_CHAR)
 #   define PRINT_TBL_VDEF(n)                PRINT_TYPED_TBL_VDEF(n, MP_T_CHAR)
@@ -420,7 +420,7 @@
 #   define WORD_HEX_FORMAT	PASTE_3(I, BITS_PER_WORD, _HEX_FORMAT)
 
 #   define PRINT_ITYPE_DEF(name, value, itype, format) \
-		printf("#define\t" name "\t(( " STR(itype) " ) " format " )\n", value)
+        printf("#define\t" name "\t(( " STR(itype) " ) " format " )\n", value)
 
 #   define PRINT_WORD_DEF(n, v)		PRINT_ITYPE_DEF(n, v, WORD,   WORD_HEX_FORMAT)
 #   define PRINT_I32_DEF( n, v)		PRINT_ITYPE_DEF(n, v, INT_32, I32_HEX_FORMAT)
@@ -436,15 +436,15 @@
 #   define MP_RM	3  /* ieee round to minus infinity    */
 
 #   define PRINT_TYPED_ARRAY(array, first, last, scale, type) \
-		{								\
-		auto i, tmp;							\
-		tmp = scale^first;						\
-		for (i = first; i <= last; i++)					\
-		    {								\
-		    PRINT_1_TYPE_ENTRY(type, array[i]*tmp, MP_BIT_OFFSET);	\
-		    tmp *= scale;						\
-		    }								\
-		}
+        {								\
+        auto i, tmp;							\
+        tmp = scale^first;						\
+        for (i = first; i <= last; i++)					\
+            {								\
+            PRINT_1_TYPE_ENTRY(type, array[i]*tmp, MP_BIT_OFFSET);	\
+            tmp *= scale;						\
+            }								\
+        }
 
 #   define PRINT_R_ARRAY(a,f,l,s)	PRINT_TYPED_ARRAY(a,f,l,s,R_CHAR)
 #   define PRINT_F_ARRAY(a,f,l,s)	PRINT_TYPED_ARRAY(a,f,l,s,F_CHAR)
@@ -476,16 +476,16 @@
 #define MPHOC_B_NEG_HUGE 	(-MPHOC_B_POS_HUGE)
 
 #define _GENPOLY(coef, name, _offset, options, _degree)		\
-	printf(STR(GENPOLY_EXECUTABLE one degree=%i cn=), _degree);	\
-	printf(STR(STR(coef) define=));					\
-	printf(STR(STR(name) offset=%i options), _offset);		\
-	printf(" ; echo \"\"\n" )
+    printf(STR(GENPOLY_EXECUTABLE one degree=%i cn=), _degree);	\
+    printf(STR(STR(coef) define=));					\
+    printf(STR(STR(name) offset=%i options), _offset);		\
+    printf(" ; echo \"\"\n" )
 
 #define GENPOLY(coef, name, _degree)				\
-	printf(STR(GENPOLY_EXECUTABLE one degree=%i cn=), _degree);	\
-	printf(STR(STR(coef) define=));					\
-	printf(STR(STR(name)));						\
-	printf(" ; echo \"\"\n" )
+    printf(STR(GENPOLY_EXECUTABLE one degree=%i cn=), _degree);	\
+    printf(STR(STR(coef) define=));					\
+    printf(STR(STR(name)));						\
+    printf(" ; echo \"\"\n" )
 
 
 #endif /* defined(NEW_MPHOC_MACROS) */

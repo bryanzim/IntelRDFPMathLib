@@ -44,20 +44,20 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	res.w[BID_HIGH_128W] = (CX.w[1]) & QUIET_MASK64;
-	res.w[BID_LOW_128W] = CX.w[0];
-	if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull)
-		res.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
-	BID_RETURN (res);
+    res.w[BID_HIGH_128W] = (CX.w[1]) & QUIET_MASK64;
+    res.w[BID_LOW_128W] = CX.w[0];
+    if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull)
+        res.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
+    BID_RETURN (res);
   }
 
   // x is 0
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-	res.w[BID_HIGH_128W] = 0xf800000000000000ull;
-	res.w[BID_LOW_128W] = 0;
-	BID_RETURN (res);
+    res.w[BID_HIGH_128W] = 0xf800000000000000ull;
+    res.w[BID_LOW_128W] = 0;
+    BID_RETURN (res);
 
 }
 

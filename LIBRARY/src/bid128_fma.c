@@ -37,12 +37,12 @@
 
 static void
 bid_rounding_correction (unsigned int rnd_mode,
-        	     unsigned int is_inexact_lt_midpoint,
-        	     unsigned int is_inexact_gt_midpoint,
-        	     unsigned int is_midpoint_lt_even,
-        	     unsigned int is_midpoint_gt_even,
-        	     int unbexp,
-        	     BID_UINT128 * ptrres, _IDEC_flags * ptrfpsf) {
+                 unsigned int is_inexact_lt_midpoint,
+                 unsigned int is_inexact_gt_midpoint,
+                 unsigned int is_midpoint_lt_even,
+                 unsigned int is_midpoint_gt_even,
+                 int unbexp,
+                 BID_UINT128 * ptrres, _IDEC_flags * ptrfpsf) {
   // unbiased true exponent unbexp may be larger than emax
 
   BID_UINT128 res = *ptrres; // expected to have the correct sign and coefficient
@@ -406,21 +406,21 @@ bid_add_and_round (int q3,
       P128.w[1] = R256.w[1];
       P128.w[0] = R256.w[0];
       bid_round128_19_38 (ind, x0, P128, &R128, &incr_exp,
-        	      &is_midpoint_lt_even, &is_midpoint_gt_even,
-        	      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     } else if (ind <= 57) {
       P192.w[2] = R256.w[2];
       P192.w[1] = R256.w[1];
       P192.w[0] = R256.w[0];
       bid_round192_39_57 (ind, x0, P192, &R192, &incr_exp,
-        	      &is_midpoint_lt_even, &is_midpoint_gt_even,
-        	      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       R128.w[1] = R192.w[1];
       R128.w[0] = R192.w[0];
     } else { // if (ind <= 68)
       bid_round256_58_76 (ind, x0, R256, &R256, &incr_exp,
-        	      &is_midpoint_lt_even, &is_midpoint_gt_even,
-        	      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       R128.w[1] = R256.w[1];
       R128.w[0] = R256.w[0];
     }
@@ -444,9 +444,9 @@ bid_add_and_round (int q3,
       P128.w[1] = p_sign | 0x3040000000000000ull | R128.w[1];
       P128.w[0] = R128.w[0];
       bid_rounding_correction (rnd_mode,
-        		   is_inexact_lt_midpoint,
-        		   is_inexact_gt_midpoint, is_midpoint_lt_even,
-        		   is_midpoint_gt_even, 0, &P128, ptrfpsf);
+                   is_inexact_lt_midpoint,
+                   is_inexact_gt_midpoint, is_midpoint_lt_even,
+                   is_midpoint_gt_even, 0, &P128, ptrfpsf);
       scale = ((P128.w[1] & MASK_EXP) >> 49) - 6176; // -1, 0, or +1
       // the number of digits in the significand is p34 = 34
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
@@ -547,17 +547,17 @@ bid_add_and_round (int q3,
 
       if (ind <= 18) { // 2 <= ind <= 18
         bid_round64_2_18 (ind, x0, res.w[0], &R64, &incr_exp,
-        	      &is_midpoint_lt_even, &is_midpoint_gt_even,
-        	      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
         res.w[1] = 0x0;
         res.w[0] = R64;
       } else if (ind <= 38) {
         P128.w[1] = res.w[1] & MASK_COEFF;
         P128.w[0] = res.w[0];
         bid_round128_19_38 (ind, x0, P128, &res, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
       }
       e4 = e4 + x0; // expmin
       // we want the exponent to be expmin, so if incr_exp = 1 then
@@ -592,7 +592,7 @@ bid_add_and_round (int q3,
         is_midpoint_gt_even = 0;
         is_inexact_gt_midpoint = 1;
       } else if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
-        	 !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
+             !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
         // if this second rounding was exact the result may still be 
         // inexact because of the first rounding
         if (is_inexact_gt_midpoint0 || is_midpoint_lt_even0) {
@@ -602,14 +602,14 @@ bid_add_and_round (int q3,
           is_inexact_lt_midpoint = 1;
         }
       } else if (is_midpoint_gt_even &&
-        	 (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
+             (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
         // pulled up to a midpoint
         is_inexact_lt_midpoint = 1;
         is_inexact_gt_midpoint = 0;
         is_midpoint_lt_even = 0;
         is_midpoint_gt_even = 0;
       } else if (is_midpoint_lt_even &&
-        	 (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
+             (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
         // pulled down to a midpoint
         is_inexact_lt_midpoint = 0;
         is_inexact_gt_midpoint = 1;
@@ -624,9 +624,9 @@ bid_add_and_round (int q3,
   // apply correction if not rounding to nearest
   if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
     bid_rounding_correction (rnd_mode,
-        		 is_inexact_lt_midpoint, is_inexact_gt_midpoint,
-        		 is_midpoint_lt_even, is_midpoint_gt_even,
-        		 e4, &res, ptrfpsf);
+                 is_inexact_lt_midpoint, is_inexact_gt_midpoint,
+                 is_midpoint_lt_even, is_midpoint_gt_even,
+                 e4, &res, ptrfpsf);
   }
   if (is_midpoint_lt_even || is_midpoint_gt_even ||
       is_inexact_lt_midpoint || is_inexact_gt_midpoint) {
@@ -648,13 +648,13 @@ bid_add_and_round (int q3,
 #if DECIMAL_CALL_BY_REFERENCE
 static void
 bid128_ext_fma (int *ptr_is_midpoint_lt_even,
-        	int *ptr_is_midpoint_gt_even,
-        	int *ptr_is_inexact_lt_midpoint,
-        	int *ptr_is_inexact_gt_midpoint, BID_UINT128 * pres,
-        	BID_UINT128 * px, BID_UINT128 * py,
-        	BID_UINT128 *
-        	pz _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-        	_EXC_INFO_PARAM) {
+            int *ptr_is_midpoint_gt_even,
+            int *ptr_is_inexact_lt_midpoint,
+            int *ptr_is_inexact_gt_midpoint, BID_UINT128 * pres,
+            BID_UINT128 * px, BID_UINT128 * py,
+            BID_UINT128 *
+            pz _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
   BID_UINT128 x = *px, y = *py, z = *pz;
 #if !DECIMAL_GLOBAL_ROUNDING
   unsigned int rnd_mode = *prnd_mode;
@@ -662,11 +662,11 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
 #else
 static BID_UINT128
 bid128_ext_fma (int *ptr_is_midpoint_lt_even,
-        	int *ptr_is_midpoint_gt_even,
-        	int *ptr_is_inexact_lt_midpoint,
-        	int *ptr_is_inexact_gt_midpoint, BID_UINT128 x, BID_UINT128 y,
-        	BID_UINT128 z _RND_MODE_PARAM _EXC_FLAGS_PARAM
-        	_EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+            int *ptr_is_midpoint_gt_even,
+            int *ptr_is_inexact_lt_midpoint,
+            int *ptr_is_inexact_gt_midpoint, BID_UINT128 x, BID_UINT128 y,
+            BID_UINT128 z _RND_MODE_PARAM _EXC_FLAGS_PARAM
+            _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
 
   BID_UINT128 res = { {0xbaddbaddbaddbaddull, 0xbaddbaddbaddbaddull} };
@@ -1193,8 +1193,8 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
     __mul_128x128_to_256 (C4, C1, C2); // C4.w[3] is 0
     // if C4 < 10^(q1+q2-1) = 10^38 then q4 = q1+q2-1 = 38 else q4 = q1+q2 = 39
     if (C4.w[2] == 0 && (C4.w[1] < bid_ten2k128[18].w[1] ||
-        		 (C4.w[1] == bid_ten2k128[18].w[1]
-        		  && C4.w[0] < bid_ten2k128[18].w[0]))) {
+                 (C4.w[1] == bid_ten2k128[18].w[1]
+                  && C4.w[0] < bid_ten2k128[18].w[0]))) {
       // 18 = 38 - 20 = q1+q2-1 - 20
       // length of C1 * C2 rounded up to a multiple of 64 bits is len = 128;
       q4 = 38; // 38 = q1 + q2 - 1
@@ -1243,10 +1243,10 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
     __mul_128x128_to_256 (C4, C1, C2);
     // if C4 < 10^(q1+q2-1) = 10^57 then q4 = q1+q2-1 = 57 else q4 = q1+q2 = 58
     if (C4.w[3] == 0 && (C4.w[2] < bid_ten2k256[18].w[2] ||
-        		 (C4.w[2] == bid_ten2k256[18].w[2]
-        		  && (C4.w[1] < bid_ten2k256[18].w[1]
-        		      || (C4.w[1] == bid_ten2k256[18].w[1]
-        			  && C4.w[0] < bid_ten2k256[18].w[0]))))) {
+                 (C4.w[2] == bid_ten2k256[18].w[2]
+                  && (C4.w[1] < bid_ten2k256[18].w[1]
+                      || (C4.w[1] == bid_ten2k256[18].w[1]
+                      && C4.w[0] < bid_ten2k256[18].w[0]))))) {
       // 18 = 57 - 39 = q1+q2-1 - 39
       // length of C1 * C2 rounded up to a multiple of 64 bits is len = 192;
       q4 = 57; // 57 = q1 + q2 - 1
@@ -1296,24 +1296,24 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
         P128.w[1] = C4.w[1];
         P128.w[0] = C4.w[0];
         bid_round128_19_38 (q4, x0, P128, &res, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
       } else if (q4 <= 57) { // 35 <= q4 <= 57
         P192.w[2] = C4.w[2];
         P192.w[1] = C4.w[1];
         P192.w[0] = C4.w[0];
         bid_round192_39_57 (q4, x0, P192, &R192, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
         res.w[0] = R192.w[0];
         res.w[1] = R192.w[1];
       } else { // if (q4 <= 68)
         bid_round256_58_76 (q4, x0, C4, &R256, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
         res.w[0] = R256.w[0];
         res.w[1] = R256.w[1];
       }
@@ -1367,10 +1367,10 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
       } else {
         res.w[1] = p_sign | res.w[1];
         bid_rounding_correction (rnd_mode,
-        		     is_inexact_lt_midpoint,
-        		     is_inexact_gt_midpoint,
-        		     is_midpoint_lt_even, is_midpoint_gt_even,
-        		     e4, &res, pfpsf);
+                     is_inexact_lt_midpoint,
+                     is_inexact_gt_midpoint,
+                     is_midpoint_lt_even, is_midpoint_gt_even,
+                     e4, &res, pfpsf);
       }
       *pfpsf |= save_fpsf;
       *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
@@ -1399,9 +1399,9 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
         if (x0 < q4) { // 1 <= x0 <= q4-1 => round res to q4 - x0 digits
           if (q4 <= 18) { // 2 <= q4 <= 18, 1 <= x0 <= 17
             bid_round64_2_18 (q4, x0, res.w[0], &R64, &incr_exp,
-        		  &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		  &is_inexact_lt_midpoint,
-        		  &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint,
+                  &is_inexact_gt_midpoint);
             if (incr_exp) {
               // R64 = 10^(q4-x0), 1 <= q4 - x0 <= q4 - 1, 1 <= q4 - x0 <= 17
               R64 = bid_ten2k64[q4 - x0];
@@ -1413,18 +1413,18 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
             P128.w[1] = res.w[1];
             P128.w[0] = res.w[0];
             bid_round128_19_38 (q4, x0, P128, &res, &incr_exp,
-        		    &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		    &is_inexact_lt_midpoint,
-        		    &is_inexact_gt_midpoint);
+                    &is_midpoint_lt_even, &is_midpoint_gt_even,
+                    &is_inexact_lt_midpoint,
+                    &is_inexact_gt_midpoint);
             if (incr_exp) {
               // increase coefficient by a factor of 10; this will be <= 10^33
               // R128 = 10^(q4-x0), 1 <= q4 - x0 <= q4 - 1, 1 <= q4 - x0 <= 37
               if (q4 - x0 <= 19) { // 1 <= q4 - x0 <= 19
-        	// res.w[1] = 0;
-        	res.w[0] = bid_ten2k64[q4 - x0];
+            // res.w[1] = 0;
+            res.w[0] = bid_ten2k64[q4 - x0];
               } else { // 20 <= q4 - x0 <= 37
-        	res.w[0] = bid_ten2k128[q4 - x0 - 20].w[0];
-        	res.w[1] = bid_ten2k128[q4 - x0 - 20].w[1];
+            res.w[0] = bid_ten2k128[q4 - x0 - 20].w[0];
+            res.w[1] = bid_ten2k128[q4 - x0 - 20].w[1];
               }
             }
           }
@@ -1497,7 +1497,7 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
           is_midpoint_gt_even = 0;
           is_inexact_gt_midpoint = 1;
         } else if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
-        	   !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
+               !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
           // if this second rounding was exact the result may still be 
           // inexact because of the first rounding
           if (is_inexact_gt_midpoint0 || is_midpoint_lt_even0) {
@@ -1507,14 +1507,14 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
             is_inexact_lt_midpoint = 1;
           }
         } else if (is_midpoint_gt_even &&
-        	   (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
+               (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
           // pulled up to a midpoint
           is_inexact_lt_midpoint = 1;
           is_inexact_gt_midpoint = 0;
           is_midpoint_lt_even = 0;
           is_midpoint_gt_even = 0;
         } else if (is_midpoint_lt_even &&
-        	   (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
+               (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
           // pulled down to a midpoint
           is_inexact_lt_midpoint = 0;
           is_inexact_gt_midpoint = 1;
@@ -1561,10 +1561,10 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
       res.w[1] = p_sign | ((BID_UINT64) (e4 + 6176) << 49) | res.w[1];
       if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
         bid_rounding_correction (rnd_mode,
-        		     is_inexact_lt_midpoint,
-        		     is_inexact_gt_midpoint,
-        		     is_midpoint_lt_even, is_midpoint_gt_even,
-        		     e4, &res, pfpsf);
+                     is_inexact_lt_midpoint,
+                     is_inexact_gt_midpoint,
+                     is_midpoint_lt_even, is_midpoint_gt_even,
+                     e4, &res, pfpsf);
       }
       *pfpsf |= save_fpsf;
       *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
@@ -1581,10 +1581,10 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
 
     if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
       bid_rounding_correction (rnd_mode,
-        		   is_inexact_lt_midpoint,
-        		   is_inexact_gt_midpoint,
-        		   is_midpoint_lt_even, is_midpoint_gt_even,
-        		   e4, &res, pfpsf);
+                   is_inexact_lt_midpoint,
+                   is_inexact_gt_midpoint,
+                   is_midpoint_lt_even, is_midpoint_gt_even,
+                   e4, &res, pfpsf);
       // if e4 = expmin && significand < 10^33 => result is tiny (for RD, RZ)
       if (e4 == expmin) {
         if ((res.w[1] & MASK_COEFF) < 0x0000314dc6448d93ull ||
@@ -1678,12 +1678,12 @@ delta_ge_zero:
           } else {
             if (q3 <= 19) { // C3 fits in 64 bits
               if (scale <= 19) { // 10^scale fits in 64 bits
-        	// 64 x 64 C3.w[0] * bid_ten2k64[scale]
-        	__mul_64x64_to_128MACH (res, C3.w[0], bid_ten2k64[scale]);
+            // 64 x 64 C3.w[0] * bid_ten2k64[scale]
+            __mul_64x64_to_128MACH (res, C3.w[0], bid_ten2k64[scale]);
               } else { // 10^scale fits in 128 bits
-        	// 64 x 128 C3.w[0] * bid_ten2k128[scale - 20]
-        	__mul_128x64_to_128 (res, C3.w[0],
-        			     bid_ten2k128[scale - 20]);
+            // 64 x 128 C3.w[0] * bid_ten2k128[scale - 20]
+            __mul_128x64_to_128 (res, C3.w[0],
+                         bid_ten2k128[scale - 20]);
               }
             } else { // C3 fits in 128 bits, but 10^scale must fit in 64 bits
               // 64 x 128 bid_ten2k64[scale] * C3
@@ -1694,10 +1694,10 @@ delta_ge_zero:
           e3 = e3 - scale;
           res.w[1] = z_sign | res.w[1];
           bid_rounding_correction (rnd_mode,
-        		       is_inexact_lt_midpoint,
-        		       is_inexact_gt_midpoint,
-        		       is_midpoint_lt_even, is_midpoint_gt_even,
-        		       e3, &res, pfpsf);
+                       is_inexact_lt_midpoint,
+                       is_inexact_gt_midpoint,
+                       is_midpoint_lt_even, is_midpoint_gt_even,
+                       e3, &res, pfpsf);
         }
         *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
         *ptr_is_midpoint_gt_even = is_midpoint_gt_even;
@@ -1754,7 +1754,7 @@ delta_ge_zero:
         if ((q3 <= 19 && C3.w[0] != bid_ten2k64[q3 - 1]) ||
             (q3 == 20 && (C3.w[1] != 0 || C3.w[0] != bid_ten2k64[19])) ||
             (q3 >= 21 && (C3.w[1] != bid_ten2k128[q3 - 21].w[1] ||
-        		  C3.w[0] != bid_ten2k128[q3 - 21].w[0]))) {
+                  C3.w[0] != bid_ten2k128[q3 - 21].w[0]))) {
           // C3 * 10^ scale != 10^(q3-1)
           // if ((res.w[1] & MASK_COEFF) != 0x0000314dc6448d93ull ||
           // res.w[0] != 0x38c15b0a00000000ull) { // C3 * 10^scale != 10^33
@@ -1769,34 +1769,34 @@ delta_ge_zero:
             // x = q4-1, 1 <= x <= 67 and check if this operation is exact
             if (q4 <= 18) { // 2 <= q4 <= 18
               bid_round64_2_18 (q4, q4 - 1, C4.w[0], &R64, &incr_exp,
-        		    &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		    &is_inexact_lt_midpoint,
-        		    &is_inexact_gt_midpoint);
+                    &is_midpoint_lt_even, &is_midpoint_gt_even,
+                    &is_inexact_lt_midpoint,
+                    &is_inexact_gt_midpoint);
             } else if (q4 <= 38) {
               P128.w[1] = C4.w[1];
               P128.w[0] = C4.w[0];
               bid_round128_19_38 (q4, q4 - 1, P128, &R128, &incr_exp,
-        		      &is_midpoint_lt_even,
-        		      &is_midpoint_gt_even,
-        		      &is_inexact_lt_midpoint,
-        		      &is_inexact_gt_midpoint);
+                      &is_midpoint_lt_even,
+                      &is_midpoint_gt_even,
+                      &is_inexact_lt_midpoint,
+                      &is_inexact_gt_midpoint);
               R64 = R128.w[0]; // one decimal digit
             } else if (q4 <= 57) {
               P192.w[2] = C4.w[2];
               P192.w[1] = C4.w[1];
               P192.w[0] = C4.w[0];
               bid_round192_39_57 (q4, q4 - 1, P192, &R192, &incr_exp,
-        		      &is_midpoint_lt_even,
-        		      &is_midpoint_gt_even,
-        		      &is_inexact_lt_midpoint,
-        		      &is_inexact_gt_midpoint);
+                      &is_midpoint_lt_even,
+                      &is_midpoint_gt_even,
+                      &is_inexact_lt_midpoint,
+                      &is_inexact_gt_midpoint);
               R64 = R192.w[0]; // one decimal digit
             } else { // if (q4 <= 68)
               bid_round256_58_76 (q4, q4 - 1, C4, &R256, &incr_exp,
-        		      &is_midpoint_lt_even,
-        		      &is_midpoint_gt_even,
-        		      &is_inexact_lt_midpoint,
-        		      &is_inexact_gt_midpoint);
+                      &is_midpoint_lt_even,
+                      &is_midpoint_gt_even,
+                      &is_inexact_lt_midpoint,
+                      &is_inexact_gt_midpoint);
               R64 = R256.w[0]; // one decimal digit
             }
             if (incr_exp) {
@@ -1810,7 +1810,7 @@ delta_ge_zero:
             is_midpoint_lt_even = 1;
             is_midpoint_gt_even = 0;
           } else if ((e3 == expmin) ||
-        	     R64 < 5 || (R64 == 5 && is_inexact_gt_midpoint)) {
+                 R64 < 5 || (R64 == 5 && is_inexact_gt_midpoint)) {
             // result does not change
             is_inexact_lt_midpoint = 0;
             is_inexact_gt_midpoint = 1;
@@ -1921,7 +1921,7 @@ delta_ge_zero:
           res.w[0] == 0x38c15b0a00000000ull &&	// 10^33_low
           z_sign != p_sign && 
           (rnd_mode == BID_ROUNDING_TO_NEAREST || rnd_mode == BID_ROUNDING_TIES_AWAY) &&
-	  (delta == (p34 + 1)) && C4gt5toq4m1)) {
+      (delta == (p34 + 1)) && C4gt5toq4m1)) {
         *pfpsf |= BID_UNDERFLOW_EXCEPTION;
       }
 #else
@@ -1935,10 +1935,10 @@ delta_ge_zero:
 #endif
       if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
         bid_rounding_correction (rnd_mode,
-        		     is_inexact_lt_midpoint,
-        		     is_inexact_gt_midpoint,
-        		     is_midpoint_lt_even, is_midpoint_gt_even,
-        		     e3, &res, pfpsf);
+                     is_inexact_lt_midpoint,
+                     is_inexact_gt_midpoint,
+                     is_midpoint_lt_even, is_midpoint_gt_even,
+                     e3, &res, pfpsf);
       }
       *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
       *ptr_is_midpoint_gt_even = is_midpoint_gt_even;
@@ -2081,10 +2081,10 @@ delta_ge_zero:
         }
         if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
           bid_rounding_correction (rnd_mode,
-        		       is_inexact_lt_midpoint,
-        		       is_inexact_gt_midpoint,
-        		       is_midpoint_lt_even, is_midpoint_gt_even,
-        		       e3, &res, pfpsf);
+                       is_inexact_lt_midpoint,
+                       is_inexact_gt_midpoint,
+                       is_midpoint_lt_even, is_midpoint_gt_even,
+                       e3, &res, pfpsf);
           z_exp = res.w[1] & MASK_EXP;
         }
       } else { // if (p_sign != z_sign)
@@ -2121,11 +2121,11 @@ delta_ge_zero:
               *pfpsf |= (BID_INEXACT_EXCEPTION | BID_OVERFLOW_EXCEPTION);
             } else {
               bid_rounding_correction (rnd_mode,
-        			   is_inexact_lt_midpoint,
-        			   is_inexact_gt_midpoint,
-        			   is_midpoint_lt_even,
-        			   is_midpoint_gt_even, e3, &res,
-        			   pfpsf);
+                       is_inexact_lt_midpoint,
+                       is_inexact_gt_midpoint,
+                       is_midpoint_lt_even,
+                       is_midpoint_gt_even, e3, &res,
+                       pfpsf);
             }
             *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
             *ptr_is_midpoint_gt_even = is_midpoint_gt_even;
@@ -2138,10 +2138,10 @@ delta_ge_zero:
           *pfpsf |= BID_INEXACT_EXCEPTION;
           if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
             bid_rounding_correction (rnd_mode,
-        			 is_inexact_lt_midpoint,
-        			 is_inexact_gt_midpoint,
-        			 is_midpoint_lt_even,
-        			 is_midpoint_gt_even, e3, &res, pfpsf);
+                     is_inexact_lt_midpoint,
+                     is_inexact_gt_midpoint,
+                     is_midpoint_lt_even,
+                     is_midpoint_gt_even, e3, &res, pfpsf);
           }
           z_exp = res.w[1] & MASK_EXP;
         } else { // if C3 * 10^scale = 10^33
@@ -2161,120 +2161,120 @@ delta_ge_zero:
               // if q4 > 1 then truncate C4 from q4 digits to 1 digit; 
               // x = q4-1, 1 <= x <= 67 and check if this operation is exact
               if (q4 <= 18) { // 2 <= q4 <= 18
-        	bid_round64_2_18 (q4, q4 - 1, C4.w[0], &R64, &incr_exp,
-        		      &is_midpoint_lt_even,
-        		      &is_midpoint_gt_even,
-        		      &is_inexact_lt_midpoint,
-        		      &is_inexact_gt_midpoint);
+            bid_round64_2_18 (q4, q4 - 1, C4.w[0], &R64, &incr_exp,
+                      &is_midpoint_lt_even,
+                      &is_midpoint_gt_even,
+                      &is_inexact_lt_midpoint,
+                      &is_inexact_gt_midpoint);
               } else if (q4 <= 38) {
-        	P128.w[1] = C4.w[1];
-        	P128.w[0] = C4.w[0];
-        	bid_round128_19_38 (q4, q4 - 1, P128, &R128, &incr_exp,
-        			&is_midpoint_lt_even,
-        			&is_midpoint_gt_even,
-        			&is_inexact_lt_midpoint,
-        			&is_inexact_gt_midpoint);
-        	R64 = R128.w[0]; // one decimal digit
+            P128.w[1] = C4.w[1];
+            P128.w[0] = C4.w[0];
+            bid_round128_19_38 (q4, q4 - 1, P128, &R128, &incr_exp,
+                    &is_midpoint_lt_even,
+                    &is_midpoint_gt_even,
+                    &is_inexact_lt_midpoint,
+                    &is_inexact_gt_midpoint);
+            R64 = R128.w[0]; // one decimal digit
               } else if (q4 <= 57) {
-        	P192.w[2] = C4.w[2];
-        	P192.w[1] = C4.w[1];
-        	P192.w[0] = C4.w[0];
-        	bid_round192_39_57 (q4, q4 - 1, P192, &R192, &incr_exp,
-        			&is_midpoint_lt_even,
-        			&is_midpoint_gt_even,
-        			&is_inexact_lt_midpoint,
-        			&is_inexact_gt_midpoint);
-        	R64 = R192.w[0]; // one decimal digit
+            P192.w[2] = C4.w[2];
+            P192.w[1] = C4.w[1];
+            P192.w[0] = C4.w[0];
+            bid_round192_39_57 (q4, q4 - 1, P192, &R192, &incr_exp,
+                    &is_midpoint_lt_even,
+                    &is_midpoint_gt_even,
+                    &is_inexact_lt_midpoint,
+                    &is_inexact_gt_midpoint);
+            R64 = R192.w[0]; // one decimal digit
               } else { // if (q4 <= 68)
-        	bid_round256_58_76 (q4, q4 - 1, C4, &R256, &incr_exp,
-        			&is_midpoint_lt_even,
-        			&is_midpoint_gt_even,
-        			&is_inexact_lt_midpoint,
-        			&is_inexact_gt_midpoint);
-        	R64 = R256.w[0]; // one decimal digit
+            bid_round256_58_76 (q4, q4 - 1, C4, &R256, &incr_exp,
+                    &is_midpoint_lt_even,
+                    &is_midpoint_gt_even,
+                    &is_inexact_lt_midpoint,
+                    &is_inexact_gt_midpoint);
+            R64 = R256.w[0]; // one decimal digit
               }
               if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
-        	  !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
-        	// the result is exact: 10^34 - R64
-        	// incr_exp = 0 with certainty
-        	z_exp = z_exp - EXP_P1;
-        	e3 = e3 - 1;
-        	res.w[1] =
-        	  z_sign | (z_exp & MASK_EXP) | 0x0001ed09bead87c0ull;
-        	res.w[0] = 0x378d8e6400000000ull - R64;
+              !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
+            // the result is exact: 10^34 - R64
+            // incr_exp = 0 with certainty
+            z_exp = z_exp - EXP_P1;
+            e3 = e3 - 1;
+            res.w[1] =
+              z_sign | (z_exp & MASK_EXP) | 0x0001ed09bead87c0ull;
+            res.w[0] = 0x378d8e6400000000ull - R64;
               } else {
-        	// We want R64 to be the top digit of C4, but we actually 
-        	// obtained (C4 * 10^(-q4+1))RN; a correction may be needed,
-        	// because the top digit is (C4 * 10^(-q4+1))RZ
-        	// however, if incr_exp = 1 then R64 = 10 with certainty
-        	if (incr_exp) {
-        	  R64 = 10;
-        	}
-        	// the result is inexact as C4 has more than 1 significant digit
-        	// and C3 * 10^scale = 10^33
-        	// example of case that is treated here:
-        	// 100...0 * 10^e3 - 0.41 * 10^e3 =
-        	// 0999...9.59 * 10^e3 -> rounds to 99...96*10^(e3-1)
-        	// note that (e3 > expmin}
-        	// in order to round, subtract R64 from 10^34 and then compare
-        	// C4 - R64 * 10^(q4-1) with 1/2 ulp
-        	// calculate 10^34 - R64
-        	res.w[1] = 0x0001ed09bead87c0ull;
-        	res.w[0] = 0x378d8e6400000000ull - R64;
-        	z_exp = z_exp - EXP_P1; // will be OR-ed with sign & significand
-        	// calculate C4 - R64 * 10^(q4-1); this is a rare case and
-        	// R64 is small, 1 <= R64 <= 9
-        	e3 = e3 - 1;
-        	if (is_inexact_lt_midpoint) {
-        	  is_inexact_lt_midpoint = 0;
-        	  is_inexact_gt_midpoint = 1;
-        	} else if (is_inexact_gt_midpoint) {
-        	  is_inexact_gt_midpoint = 0;
-        	  is_inexact_lt_midpoint = 1;
-        	} else if (is_midpoint_lt_even) {
-        	  is_midpoint_lt_even = 0;
-        	  is_midpoint_gt_even = 1;
-        	} else if (is_midpoint_gt_even) {
-        	  is_midpoint_gt_even = 0;
-        	  is_midpoint_lt_even = 1;
-        	} else {
-        	  ;
-        	}
-        	// the result is always inexact, and never tiny
-        	// check for overflow for RN
-        	if (e3 > expmax) {
-        	  if (rnd_mode == BID_ROUNDING_TO_NEAREST) {
-        	    res.w[1] = z_sign | 0x7800000000000000ull; // +/-inf
-        	    res.w[0] = 0x0000000000000000ull;
-        	    *pfpsf |= (BID_INEXACT_EXCEPTION | BID_OVERFLOW_EXCEPTION);
-        	  } else {
-        	    bid_rounding_correction (rnd_mode,
-        				 is_inexact_lt_midpoint,
-        				 is_inexact_gt_midpoint,
-        				 is_midpoint_lt_even,
-        				 is_midpoint_gt_even, e3, &res,
-        				 pfpsf);
-        	  }
-        	  *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
-        	  *ptr_is_midpoint_gt_even = is_midpoint_gt_even;
-        	  *ptr_is_inexact_lt_midpoint = is_inexact_lt_midpoint;
-        	  *ptr_is_inexact_gt_midpoint = is_inexact_gt_midpoint;
-        	  BID_SWAP128 (res);
-        	  BID_RETURN (res)
-        	}
-        	// set the inexact flag
-        	*pfpsf |= BID_INEXACT_EXCEPTION;
-        	res.w[1] =
-        	  z_sign | ((BID_UINT64) (e3 + 6176) << 49) | res.w[1];
-        	if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
-        	  bid_rounding_correction (rnd_mode,
-        			       is_inexact_lt_midpoint,
-        			       is_inexact_gt_midpoint,
-        			       is_midpoint_lt_even,
-        			       is_midpoint_gt_even, e3, &res,
-        			       pfpsf);
-        	}
-        	z_exp = res.w[1] & MASK_EXP;
+            // We want R64 to be the top digit of C4, but we actually 
+            // obtained (C4 * 10^(-q4+1))RN; a correction may be needed,
+            // because the top digit is (C4 * 10^(-q4+1))RZ
+            // however, if incr_exp = 1 then R64 = 10 with certainty
+            if (incr_exp) {
+              R64 = 10;
+            }
+            // the result is inexact as C4 has more than 1 significant digit
+            // and C3 * 10^scale = 10^33
+            // example of case that is treated here:
+            // 100...0 * 10^e3 - 0.41 * 10^e3 =
+            // 0999...9.59 * 10^e3 -> rounds to 99...96*10^(e3-1)
+            // note that (e3 > expmin}
+            // in order to round, subtract R64 from 10^34 and then compare
+            // C4 - R64 * 10^(q4-1) with 1/2 ulp
+            // calculate 10^34 - R64
+            res.w[1] = 0x0001ed09bead87c0ull;
+            res.w[0] = 0x378d8e6400000000ull - R64;
+            z_exp = z_exp - EXP_P1; // will be OR-ed with sign & significand
+            // calculate C4 - R64 * 10^(q4-1); this is a rare case and
+            // R64 is small, 1 <= R64 <= 9
+            e3 = e3 - 1;
+            if (is_inexact_lt_midpoint) {
+              is_inexact_lt_midpoint = 0;
+              is_inexact_gt_midpoint = 1;
+            } else if (is_inexact_gt_midpoint) {
+              is_inexact_gt_midpoint = 0;
+              is_inexact_lt_midpoint = 1;
+            } else if (is_midpoint_lt_even) {
+              is_midpoint_lt_even = 0;
+              is_midpoint_gt_even = 1;
+            } else if (is_midpoint_gt_even) {
+              is_midpoint_gt_even = 0;
+              is_midpoint_lt_even = 1;
+            } else {
+              ;
+            }
+            // the result is always inexact, and never tiny
+            // check for overflow for RN
+            if (e3 > expmax) {
+              if (rnd_mode == BID_ROUNDING_TO_NEAREST) {
+                res.w[1] = z_sign | 0x7800000000000000ull; // +/-inf
+                res.w[0] = 0x0000000000000000ull;
+                *pfpsf |= (BID_INEXACT_EXCEPTION | BID_OVERFLOW_EXCEPTION);
+              } else {
+                bid_rounding_correction (rnd_mode,
+                         is_inexact_lt_midpoint,
+                         is_inexact_gt_midpoint,
+                         is_midpoint_lt_even,
+                         is_midpoint_gt_even, e3, &res,
+                         pfpsf);
+              }
+              *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
+              *ptr_is_midpoint_gt_even = is_midpoint_gt_even;
+              *ptr_is_inexact_lt_midpoint = is_inexact_lt_midpoint;
+              *ptr_is_inexact_gt_midpoint = is_inexact_gt_midpoint;
+              BID_SWAP128 (res);
+              BID_RETURN (res)
+            }
+            // set the inexact flag
+            *pfpsf |= BID_INEXACT_EXCEPTION;
+            res.w[1] =
+              z_sign | ((BID_UINT64) (e3 + 6176) << 49) | res.w[1];
+            if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
+              bid_rounding_correction (rnd_mode,
+                           is_inexact_lt_midpoint,
+                           is_inexact_gt_midpoint,
+                           is_midpoint_lt_even,
+                           is_midpoint_gt_even, e3, &res,
+                           pfpsf);
+            }
+            z_exp = res.w[1] & MASK_EXP;
               } // end result is inexact
             } // end q4 > 1
           } else { // if (e3 = emin)
@@ -2543,8 +2543,8 @@ delta_ge_zero:
             is_midpoint_gt_even = 0;
             is_inexact_gt_midpoint = 1;
           } else if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
-        	     !is_inexact_lt_midpoint
-        	     && !is_inexact_gt_midpoint) {
+                 !is_inexact_lt_midpoint
+                 && !is_inexact_gt_midpoint) {
             // if this second rounding was exact the result may still be 
             // inexact because of the first rounding
             if (is_inexact_gt_midpoint0 || is_midpoint_lt_even0) {
@@ -2554,16 +2554,16 @@ delta_ge_zero:
               is_inexact_lt_midpoint = 1;
             }
           } else if (is_midpoint_gt_even &&
-        	     (is_inexact_gt_midpoint0
-        	      || is_midpoint_lt_even0)) {
+                 (is_inexact_gt_midpoint0
+                  || is_midpoint_lt_even0)) {
             // pulled up to a midpoint
             is_inexact_lt_midpoint = 1;
             is_inexact_gt_midpoint = 0;
             is_midpoint_lt_even = 0;
             is_midpoint_gt_even = 0;
           } else if (is_midpoint_lt_even &&
-        	     (is_inexact_lt_midpoint0
-        	      || is_midpoint_gt_even0)) {
+                 (is_inexact_lt_midpoint0
+                  || is_midpoint_gt_even0)) {
             // pulled down to a midpoint
             is_inexact_lt_midpoint = 0;
             is_inexact_gt_midpoint = 1;
@@ -2577,7 +2577,7 @@ delta_ge_zero:
           if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
               !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
             if (is_midpoint_lt_even0 || is_midpoint_gt_even0 ||
-        	is_inexact_lt_midpoint0 || is_inexact_gt_midpoint0) {
+            is_inexact_lt_midpoint0 || is_inexact_gt_midpoint0) {
               is_inexact_lt_midpoint = 1;
             }
           }
@@ -2592,14 +2592,14 @@ delta_ge_zero:
               is_midpoint_lt_even = 1;
               res.w[0]++;
               if (res.w[0] == 0x0)
-        	res.w[1]++;
+            res.w[1]++;
               // check for rounding overflow
               if (res.w[1] == 0x0001ed09bead87c0ull &&
-        	  res.w[0] == 0x378d8e6400000000ull) {
-        	// res = 10^34 => rounding overflow
-        	res.w[1] = 0x0000314dc6448d93ull;
-        	res.w[0] = 0x38c15b0a00000000ull; // 10^33
-        	e3++;
+              res.w[0] == 0x378d8e6400000000ull) {
+            // res = 10^34 => rounding overflow
+            res.w[1] = 0x0000314dc6448d93ull;
+            res.w[0] = 0x38c15b0a00000000ull; // 10^33
+            e3++;
               }
             } else if (is_midpoint_lt_even) {
               // res = res - 1
@@ -2607,23 +2607,23 @@ delta_ge_zero:
               is_midpoint_gt_even = 1;
               res.w[0]--;
               if (res.w[0] == 0xffffffffffffffffull)
-        	res.w[1]--;
+            res.w[1]--;
               // if the result is pure zero, the sign depends on the rounding 
               // mode (x*y and z had opposite signs)
               if (res.w[1] == 0x0ull && res.w[0] == 0x0ull) {
-        	if (rnd_mode != BID_ROUNDING_DOWN)
-        	  z_sign = 0x0000000000000000ull;
-        	else
-        	  z_sign = 0x8000000000000000ull;
-        	// the exponent is max (e3, expmin)
-        	res.w[1] = 0x0;
-        	res.w[0] = 0x0;
-        	*ptr_is_midpoint_lt_even = is_midpoint_lt_even;
-        	*ptr_is_midpoint_gt_even = is_midpoint_gt_even;
-        	*ptr_is_inexact_lt_midpoint = is_inexact_lt_midpoint;
-        	*ptr_is_inexact_gt_midpoint = is_inexact_gt_midpoint;
-        	BID_SWAP128 (res);
-        	BID_RETURN (res)
+            if (rnd_mode != BID_ROUNDING_DOWN)
+              z_sign = 0x0000000000000000ull;
+            else
+              z_sign = 0x8000000000000000ull;
+            // the exponent is max (e3, expmin)
+            res.w[1] = 0x0;
+            res.w[0] = 0x0;
+            *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
+            *ptr_is_midpoint_gt_even = is_midpoint_gt_even;
+            *ptr_is_inexact_lt_midpoint = is_inexact_lt_midpoint;
+            *ptr_is_inexact_gt_midpoint = is_inexact_gt_midpoint;
+            BID_SWAP128 (res);
+            BID_RETURN (res)
               }
             } else {
               ;
@@ -2642,11 +2642,11 @@ delta_ge_zero:
         // if res < 10^33 and exp > expmin need to decrease x0 and 
         // increase scale by 1
         if (e3 > expmin && ((res.w[1] < 0x0000314dc6448d93ull ||
-        		     (res.w[1] == 0x0000314dc6448d93ull &&
-        		      res.w[0] < 0x38c15b0a00000000ull)) ||
-        		    ((is_inexact_lt_midpoint | is_midpoint_gt_even)
-        		     && res.w[1] == 0x0000314dc6448d93ull
-        		     && res.w[0] == 0x38c15b0a00000000ull))
+                     (res.w[1] == 0x0000314dc6448d93ull &&
+                      res.w[0] < 0x38c15b0a00000000ull)) ||
+                    ((is_inexact_lt_midpoint | is_midpoint_gt_even)
+                     && res.w[1] == 0x0000314dc6448d93ull
+                     && res.w[0] == 0x38c15b0a00000000ull))
             && x0 >= 1) {
           x0 = x0 - 1;
           // first restore e3, otherwise it will be too small
@@ -2686,7 +2686,7 @@ delta_ge_zero:
               res.w[1]++;
             // check for rounding overflow
             if (res.w[1] == 0x0001ed09bead87c0ull &&
-        	res.w[0] == 0x378d8e6400000000ull) {
+            res.w[0] == 0x378d8e6400000000ull) {
               // res = 10^34 => rounding overflow
               res.w[1] = 0x0000314dc6448d93ull;
               res.w[0] = 0x38c15b0a00000000ull; // 10^33
@@ -2701,9 +2701,9 @@ delta_ge_zero:
             // mode (x*y and z had opposite signs)
             if (res.w[1] == 0x0ull && res.w[0] == 0x0ull) {
               if (rnd_mode != BID_ROUNDING_DOWN)
-        	z_sign = 0x0000000000000000ull;
+            z_sign = 0x0000000000000000ull;
               else
-        	z_sign = 0x8000000000000000ull;
+            z_sign = 0x8000000000000000ull;
               // the exponent is max (e3, expmin)
               res.w[1] = 0x0;
               res.w[0] = 0x0;
@@ -2755,15 +2755,15 @@ delta_ge_zero:
           }
           // ind digits
         } else if (res.w[1] < bid_ten2k128[0].w[1] ||
-        	   (res.w[1] == bid_ten2k128[0].w[1]
-        	    && res.w[0] < bid_ten2k128[0].w[0])) {
+               (res.w[1] == bid_ten2k128[0].w[1]
+                && res.w[0] < bid_ten2k128[0].w[0])) {
           // 20 digits
           ind = 20;
         } else { // between 21 and 38 digits
           for (ind = 1; ind <= 18; ind++) {
             if (res.w[1] < bid_ten2k128[ind].w[1] ||
-        	(res.w[1] == bid_ten2k128[ind].w[1] &&
-        	 res.w[0] < bid_ten2k128[ind].w[0])) {
+            (res.w[1] == bid_ten2k128[ind].w[1] &&
+             res.w[0] < bid_ten2k128[ind].w[0])) {
               break;
             }
           }
@@ -2789,9 +2789,9 @@ delta_ge_zero:
         } else if (ind <= 18) { // check that 2 <= ind
           // 2 <= ind <= 18, 1 <= x0 <= 17
           bid_round64_2_18 (ind, x0, res.w[0], &R64, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
           if (incr_exp) {
             // R64 = 10^(ind-x0), 1 <= ind - x0 <= ind - 1, 1 <= ind - x0 <= 17
             R64 = bid_ten2k64[ind - x0];
@@ -2803,9 +2803,9 @@ delta_ge_zero:
           P128.w[1] = res.w[1];
           P128.w[0] = res.w[0];
           bid_round128_19_38 (ind, x0, P128, &res, &incr_exp,
-        		  &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		  &is_inexact_lt_midpoint,
-        		  &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint,
+                  &is_inexact_gt_midpoint);
           if (incr_exp) {
             // R128 = 10^(ind-x0), 1 <= ind - x0 <= ind - 1, 1 <= ind - x0 <= 37
             if (ind - x0 <= 19) { // 1 <= ind - x0 <= 19
@@ -2839,7 +2839,7 @@ delta_ge_zero:
           is_midpoint_gt_even = 0;
           is_inexact_gt_midpoint = 1;
         } else if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
-        	   !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
+               !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
           // if this second rounding was exact the result may still be 
           // inexact because of the first rounding
           if (is_inexact_gt_midpoint0 || is_midpoint_lt_even0) {
@@ -2849,14 +2849,14 @@ delta_ge_zero:
             is_inexact_lt_midpoint = 1;
           }
         } else if (is_midpoint_gt_even &&
-        	   (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
+               (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
           // pulled up to a midpoint
           is_inexact_lt_midpoint = 1;
           is_inexact_gt_midpoint = 0;
           is_midpoint_lt_even = 0;
           is_midpoint_gt_even = 0;
         } else if (is_midpoint_lt_even &&
-        	   (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
+               (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
           // pulled down to a midpoint
           is_inexact_lt_midpoint = 0;
           is_inexact_gt_midpoint = 1;
@@ -2902,10 +2902,10 @@ delta_ge_zero:
       }
       if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
         bid_rounding_correction (rnd_mode,
-        		     is_inexact_lt_midpoint,
-        		     is_inexact_gt_midpoint,
-        		     is_midpoint_lt_even, is_midpoint_gt_even,
-        		     e3, &res, pfpsf);
+                     is_inexact_lt_midpoint,
+                     is_inexact_gt_midpoint,
+                     is_midpoint_lt_even, is_midpoint_gt_even,
+                     e3, &res, pfpsf);
       }
       *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
       *ptr_is_midpoint_gt_even = is_midpoint_gt_even;
@@ -2952,9 +2952,9 @@ delta_ge_zero:
         delta = -delta;
       }
       bid_add_and_round (q3, q4, e4, delta, p34, z_sign, p_sign, C3, C4,
-        	     rnd_mode, &is_midpoint_lt_even,
-        	     &is_midpoint_gt_even, &is_inexact_lt_midpoint,
-        	     &is_inexact_gt_midpoint, pfpsf, &res);
+                 rnd_mode, &is_midpoint_lt_even,
+                 &is_midpoint_gt_even, &is_inexact_lt_midpoint,
+                 &is_inexact_gt_midpoint, pfpsf, &res);
       *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
       *ptr_is_midpoint_gt_even = is_midpoint_gt_even;
       *ptr_is_inexact_lt_midpoint = is_inexact_lt_midpoint;
@@ -2977,24 +2977,24 @@ delta_ge_zero:
         P128.w[1] = C4.w[1];
         P128.w[0] = C4.w[0];
         bid_round128_19_38 (q4, x0, P128, &res, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
       } else if (q4 <= 57) { // 35 <= q4 <= 57
         P192.w[2] = C4.w[2];
         P192.w[1] = C4.w[1];
         P192.w[0] = C4.w[0];
         bid_round192_39_57 (q4, x0, P192, &R192, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
         res.w[0] = R192.w[0];
         res.w[1] = R192.w[1];
       } else { // if (q4 <= 68)
         bid_round256_58_76 (q4, x0, C4, &R256, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
         res.w[0] = R256.w[0];
         res.w[1] = R256.w[1];
       }
@@ -3022,34 +3022,34 @@ delta_ge_zero:
               is_inexact_gt_midpoint = 1;
             } else { // if (delta == p34 + 1)
               if (q3 <= 19) {
-        	if (C3.w[0] < bid_midpoint64[q3 - 1]) { // C3 < 1/2 ulp
-        	  // res = 10^33, unchanged
-        	  is_inexact_gt_midpoint = 1;
-        	} else if (C3.w[0] == bid_midpoint64[q3 - 1]) { // C3 = 1/2 ulp
-        	  // res = 10^33, unchanged
-        	  is_midpoint_lt_even = 1;
-        	} else { // if (C3.w[0] > bid_midpoint64[q3-1]), C3 > 1/2 ulp
-        	  res.w[1] = 0x0001ed09bead87c0ull; // 10^34 - 1
-        	  res.w[0] = 0x378d8e63ffffffffull;
-        	  e4 = e4 - 1;
-        	  is_inexact_lt_midpoint = 1;
-        	}
+            if (C3.w[0] < bid_midpoint64[q3 - 1]) { // C3 < 1/2 ulp
+              // res = 10^33, unchanged
+              is_inexact_gt_midpoint = 1;
+            } else if (C3.w[0] == bid_midpoint64[q3 - 1]) { // C3 = 1/2 ulp
+              // res = 10^33, unchanged
+              is_midpoint_lt_even = 1;
+            } else { // if (C3.w[0] > bid_midpoint64[q3-1]), C3 > 1/2 ulp
+              res.w[1] = 0x0001ed09bead87c0ull; // 10^34 - 1
+              res.w[0] = 0x378d8e63ffffffffull;
+              e4 = e4 - 1;
+              is_inexact_lt_midpoint = 1;
+            }
               } else { // if (20 <= q3 <=34)
-        	if (C3.w[1] < bid_midpoint128[q3 - 20].w[1] || 
+            if (C3.w[1] < bid_midpoint128[q3 - 20].w[1] || 
                     (C3.w[1] == bid_midpoint128[q3 - 20].w[1] && 
                     C3.w[0] < bid_midpoint128[q3 - 20].w[0])) { // C3 < 1/2 ulp
-        	  // res = 10^33, unchanged
-        	  is_inexact_gt_midpoint = 1;
-        	} else if (C3.w[1] == bid_midpoint128[q3 - 20].w[1] && 
+              // res = 10^33, unchanged
+              is_inexact_gt_midpoint = 1;
+            } else if (C3.w[1] == bid_midpoint128[q3 - 20].w[1] && 
                     C3.w[0] == bid_midpoint128[q3 - 20].w[0]) { // C3 = 1/2 ulp
-        	  // res = 10^33, unchanged
-        	  is_midpoint_lt_even = 1;
-        	} else { // if (C3 > bid_midpoint128[q3-20]), C3 > 1/2 ulp
-        	  res.w[1] = 0x0001ed09bead87c0ull; // 10^34 - 1
-        	  res.w[0] = 0x378d8e63ffffffffull;
-        	  e4 = e4 - 1;
-        	  is_inexact_lt_midpoint = 1;
-        	}
+              // res = 10^33, unchanged
+              is_midpoint_lt_even = 1;
+            } else { // if (C3 > bid_midpoint128[q3-20]), C3 > 1/2 ulp
+              res.w[1] = 0x0001ed09bead87c0ull; // 10^34 - 1
+              res.w[0] = 0x378d8e63ffffffffull;
+              e4 = e4 - 1;
+              is_inexact_lt_midpoint = 1;
+            }
               }
             }
           }
@@ -3100,10 +3100,10 @@ delta_ge_zero:
       }
       if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
         bid_rounding_correction (rnd_mode,
-        		     is_inexact_lt_midpoint,
-        		     is_inexact_gt_midpoint,
-        		     is_midpoint_lt_even, is_midpoint_gt_even,
-        		     e4, &res, pfpsf);
+                     is_inexact_lt_midpoint,
+                     is_inexact_gt_midpoint,
+                     is_midpoint_lt_even, is_midpoint_gt_even,
+                     e4, &res, pfpsf);
       }
       if (is_inexact_lt_midpoint || is_inexact_gt_midpoint ||
           is_midpoint_lt_even || is_midpoint_gt_even) {
@@ -3162,15 +3162,15 @@ delta_ge_zero:
       x0 = e4 - e3; // or x0 = delta + q3 - q4
       if (q3 <= 18) { // 2 <= q3 <= 18
         bid_round64_2_18 (q3, x0, C3.w[0], &R64, &incr_exp,
-        	      &is_midpoint_lt_even, &is_midpoint_gt_even,
-        	      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
         // C3.w[1] = 0;
         C3.w[0] = R64;
       } else if (q3 <= 38) {
         bid_round128_19_38 (q3, x0, C3, &R128, &incr_exp,
-        		&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint);
         C3.w[1] = R128.w[1];
         C3.w[0] = R128.w[0];
       }
@@ -3220,10 +3220,10 @@ delta_ge_zero:
             if (R256.w[0] == 0x0) {
               R256.w[1]++;
               if (R256.w[1] == 0x0) {
-        	R256.w[2]++;
-        	if (R256.w[2] == 0x0) {
-        	  R256.w[3]++;
-        	}
+            R256.w[2]++;
+            if (R256.w[2] == 0x0) {
+              R256.w[3]++;
+            }
               }
             }
             // no check for rounding overflow - R256 was a difference
@@ -3233,10 +3233,10 @@ delta_ge_zero:
             if (R256.w[0] == 0xffffffffffffffffull) {
               R256.w[1]--;
               if (R256.w[1] == 0xffffffffffffffffull) {
-        	R256.w[2]--;
-        	if (R256.w[2] == 0xffffffffffffffffull) {
-        	  R256.w[3]--;
-        	}
+            R256.w[2]--;
+            if (R256.w[2] == 0xffffffffffffffffull) {
+              R256.w[3]--;
+            }
               }
             }
           } else {
@@ -3281,24 +3281,24 @@ delta_ge_zero:
           P128.w[1] = R256.w[1];
           P128.w[0] = R256.w[0];
           bid_round128_19_38 (ind, x0, P128, &R128, &incr_exp,
-        		  &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		  &is_inexact_lt_midpoint,
-        		  &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint,
+                  &is_inexact_gt_midpoint);
         } else if (ind <= 57) {
           P192.w[2] = R256.w[2];
           P192.w[1] = R256.w[1];
           P192.w[0] = R256.w[0];
           bid_round192_39_57 (ind, x0, P192, &R192, &incr_exp,
-        		  &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		  &is_inexact_lt_midpoint,
-        		  &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint,
+                  &is_inexact_gt_midpoint);
           R128.w[1] = R192.w[1];
           R128.w[0] = R192.w[0];
         } else { // if (ind <= 68)
           bid_round256_58_76 (ind, x0, R256, &R256, &incr_exp,
-        		  &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		  &is_inexact_lt_midpoint,
-        		  &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint,
+                  &is_inexact_gt_midpoint);
           R128.w[1] = R256.w[1];
           R128.w[0] = R256.w[0];
         }
@@ -3337,7 +3337,7 @@ delta_ge_zero:
           is_midpoint_gt_even = 0;
           is_inexact_gt_midpoint = 1;
         } else if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
-        	   !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
+               !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
           // if this second rounding was exact the result may still be
           // inexact because of the first rounding
           if (is_inexact_gt_midpoint0 || is_midpoint_lt_even0) {
@@ -3347,14 +3347,14 @@ delta_ge_zero:
             is_inexact_lt_midpoint = 1;
           }
         } else if (is_midpoint_gt_even &&
-        	   (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
+               (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
           // pulled up to a midpoint
           is_inexact_lt_midpoint = 1;
           is_inexact_gt_midpoint = 0;
           is_midpoint_lt_even = 0;
           is_midpoint_gt_even = 0;
         } else if (is_midpoint_lt_even &&
-        	   (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
+               (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
           // pulled down to a midpoint
           is_inexact_lt_midpoint = 0;
           is_inexact_gt_midpoint = 1;
@@ -3377,10 +3377,10 @@ delta_ge_zero:
         P128.w[1] = p_sign | 0x3040000000000000ull | res.w[1];
         P128.w[0] = res.w[0];
         bid_rounding_correction (rnd_mode,
-        		     is_inexact_lt_midpoint,
-        		     is_inexact_gt_midpoint,
-        		     is_midpoint_lt_even, is_midpoint_gt_even,
-        		     0, &P128, pfpsf);
+                     is_inexact_lt_midpoint,
+                     is_inexact_gt_midpoint,
+                     is_midpoint_lt_even, is_midpoint_gt_even,
+                     0, &P128, pfpsf);
         scale = ((P128.w[1] & MASK_EXP) >> 49) - 6176; // -1, 0, or +1
         // the number of digits in the significand is p34 = 34
         if (e4 + scale < expmin) {
@@ -3489,18 +3489,18 @@ delta_ge_zero:
 
           if (ind <= 18) { // 2 <= ind <= 18
             bid_round64_2_18 (ind, x0, res.w[0], &R64, &incr_exp,
-        		  &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		  &is_inexact_lt_midpoint,
-        		  &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint,
+                  &is_inexact_gt_midpoint);
             res.w[1] = 0x0;
             res.w[0] = R64;
           } else if (ind <= 38) {
             P128.w[1] = res.w[1] & MASK_COEFF;
             P128.w[0] = res.w[0];
             bid_round128_19_38 (ind, x0, P128, &res, &incr_exp,
-        		    &is_midpoint_lt_even, &is_midpoint_gt_even,
-        		    &is_inexact_lt_midpoint,
-        		    &is_inexact_gt_midpoint);
+                    &is_midpoint_lt_even, &is_midpoint_gt_even,
+                    &is_inexact_lt_midpoint,
+                    &is_inexact_gt_midpoint);
           }
           e4 = e4 + x0; // expmin
           // we want the exponent to be expmin, so if incr_exp = 1 then
@@ -3513,7 +3513,7 @@ delta_ge_zero:
           }
           res.w[1] =
             p_sign | ((BID_UINT64) (e4 + 6176) << 49) | (res.
-        					     w[1] & MASK_COEFF);
+                                 w[1] & MASK_COEFF);
           // avoid a double rounding error
           if ((is_inexact_gt_midpoint0 || is_midpoint_lt_even0) && 
                 is_midpoint_lt_even) { // double rounding error upward
@@ -3536,8 +3536,8 @@ delta_ge_zero:
             is_midpoint_gt_even = 0;
             is_inexact_gt_midpoint = 1;
           } else if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
-        	     !is_inexact_lt_midpoint
-        	     && !is_inexact_gt_midpoint) {
+                 !is_inexact_lt_midpoint
+                 && !is_inexact_gt_midpoint) {
             // if this second rounding was exact the result may still be 
             // inexact because of the first rounding
             if (is_inexact_gt_midpoint0 || is_midpoint_lt_even0) {
@@ -3547,16 +3547,16 @@ delta_ge_zero:
               is_inexact_lt_midpoint = 1;
             }
           } else if (is_midpoint_gt_even &&
-        	     (is_inexact_gt_midpoint0
-        	      || is_midpoint_lt_even0)) {
+                 (is_inexact_gt_midpoint0
+                  || is_midpoint_lt_even0)) {
             // pulled up to a midpoint
             is_inexact_lt_midpoint = 1;
             is_inexact_gt_midpoint = 0;
             is_midpoint_lt_even = 0;
             is_midpoint_gt_even = 0;
           } else if (is_midpoint_lt_even &&
-        	     (is_inexact_lt_midpoint0
-        	      || is_midpoint_gt_even0)) {
+                 (is_inexact_lt_midpoint0
+                  || is_midpoint_gt_even0)) {
             // pulled down to a midpoint
             is_inexact_lt_midpoint = 0;
             is_inexact_gt_midpoint = 1;
@@ -3571,10 +3571,10 @@ delta_ge_zero:
       // apply correction if not rounding to nearest
       if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
         bid_rounding_correction (rnd_mode,
-        		     is_inexact_lt_midpoint,
-        		     is_inexact_gt_midpoint,
-        		     is_midpoint_lt_even, is_midpoint_gt_even,
-        		     e4, &res, pfpsf);
+                     is_inexact_lt_midpoint,
+                     is_inexact_gt_midpoint,
+                     is_midpoint_lt_even, is_midpoint_gt_even,
+                     e4, &res, pfpsf);
       }
 #if !DECIMAL_TINY_DETECTION_AFTER_ROUNDING
       // correction needed for tininess detection before rounding
@@ -3661,16 +3661,16 @@ bid128_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT128 z
 
 #if DECIMAL_CALL_BY_REFERENCE
   bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        	  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
-        	  &res, &x, &y, &z
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
+              &res, &x, &y, &z
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   res = bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint, x, y,
-        		z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint, x, y,
+                z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
   BID_RETURN (res);
 }
@@ -3701,19 +3701,19 @@ bid128ddd_fma (BID_UINT64 x, BID_UINT64 y, BID_UINT64 z
   bid64_to_bid128 (&y1, &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64_to_bid128 (&z1, &z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        	  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
-        	  &res, &x1, &y1, &z1
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
+              &res, &x1, &y1, &z1
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   x1 = bid64_to_bid128 (x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   y1 = bid64_to_bid128 (y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   z1 = bid64_to_bid128 (z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res = bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint, x1, y1,
-        		z1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint, x1, y1,
+                z1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
   BID_RETURN (res);
 }
@@ -3744,18 +3744,18 @@ bid128ddq_fma (BID_UINT64 x, BID_UINT64 y, BID_UINT128 z
   bid64_to_bid128 (&x1, &x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64_to_bid128 (&y1, &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        	  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
-        	  &res, &x1, &y1, &z
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
+              &res, &x1, &y1, &z
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   x1 = bid64_to_bid128 (x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   y1 = bid64_to_bid128 (y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res = bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint, x1, y1,
-        		z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint, x1, y1,
+                z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
   BID_RETURN (res);
 }
@@ -3785,18 +3785,18 @@ bid128dqd_fma (BID_UINT64 x, BID_UINT128 y, BID_UINT64 z
   bid64_to_bid128 (&x1, &x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64_to_bid128 (&z1, &z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        	  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
-        	  &res, &x1, py, &z1
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
+              &res, &x1, py, &z1
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   x1 = bid64_to_bid128 (x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   z1 = bid64_to_bid128 (z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res = bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint, x1, y,
-        		z1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint, x1, y,
+                z1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
   BID_RETURN (res);
 }
@@ -3825,17 +3825,17 @@ bid128dqq_fma (BID_UINT64 x, BID_UINT128 y, BID_UINT128 z
 #if DECIMAL_CALL_BY_REFERENCE
   bid64_to_bid128 (&x1, &x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        	  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
-        	  &res, &x1, py, pz
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
+              &res, &x1, py, pz
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   x1 = bid64_to_bid128 (x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res = bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint, x1, y,
-        		z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint, x1, y,
+                z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
   BID_RETURN (res);
 }
@@ -3865,18 +3865,18 @@ bid128qdd_fma (BID_UINT128 x, BID_UINT64 y, BID_UINT64 z
   bid64_to_bid128 (&y1, &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64_to_bid128 (&z1, &z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        	  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
-        	  &res, px, &y1, &z1
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
+              &res, px, &y1, &z1
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   y1 = bid64_to_bid128 (y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   z1 = bid64_to_bid128 (z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res = bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint, x, y1,
-        		z1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint, x, y1,
+                z1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
   BID_RETURN (res);
 }
@@ -3905,17 +3905,17 @@ bid128qdq_fma (BID_UINT128 x, BID_UINT64 y, BID_UINT128 z
 #if DECIMAL_CALL_BY_REFERENCE
   bid64_to_bid128 (&y1, &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        	  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
-        	  &res, px, &y1, pz
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
+              &res, px, &y1, pz
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   y1 = bid64_to_bid128 (y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res = bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint, x, y1,
-        		z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint, x, y1,
+                z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
   BID_RETURN (res);
 }
@@ -3944,17 +3944,17 @@ bid128qqd_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT64 z
 #if DECIMAL_CALL_BY_REFERENCE
   bid64_to_bid128 (&z1, &z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        	  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
-        	  &res, px, py, &z1
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint,
+              &res, px, py, &z1
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   z1 = bid64_to_bid128 (z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res = bid128_ext_fma (&is_midpoint_lt_even, &is_midpoint_gt_even,
-        		&is_inexact_lt_midpoint,
-        		&is_inexact_gt_midpoint, x, y,
-        		z1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint,
+                &is_inexact_gt_midpoint, x, y,
+                z1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
   BID_RETURN (res);
 }
@@ -3985,14 +3985,14 @@ bid64ddq_fma (BID_UINT64 x, BID_UINT64 y, BID_UINT128 z
   bid64_to_bid128 (&x1, &x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64_to_bid128 (&y1, &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64qqq_fma (&res1, &x1, &y1, pz
-        	_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	_EXC_INFO_ARG);
+            _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+            _EXC_INFO_ARG);
 #else
   x1 = bid64_to_bid128 (x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   y1 = bid64_to_bid128 (y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res1 = bid64qqq_fma (x1, y1, z
-        	       _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	       _EXC_INFO_ARG);
+                   _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                   _EXC_INFO_ARG);
 #endif
   BID_RETURN (res1);
 }
@@ -4020,14 +4020,14 @@ bid64dqd_fma (BID_UINT64 x, BID_UINT128 y, BID_UINT64 z
   bid64_to_bid128 (&x1, &x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64_to_bid128 (&z1, &z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64qqq_fma (&res1, &x1, py, &z1
-        	_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	_EXC_INFO_ARG);
+            _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+            _EXC_INFO_ARG);
 #else
   x1 = bid64_to_bid128 (x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   z1 = bid64_to_bid128 (z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res1 = bid64qqq_fma (x1, y, z1
-        	       _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	       _EXC_INFO_ARG);
+                   _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                   _EXC_INFO_ARG);
 #endif
   BID_RETURN (res1);
 }
@@ -4054,13 +4054,13 @@ bid64dqq_fma (BID_UINT64 x, BID_UINT128 y, BID_UINT128 z
 #if DECIMAL_CALL_BY_REFERENCE
   bid64_to_bid128 (&x1, &x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64qqq_fma (&res1, &x1, py, pz
-        	_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	_EXC_INFO_ARG);
+            _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+            _EXC_INFO_ARG);
 #else
   x1 = bid64_to_bid128 (x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res1 = bid64qqq_fma (x1, y, z
-        	       _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	       _EXC_INFO_ARG);
+                   _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                   _EXC_INFO_ARG);
 #endif
   BID_RETURN (res1);
 }
@@ -4088,14 +4088,14 @@ bid64qdd_fma (BID_UINT128 x, BID_UINT64 y, BID_UINT64 z
   bid64_to_bid128 (&y1, &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64_to_bid128 (&z1, &z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64qqq_fma (&res1, px, &y1, &z1
-        	_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	_EXC_INFO_ARG);
+            _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+            _EXC_INFO_ARG);
 #else
   y1 = bid64_to_bid128 (y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   z1 = bid64_to_bid128 (z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res1 = bid64qqq_fma (x, y1, z1
-        	       _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	       _EXC_INFO_ARG);
+                   _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                   _EXC_INFO_ARG);
 #endif
   BID_RETURN (res1);
 }
@@ -4122,13 +4122,13 @@ bid64qdq_fma (BID_UINT128 x, BID_UINT64 y, BID_UINT128 z
 #if DECIMAL_CALL_BY_REFERENCE
   bid64_to_bid128 (&y1, &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64qqq_fma (&res1, px, &y1, pz
-        	_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	_EXC_INFO_ARG);
+            _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+            _EXC_INFO_ARG);
 #else
   y1 = bid64_to_bid128 (y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res1 = bid64qqq_fma (x, y1, z
-        	       _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	       _EXC_INFO_ARG);
+                   _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                   _EXC_INFO_ARG);
 #endif
   BID_RETURN (res1);
 }
@@ -4155,13 +4155,13 @@ bid64qqd_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT64 z
 #if DECIMAL_CALL_BY_REFERENCE
   bid64_to_bid128 (&z1, &z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   bid64qqq_fma (&res1, px, py, &z1
-        	_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	_EXC_INFO_ARG);
+            _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+            _EXC_INFO_ARG);
 #else
   z1 = bid64_to_bid128 (z _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
   res1 = bid64qqq_fma (x, y, z1
-        	       _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	       _EXC_INFO_ARG);
+                   _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                   _EXC_INFO_ARG);
 #endif
   BID_RETURN (res1);
 }
@@ -4209,16 +4209,16 @@ bid64qqq_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT128 z
 
 #if DECIMAL_CALL_BY_REFERENCE
   bid128_ext_fma (&is_midpoint_lt_even0, &is_midpoint_gt_even0,
-        	  &is_inexact_lt_midpoint0, &is_inexact_gt_midpoint0,
-        	  &res, &x, &y, &z
-        	  _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        	  _EXC_INFO_ARG);
+              &is_inexact_lt_midpoint0, &is_inexact_gt_midpoint0,
+              &res, &x, &y, &z
+              _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+              _EXC_INFO_ARG);
 #else
   res = bid128_ext_fma (&is_midpoint_lt_even0, &is_midpoint_gt_even0,
-        		&is_inexact_lt_midpoint0,
-        		&is_inexact_gt_midpoint0, x, y,
-        		z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
-        		_EXC_INFO_ARG);
+                &is_inexact_lt_midpoint0,
+                &is_inexact_gt_midpoint0, x, y,
+                z _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG
+                _EXC_INFO_ARG);
 #endif
 
   if ((rnd_mode == BID_ROUNDING_DOWN) || (rnd_mode == BID_ROUNDING_UP) || 
@@ -4331,12 +4331,12 @@ bid64qqq_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT128 z
     x0 = q - 16;
     if (q <= 18) {
       bid_round64_2_18 (q, x0, C.w[0], &res1, &incr_exp,
-        	    &is_midpoint_lt_even, &is_midpoint_gt_even,
-        	    &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+                &is_midpoint_lt_even, &is_midpoint_gt_even,
+                &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     } else { // 19 <= q <= 34
       bid_round128_19_38 (q, x0, C, &res128, &incr_exp,
-        	      &is_midpoint_lt_even, &is_midpoint_gt_even,
-        	      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       res1 = res128.w[0]; // the result fits in 64 bits
     }
     unbexp = unbexp + x0;
@@ -4428,8 +4428,8 @@ bid64qqq_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT128 z
       if (x0 < q) { // 1 <= x0 <= q-1 => round res to q - x0 digits
         // 2 <= q <= 16, 1 <= x0 <= 15
         bid_round64_2_18 (q, x0, res1, &res1, &incr_exp,
-        	      &is_midpoint_lt_even, &is_midpoint_gt_even,
-        	      &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
+                  &is_midpoint_lt_even, &is_midpoint_gt_even,
+                  &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
         if (incr_exp) {
           // res1 = 10^(q-x0), 1 <= q - x0 <= q - 1, 1 <= q - x0 <= 15
           res1 = bid_ten2k64[q - x0];
@@ -4477,7 +4477,7 @@ bid64qqq_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT128 z
         is_midpoint_gt_even = 0;
         is_inexact_gt_midpoint = 1;
       } else if (!is_midpoint_lt_even && !is_midpoint_gt_even &&
-        	 !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
+             !is_inexact_lt_midpoint && !is_inexact_gt_midpoint) {
         // if this rounding was exact the result may still be 
         // inexact because of the previous roundings
         if (is_inexact_gt_midpoint0 || is_midpoint_lt_even0) {
@@ -4487,14 +4487,14 @@ bid64qqq_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT128 z
           is_inexact_lt_midpoint = 1;
         }
       } else if (is_midpoint_gt_even &&
-        	 (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
+             (is_inexact_gt_midpoint0 || is_midpoint_lt_even0)) {
         // pulled up to a midpoint
         is_inexact_lt_midpoint = 1;
         is_inexact_gt_midpoint = 0;
         is_midpoint_lt_even = 0;
         is_midpoint_gt_even = 0;
       } else if (is_midpoint_lt_even &&
-        	 (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
+             (is_inexact_lt_midpoint0 || is_midpoint_gt_even0)) {
         // pulled down to a midpoint
         is_inexact_lt_midpoint = 0;
         is_inexact_gt_midpoint = 1;

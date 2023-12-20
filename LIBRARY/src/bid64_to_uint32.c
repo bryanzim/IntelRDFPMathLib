@@ -36,15 +36,15 @@
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_rnint (unsigned int *pres, BID_UINT64 * px
-		       _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_rnint, 64)
 unsigned int
 bid64_to_uint32_rnint (BID_UINT64 x
-		       _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -134,33 +134,33 @@ bid64_to_uint32_rnint (BID_UINT64 x
       // <=> 0.c(0)c(1)...c(q-1) * 10^11 >= 0x9fffffffb, 1<=q<=16
       // <=> C * 10^(11-q) >= 0x9fffffffb, 1<=q<=16
       if (q <= 11) {
-	// Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffffb has 11 digits
-	tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
-	// c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
-	if (tmp64 >= 0x9fffffffbull) {
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit unsigned int fall through
-	// to '1 <= q + exp <= 10'
+    // Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffffb has 11 digits
+    tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
+    // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
+    if (tmp64 >= 0x9fffffffbull) {
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit unsigned int fall through
+    // to '1 <= q + exp <= 10'
       } else {	// if (q > 11), i.e. 12 <= q <= 16 and so -15 <= exp <= -2
-	// C * 10^(11-q) >= 0x9fffffffb <=>
-	// C >= 0x9fffffffb * 10^(q-11) where 1 <= q - 11 <= 5
-	// (scale 2^32-1/2 up)
-	// Note: 0x9fffffffb*10^(q-11) has q-1 or q digits, where q <= 16
-	tmp64 = 0x9fffffffbull * bid_ten2k64[q - 11];
-	if (C1 >= tmp64) {
-	  // set invalid flag 
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite 
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit int fall through
-	// to '1 <= q + exp <= 10'
+    // C * 10^(11-q) >= 0x9fffffffb <=>
+    // C >= 0x9fffffffb * 10^(q-11) where 1 <= q - 11 <= 5
+    // (scale 2^32-1/2 up)
+    // Note: 0x9fffffffb*10^(q-11) has q-1 or q digits, where q <= 16
+    tmp64 = 0x9fffffffbull * bid_ten2k64[q - 11];
+    if (C1 >= tmp64) {
+      // set invalid flag 
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite 
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit int fall through
+    // to '1 <= q + exp <= 10'
       }
     }
   }
@@ -238,14 +238,14 @@ bid64_to_uint32_rnint (BID_UINT64 x
       // it will need a correction
       // check for midpoints
       if ((fstar.w[1] == 0) && fstar.w[0] &&
-	  (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
-	// bid_ten2mk128trunc[ind -1].w[1] is identical to 
-	// bid_ten2mk128[ind -1].w[1]
-	// the result is a midpoint; round to nearest
-	if (Cstar & 0x01) {	// Cstar is odd; MP in [EVEN, ODD]
-	  // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
-	  Cstar--;	// Cstar is now even
-	}	// else MP in [ODD, EVEN]
+      (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
+    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+    // bid_ten2mk128[ind -1].w[1]
+    // the result is a midpoint; round to nearest
+    if (Cstar & 0x01) {	// Cstar is odd; MP in [EVEN, ODD]
+      // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
+      Cstar--;	// Cstar is now even
+    }	// else MP in [ODD, EVEN]
       }
       res = Cstar;	// the result is positive
     } else if (exp == 0) {
@@ -267,15 +267,15 @@ bid64_to_uint32_rnint (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_xrnint (unsigned int *pres, BID_UINT64 * px
-			_EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			_EXC_INFO_PARAM) {
+            _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_xrnint, 64)
 unsigned int
 bid64_to_uint32_xrnint (BID_UINT64 x
-			_EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			_EXC_INFO_PARAM) {
+            _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -365,33 +365,33 @@ bid64_to_uint32_xrnint (BID_UINT64 x
       // <=> 0.c(0)c(1)...c(q-1) * 10^11 >= 0x9fffffffb, 1<=q<=16
       // <=> C * 10^(11-q) >= 0x9fffffffb, 1<=q<=16
       if (q <= 11) {
-	// Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffffb has 11 digits
-	tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
-	// c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
-	if (tmp64 >= 0x9fffffffbull) {
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit unsigned int fall through
-	// to '1 <= q + exp <= 10'
+    // Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffffb has 11 digits
+    tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
+    // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
+    if (tmp64 >= 0x9fffffffbull) {
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit unsigned int fall through
+    // to '1 <= q + exp <= 10'
       } else {	// if (q > 11), i.e. 12 <= q <= 16 and so -15 <= exp <= -2
-	// C * 10^(11-q) >= 0x9fffffffb <=>
-	// C >= 0x9fffffffb * 10^(q-11) where 1 <= q - 11 <= 5
-	// (scale 2^32-1/2 up)
-	// Note: 0x9fffffffb*10^(q-11) has q-1 or q digits, where q <= 16
-	tmp64 = 0x9fffffffbull * bid_ten2k64[q - 11];
-	if (C1 >= tmp64) {
-	  // set invalid flag 
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite 
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit int fall through
-	// to '1 <= q + exp <= 10'
+    // C * 10^(11-q) >= 0x9fffffffb <=>
+    // C >= 0x9fffffffb * 10^(q-11) where 1 <= q - 11 <= 5
+    // (scale 2^32-1/2 up)
+    // Note: 0x9fffffffb*10^(q-11) has q-1 or q digits, where q <= 16
+    tmp64 = 0x9fffffffbull * bid_ten2k64[q - 11];
+    if (C1 >= tmp64) {
+      // set invalid flag 
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite 
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit int fall through
+    // to '1 <= q + exp <= 10'
       }
     }
   }
@@ -474,49 +474,49 @@ bid64_to_uint32_xrnint (BID_UINT64 x
       // else // if (f* - 1/2 > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {	// fstar.w[1] is 0
-	if (fstar.w[0] > 0x8000000000000000ull) {
-	  // f* > 1/2 and the result may be exact
-	  tmp64 = fstar.w[0] - 0x8000000000000000ull;	// f* - 1/2
-	  if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
-	    // bid_ten2mk128[ind -1].w[1]
-	    // set the inexact flag
-	    *pfpsf |= BID_INEXACT_EXCEPTION;
-	  }	// else the result is exact
-	} else {	// the result is inexact; f2* <= 1/2
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}
+    if (fstar.w[0] > 0x8000000000000000ull) {
+      // f* > 1/2 and the result may be exact
+      tmp64 = fstar.w[0] - 0x8000000000000000ull;	// f* - 1/2
+      if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+        // bid_ten2mk128[ind -1].w[1]
+        // set the inexact flag
+        *pfpsf |= BID_INEXACT_EXCEPTION;
+      }	// else the result is exact
+    } else {	// the result is inexact; f2* <= 1/2
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] > bid_onehalf128[ind - 1] ||
-	    (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
-	  // f2* > 1/2 and the result may be exact
-	  // Calculate f2* - 1/2
-	  tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
-	  if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
-	    // bid_ten2mk128[ind -1].w[1]
-	    // set the inexact flag
-	    *pfpsf |= BID_INEXACT_EXCEPTION;
-	  }	// else the result is exact
-	} else {	// the result is inexact; f2* <= 1/2
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}
+    if (fstar.w[1] > bid_onehalf128[ind - 1] ||
+        (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
+      // f2* > 1/2 and the result may be exact
+      // Calculate f2* - 1/2
+      tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
+      if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+        // bid_ten2mk128[ind -1].w[1]
+        // set the inexact flag
+        *pfpsf |= BID_INEXACT_EXCEPTION;
+      }	// else the result is exact
+    } else {	// the result is inexact; f2* <= 1/2
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }
       }
 
       // if the result was a midpoint it was rounded away from zero, so
       // it will need a correction
       // check for midpoints
       if ((fstar.w[1] == 0) && fstar.w[0] &&
-	  (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
-	// bid_ten2mk128trunc[ind -1].w[1] is identical to 
-	// bid_ten2mk128[ind -1].w[1]
-	// the result is a midpoint; round to nearest
-	if (Cstar & 0x01) {	// Cstar is odd; MP in [EVEN, ODD]
-	  // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
-	  Cstar--;	// Cstar is now even
-	}	// else MP in [ODD, EVEN]
+      (fstar.w[0] <= bid_ten2mk128trunc[ind - 1].w[1])) {
+    // bid_ten2mk128trunc[ind -1].w[1] is identical to 
+    // bid_ten2mk128[ind -1].w[1]
+    // the result is a midpoint; round to nearest
+    if (Cstar & 0x01) {	// Cstar is odd; MP in [EVEN, ODD]
+      // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
+      Cstar--;	// Cstar is now even
+    }	// else MP in [ODD, EVEN]
       }
       res = Cstar;	// the result is positive
     } else if (exp == 0) {
@@ -538,15 +538,15 @@ bid64_to_uint32_xrnint (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_floor (unsigned int *pres, BID_UINT64 * px
-		       _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_floor, 64)
 unsigned int
 bid64_to_uint32_floor (BID_UINT64 x
-		       _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -640,11 +640,11 @@ bid64_to_uint32_floor (BID_UINT64 x
       tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
       // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
       if (tmp64 >= 0xa00000000ull) {
-	// set invalid flag
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite
-	res = 0x80000000;
-	BID_RETURN (res);
+    // set invalid flag
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return Integer Indefinite
+    res = 0x80000000;
+    BID_RETURN (res);
       }
       // else cases that can be rounded to a 32-bit unsigned int fall through
       // to '1 <= q + exp <= 10'
@@ -655,11 +655,11 @@ bid64_to_uint32_floor (BID_UINT64 x
       // Note: 0xa00000000*10^(q-11) has q-1 or q digits, where q <= 16
       tmp64 = 0xa00000000ull * bid_ten2k64[q - 11];
       if (C1 >= tmp64) {
-	// set invalid flag 
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
-	res = 0x80000000;
-	BID_RETURN (res);
+    // set invalid flag 
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return Integer Indefinite 
+    res = 0x80000000;
+    BID_RETURN (res);
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
@@ -718,15 +718,15 @@ bid64_to_uint32_floor (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_xfloor (unsigned int *pres, BID_UINT64 * px
-			_EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			_EXC_INFO_PARAM) {
+            _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_xfloor, 64)
 unsigned int
 bid64_to_uint32_xfloor (BID_UINT64 x
-			_EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			_EXC_INFO_PARAM) {
+            _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -821,11 +821,11 @@ bid64_to_uint32_xfloor (BID_UINT64 x
       tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
       // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
       if (tmp64 >= 0xa00000000ull) {
-	// set invalid flag
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite
-	res = 0x80000000;
-	BID_RETURN (res);
+    // set invalid flag
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return Integer Indefinite
+    res = 0x80000000;
+    BID_RETURN (res);
       }
       // else cases that can be rounded to a 32-bit unsigned int fall through
       // to '1 <= q + exp <= 10'
@@ -836,11 +836,11 @@ bid64_to_uint32_xfloor (BID_UINT64 x
       // Note: 0xa00000000*10^(q-11) has q-1 or q digits, where q <= 16
       tmp64 = 0xa00000000ull * bid_ten2k64[q - 11];
       if (C1 >= tmp64) {
-	// set invalid flag 
-	*pfpsf |= BID_INVALID_EXCEPTION;
-	// return Integer Indefinite 
-	res = 0x80000000;
-	BID_RETURN (res);
+    // set invalid flag 
+    *pfpsf |= BID_INVALID_EXCEPTION;
+    // return Integer Indefinite 
+    res = 0x80000000;
+    BID_RETURN (res);
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
@@ -888,19 +888,19 @@ bid64_to_uint32_xfloor (BID_UINT64 x
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       }
 
       res = Cstar;	// the result is positive
@@ -923,15 +923,15 @@ bid64_to_uint32_xfloor (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_ceil (unsigned int *pres, BID_UINT64 * px
-		      _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+              _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_ceil, 64)
 unsigned int
 bid64_to_uint32_ceil (BID_UINT64 x
-		      _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+              _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -1021,33 +1021,33 @@ bid64_to_uint32_ceil (BID_UINT64 x
       // <=> 0.c(0)c(1)...c(q-1) * 10^11 > 0x9fffffff6, 1<=q<=16
       // <=> C * 10^(11-q) > 0x9fffffff6, 1<=q<=16
       if (q <= 11) {
-	// Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffff6 has 11 digits
-	tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
-	// c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
-	if (tmp64 > 0x9fffffff6ull) {
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit unsigned int fall through
-	// to '1 <= q + exp <= 10'
+    // Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffff6 has 11 digits
+    tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
+    // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
+    if (tmp64 > 0x9fffffff6ull) {
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit unsigned int fall through
+    // to '1 <= q + exp <= 10'
       } else {	// if (q > 11), i.e. 12 <= q <= 16 and so -15 <= exp <= -2
-	// C * 10^(11-q) > 0x9fffffff6 <=>
-	// C > 0x9fffffff6 * 10^(q-11) where 1 <= q - 11 <= 5
-	// (scale 2^32-1 up)
-	// Note: 0x9fffffff6*10^(q-11) has q-1 or q digits, where q <= 16
-	tmp64 = 0x9fffffff6ull * bid_ten2k64[q - 11];
-	if (C1 > tmp64) {
-	  // set invalid flag 
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite 
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit int fall through
-	// to '1 <= q + exp <= 10'
+    // C * 10^(11-q) > 0x9fffffff6 <=>
+    // C > 0x9fffffff6 * 10^(q-11) where 1 <= q - 11 <= 5
+    // (scale 2^32-1 up)
+    // Note: 0x9fffffff6*10^(q-11) has q-1 or q digits, where q <= 16
+    tmp64 = 0x9fffffff6ull * bid_ten2k64[q - 11];
+    if (C1 > tmp64) {
+      // set invalid flag 
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite 
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit int fall through
+    // to '1 <= q + exp <= 10'
       }
     }
   }
@@ -1103,17 +1103,17 @@ bid64_to_uint32_ceil (BID_UINT64 x
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {	// fstar.w[1] is 0
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  Cstar++;
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      Cstar++;
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  Cstar++;
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      Cstar++;
+    }	// else the result is exact
       }
 
       res = Cstar;	// the result is positive
@@ -1136,15 +1136,15 @@ bid64_to_uint32_ceil (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_xceil (unsigned int *pres, BID_UINT64 * px
-		       _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_xceil, 64)
 unsigned int
 bid64_to_uint32_xceil (BID_UINT64 x
-		       _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		       _EXC_INFO_PARAM) {
+               _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+               _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -1234,33 +1234,33 @@ bid64_to_uint32_xceil (BID_UINT64 x
       // <=> 0.c(0)c(1)...c(q-1) * 10^11 > 0x9fffffff6, 1<=q<=16
       // <=> C * 10^(11-q) > 0x9fffffff6, 1<=q<=16
       if (q <= 11) {
-	// Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffff6 has 11 digits
-	tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
-	// c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
-	if (tmp64 > 0x9fffffff6ull) {
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit unsigned int fall through
-	// to '1 <= q + exp <= 10'
+    // Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffff6 has 11 digits
+    tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
+    // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
+    if (tmp64 > 0x9fffffff6ull) {
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit unsigned int fall through
+    // to '1 <= q + exp <= 10'
       } else {	// if (q > 11), i.e. 12 <= q <= 16 and so -15 <= exp <= -2
-	// C * 10^(11-q) > 0x9fffffff6 <=>
-	// C > 0x9fffffff6 * 10^(q-11) where 1 <= q - 11 <= 5
-	// (scale 2^32-1 up)
-	// Note: 0x9fffffff6*10^(q-11) has q-1 or q digits, where q <= 16
-	tmp64 = 0x9fffffff6ull * bid_ten2k64[q - 11];
-	if (C1 > tmp64) {
-	  // set invalid flag 
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite 
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit int fall through
-	// to '1 <= q + exp <= 10'
+    // C * 10^(11-q) > 0x9fffffff6 <=>
+    // C > 0x9fffffff6 * 10^(q-11) where 1 <= q - 11 <= 5
+    // (scale 2^32-1 up)
+    // Note: 0x9fffffff6*10^(q-11) has q-1 or q digits, where q <= 16
+    tmp64 = 0x9fffffff6ull * bid_ten2k64[q - 11];
+    if (C1 > tmp64) {
+      // set invalid flag 
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite 
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit int fall through
+    // to '1 <= q + exp <= 10'
       }
     }
   }
@@ -1318,21 +1318,21 @@ bid64_to_uint32_xceil (BID_UINT64 x
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {	// fstar.w[1] is 0
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  Cstar++;
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      Cstar++;
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  Cstar++;
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      Cstar++;
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       }
 
       res = Cstar;	// the result is positive
@@ -1355,14 +1355,14 @@ bid64_to_uint32_xceil (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_int (unsigned int *pres, BID_UINT64 * px
-		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
+             _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
 {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_int, 64)
 unsigned int
 bid64_to_uint32_int (BID_UINT64 x
-		     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
+             _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) 
 {
 #endif
   unsigned int res;
@@ -1452,33 +1452,33 @@ bid64_to_uint32_int (BID_UINT64 x
       // <=> 0.c(0)c(1)...c(q-1) * 10^11 >= 0xa00000000, 1<=q<=16
       // <=> C * 10^(11-q) >= 0xa00000000, 1<=q<=16
       if (q <= 11) {
-	// Note: C * 10^(11-q) has 10 or 11 digits; 0xa00000000 has 11 digits
-	tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
-	// c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
-	if (tmp64 >= 0xa00000000ull) {
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit unsigned int fall through
-	// to '1 <= q + exp <= 10'
+    // Note: C * 10^(11-q) has 10 or 11 digits; 0xa00000000 has 11 digits
+    tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
+    // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
+    if (tmp64 >= 0xa00000000ull) {
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit unsigned int fall through
+    // to '1 <= q + exp <= 10'
       } else {	// if (q > 11), i.e. 12 <= q <= 16 and so -15 <= exp <= -2
-	// C * 10^(11-q) >= 0xa00000000 <=>
-	// C >= 0xa00000000 * 10^(q-11) where 1 <= q - 11 <= 5
-	// (scale 2^32-1/2 up)
-	// Note: 0xa00000000*10^(q-11) has q-1 or q digits, where q <= 16
-	tmp64 = 0xa00000000ull * bid_ten2k64[q - 11];
-	if (C1 >= tmp64) {
-	  // set invalid flag 
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite 
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit int fall through
-	// to '1 <= q + exp <= 10'
+    // C * 10^(11-q) >= 0xa00000000 <=>
+    // C >= 0xa00000000 * 10^(q-11) where 1 <= q - 11 <= 5
+    // (scale 2^32-1/2 up)
+    // Note: 0xa00000000*10^(q-11) has q-1 or q digits, where q <= 16
+    tmp64 = 0xa00000000ull * bid_ten2k64[q - 11];
+    if (C1 >= tmp64) {
+      // set invalid flag 
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite 
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit int fall through
+    // to '1 <= q + exp <= 10'
       }
     }
   }
@@ -1544,15 +1544,15 @@ bid64_to_uint32_int (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_xint (unsigned int *pres, BID_UINT64 * px
-		      _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+              _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_xint, 64)
 unsigned int
 bid64_to_uint32_xint (BID_UINT64 x
-		      _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-		      _EXC_INFO_PARAM) {
+              _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+              _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -1642,33 +1642,33 @@ bid64_to_uint32_xint (BID_UINT64 x
       // <=> 0.c(0)c(1)...c(q-1) * 10^11 >= 0xa00000000, 1<=q<=16
       // <=> C * 10^(11-q) >= 0xa00000000, 1<=q<=16
       if (q <= 11) {
-	// Note: C * 10^(11-q) has 10 or 11 digits; 0xa00000000 has 11 digits
-	tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
-	// c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
-	if (tmp64 >= 0xa00000000ull) {
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit unsigned int fall through
-	// to '1 <= q + exp <= 10'
+    // Note: C * 10^(11-q) has 10 or 11 digits; 0xa00000000 has 11 digits
+    tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
+    // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
+    if (tmp64 >= 0xa00000000ull) {
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit unsigned int fall through
+    // to '1 <= q + exp <= 10'
       } else {	// if (q > 11), i.e. 12 <= q <= 16 and so -15 <= exp <= -2
-	// C * 10^(11-q) >= 0xa00000000 <=>
-	// C >= 0xa00000000 * 10^(q-11) where 1 <= q - 11 <= 5
-	// (scale 2^32-1/2 up)
-	// Note: 0xa00000000*10^(q-11) has q-1 or q digits, where q <= 16
-	tmp64 = 0xa00000000ull * bid_ten2k64[q - 11];
-	if (C1 >= tmp64) {
-	  // set invalid flag 
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite 
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit int fall through
-	// to '1 <= q + exp <= 10'
+    // C * 10^(11-q) >= 0xa00000000 <=>
+    // C >= 0xa00000000 * 10^(q-11) where 1 <= q - 11 <= 5
+    // (scale 2^32-1/2 up)
+    // Note: 0xa00000000*10^(q-11) has q-1 or q digits, where q <= 16
+    tmp64 = 0xa00000000ull * bid_ten2k64[q - 11];
+    if (C1 >= tmp64) {
+      // set invalid flag 
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite 
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit int fall through
+    // to '1 <= q + exp <= 10'
       }
     }
   }
@@ -1723,19 +1723,19 @@ bid64_to_uint32_xint (BID_UINT64 x
       // else // if (f* > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {	// fstar.w[1] is 0
-	if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	  // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	  // bid_ten2mk128[ind -1].w[1]
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}	// else the result is exact
+    if (fstar.w[1] || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+      // bid_ten2mk128trunc[ind -1].w[1] is identical to
+      // bid_ten2mk128[ind -1].w[1]
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }	// else the result is exact
       }
 
       res = Cstar;	// the result is positive
@@ -1758,15 +1758,15 @@ bid64_to_uint32_xint (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_rninta (unsigned int *pres, BID_UINT64 * px
-			_EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			_EXC_INFO_PARAM) {
+            _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_rninta, 64)
 unsigned int
 bid64_to_uint32_rninta (BID_UINT64 x
-			_EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			_EXC_INFO_PARAM) {
+            _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+            _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -1855,33 +1855,33 @@ bid64_to_uint32_rninta (BID_UINT64 x
       // <=> 0.c(0)c(1)...c(q-1) * 10^11 >= 0x9fffffffb, 1<=q<=16
       // <=> C * 10^(11-q) >= 0x9fffffffb, 1<=q<=16
       if (q <= 11) {
-	// Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffffb has 11 digits
-	tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
-	// c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
-	if (tmp64 >= 0x9fffffffbull) {
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit unsigned int fall through
-	// to '1 <= q + exp <= 10'
+    // Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffffb has 11 digits
+    tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
+    // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
+    if (tmp64 >= 0x9fffffffbull) {
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit unsigned int fall through
+    // to '1 <= q + exp <= 10'
       } else {	// if (q > 11), i.e. 12 <= q <= 16 and so -15 <= exp <= -2
-	// C * 10^(11-q) >= 0x9fffffffb <=>
-	// C >= 0x9fffffffb * 10^(q-11) where 1 <= q - 11 <= 5
-	// (scale 2^32-1/2 up)
-	// Note: 0x9fffffffb*10^(q-11) has q-1 or q digits, where q <= 16
-	tmp64 = 0x9fffffffbull * bid_ten2k64[q - 11];
-	if (C1 >= tmp64) {
-	  // set invalid flag 
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite 
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit int fall through
-	// to '1 <= q + exp <= 10'
+    // C * 10^(11-q) >= 0x9fffffffb <=>
+    // C >= 0x9fffffffb * 10^(q-11) where 1 <= q - 11 <= 5
+    // (scale 2^32-1/2 up)
+    // Note: 0x9fffffffb*10^(q-11) has q-1 or q digits, where q <= 16
+    tmp64 = 0x9fffffffbull * bid_ten2k64[q - 11];
+    if (C1 >= tmp64) {
+      // set invalid flag 
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite 
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit int fall through
+    // to '1 <= q + exp <= 10'
       }
     }
   }
@@ -1968,15 +1968,15 @@ bid64_to_uint32_rninta (BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_to_uint32_xrninta (unsigned int *pres, BID_UINT64 * px
-			 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			 _EXC_INFO_PARAM) {
+             _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+             _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 RES_WRAPFN_DFP(unsigned int, bid64_to_uint32_xrninta, 64)
 unsigned int
 bid64_to_uint32_xrninta (BID_UINT64 x
-			 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-			 _EXC_INFO_PARAM) {
+             _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+             _EXC_INFO_PARAM) {
 #endif
   unsigned int res;
   BID_UINT64 x_sign;
@@ -2066,33 +2066,33 @@ bid64_to_uint32_xrninta (BID_UINT64 x
       // <=> 0.c(0)c(1)...c(q-1) * 10^11 >= 0x9fffffffb, 1<=q<=16
       // <=> C * 10^(11-q) >= 0x9fffffffb, 1<=q<=16
       if (q <= 11) {
-	// Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffffb has 11 digits
-	tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
-	// c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
-	if (tmp64 >= 0x9fffffffbull) {
-	  // set invalid flag
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit unsigned int fall through
-	// to '1 <= q + exp <= 10'
+    // Note: C * 10^(11-q) has 10 or 11 digits; 0x9fffffffb has 11 digits
+    tmp64 = C1 * bid_ten2k64[11 - q];	// C scaled up to 11-digit int
+    // c(0)c(1)...c(9)c(10) or c(0)c(1)...c(q-1)0...0 (11 digits)
+    if (tmp64 >= 0x9fffffffbull) {
+      // set invalid flag
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit unsigned int fall through
+    // to '1 <= q + exp <= 10'
       } else {	// if (q > 11), i.e. 12 <= q <= 16 and so -15 <= exp <= -2
-	// C * 10^(11-q) >= 0x9fffffffb <=>
-	// C >= 0x9fffffffb * 10^(q-11) where 1 <= q - 11 <= 5
-	// (scale 2^32-1/2 up)
-	// Note: 0x9fffffffb*10^(q-11) has q-1 or q digits, where q <= 16
-	tmp64 = 0x9fffffffbull * bid_ten2k64[q - 11];
-	if (C1 >= tmp64) {
-	  // set invalid flag 
-	  *pfpsf |= BID_INVALID_EXCEPTION;
-	  // return Integer Indefinite 
-	  res = 0x80000000;
-	  BID_RETURN (res);
-	}
-	// else cases that can be rounded to a 32-bit int fall through
-	// to '1 <= q + exp <= 10'
+    // C * 10^(11-q) >= 0x9fffffffb <=>
+    // C >= 0x9fffffffb * 10^(q-11) where 1 <= q - 11 <= 5
+    // (scale 2^32-1/2 up)
+    // Note: 0x9fffffffb*10^(q-11) has q-1 or q digits, where q <= 16
+    tmp64 = 0x9fffffffbull * bid_ten2k64[q - 11];
+    if (C1 >= tmp64) {
+      // set invalid flag 
+      *pfpsf |= BID_INVALID_EXCEPTION;
+      // return Integer Indefinite 
+      res = 0x80000000;
+      BID_RETURN (res);
+    }
+    // else cases that can be rounded to a 32-bit int fall through
+    // to '1 <= q + exp <= 10'
       }
     }
   }
@@ -2170,35 +2170,35 @@ bid64_to_uint32_xrninta (BID_UINT64 x
       // else // if (f* - 1/2 > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {	// fstar.w[1] is 0
-	if (fstar.w[0] > 0x8000000000000000ull) {
-	  // f* > 1/2 and the result may be exact
-	  tmp64 = fstar.w[0] - 0x8000000000000000ull;	// f* - 1/2
-	  if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	    // bid_ten2mk128[ind -1].w[1]
-	    // set the inexact flag
-	    *pfpsf |= BID_INEXACT_EXCEPTION;
-	  }	// else the result is exact
-	} else {	// the result is inexact; f2* <= 1/2
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}
+    if (fstar.w[0] > 0x8000000000000000ull) {
+      // f* > 1/2 and the result may be exact
+      tmp64 = fstar.w[0] - 0x8000000000000000ull;	// f* - 1/2
+      if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1])) {
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to
+        // bid_ten2mk128[ind -1].w[1]
+        // set the inexact flag
+        *pfpsf |= BID_INEXACT_EXCEPTION;
+      }	// else the result is exact
+    } else {	// the result is inexact; f2* <= 1/2
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }
       } else {	// if 3 <= ind - 1 <= 14
-	if (fstar.w[1] > bid_onehalf128[ind - 1] ||
-	    (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
-	  // f2* > 1/2 and the result may be exact
-	  // Calculate f2* - 1/2
-	  tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
-	  if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
-	    // bid_ten2mk128trunc[ind -1].w[1] is identical to
-	    // bid_ten2mk128[ind -1].w[1]
-	    // set the inexact flag
-	    *pfpsf |= BID_INEXACT_EXCEPTION;
-	  }	// else the result is exact
-	} else {	// the result is inexact; f2* <= 1/2
-	  // set the inexact flag
-	  *pfpsf |= BID_INEXACT_EXCEPTION;
-	}
+    if (fstar.w[1] > bid_onehalf128[ind - 1] ||
+        (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
+      // f2* > 1/2 and the result may be exact
+      // Calculate f2* - 1/2
+      tmp64 = fstar.w[1] - bid_onehalf128[ind - 1];
+      if (tmp64 || fstar.w[0] > bid_ten2mk128trunc[ind - 1].w[1]) {
+        // bid_ten2mk128trunc[ind -1].w[1] is identical to
+        // bid_ten2mk128[ind -1].w[1]
+        // set the inexact flag
+        *pfpsf |= BID_INEXACT_EXCEPTION;
+      }	// else the result is exact
+    } else {	// the result is inexact; f2* <= 1/2
+      // set the inexact flag
+      *pfpsf |= BID_INEXACT_EXCEPTION;
+    }
       }
 
       // if the result was a midpoint it was rounded away from zero

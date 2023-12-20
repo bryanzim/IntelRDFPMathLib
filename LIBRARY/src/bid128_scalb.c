@@ -53,8 +53,8 @@ res.w[1] = CX.w[1] & QUIET_MASK64;
 res.w[0] = CX.w[0];
 if (!CX.w[1]) {
        exp64 = (BID_SINT64) exponent_x + (BID_SINT64) n;
-	   if(exp64<0) exp64=0;
-	   if(exp64>MAX_DECIMAL_EXPONENT_128) exp64=MAX_DECIMAL_EXPONENT_128;
+       if(exp64<0) exp64=0;
+       if(exp64>MAX_DECIMAL_EXPONENT_128) exp64=MAX_DECIMAL_EXPONENT_128;
        exponent_x = exp64;
   bid_get_BID128_very_fast (&res, sign_x, exponent_x, CX);
 }
@@ -83,7 +83,7 @@ if (exp64 > MAX_DECIMAL_EXPONENT_128) {
       exp64--;
     }
     while (CX.w[1] < 0x314dc6448d93ull
-	   && exp64 > MAX_DECIMAL_EXPONENT_128);
+       && exp64 > MAX_DECIMAL_EXPONENT_128);
 
   }
   if (exp64 <= MAX_DECIMAL_EXPONENT_128) {
@@ -96,7 +96,7 @@ if (exp64 > MAX_DECIMAL_EXPONENT_128) {
   // the BID pack routine will round the coefficient
 rmode = rnd_mode;
 bid_get_BID128 (&res, sign_x, exponent_x, CX, (unsigned int *) &rmode,
-	    pfpsf);
+        pfpsf);
 BID_RETURN (res);
 
 }

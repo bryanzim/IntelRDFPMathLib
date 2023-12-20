@@ -182,7 +182,7 @@ UX_EXP_COMMON( UX_FLOAT * unpacked_argument,  UX_FLOAT * unpacked_result,
         &reduced_argument,
         (FIXED_128 *) &constant_table[EXP_COEF_INDEX],
         constant_table[EXP_DEGREE_INDEX],
-	NUMERATOR_FLAGS(STANDARD),
+    NUMERATOR_FLAGS(STANDARD),
         unpacked_result);
 
     /* Scale e^reduced_argument */
@@ -283,29 +283,29 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
         ** abs(reduced_argument) < ln2/2. computing expm1(x) as
         ** exp(x) - 1, could result in a serve loss of significance,
         ** so use a direct polynomial evaluation instead.  We use the
-	** low EXP_COEF_ARRAY_DEGREE - 1 terms of the exp polynomial.
-	** This has the side effect that the exponent field of the 
-	** result is 1 to small.
+    ** low EXP_COEF_ARRAY_DEGREE - 1 terms of the exp polynomial.
+    ** This has the side effect that the exponent field of the 
+    ** result is 1 to small.
         */
         EVALUATE_RATIONAL(
             &reduced_argument,
             (FIXED_128 *) &constants[EXP_COEF_INDEX],
-    	    constants[EXP_DEGREE_INDEX] - 1,
+            constants[EXP_DEGREE_INDEX] - 1,
             NUMERATOR_FLAGS(POST_MULTIPLY),/* Post multiply by x */
             &unpacked_result);
         UX_INCR_EXPONENT(&unpacked_result, 1);
         }
     else 
         {
-	/*
-	** Compute expm1(x) = exp(x) - 1.  Since |scale| >= 1,
+    /*
+    ** Compute expm1(x) = exp(x) - 1.  Since |scale| >= 1,
         ** exp(x) <= 1/sqrt(2) and exp(x) >= sqrt(2)
         */
         EVALUATE_RATIONAL(
             &reduced_argument,
             (FIXED_128 *) &constants[EXP_COEF_INDEX],
-    	    constants[EXP_DEGREE_INDEX],
-	    NUMERATOR_FLAGS(STANDARD),
+            constants[EXP_DEGREE_INDEX],
+        NUMERATOR_FLAGS(STANDARD),
             &unpacked_result);
         UX_INCR_EXPONENT(&unpacked_result, scale);
 
@@ -387,7 +387,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 #define SINH_EVAL	( NUMERATOR_FLAGS( SQUARE_TERM | POST_MULTIPLY ) | SKIP)
 #define COSH_EVAL	( SKIP | DENOMINATOR_FLAGS(SQUARE_TERM))
 #define TANH_EVAL	( NUMERATOR_FLAGS( SQUARE_TERM | POST_MULTIPLY ) | \
-			  DENOMINATOR_FLAGS(SQUARE_TERM) )
+              DENOMINATOR_FLAGS(SQUARE_TERM) )
 #define SINHCOSH_EVAL	( TANH_EVAL | NO_DIVIDE )
 
 #define ADDSUB_POS	(EVAL_RATIONAL_WIDTH + EVAL_RATIONAL_POS)
@@ -401,7 +401,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 #define	TANH		(8 << FUNC_CODE_POS)
 
 #define EVAL_FLAGS(f,r,a)	( (f) | ((r) << EVAL_RATIONAL_POS) | \
-				  ((a) << ADDSUB_POS))
+                  ((a) << ADDSUB_POS))
 
 #define UX_HYPERBOLIC	__INTERNAL_NAME(ux_hyperbolic__)
 
@@ -642,7 +642,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     TABLE_COMMENT("exp class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "EXP_CLASS_TO_ACTION_MAP\t");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(5) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_ERROR,     3) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     2) +

@@ -38,8 +38,8 @@
 #define	UNPACKED	2
 
 #define PRINT_IT(name, value)					\
-		printf("ENUM#   define " name "\t%i\n", index);	\
-		print_table_entries(value); index++
+        printf("ENUM#   define " name "\t%i\n", index);	\
+        print_table_entries(value); index++
 
 @divert -append divertText
 

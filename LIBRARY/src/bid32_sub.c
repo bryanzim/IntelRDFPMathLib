@@ -33,19 +33,19 @@
 
 void
 bid32_sub (BID_UINT32 * pres, BID_UINT32 * px,
-	   BID_UINT32 *
-	   py _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-	   _EXC_INFO_PARAM) {
+       BID_UINT32 *
+       py _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+       _EXC_INFO_PARAM) {
   BID_UINT32 x, y;
 #else
 DFP_WRAPFN_DFP_DFP(32, bid32_sub, 32, 32)
 BID_UINT32
 bid32_sub (BID_UINT32 x,
-	   BID_UINT32 y _RND_MODE_PARAM _EXC_FLAGS_PARAM
-	   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+       BID_UINT32 y _RND_MODE_PARAM _EXC_FLAGS_PARAM
+       _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
 
-	BID_UINT32 r32;
+    BID_UINT32 r32;
 #if DECIMAL_CALL_BY_REFERENCE
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = *prnd_mode;
@@ -57,8 +57,8 @@ bid32_sub (BID_UINT32 x,
   if (((y & NAN_MASK32) != NAN_MASK32))
     y ^= 0x80000000;
 
-	BIDECIMAL_CALL2 (bid32_add, r32, x, y);
+    BIDECIMAL_CALL2 (bid32_add, r32, x, y);
 
 
-	BID_RETURN(r32);
+    BID_RETURN(r32);
 }

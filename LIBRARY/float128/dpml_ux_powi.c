@@ -77,11 +77,11 @@
 #define INDEX_INC		(64/BITS_PER_WORD)
 #define POWI_INDEX_MASK		MAKE_MASK(EXPONENT_INDEX_FIELD_WIDTH,0)
 #define INDEX_MAP(n,z,p)						\
-		(((z)             << 0*EXPONENT_INDEX_FIELD_WIDTH) |	\
-		 ((p)             << 1*EXPONENT_INDEX_FIELD_WIDTH) |	\
-		 (((p)+INDEX_INC) << 2*EXPONENT_INDEX_FIELD_WIDTH) |	\
-		 ((n)             << 3*EXPONENT_INDEX_FIELD_WIDTH) |	\
-		 (((n)+INDEX_INC) << 4*EXPONENT_INDEX_FIELD_WIDTH) )
+        (((z)             << 0*EXPONENT_INDEX_FIELD_WIDTH) |	\
+         ((p)             << 1*EXPONENT_INDEX_FIELD_WIDTH) |	\
+         (((p)+INDEX_INC) << 2*EXPONENT_INDEX_FIELD_WIDTH) |	\
+         ((n)             << 3*EXPONENT_INDEX_FIELD_WIDTH) |	\
+         (((n)+INDEX_INC) << 4*EXPONENT_INDEX_FIELD_WIDTH) )
 
 static void
 C_UX_POW_I(_X_FLOAT * packed_argument,  WORD n, WORD index_map,
@@ -113,7 +113,7 @@ C_UX_POW_I(_X_FLOAT * packed_argument,  WORD n, WORD index_map,
     fp_class = UNPACK(
         packed_argument,
         & unpacked_argument,
-	POWI_CLASS_TO_ACTION_MAP + index,
+    POWI_CLASS_TO_ACTION_MAP + index,
         packed_result
         OPT_EXCEPTION_INFO_ARGUMENT );
 
@@ -144,7 +144,7 @@ C_UX_POW_I(_X_FLOAT * packed_argument,  WORD n, WORD index_map,
             break;
         SQUARE(&unpacked_argument, &unpacked_argument);
         NORMALIZE(&unpacked_argument);
-	}
+    }
 
     PACK(
          &unpacked_result,
@@ -241,15 +241,15 @@ X_XI_PROTO(F_ENTRY_NAME, packed_result, packed_base, n)
     PRINT_CLASS_TO_ACTION_TBL_DEF( "POWI_CLASS_TO_ACTION_MAP");
 
 #   define PRINT_INDEX_DEF(name) 					\
-			printf("#define " name "\t%i\n",		\
-	 		(MP_BIT_OFFSET - base_offset)/BITS_PER_WORD )
+            printf("#define " name "\t%i\n",		\
+            (MP_BIT_OFFSET - base_offset)/BITS_PER_WORD )
 
     base_offset = MP_BIT_OFFSET;
 
     TABLE_COMMENT("... for n < 0, even and odd");
     PRINT_INDEX_DEF( "NEG_EXPONENT_INDEX\t\t" );
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(7) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     4) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_VALUE,     4) +
@@ -257,7 +257,7 @@ X_XI_PROTO(F_ENTRY_NAME, packed_result, packed_base, n)
               CLASS_TO_ACTION( F_C_NEG_ZERO ,  RETURN_ERROR,     2) );
 
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(6) +
-	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     4) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_NEGATIVE,  4) +

@@ -183,46 +183,46 @@
     bytes_per_table_entry = 0 ;
     table_padding = 0 ;
     if ( do_s ) {
-	printf( "#define _s_TYPE 0\n" ) ;
-	bytes_per_table_entry = bytes_per_table_entry + 8 ;
-	}
+    printf( "#define _s_TYPE 0\n" ) ;
+    bytes_per_table_entry = bytes_per_table_entry + 8 ;
+    }
     if ( do_t ) {
-	printf( "#define _t_TYPE 1\n" ) ;
-	bytes_per_table_entry = bytes_per_table_entry + 8 ;
-	}
+    printf( "#define _t_TYPE 1\n" ) ;
+    bytes_per_table_entry = bytes_per_table_entry + 8 ;
+    }
     if ( do_x ) {
-	printf( "#define _x_TYPE 2\n" ) ;
-	bytes_per_table_entry = bytes_per_table_entry + 16 ;
-	}
+    printf( "#define _x_TYPE 2\n" ) ;
+    bytes_per_table_entry = bytes_per_table_entry + 16 ;
+    }
     if ( do_f ) {
-	printf( "#define _f_TYPE 4\n" ) ;
-	bytes_per_table_entry = bytes_per_table_entry + 8 ;
-	}
+    printf( "#define _f_TYPE 4\n" ) ;
+    bytes_per_table_entry = bytes_per_table_entry + 8 ;
+    }
     if ( do_g ) {
-	printf( "#define _g_TYPE 5\n" ) ;
-	bytes_per_table_entry = bytes_per_table_entry + 8 ;
-	}
+    printf( "#define _g_TYPE 5\n" ) ;
+    bytes_per_table_entry = bytes_per_table_entry + 8 ;
+    }
     if ( do_d ) {
-	printf( "#define _d_TYPE 5\n" ) ;
-	bytes_per_table_entry = bytes_per_table_entry + 8 ;
-	}
+    printf( "#define _d_TYPE 5\n" ) ;
+    bytes_per_table_entry = bytes_per_table_entry + 8 ;
+    }
     if ( bytes_per_table_entry <= 32 ) {
-	table_padding = 32 - bytes_per_table_entry ;
-	bytes_per_table_entry  = 32 ;
-	}
+    table_padding = 32 - bytes_per_table_entry ;
+    bytes_per_table_entry  = 32 ;
+    }
     else {
-	table_padding = 64 - bytes_per_table_entry ;
-	bytes_per_table_entry  = 64 ;
-	}
+    table_padding = 64 - bytes_per_table_entry ;
+    bytes_per_table_entry  = 64 ;
+    }
     table_padding = table_padding / 4 ;
 
 # define PAD_TABLE				\
     if ( table_padding ) {			\
-	printf( "\t0," ) ;			\
-	for ( i = 1 ; i < table_padding ; i++ )	\
-	printf( " 0," ) ;			\
-	printf( "\n" ) ;			\
-	}					\
+    printf( "\t0," ) ;			\
+    for ( i = 1 ; i < table_padding ; i++ )	\
+    printf( " 0," ) ;			\
+    printf( "\n" ) ;			\
+    }					\
 
     printf("#ifdef GLOBAL_TABLE_VALUES\n\n");
     START_GLOBAL_TABLE(GLOBALS_TABLE, offset);
@@ -233,209 +233,209 @@
 /* NaNs and reserved operands */
 
     if	(do_s)
-	PR_SINGLE(S_NAN_HI) 
+    PR_SINGLE(S_NAN_HI) 
     if	(do_t)	
-	PR_DOUBLE(T_NAN_HI, NAN_LO)
+    PR_DOUBLE(T_NAN_HI, NAN_LO)
     if	(do_x)	
-	PR_QUAD(X_NAN_HI, NAN_LO, NAN_LO, NAN_LO)
+    PR_QUAD(X_NAN_HI, NAN_LO, NAN_LO, NAN_LO)
     if	(do_f)
-	PR_SINGLE(0x00008000) 
+    PR_SINGLE(0x00008000) 
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x00008000)
+    PR_DOUBLE(0x00000000, 0x00008000)
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x00008000)
+    PR_DOUBLE(0x00000000, 0x00008000)
     PAD_TABLE ;
 
 /* POS ZERO */
 
     if	(do_s)
-	PR_SINGLE(0x00000000) 
+    PR_SINGLE(0x00000000) 
     if	(do_t)	
-	PR_DOUBLE(0x00000000, 0x00000000) 
+    PR_DOUBLE(0x00000000, 0x00000000) 
     if	(do_x)	
-	PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000000)
+    PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x00000000) 
+    PR_SINGLE(0x00000000) 
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x00000000) 
+    PR_DOUBLE(0x00000000, 0x00000000) 
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x00000000) 
+    PR_DOUBLE(0x00000000, 0x00000000) 
     PAD_TABLE ;
 
 /* NEG ZERO */
 
     if	(do_s)
-	PR_SINGLE(0x80000000)
+    PR_SINGLE(0x80000000)
     if	(do_t)	
-	PR_DOUBLE(0x80000000, 0x00000000)
+    PR_DOUBLE(0x80000000, 0x00000000)
     if	(do_x)	
-	PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000000)
+    PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x00000000)
+    PR_SINGLE(0x00000000)
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x00000000)
+    PR_DOUBLE(0x00000000, 0x00000000)
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x00000000)
+    PR_DOUBLE(0x00000000, 0x00000000)
     PAD_TABLE ;
 
 /* POS TINY */
 
     if	(do_s)
-	PR_SINGLE(0x00000001)
+    PR_SINGLE(0x00000001)
     if	(do_t)	
-	PR_DOUBLE(0x00000000, 0x00000001)
+    PR_DOUBLE(0x00000000, 0x00000001)
     if	(do_x)	
-	PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000001)
+    PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000001)
     if	(do_f)
-	PR_SINGLE(0x00000080)
+    PR_SINGLE(0x00000080)
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x00000010)
+    PR_DOUBLE(0x00000000, 0x00000010)
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x00000080)
+    PR_DOUBLE(0x00000000, 0x00000080)
     PAD_TABLE ;
 
 /* NEG TINY */
 
     if	(do_s)
-	PR_SINGLE(0x80000001)
+    PR_SINGLE(0x80000001)
     if	(do_t)	
-	PR_DOUBLE(0x80000000, 0x00000001)
+    PR_DOUBLE(0x80000000, 0x00000001)
     if	(do_x)	
-	PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000001)
+    PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000001)
     if	(do_f)
-	PR_SINGLE(0x00008080)
+    PR_SINGLE(0x00008080)
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x00008010)
+    PR_DOUBLE(0x00000000, 0x00008010)
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x00008080)
+    PR_DOUBLE(0x00000000, 0x00008080)
     PAD_TABLE ;
 
 /* POS HUGE */
 
     if	(do_s)
-	PR_SINGLE(0x7f7fffff)
+    PR_SINGLE(0x7f7fffff)
     if	(do_t)	
-	PR_DOUBLE(0x7fefffff, 0xffffffff) 
+    PR_DOUBLE(0x7fefffff, 0xffffffff) 
     if	(do_x)	
-	PR_QUAD(0x7ffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
+    PR_QUAD(0x7ffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
     if	(do_f)
-	PR_SINGLE(0xffff7fff)
+    PR_SINGLE(0xffff7fff)
     if	(do_g)	
-	PR_DOUBLE(0xffffffff, 0xffff7fff) 
+    PR_DOUBLE(0xffffffff, 0xffff7fff) 
     if	(do_d)	
-	PR_DOUBLE(0xffffffff, 0xffff7fff) 
+    PR_DOUBLE(0xffffffff, 0xffff7fff) 
     PAD_TABLE ;
 
 /* NEG HUGE */
 
     if	(do_s)
-	PR_SINGLE(0xff7fffff)
+    PR_SINGLE(0xff7fffff)
     if	(do_t)	
-	PR_DOUBLE(0xffefffff, 0xffffffff)
+    PR_DOUBLE(0xffefffff, 0xffffffff)
     if	(do_x)	
-	PR_QUAD(0xfffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
+    PR_QUAD(0xfffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
     if	(do_f)
-	PR_SINGLE(0xffffffff)
+    PR_SINGLE(0xffffffff)
     if	(do_g)	
-	PR_DOUBLE(0xffffffff, 0xffffffff)
+    PR_DOUBLE(0xffffffff, 0xffffffff)
     if	(do_d)	
-	PR_DOUBLE(0xffffffff, 0xffffffff)
+    PR_DOUBLE(0xffffffff, 0xffffffff)
     PAD_TABLE ;
 
 /* POS INFINITY */
 
     if	(do_s)
-	PR_SINGLE(0x7f800000)
+    PR_SINGLE(0x7f800000)
     if	(do_t)	
-	PR_DOUBLE(0x7ff00000, 0x00000000)
+    PR_DOUBLE(0x7ff00000, 0x00000000)
     if	(do_x)	
-	PR_QUAD(0x7fff0000, 0x00000000, 0x00000000, 0x00000000)
+    PR_QUAD(0x7fff0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0xffff7fff)
+    PR_SINGLE(0xffff7fff)
     if	(do_g)	
-	PR_DOUBLE(0xffffffff, 0xffff7fff)
+    PR_DOUBLE(0xffffffff, 0xffff7fff)
     if	(do_d)	
-	PR_DOUBLE(0xffffffff, 0xffff7fff)
+    PR_DOUBLE(0xffffffff, 0xffff7fff)
     PAD_TABLE ;
 
 /* NEG INFINITY */
 
     if	(do_s)
-	PR_SINGLE(0xff800000)
+    PR_SINGLE(0xff800000)
     if	(do_t)	
-	PR_DOUBLE(0xfff00000, 0x00000000) 
+    PR_DOUBLE(0xfff00000, 0x00000000) 
     if	(do_x)	
-	PR_QUAD(0xffff0000, 0x00000000, 0x00000000, 0x00000000)
+    PR_QUAD(0xffff0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0xffffffff)
+    PR_SINGLE(0xffffffff)
     if	(do_g)	
-	PR_DOUBLE(0xffffffff, 0xffffffff) 
+    PR_DOUBLE(0xffffffff, 0xffffffff) 
     if	(do_d)	
-	PR_DOUBLE(0xffffffff, 0xffffffff) 
+    PR_DOUBLE(0xffffffff, 0xffffffff) 
     PAD_TABLE ;
 
 /* POS ULP FACTOR */
 
     if	(do_s)
-	PR_SINGLE(0x34000000) 
+    PR_SINGLE(0x34000000) 
     if	(do_t)	
-	PR_DOUBLE(0x3cb00000, 0x00000000)
+    PR_DOUBLE(0x3cb00000, 0x00000000)
     if	(do_x)	
-	PR_QUAD(0x3f8f0000, 0x00000000, 0x00000000, 0x00000000)
+    PR_QUAD(0x3f8f0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x00003500) 
+    PR_SINGLE(0x00003500) 
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x00003cd0)
+    PR_DOUBLE(0x00000000, 0x00003cd0)
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x00002500)
+    PR_DOUBLE(0x00000000, 0x00002500)
     PAD_TABLE ;
 
 /* NEG ULP FACTOR */
 
     if	(do_s)
-	PR_SINGLE(0xb4000000) 
+    PR_SINGLE(0xb4000000) 
     if	(do_t)	
-	PR_DOUBLE(0xbcb00000, 0x00000000)
+    PR_DOUBLE(0xbcb00000, 0x00000000)
     if	(do_x)	
-	PR_QUAD(0xbf8f0000, 0x00000000, 0x00000000, 0x00000000)
+    PR_QUAD(0xbf8f0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x0000b500) 
+    PR_SINGLE(0x0000b500) 
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x0000bcd0)
+    PR_DOUBLE(0x00000000, 0x0000bcd0)
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x0000a500)
+    PR_DOUBLE(0x00000000, 0x0000a500)
     PAD_TABLE ;
 
 /* POS ONE */
 
     if	(do_s)
-	PR_SINGLE(0x3f800000)
+    PR_SINGLE(0x3f800000)
     if	(do_t)	
-	PR_DOUBLE(0x3ff00000, 0x00000000)
+    PR_DOUBLE(0x3ff00000, 0x00000000)
     if	(do_x)	
-	PR_QUAD(0x3fff0000, 0x00000000, 0x00000000, 0x00000000)
+    PR_QUAD(0x3fff0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x00004080)
+    PR_SINGLE(0x00004080)
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x00004010)
+    PR_DOUBLE(0x00000000, 0x00004010)
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x00004080)
+    PR_DOUBLE(0x00000000, 0x00004080)
     PAD_TABLE ;
 
 /* NEG ONE */
 
     if	(do_s)
-	PR_SINGLE(0xbf800000)
+    PR_SINGLE(0xbf800000)
     if	(do_t)	
-	PR_DOUBLE(0xbff00000, 0x00000000)
+    PR_DOUBLE(0xbff00000, 0x00000000)
     if	(do_x)	
-	PR_QUAD(0xbfff0000, 0x00000000, 0x00000000, 0x00000000)
+    PR_QUAD(0xbfff0000, 0x00000000, 0x00000000, 0x00000000)
     if	(do_f)
-	PR_SINGLE(0x0000c080)
+    PR_SINGLE(0x0000c080)
     if	(do_g)	
-	PR_DOUBLE(0x00000000, 0x0000c010)
+    PR_DOUBLE(0x00000000, 0x0000c010)
     if	(do_d)	
-	PR_DOUBLE(0x00000000, 0x0000c080)
+    PR_DOUBLE(0x00000000, 0x0000c080)
     PAD_TABLE ;
 
     END_TABLE;
@@ -472,16 +472,16 @@
 
     printf("#define\tF_TYPE_ENUM\tPASTE_3(_, F_CHAR, _TYPE)\n");
     if ( bytes_per_table_entry == 32 )
-	printf( "#define GLOBALS_OFFSET( t, n ) ( ( t << 3 ) + ( n << 5 ) )\n" ) ;
+    printf( "#define GLOBALS_OFFSET( t, n ) ( ( t << 3 ) + ( n << 5 ) )\n" ) ;
     else
-	printf( "#define GLOBALS_OFFSET( t, n ) ( ( t << 3 ) + ( n << 6 ) )\n" ) ;
+    printf( "#define GLOBALS_OFFSET( t, n ) ( ( t << 3 ) + ( n << 6 ) )\n" ) ;
     printf("#define\tGLOBAL(n)\t*((F_TYPE *)"
        " ((char *) GLOBALS_TABLE + GLOBALS_OFFSET(F_TYPE_ENUM,n) ))\n");
     printf("#define\tGLOBAL_ADDR(t,n)\t((void *)"
        " ((char *) GLOBALS_TABLE + GLOBALS_OFFSET(t,n) ))\n");
 
 #   define DEFINE_VALUE(n) printf("#define\t" STR(n) \
-	"\tGLOBAL(" STR(n) "_INDEX)\n")
+    "\tGLOBAL(" STR(n) "_INDEX)\n")
 
     DEFINE_VALUE(NAN);
     DEFINE_VALUE(POS_ZERO);

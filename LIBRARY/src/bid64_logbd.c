@@ -32,7 +32,7 @@
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_logb (BID_UINT64 * pres, BID_UINT64 * px
-	    _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+        _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT64 x = *px;
 #else
 DFP_WRAPFN_DFP(64, bid64_logb, 64)
@@ -52,17 +52,17 @@ if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
   if ((x & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	res = (coefficient_x) & QUIET_MASK64;
+    res = (coefficient_x) & QUIET_MASK64;
 if ((x & 0x7c00000000000000ull) == 0x7800000000000000ull) 
     res &= 0x7fffffffffffffffull;
-	BID_RETURN (res);
+    BID_RETURN (res);
 }
   // x is 0
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-	res = 0xf800000000000000ull;
-	BID_RETURN (res);
+    res = 0xf800000000000000ull;
+    BID_RETURN (res);
 }
 
   BIDECIMAL_CALL1_NORND (bid64_ilogb, ires, x);

@@ -77,7 +77,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
     if ((x & 0x7c000000) == 0x7c000000) {
 #ifdef BID_SET_STATUS_FLAGS
       if (((x & SNAN_MASK32) == SNAN_MASK32))
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       res = coefficient_x & QUIET_MASK32;;
       BID_RETURN (res);
@@ -86,24 +86,24 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
     if ((x & 0x78000000) == 0x78000000) {
       if (((y & NAN_MASK32) != NAN_MASK32)) {
 #ifdef BID_SET_STATUS_FLAGS
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-	// return NaN
-	res = 0x7c000000;
-	BID_RETURN (res);
+    // return NaN
+    res = 0x7c000000;
+    BID_RETURN (res);
       }
     }
     // x is 0
     // return x if y != 0
     if (((y & 0x78000000) < 0x78000000) &&
-	coefficient_y) {
+    coefficient_y) {
       if ((y & 0x60000000) == 0x60000000)
-	exponent_y = (y >> 21) & 0xff;
+    exponent_y = (y >> 21) & 0xff;
       else
-	exponent_y = (y >> 23) & 0xff;
+    exponent_y = (y >> 23) & 0xff;
 
       if (exponent_y < exponent_x)
-	exponent_x = exponent_y;
+    exponent_x = exponent_y;
 
       x = exponent_x;
       x <<= 23;
@@ -120,7 +120,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
     if ((y & 0x7c000000) == 0x7c000000) {
 #ifdef BID_SET_STATUS_FLAGS
       if (((y & SNAN_MASK32) == SNAN_MASK32))
-	__set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       res = coefficient_y & QUIET_MASK32;;
       BID_RETURN (res);
@@ -158,7 +158,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
       BID_RETURN (res);
     }
 
-	CY = CYL;
+    CY = CYL;
     Q = coefficient_x / CY;
     R = coefficient_x - Q * CY;
 

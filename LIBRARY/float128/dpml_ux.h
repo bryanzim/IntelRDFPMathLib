@@ -76,8 +76,8 @@ typedef WORD     UX_SIGNED_FRACTION_DIGIT_TYPE;
 #endif
 
 typedef struct F128_ALIGN_16 {
-	UX_FRACTION_DIGIT_TYPE digit[ NUM_X_FRACTION_DIGITS ];
-	} _X_FLOAT;
+    UX_FRACTION_DIGIT_TYPE digit[ NUM_X_FRACTION_DIGITS ];
+    } _X_FLOAT;
 
 #define G_X_DIGIT(p,n)		(((_X_FLOAT *)(p))->DIGIT(n))
 #define P_X_DIGIT(p,n,v)	(((_X_FLOAT *)(p))->DIGIT(n) = (v))
@@ -88,14 +88,14 @@ typedef struct F128_ALIGN_16 {
 
 
 typedef struct {
-	UX_SIGN_TYPE        sign;
-	UX_EXPONENT_TYPE    exponent;
-	UX_FRACTION_DIGIT_TYPE fraction[ NUM_UX_FRACTION_DIGITS ];
-	} UX_FLOAT;
+    UX_SIGN_TYPE        sign;
+    UX_EXPONENT_TYPE    exponent;
+    UX_FRACTION_DIGIT_TYPE fraction[ NUM_UX_FRACTION_DIGITS ];
+    } UX_FLOAT;
 
 typedef struct {
-	UX_FRACTION_DIGIT_TYPE digits[ NUM_UX_FRACTION_DIGITS ];
-	} FIXED_128;
+    UX_FRACTION_DIGIT_TYPE digits[ NUM_UX_FRACTION_DIGITS ];
+    } FIXED_128;
 
 #define UX_SIGN_SHIFT  (BITS_PER_UX_FRACTION_DIGIT_TYPE - BITS_PER_UX_SIGN_TYPE)
 #define UX_PRECISION	128 
@@ -137,16 +137,16 @@ typedef struct {
 
 #define UX_LOW_FRACTION_IS_ZERO(p)	(UX_OR_LOW_FRACTION_DIGITS(p) == 0)
 #define UX_FRACTION_IS_ONE_HALF(p)	((G_UX_MSD(p) == UX_MSB) & \
-					(UX_OR_LOW_FRACTION_DIGITS(p) == 0))
+                    (UX_OR_LOW_FRACTION_DIGITS(p) == 0))
 
 #define UX_SET_SIGN_EXP_MSD(p,s,e,m)	( P_UX_SIGN(p,s),	\
-					  P_UX_EXPONENT(p,e),	\
-					  P_UX_MSD(p,m),	\
-					  CLR_UX_LOW_FRACTION(p))
+                      P_UX_EXPONENT(p,e),	\
+                      P_UX_MSD(p,m),	\
+                      CLR_UX_LOW_FRACTION(p))
 
 #define UX_COPY(p,q)	( P_UX_SIGN(q, G_UX_SIGN(p)),	      \
-			  P_UX_EXPONENT(q, G_UX_EXPONENT(p)), \
-			  COPY_TO_UX_FRACTION(&G_UX_MSD(p),q))
+              P_UX_EXPONENT(q, G_UX_EXPONENT(p)), \
+              COPY_TO_UX_FRACTION(&G_UX_MSD(p),q))
 
 typedef U_WORD	ERROR_CODE;
 
@@ -311,10 +311,10 @@ typedef U_WORD	ERROR_CODE;
 */
 
 typedef struct {
-	U_WORD     arg_classes;
-	char     * name;
-	_X_FLOAT * args[2];
-	} UX_EXCEPTION_INFO_STRUCT;
+    U_WORD     arg_classes;
+    char     * name;
+    _X_FLOAT * args[2];
+    } UX_EXCEPTION_INFO_STRUCT;
 
 #define EXCPTN_INFO			__INTERNAL_NAME(ux_excptn_info__)
 
@@ -347,32 +347,32 @@ typedef struct {
 #endif
 
 extern WORD UNPACK_X_OR_Y (
-	_X_FLOAT     *,		/* packed   argument 1 */
-	_X_FLOAT     *,		/* packed   argument 2 */
-	UX_FLOAT     *,		/* unpacked argument   */
-	U_WORD const *,		/* class-to-action map */
-	_X_FLOAT     *		/* packed   result */
+    _X_FLOAT     *,		/* packed   argument 1 */
+    _X_FLOAT     *,		/* packed   argument 2 */
+    UX_FLOAT     *,		/* unpacked argument   */
+    U_WORD const *,		/* class-to-action map */
+    _X_FLOAT     *		/* packed   result */
         OPT_EXCEPTION_INFO_DECLARATION
-	);
+    );
 
 extern WORD UNPACK2 (
-	_X_FLOAT     *,		/* packed   argument 1 */
-	_X_FLOAT     *,		/* packed   argument 2 */
-	UX_FLOAT     *,		/* unpacked argument 1 */
-	UX_FLOAT     *,		/* unpacked argument 2 */
-	U_WORD const *,		/* class-to-action map */
-	_X_FLOAT     *		/* packed   result */
+    _X_FLOAT     *,		/* packed   argument 1 */
+    _X_FLOAT     *,		/* packed   argument 2 */
+    UX_FLOAT     *,		/* unpacked argument 1 */
+    UX_FLOAT     *,		/* unpacked argument 2 */
+    U_WORD const *,		/* class-to-action map */
+    _X_FLOAT     *		/* packed   result */
         OPT_EXCEPTION_INFO_DECLARATION
-	);
+    );
 
 
 extern void PACK (
-	UX_FLOAT  *,		/* unpacked result */
-	_X_FLOAT  *,		/* packed   result */
-	ERROR_CODE,		/* underflow code  */
-	ERROR_CODE		/* overflow  code  */
+    UX_FLOAT  *,		/* unpacked result */
+    _X_FLOAT  *,		/* packed   result */
+    ERROR_CODE,		/* underflow code  */
+    ERROR_CODE		/* overflow  code  */
         OPT_EXCEPTION_INFO_DECLARATION
-	);
+    );
 
 /*
 ** Include the class-to-action-mapping definitions here, since they are used
@@ -388,10 +388,10 @@ extern void PACK (
 #define ACTION_MASK	0x7
 
 #define CLASS_TO_ACTION(class, action, index) \
-		(((action << INDEX_WIDTH) | (index)) << \
-		((INDEX_WIDTH + ACTION_WIDTH)*(class)))
+        (((action << INDEX_WIDTH) | (index)) << \
+        ((INDEX_WIDTH + ACTION_WIDTH)*(class)))
 #define CLASS_TO_ACTION_DISP(n) \
-		((n) << ((INDEX_WIDTH + ACTION_WIDTH)*F_C_NUM_CLASSES))
+        ((n) << ((INDEX_WIDTH + ACTION_WIDTH)*F_C_NUM_CLASSES))
 
 #define RETURN_UNPACKED		0
 #define RETURN_QUIET_NAN	1
@@ -419,12 +419,12 @@ extern void PACK (
 #endif
 
 extern void EVALUATE_RATIONAL(
-	UX_FLOAT  *,		/* Argument				*/
-	FIXED_128 *,		/* Coefficient array			*/
-	U_WORD,			/* Number of coefficients		*/
-	U_WORD,			/* Evaluation flags			*/
-	UX_FLOAT  *		/* Result				*/
-	);
+    UX_FLOAT  *,		/* Argument				*/
+    FIXED_128 *,		/* Coefficient array			*/
+    U_WORD,			/* Number of coefficients		*/
+    U_WORD,			/* Evaluation flags			*/
+    UX_FLOAT  *		/* Result				*/
+    );
 
 #define STANDARD		0x001
 #define POST_MULTIPLY		0x002
@@ -467,11 +467,11 @@ EVALUATE_PACKED_POLY( UX_FLOAT * argument, WORD degree, FIXED_128 * coefs,
 #endif
 
 extern void ADDSUB(
-	UX_FLOAT *,	/* arg1			*/
-	UX_FLOAT *,	/* arg2			*/
-	U_WORD,		/* operation flags	*/
-	UX_FLOAT *	/* result		*/
-	);
+    UX_FLOAT *,	/* arg1			*/
+    UX_FLOAT *,	/* arg2			*/
+    U_WORD,		/* operation flags	*/
+    UX_FLOAT *	/* result		*/
+    );
 
 /*
 ** The logic of the add/sub routine depends on theses symbols have
@@ -499,10 +499,10 @@ extern void ADDSUB(
 #endif
 
 extern WORD UX_RND_TO_INT(	/* return val is integer part as int	*/
-	UX_FLOAT *,		/* argument				*/
-	WORD,			/* rounding mode bit vector		*/
+    UX_FLOAT *,		/* argument				*/
+    WORD,			/* rounding mode bit vector		*/
         UX_FLOAT *,		/* Integer part as float, ignored if 0	*/
-	UX_FLOAT *); 		/* fraction part, ignored if 0		*/
+    UX_FLOAT *); 		/* fraction part, ignored if 0		*/
 
 #define RZ_BIT_VECTOR   0x0000  /* 0000 0000 0000 0000 */
 #define RP_BIT_VECTOR   0x00fa  /* 0000 0000 1111 1010 */
@@ -526,8 +526,8 @@ extern WORD UX_RND_TO_INT(	/* return val is integer part as int	*/
 #endif
 
 extern WORD FFS_AND_SHIFT(	/* returns shift count		*/
-	UX_FLOAT *,		/* source and destination	*/
-	U_WORD);		/* 'opcode'			*/
+    UX_FLOAT *,		/* source and destination	*/
+    U_WORD);		/* 'opcode'			*/
 
 #define	FFS_NORMALIZE	0
 #define	FFS_CVT_WORD	1
@@ -550,10 +550,10 @@ extern WORD FFS_AND_SHIFT(	/* returns shift count		*/
 #endif
 
 extern WORD UX_SINCOS(
-	UX_FLOAT *,	/* unpacked_argument	*/
-	WORD,		/* octant		*/
-	WORD,		/* function_code,	*/
-	UX_FLOAT *);	/* unpacked_result	*/
+    UX_FLOAT *,	/* unpacked_argument	*/
+    WORD,		/* octant		*/
+    WORD,		/* function_code,	*/
+    UX_FLOAT *);	/* unpacked_result	*/
 
 #define	DEGREE		16
 
@@ -591,9 +591,9 @@ extern FIXED_128 sincos_coef_array[2*SINCOS_COEF_ARRAY_LENGTH];
 #endif
 
 extern void UX_LOG(
-	UX_FLOAT *,	/* Argument				*/ 
-	UX_FLOAT *,	/* scale - LOG(x) = scale*log2(x)	*/
-	UX_FLOAT *);	/* Result				*/
+    UX_FLOAT *,	/* Argument				*/ 
+    UX_FLOAT *,	/* scale - LOG(x) = scale*log2(x)	*/
+    UX_FLOAT *);	/* Result				*/
 
 #define	LOG(a,b)		UX_LOG( a, & UX_CON( LN_2 ), b)
 
@@ -603,8 +603,8 @@ extern void UX_LOG(
 #endif
 
 extern void UX_LOG_POLY(
-	UX_FLOAT *,	/* Argument				*/ 
-	UX_FLOAT *);	/* Result				*/
+    UX_FLOAT *,	/* Argument				*/ 
+    UX_FLOAT *);	/* Result				*/
 
 /******************************************************************************/
 /******************************************************************************/
@@ -619,20 +619,20 @@ extern void UX_LOG_POLY(
 #endif
 
 extern void UX_EXP(
-	UX_FLOAT *,			/* argument	*/
-	UX_FLOAT *			/* result	*/
-	);
+    UX_FLOAT *,			/* argument	*/
+    UX_FLOAT *			/* result	*/
+    );
 
 #if !defined( DIVIDE )
 #   define DIVIDE	__INTERNAL_NAME( divide__ )
 #endif
 
 extern void DIVIDE(
-	UX_FLOAT *,	/* numerator - assume 1	if ptr is 0	*/
-	UX_FLOAT *,	/* denominator				*/
-	U_WORD,		/* result precision			*/
-	UX_FLOAT *	/* result				*/
-	);
+    UX_FLOAT *,	/* numerator - assume 1	if ptr is 0	*/
+    UX_FLOAT *,	/* denominator				*/
+    U_WORD,		/* result precision			*/
+    UX_FLOAT *	/* result				*/
+    );
 
 #define	HALF_PRECISION		1
 #define	FULL_PRECISION		2
@@ -642,10 +642,10 @@ extern void DIVIDE(
 #endif
 
 extern void MULTIPLY(
-	UX_FLOAT *,	/* arg1		*/
-	UX_FLOAT *,	/* arg1		*/
-	UX_FLOAT *	/* result	*/
-	);
+    UX_FLOAT *,	/* arg1		*/
+    UX_FLOAT *,	/* arg1		*/
+    UX_FLOAT *	/* result	*/
+    );
 
 #define SQUARE(a,b)	MULTIPLY(a, a, b)
 
@@ -654,11 +654,11 @@ extern void MULTIPLY(
 #endif
 
 extern void EXTENDED_MULTIPLY(
-	UX_FLOAT *,	/* arg1		*/
-	UX_FLOAT *,	/* arg1		*/
-	UX_FLOAT *,	/* hi result	*/
-	UX_FLOAT *	/* lo result	*/
-	);
+    UX_FLOAT *,	/* arg1		*/
+    UX_FLOAT *,	/* arg1		*/
+    UX_FLOAT *,	/* hi result	*/
+    UX_FLOAT *	/* lo result	*/
+    );
 
 #if !defined(UX_SQRT_EVALUATION)
 #   define UX_SQRT_EVALUATION	__INTERNAL_NAME( ux_sqrt_evaluation__ )
@@ -669,9 +669,9 @@ extern void EXTENDED_MULTIPLY(
 
 
 extern void UX_SQRT_EVALUATION(
-	UX_FLOAT *,	/* Argument				*/ 
+    UX_FLOAT *,	/* Argument				*/ 
         WORD,		/* evaluation type - sqrt or rsqrt	*/
-	UX_FLOAT *);	/* Result				*/
+    UX_FLOAT *);	/* Result				*/
 
 
 #define UX_SQRT(a,b)	UX_SQRT_EVALUATION(a, EVALUATE_SQRT, b)
@@ -681,9 +681,9 @@ extern void UX_SQRT_EVALUATION(
 #endif
 
 extern void HYPOT(
-	UX_FLOAT *,	/* Argument 1				*/ 
-	UX_FLOAT *,	/* Argument 2				*/ 
-	UX_FLOAT *);	/* Result				*/
+    UX_FLOAT *,	/* Argument 1				*/ 
+    UX_FLOAT *,	/* Argument 2				*/ 
+    UX_FLOAT *);	/* Result				*/
 
 
 /******************************************************************************/
@@ -725,40 +725,40 @@ extern void HYPOT(
 #if defined(MAKE_INCLUDE)
 
 #    define PRINT_64_TBL_ITEM(i)	\
-		printf( "\t/* %3i */ %#16.4.16i,\n", BYTES(MP_BIT_OFFSET), i);\
+        printf( "\t/* %3i */ %#16.4.16i,\n", BYTES(MP_BIT_OFFSET), i);\
                 MP_BIT_OFFSET += 64
 
 #    define PRINT_UX_FRACTION_DIGIT_TBL_ITEM(val)	PRINT_64_TBL_ITEM(val)
 
 #    define PRINT_CLASS_TO_ACTION_TBL_DEF(name)		\
-		printf("#define\t" name "\t((U_WORD const *) ((char *) "\
-		        STR(MP_TABLE_NAME) " + %i))\n",	BYTES(MP_BIT_OFFSET))
+        printf("#define\t" name "\t((U_WORD const *) ((char *) "\
+                STR(MP_TABLE_NAME) " + %i))\n",	BYTES(MP_BIT_OFFSET))
 
 #    define PRINT_UX_FRACTION_DIGIT_TBL_VDEF(name)	\
                  printf("#define\t" name \
-		     "\t*((UX_FRACTION_DIGIT_TYPE *) ((char *) " \
-		     STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET))
+             "\t*((UX_FRACTION_DIGIT_TYPE *) ((char *) " \
+             STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET))
 
 #    define PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM(name, val)	\
-		printf("#define\t" name \
-		     "\t*((UX_FRACTION_DIGIT_TYPE *) ((char *) " \
-		     STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET)); \
-		PRINT_64_TBL_ITEM(val)
+        printf("#define\t" name \
+             "\t*((UX_FRACTION_DIGIT_TYPE *) ((char *) " \
+             STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET)); \
+        PRINT_64_TBL_ITEM(val)
 
 #    define PRINT_FIXED_128_TBL_ADEF(name)	\
-		printf("#define\t" name "\t((FIXED_128 *) ((char *) "	\
-		     STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET))
+        printf("#define\t" name "\t((FIXED_128 *) ((char *) "	\
+             STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET))
 
 #    define PRINT_UX_FRACTION_DIGIT_TBL_ADEF(name)					\
-		printf("#define\t" name "\t((UX_FRACTION_DIGIT_TYPE *) ((char *) "	 \
-		   STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET))
+        printf("#define\t" name "\t((UX_FRACTION_DIGIT_TYPE *) ((char *) "	 \
+           STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET))
 
 #    define PRINT_UX_TBL_ADEF(name)					\
-		printf("#define\t" name "\t((UX_FLOAT *) ((char *) "	 \
-		   STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET))
+        printf("#define\t" name "\t((UX_FLOAT *) ((char *) "	 \
+           STR(MP_TABLE_NAME) " + %i))\n", BYTES(MP_BIT_OFFSET))
 
 #    define PRINT_UX_TBL_ITEM(val)				\
-		MP_BIT_OFFSET = print_ux_table_value(val, MP_BIT_OFFSET)
+        MP_BIT_OFFSET = print_ux_table_value(val, MP_BIT_OFFSET)
 
 #    define PRINT_UX_TBL_ADEF_ITEM(name, val)				\
                 PRINT_UX_TBL_ADEF(name);  PRINT_UX_TBL_ITEM(val)
@@ -846,7 +846,7 @@ extern void HYPOT(
 
         for (i = 0; i < pad_len; i++)
             {
-	    printf( "\t/* %3i */ %#32.4.16i,\n", BYTES(MP_BIT_OFFSET), 0);
+        printf( "\t/* %3i */ %#32.4.16i,\n", BYTES(MP_BIT_OFFSET), 0);
             MP_BIT_OFFSET += 128;
             }
 
@@ -855,7 +855,7 @@ extern void HYPOT(
         index += degree;
         for (i = degree; i >= 0; i--)
             {
-	    printf( "\t/* %3i */ %#32.4.16i,\n", BYTES(MP_BIT_OFFSET), 
+        printf( "\t/* %3i */ %#32.4.16i,\n", BYTES(MP_BIT_OFFSET), 
                 abs(nint(bldexp(ux_rational_coefs[index], scale ))));
             MP_BIT_OFFSET += 128;
             index--;

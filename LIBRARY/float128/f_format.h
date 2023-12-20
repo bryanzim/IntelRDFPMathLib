@@ -1507,7 +1507,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #          define F_CLEAR_LO_HALF_WORD(u)	(u).u64[ UNION_IX(1) ] = 0;
 #      else
 #          define F_CLEAR_LO_HALF_WORD(u)	(u).u32[ UNION_IX(2) ] = 0; \
-						(u).u32[ UNION_IX(3) ] = 0
+                        (u).u32[ UNION_IX(3) ] = 0
 #      endif
 #   endif
 

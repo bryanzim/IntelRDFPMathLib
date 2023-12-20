@@ -43,67 +43,67 @@
 #   define ZERO_FORMAT		" 0x00000000,"
 
 #   define COPY_TO_UX_FRACTION(p,q)					\
-			(P_UX_FRACTION_DIGIT(q, 0, AS_DIGIT(p,0)),	\
-			 P_UX_FRACTION_DIGIT(q, 1, AS_DIGIT(p,1)),	\
-			 P_UX_FRACTION_DIGIT(q, 2, AS_DIGIT(p,2)),	\
-			 P_UX_FRACTION_DIGIT(q, 3, AS_DIGIT(p,3)))
+            (P_UX_FRACTION_DIGIT(q, 0, AS_DIGIT(p,0)),	\
+             P_UX_FRACTION_DIGIT(q, 1, AS_DIGIT(p,1)),	\
+             P_UX_FRACTION_DIGIT(q, 2, AS_DIGIT(p,2)),	\
+             P_UX_FRACTION_DIGIT(q, 3, AS_DIGIT(p,3)))
 
 #   define _X_COPY(p,q)			(P_X_DIGIT(q, 0, G_X_DIGIT(p,0)), \
-					 P_X_DIGIT(q, 1, G_X_DIGIT(p,1)), \
-					 P_X_DIGIT(q, 2, G_X_DIGIT(p,2)), \
-					 P_X_DIGIT(q, 3, G_X_DIGIT(p,3)))
+                     P_X_DIGIT(q, 1, G_X_DIGIT(p,1)), \
+                     P_X_DIGIT(q, 2, G_X_DIGIT(p,2)), \
+                     P_X_DIGIT(q, 3, G_X_DIGIT(p,3)))
 
 #   define CLR_UX_FRACTION(p)		(P_UX_FRACTION_DIGIT(p, 0, 0),	\
-					 P_UX_FRACTION_DIGIT(p, 1, 0),	\
-					 P_UX_FRACTION_DIGIT(p, 2, 0),	\
-					 P_UX_FRACTION_DIGIT(p, 3, 0))
+                     P_UX_FRACTION_DIGIT(p, 1, 0),	\
+                     P_UX_FRACTION_DIGIT(p, 2, 0),	\
+                     P_UX_FRACTION_DIGIT(p, 3, 0))
 
 #   define CLR_UX_LOW_FRACTION(p)	(P_UX_FRACTION_DIGIT(p, 1, 0),	\
-					 P_UX_FRACTION_DIGIT(p, 2, 0),	\
-					 P_UX_FRACTION_DIGIT(p, 3, 0))
+                     P_UX_FRACTION_DIGIT(p, 2, 0),	\
+                     P_UX_FRACTION_DIGIT(p, 3, 0))
 
 #   define UX_OR_LOW_FRACTION_DIGITS(p)	(G_UX_FRACTION_DIGIT(p, 1) |	\
-					 G_UX_FRACTION_DIGIT(p, 2) |	\
-					 G_UX_FRACTION_DIGIT(p, 3) )
+                     G_UX_FRACTION_DIGIT(p, 2) |	\
+                     G_UX_FRACTION_DIGIT(p, 3) )
 
 #   define SET_UX_FRACTION_TO_HALF(p)	(P_UX_FRACTION_DIGIT(p, 0, UX_MSB),\
-					 P_UX_FRACTION_DIGIT(p, 1, 0),	\
-					 P_UX_FRACTION_DIGIT(p, 2, 0),	\
-					 P_UX_FRACTION_DIGIT(p, 3, 0))
+                     P_UX_FRACTION_DIGIT(p, 1, 0),	\
+                     P_UX_FRACTION_DIGIT(p, 2, 0),	\
+                     P_UX_FRACTION_DIGIT(p, 3, 0))
 
 #   define OTHER_DIGITS		, _F1, _F2
 
 #   define G_UX_OTHER_DIGITS(p)	\
-		( _F1  = G_UX_FRACTION_DIGIT(p,1), \
-		  _F2  = G_UX_FRACTION_DIGIT(p,2) )
+        ( _F1  = G_UX_FRACTION_DIGIT(p,1), \
+          _F2  = G_UX_FRACTION_DIGIT(p,2) )
 
 #   define DIGIT_SHIFT_FRACTION_RIGHT(l,m) \
-		( (l) = _F2, \
-		  _F2 = _F1, \
-		  _F1 = (m), \
-		  (m) = 0 ) 	
+        ( (l) = _F2, \
+          _F2 = _F1, \
+          _F1 = (m), \
+          (m) = 0 ) 	
 
 #   define DIGIT_SHIFT_FRACTION_LEFT(l,m) \
-		( (m) = _F1, \
-		  _F1 = _F2, \
-		  _F2 = (l), \
-		  (l) = 0 ) 	
+        ( (m) = _F1, \
+          _F1 = _F2, \
+          _F2 = (l), \
+          (l) = 0 ) 	
 
 #   define BIT_SHIFT_FRACTION_RIGHT(l,m,s,c)	\
-		( (l) = ((l) >> (s)) | (_F1 << (c)), \
-		  _F1 = (_F1 >> (s)) | (_F2 << (c)), \
-		  _F2 = (_F2 >> (s)) | ((m) << (c)), \
-		  (m) >>= (s))
+        ( (l) = ((l) >> (s)) | (_F1 << (c)), \
+          _F1 = (_F1 >> (s)) | (_F2 << (c)), \
+          _F2 = (_F2 >> (s)) | ((m) << (c)), \
+          (m) >>= (s))
 
 #   define BIT_SHIFT_FRACTION_LEFT(l,m,s,c)	\
-		( (m) = ((m) << (s)) | (_F2 >> (c)), \
-		  _F2 = (_F2 << (s)) | (_F1 >> (c)), \
-		  _F1 = (_F1 << (s)) | ((l) >> (c)), \
-		  (l) << (s))
+        ( (m) = ((m) << (s)) | (_F2 >> (c)), \
+          _F2 = (_F2 << (s)) | (_F1 >> (c)), \
+          _F1 = (_F1 << (s)) | ((l) >> (c)), \
+          (l) << (s))
 
 #   define P_UX_OTHER_DIGITS(p) \
-		( P_UX_FRACTION_DIGIT(p,1,_F1), \
-		  P_UX_FRACTION_DIGIT(p,2,_F2))
+        ( P_UX_FRACTION_DIGIT(p,1,_F1), \
+          P_UX_FRACTION_DIGIT(p,2,_F2))
 
 #elif BITS_PER_WORD == 64
 
@@ -119,32 +119,32 @@
 #   define ZERO_FORMAT		" 0x00000000, 0x00000000,"
 
 #   define COPY_TO_UX_FRACTION(p,q)					\
-			P_UX_FRACTION_DIGIT(q, 0, AS_DIGIT(p,0)),	\
-			P_UX_FRACTION_DIGIT(q, 1, AS_DIGIT(p,1))
+            P_UX_FRACTION_DIGIT(q, 0, AS_DIGIT(p,0)),	\
+            P_UX_FRACTION_DIGIT(q, 1, AS_DIGIT(p,1))
 
 #   define _X_COPY(p,q)			(P_X_DIGIT(q, 0, G_X_DIGIT(p,0)), \
-					 P_X_DIGIT(q, 1, G_X_DIGIT(p,1)))
+                     P_X_DIGIT(q, 1, G_X_DIGIT(p,1)))
 
 #   define CLR_UX_FRACTION(p)		(P_UX_FRACTION_DIGIT(p, 0, 0),	\
-					 P_UX_FRACTION_DIGIT(p, 1, 0))
+                     P_UX_FRACTION_DIGIT(p, 1, 0))
 
 #   define CLR_UX_LOW_FRACTION(p)	P_UX_FRACTION_DIGIT(p, 1, 0)
 
 #   define UX_OR_LOW_FRACTION_DIGITS(p)	( G_UX_FRACTION_DIGIT(p, 1) )
 
 #   define SET_UX_FRACTION_TO_HALF(p)	(P_UX_FRACTION_DIGIT(p, 0, UX_MSB),\
-					 P_UX_FRACTION_DIGIT(p, 1, 0))
+                     P_UX_FRACTION_DIGIT(p, 1, 0))
 
 #   define OTHER_DIGITS
 #   define G_UX_OTHER_DIGITS(p)	
 #   define DIGIT_SHIFT_FRACTION_RIGHT(l,m)	( (l) = (m), (m) = 0 )
 #   define DIGIT_SHIFT_FRACTION_LEFT(l,m)	( (m) = (l), (l) = 0 )
 #   define BIT_SHIFT_FRACTION_RIGHT(l,m,s,c)	\
-					( (l) = ((l) >> (s)) | ((m) << (c)), \
-					  (m) >>= (s) )
+                    ( (l) = ((l) >> (s)) | ((m) << (c)), \
+                      (m) >>= (s) )
 #   define BIT_SHIFT_FRACTION_LEFT(l,m,s,c)	\
-					( (m) = ((m) << (s)) | ((l) >> (c)), \
-					  (l) <<= (s) )
+                    ( (m) = ((m) << (s)) | ((l) >> (c)), \
+                      (l) <<= (s) )
 #   define PROPAGATE_CARRY(c)		
 #   define P_UX_OTHER_DIGITS(p)
 

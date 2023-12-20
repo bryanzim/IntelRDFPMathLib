@@ -335,9 +335,9 @@ bid_to_dpd128 (BID_UINT128 ba) {
     // Detect NaN, and canonicalize trailing
   } else if ((comb & 0x1f000) == 0x1f000) {
     if ((trailing.w[1] > 0x0000314dc6448d93ULL) ||	// significand is non-canonical
-	((trailing.w[1] == 0x0000314dc6448d93ULL)
-	 && (trailing.w[0] >= 0x38c15b0a00000000ULL))
-	// significand is non-canonical
+    ((trailing.w[1] == 0x0000314dc6448d93ULL)
+     && (trailing.w[0] >= 0x38c15b0a00000000ULL))
+    // significand is non-canonical
       ) {
       trailing.w[1] = trailing.w[0] = 0ull;
     }
@@ -349,18 +349,18 @@ bid_to_dpd128 (BID_UINT128 ba) {
     if ((comb & 0x18000) == 0x18000) {	// G0..G1 = 11 -> exp is G2..G11
       exp = (comb >> 1) & 0x3fff;
       bcoeff.w[1] =
-	((BID_UINT64) (8 + (comb & 1)) << (BID_UINT64) 46) | trailing.w[1];
+    ((BID_UINT64) (8 + (comb & 1)) << (BID_UINT64) 46) | trailing.w[1];
       bcoeff.w[0] = trailing.w[0];
     } else {
       exp = (comb >> 3) & 0x3fff;
       bcoeff.w[1] =
-	((BID_UINT64) (comb & 7) << (BID_UINT64) 46) | trailing.w[1];
+    ((BID_UINT64) (comb & 7) << (BID_UINT64) 46) | trailing.w[1];
       bcoeff.w[0] = trailing.w[0];
     }
     // Zero the coefficient if non-canonical (>= 10^34)
     if (bcoeff.w[1] > 0x1ed09bead87c0ull ||
-	(bcoeff.w[1] == 0x1ed09bead87c0ull
-	 && bcoeff.w[0] >= 0x378D8E6400000000ull)) {
+    (bcoeff.w[1] == 0x1ed09bead87c0ull
+     && bcoeff.w[0] >= 0x378D8E6400000000ull)) {
       bcoeff.w[0] = bcoeff.w[1] = 0;
     }
   }
@@ -424,12 +424,12 @@ bid_to_dpd128 (BID_UINT128 ba) {
       sign.
       w[1] |
       ((0x18000 | ((exp >> 12) << 13) | ((d0.w[0] & 1) << 12) |
-	(exp & 0xfff)) << 46) | dcoeff.w[1];
+    (exp & 0xfff)) << 46) | dcoeff.w[1];
   } else {
     res.w[1] =
       sign.
       w[1] | ((((exp >> 12) << 15) | (d0.w[0] << 12) | (exp & 0xfff))
-	      << 46) | dcoeff.w[1];
+          << 46) | dcoeff.w[1];
   }
 
   res.w[1] |= nanb;
@@ -477,16 +477,16 @@ bid_dpd_to_bid128 (BID_UINT128 da) {
     if ((comb & 0x18000) == 0x18000) {	// G0..G1 = 11 -> d0 = 8 + G4
       d0 = 8 + (comb & 0x01000 ? 1 : 0);
       exp =
-	(comb & 0x04000 ? 1 : 0) * 0x2000 +
-	(comb & 0x02000 ? 1 : 0) * 0x1000;
+    (comb & 0x04000 ? 1 : 0) * 0x2000 +
+    (comb & 0x02000 ? 1 : 0) * 0x1000;
       // exp leading bits are G2..G3
     } else {
       d0 =
-	4 * (comb & 0x04000 ? 1 : 0) + 2 * (comb & 0x2000 ? 1 : 0) +
-	(comb & 0x1000 ? 1 : 0);
+    4 * (comb & 0x04000 ? 1 : 0) + 2 * (comb & 0x2000 ? 1 : 0) +
+    (comb & 0x1000 ? 1 : 0);
       exp =
-	(comb & 0x10000 ? 1 : 0) * 0x2000 +
-	(comb & 0x08000 ? 1 : 0) * 0x1000;
+    (comb & 0x10000 ? 1 : 0) * 0x2000 +
+    (comb & 0x08000 ? 1 : 0) * 0x1000;
       // exp loading bits are G0..G1
     }
   }

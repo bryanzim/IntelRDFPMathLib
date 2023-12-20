@@ -102,10 +102,10 @@ UX_LOG( UX_FLOAT * unpacked_argument, UX_FLOAT * scale,
     ADDSUB(unpacked_argument, UX_ONE, ADD_SUB | MAGNITUDE_ONLY, &tmp[0]);
     UX_INCR_EXPONENT(unpacked_argument, m);
     DIVIDE(&tmp[1], &tmp[0], FULL_PRECISION, unpacked_result);
-	  /*printf("UX_LOG:  tmp1=(%x %x) %llx %llx, tmp0=(%x %x) %llx %llx, r=(%x %x) %llx %llx\n",
-		  tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1],
-		  tmp[0].sign,tmp[0].exponent,tmp[0].fraction[0],tmp[0].fraction[1],
-		  unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);*/
+      /*printf("UX_LOG:  tmp1=(%x %x) %llx %llx, tmp0=(%x %x) %llx %llx, r=(%x %x) %llx %llx\n",
+          tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1],
+          tmp[0].sign,tmp[0].exponent,tmp[0].fraction[0],tmp[0].fraction[1],
+          unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);*/
 
     /* Evaluate z*p(z^2) */
 
@@ -119,18 +119,18 @@ UX_LOG( UX_FLOAT * unpacked_argument, UX_FLOAT * scale,
 
     /* Get m as a packed value and add to polynomial */
 
-	  /*printf("UX_LOG:  tmp1=(%x %x) %llx %llx, tmp0=(%x %x) %llx %llx, u_res=(%x %x) %llx %llx\n",
-		  tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1],
-		  tmp[0].sign,tmp[0].exponent,tmp[0].fraction[0],tmp[0].fraction[1],
-		  unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);*/
+      /*printf("UX_LOG:  tmp1=(%x %x) %llx %llx, tmp0=(%x %x) %llx %llx, u_res=(%x %x) %llx %llx\n",
+          tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1],
+          tmp[0].sign,tmp[0].exponent,tmp[0].fraction[0],tmp[0].fraction[1],
+          unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);*/
     WORD_TO_UX(m, unpacked_result);
-	//printf("m=%llx\n",(long long)m);
+    //printf("m=%llx\n",(long long)m);
     ADDSUB(unpacked_result, &tmp[0], ADD | NO_NORMALIZATION,
       unpacked_result);
 
     /* multiply by scale */
 
-		//printf("u_res= (%x %x) %llx %llx\n",unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);
+        //printf("u_res= (%x %x) %llx %llx\n",unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);
  
     if (scale)
         MULTIPLY( unpacked_result, scale, unpacked_result);
@@ -157,7 +157,7 @@ C_UX_LOG( _X_FLOAT * packed_argument, U_WORD const * class_to_action_map,
         packed_result
         OPT_EXCEPTION_INFO_ARGUMENT );
 
-	  //printf("UX_LOG:  packed arg=%llx %llx, unpacked_arg=(%x %x) %llx %llx\n",packed_argument->digit[0],packed_argument->digit[1],unpacked_argument.sign,unpacked_argument.exponent,unpacked_argument.fraction[0],unpacked_argument.fraction[1]);
+      //printf("UX_LOG:  packed arg=%llx %llx, unpacked_arg=(%x %x) %llx %llx\n",packed_argument->digit[0],packed_argument->digit[1],unpacked_argument.sign,unpacked_argument.exponent,unpacked_argument.fraction[0],unpacked_argument.fraction[1]);
 
     if (0 > fp_class)
         return;
@@ -313,7 +313,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result,packed_argument)
                   UX_LOW_FRACTION_IS_ZERO( &unpacked_argument ))
 
                     /* This is -1.  Force underflow */
-	            P_UX_EXPONENT(&unpacked_result, UX_UNDERFLOW_EXPONENT);
+                P_UX_EXPONENT(&unpacked_result, UX_UNDERFLOW_EXPONENT);
                 goto pack_it;
                 }
             }
