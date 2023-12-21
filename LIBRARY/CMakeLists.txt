@@ -75,78 +75,22 @@ endif()
 
 # Add OS specific defintions
 if (UNIX AND APPLE)
-    add_compile_definitions("OSX")
+    add_compile_definitions("LINUX" "darwin" "mach")
+elseif (CMAKE_SYSTEM_NAME MATCHES "(FreeBSD|OpenBSD|NetBSD)")
+    add_compile_definitions("LINUX" "freebsd")
 elseif (UNIX AND NOT APPLE)
-    add_compile_definitions("LINUX")
+    add_compile_definitions("LINUX" "linux")
 elseif (WIN32)
-    add_compile_definitions("WINDOWS")
-    if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-        add_compile_definitions("WIN64")
-    else()
-        add_compile_definitions("WNT")
-    endif()
+    add_compile_definitions("WINDOWS" "WINT" "winnt")
 else()
     message(FATAL_ERROR "Undefined OS")
 endif()
 
 # Add Architecture specific definitions
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-    add_compile_definitions("efi2")
+    add_compile_definitions("efi2" "EFI2")
 else()
-    add_compile_definitions("ia32")
-endif()
-
-# Create F128 UX Functions
-# List of quad functions that are required by the BID package
-set(F128_UX_FUNCTIONS
-    "dpml_ux_bid"
-    "dpml_ux_bessel"
-    "dpml_ux_crbt"
-    "dpml_ux_erf"
-    "dpml_ux_exp"
-    "dpml_ux_int"
-    "dpml_ux_inv_hyper"
-    "dpml_ux_inv_trig"
-    "dpml_ux_lgamma"
-    "dpml_ux_log"
-    "dpml_ux_mod"
-    "dpml_ux_powi"
-    "dpml_ux_pow"
-    "dpml_ux_sqrt"
-    "dpml_ux_trig"
-    "dpml_ux_ops"
-    "dpml_ux_ops_64"
-    "dmpl_four_over_pi"
-    "dpml_exception"
-    "sqrt_tab_t"
-   )
-
-# Create F128 Functions
-# List of double precision functions that are required by the BID package
-if (WIN32)
-set(F128_FUNCTIONS
-    "dpml_asinh_t"
-    "dpml_acosh_t"
-    "dpml_crbt_t"
-    "dpml_erf_t"
-    "dpml_erfc_t"
-    "dpml_exmpm1_t"
-    "dpml_exp10_t"
-    "dpml_exp2_t"
-    "dpml_lgamma_t"
-    "dpml_log1p_t"
-    "dpml_tgamma_t"
-    "dpml_rt_lgamma_t"
-    "dpml_pow_t_table"
-    "dpml_cbrt_t_table"
-    "dpml_special_exp_t"
-   )
-
-    if (CMAKE_SIZEOF_VOID_P EQUAL 4)
-        LIST(APPEND F128_FUNCTIONS "dpml_log2_t")
-    endif()
-else()
-    set(F128_FUNCTIONS)
+    add_compile_definitions("ia32" "IA32")
 endif()
 
 # Create BID Functions
@@ -204,6 +148,8 @@ set(BID32_FUNCTIONS
     "bid32_frexp"
     "bid32_ldexp"
     "bid32_llrintd"
+    "bid32_llround"
+    "bid32_llquantexpd"
     "bid32_logb"
     "bid32_logbd"
     "bid32_lrintd"
@@ -217,6 +163,7 @@ set(BID32_FUNCTIONS
     "bid32_noncomp"
     "bid32_quantexpd"
     "bid32_quantize"
+    "bid32_quantumd"
     "bid32_rem"
     "bid32_round_integral"
     "bid32_scalb"
@@ -224,6 +171,8 @@ set(BID32_FUNCTIONS
     "bid32_sqrt"
     "bid32_string"
     "bid32_sub"
+    "bid32_tanh"
+    "bid32_tgamma"
     "bid32_to_bid64"
     "bid32_to_bid128"
     "bid32_to_int16"
@@ -234,15 +183,30 @@ set(BID32_FUNCTIONS
     "bid32_to_uint32"
     "bid32_to_uint64"
     "bid32_to_uint8"
-    "bid32_llround"
-    "bid32_llquantexpd"
-    "bid32_quantumd"
-    "bid32_tanh"
-    "bid32_tgamma"
  #string operations
     "strtod32"
     "wcstod32"
    )
+
+
+# Remove conflicting definitions on Windows
+if(WIN32)
+    LIST(REMOVE_ITEM BID32_FUNCTIONS
+        "bid32_acosh"
+        "bid32_asinh"
+        "bid32_atanh"
+        "bid32_cbrt"
+        "bid32_erf"
+        "bid32_erfc"
+        "bid32_exp2"
+        "bid32_expm1"
+        "bid32_hypot"
+        "bid32_lgamma"
+        "bid32_log1p"
+        "bid32_tgamma"
+       )
+endif()
+
 
 # Create BID64 Functions
 set(BID64_FUNCTIONS
@@ -282,6 +246,8 @@ set(BID64_FUNCTIONS
     "bid64_frexp"
     "bid64_ldexp"
     "bid64_llrintd"
+    "bid64_llround"
+    "bid64_llquantexpd"
     "bid64_logb"
     "bid64_logbd"
     "bid64_lrintd"
@@ -295,12 +261,15 @@ set(BID64_FUNCTIONS
     "bid64_noncomp"
     "bid64_quantexpd"
     "bid64_quantize"
+    "bid64_quantumd"
     "bid64_rem"
     "bid64_round_integral"
     "bid64_scalb"
     "bid64_scalbl"
     "bid64_sqrt"
     "bid64_string"
+    "bid64_tanh"
+    "bid64_tgamma"
     "bid64_to_bid128"
     "bid64_to_int16"
     "bid64_to_int32"
@@ -310,11 +279,6 @@ set(BID64_FUNCTIONS
     "bid64_to_uint32"
     "bid64_to_uint64"
     "bid64_to_uint8"
-    "bid64_llround"
-    "bid64_llquantexpd"
-    "bid64_quantumd"
-    "bid64_tanh"
-    "bid64_tgamma"
  #string operations
     "strtod64"
     "wcstod64"
@@ -360,6 +324,8 @@ set(BID128_FUNCTIONS
     "bid128_frexp"
     "bid128_ldexp"
     "bid128_llrintd"
+    "bid128_llround"
+    "bid128_llquantexpd"
     "bid128_logb"
     "bid128_logbd"
     "bid128_lrintd"
@@ -373,12 +339,15 @@ set(BID128_FUNCTIONS
     "bid128_noncomp"
     "bid128_quantexpd"
     "bid128_quantize"
+    "bid128_quantumd"
     "bid128_rem"
     "bid128_round_integral"
     "bid128_scalb"
     "bid128_scalbl"
     "bid128_sqrt"
     "bid128_string"
+    "bid128_tanh"
+    "bid128_tgamma"
     "bid128_to_int16"
     "bid128_to_int32"
     "bid128_to_int64"
@@ -387,11 +356,6 @@ set(BID128_FUNCTIONS
     "bid128_to_uint32"
     "bid128_to_uint64"
     "bid128_to_uint8"
-    "bid128_llround"
-    "bid128_llquantexpd"
-    "bid128_quantumd"
-    "bid128_tanh"
-    "bid128_tgamma"
  #string operations
     "strtod128"
     "wcstod128"
@@ -428,18 +392,103 @@ if (CMAKE_C_COMPILER_ID MATCHES "GNU")
 endif()
 
 
-# Add in F128 functions if not using native 128 bit type
-if (NOT USE_COMPILER_F128_TYPE)
+# Create F128 COMMON Functions
+# List of quad functions that are required by the BID package
+set(F128_FUNCTIONS
+    "bessel"
+    "bid"
+    "cbrt"
+    "erf"
+    "exp"
+    "int"
+    "inv_hyper"
+    "inv_trig"
+    "lgamma"
+    "log"
+    "mod"
+    "ops"
+    "ops_64"
+    "pow"
+    "powi"
+    "sqrt"
+    "trig"
+   )
 
+# Create F128 Sources And Headers
+set(F128_HEADERS "")
+set(F128_SOURCES "")
+foreach(F128_FUNCTION ${F128_FUNCTIONS})
+    LIST(APPEND F128_HEADERS "float128/dpml_ux_${F128_FUNCTION}.c")
+    set(F128_FUNCTION_HEADER "float128/dpml_${F128_FUNCTION}_x.h")
+    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${F128_FUNCTION_HEADER}")
+        LIST(APPEND F128_HEADERS "${F128_FUNCTION_HEADER}")
+    endif()
+endforeach()
 
+# Add following additional functions
+LIST(APPEND F128_SOURCES
+     "float128/dpml_exception.c"
+     "float128/dpml_four_over_pi.c"
+     "float128/sqrt_tab_t.c"
+    )
+LIST(APPEND F128_HEADERS
+     "float128/dpml_exception.h"
+    )
 
+# Create F128 Object Library
+add_library(IntelDFPF128 OBJECT ${F128_SOURCES} ${F128_HEADERS})
+target_compile_definitions(IntelDFPF128 PRIVATE "USE_NATIVE_QUAD_TYPE=0")
+
+# Create F128 Functions
+# List of double precision functions that are required by the BID package
+if (WIN32)
+    set(F53_FUNCTIONS
+        "acosh"
+        "asinh"
+        "crbt"
+        "erf"
+        "expm1"
+        "lgamma"
+        "tgamma"
+       )
+
+    if (CMAKE_SIZEOF_VOID_P EQUAL 4)
+        LIST(APPEND F53_FUNCTIONS "log2_t")
+    endif()
+
+    # Create F53 Sources And Headers
+    set(F53_HEADERS "")
+    set(F53_SOURCES "")
+    foreach(F53_FUNCTION ${F53_FUNCTIONS})
+        set(F53_FUNCTION_SOURCE "float128/dpml_${F53_FUNCTION}.c")
+        if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${F53_FUNCTION_SOURCE}")
+            LIST(APPEND F53_SOURCES "${F53_FUNCTION_SOURCE}")
+        endif()
+        set(F53_FUNCTION_HEADER "float128/dpml_${F53_FUNCTION}_t.h")
+        if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${F53_FUNCTION_HEADER}")
+            LIST(APPEND F53_SOURCES "${F53_FUNCTION_HEADER}")
+        endif()
+    endforeach()
+
+    LIST(APPEND F53_SOURCES
+         "float128/dpml_cbrt_t_table.c"
+         "float128/dpml_pow_t_table.c"
+        )
+
+    # Create F53 Object Library
+    add_library(IntelDFPF53 OBJECT ${F53_SOURCES} ${F53_HEADERS})
+    target_compile_definitions(IntelDFPF53 PRIVATE "DO_LGAMMA" "HACK_GAMMA_INLINE=0" "USE_CONTROL87" "T_FLOAT" "ERF" "ASINH")
 endif()
 
-
+# Create the library
 if (BUILD_SHARED_LIBS)
     add_library(IntelDFP SHARED ${BID_SOURCES} ${BID_HEADERS})
 else()
     add_library(IntelDFP STATIC ${BID_SOURCES} ${BID_HEADERS})
+endif()
+target_link_libraries(IntelDFP PRIVATE IntelDFPF128)
+if (WIN32)
+    target_link_libraries(IntelDFP PRIVATE IntelDFPF53)
 endif()
 
 # Add public headers
