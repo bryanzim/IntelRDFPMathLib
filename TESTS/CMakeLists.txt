@@ -35,6 +35,15 @@ endif()
 if (IntelCompiler)
     add_compile_options("-Qoption,cpp,--extended_float_types")
     add_compile_options("-Qlong-double" "-Qpc80" "-Qstd=c99")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    # using Clang
+    add_compile_options("-Wall")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    # using GCC
+    add_compile_options("-Wall")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    add_compile_definitions("_CRT_SECURE_NO_WARNINGS")
+    add_compile_options("/Wall")
 else()
 endif()
 

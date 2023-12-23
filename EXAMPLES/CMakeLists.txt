@@ -38,6 +38,19 @@ else()
     message(FATAL_ERROR "Undefined OS")
 endif()
 
+# Set compiler specific defintions
+if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    # using Clang
+    add_compile_options("-Wall")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    # using GCC
+    add_compile_options("-Wall")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    # using MSVC
+    add_compile_options("/Wall")
+else()
+endif()
+
 # Create Example Headers
 set(EXAMPLE_HEADERS
     "decimal.h"

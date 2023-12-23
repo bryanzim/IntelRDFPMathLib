@@ -70,6 +70,14 @@ if (IntelCompiler)
     if (FLOATING_POINT_WRAPPERS)
         add_compile_definitions("__DFP_WRAPPERS_ON=1")
     endif()
+elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    # using Clang
+    add_compile_options("-Wall")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    # using GCC
+    add_compile_options("-Wall")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options("/Wall")
 else()
 endif()
 
