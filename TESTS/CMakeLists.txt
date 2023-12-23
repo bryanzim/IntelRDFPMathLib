@@ -19,17 +19,14 @@ if (CALL_BY_REFERENCE)
     add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=1")    
 else()
     add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=0")
-    set(FLOATING_POINT_WRAPPERS OFF)
 endif()
 if (GLOBAL_ROUNDING)
     add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=1")
-    set(FLOATING_POINT_WRAPPERS OFF)
 else()
     add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=0")
 endif()
 if (GLOBAL_EXCEPTIONS)
     add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=1")
-    set(FLOATING_POINT_WRAPPERS OFF)
 else()
     add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=0")
 endif()
@@ -54,19 +51,19 @@ else()
     message(FATAL_ERROR "Undefined OS")
 endif()
 
-# Create BID Functions
+# Create Test Headers
 set(TEST_HEADERS
     "readtest.h"
     "test_bid_conf.h"
     "test_bid_functions.h"
    )
 
-# Create BID32 Functions
+# Create Test Source
 set(TEST_SOURCE
     "readtest.c"
    )
 
-# Create F128 Object Library
+# Create Test Executable
 add_executable(IntelDFPTest ${TEST_SOURCE} ${TEST_HEADERS})
 target_link_libraries(IntelDFPTest PRIVATE IntelDFP)
    

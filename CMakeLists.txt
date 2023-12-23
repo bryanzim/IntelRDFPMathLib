@@ -18,7 +18,7 @@ option(GLOBAL_ROUNDING
 option(GLOBAL_EXCEPTION_FLAGS
        "Whether exceptions are stored a global varibale '_IDEC_flags __bid_IDEC_glbflags;'" OFF)
 option(BUILD_TESTS "Whether to build the tests or not" ON)
-option(BUILD_EXAMPLES "Whether to build the examples or not" OFF)
+option(BUILD_EXAMPLES "Whether to build the examples or not" ON)
 option(BUILD_SHARED_LIBS "Whether to build libs as shared" OFF)
 
 if (BUILD_TESTS)

@@ -55,7 +55,7 @@ main () {
     printf ("EXPECTED z=3040000000000000 0000000000000006 "
         "__bid_IDEC_glbflags=00000000\n");
     printf ("ERROR: TEST CASE 1 FOR __bid128_mul 111 () FAILED\n\n");
-    exit (1);
+    return EXIT_FAILURE;
   } else {
     printf ("TEST CASE 1 FOR __bid128_mul 111 () PASSED\n");
   }
@@ -78,7 +78,7 @@ main () {
     printf ("EXPECTED z=31e9ed09bead87c0 23b52ee2d8fdec33 "
         "__bid_IDEC_glbflags=00000020\n");
     printf ("ERROR: TEST CASE 2 FOR __bid128_mul 111 () FAILED\n\n");
-    exit (1);
+    return EXIT_FAILURE;
   } else {
     printf ("TEST CASE 2 FOR __bid128_mul 111 () PASSED\n");
   }
@@ -101,10 +101,11 @@ main () {
     printf ("EXPECTED z=31e9ed09bead87c0 23b52ee2d8fdec32 "
         "__bid_IDEC_glbflags=00000020\n");
     printf ("ERROR: TEST CASE 3 FOR __bid128_mul 111 () FAILED\n\n");
-    exit (1);
+    return EXIT_FAILURE;
   } else {
     printf ("TEST CASE 3 FOR __bid128_mul 111 () PASSED\n");
   }
 
   printf ("End Decimal Floating-Point Sanity Check\n");
+  return EXIT_SUCCESS;
 }

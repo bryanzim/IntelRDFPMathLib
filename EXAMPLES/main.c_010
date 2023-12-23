@@ -54,7 +54,7 @@ main () {
     printf ("RECEIVED z="LX" "LX" my_fpsf=%x\n", z.w[HIGH_128W], z.w[LOW_128W], my_fpsf);
     printf ("EXPECTED z=3040000000000000 0000000000000006 my_fpsf=00000000\n");
     printf ("ERROR: TEST CASE 1 FOR __bid128_mul 010 () FAILED\n\n");
-    exit (1);
+    return EXIT_FAILURE;
   } else {
     printf ("TEST CASE 1 FOR __bid128_mul 010 () PASSED\n");
   }
@@ -75,7 +75,7 @@ main () {
     printf ("RECEIVED z="LX" "LX" my_fpsf=%x\n", z.w[HIGH_128W], z.w[LOW_128W], my_fpsf);
     printf ("EXPECTED z=31e9ed09bead87c0 23b52ee2d8fdec33 my_fpsf=00000020\n");
     printf ("ERROR: TEST CASE 2 FOR __bid128_mul 010 () FAILED\n\n");
-    exit (1);
+    return EXIT_FAILURE;
   } else {
     printf ("TEST CASE 2 FOR __bid128_mul 010 () PASSED\n");
   }
@@ -96,10 +96,11 @@ main () {
     printf ("RECEIVED z="LX" "LX" my_fpsf=%x\n", z.w[HIGH_128W], z.w[LOW_128W], my_fpsf);
     printf ("EXPECTED z=31e9ed09bead87c0 23b52ee2d8fdec32 my_fpsf=00000020\n");
     printf ("ERROR: TEST CASE 3 FOR __bid128_mul 010 () FAILED\n\n");
-    exit (1);
+    return EXIT_FAILURE;
   } else {
     printf ("TEST CASE 3 FOR __bid128_mul 010 () PASSED\n");
   }
 
   printf ("End Decimal Floating-Point Sanity Check\n");
+  return EXIT_SUCCESS;
 }
