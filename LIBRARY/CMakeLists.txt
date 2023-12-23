@@ -34,7 +34,7 @@ else()
 endif()
 
 # Set Endianess
-if (CMAKE_C_BYTE_ORDER STREQUAL "BIG_ENDIAN" OR CMAKE_CXX_BYTE_ORDER STREQUAL "BIG_ENDIAN")
+if (CMAKE_C_BYTE_ORDER STREQUAL "BIG_ENDIAN")
     add_compile_definitions("BID_BIG_ENDIAN=1")
 else()
     add_compile_definitions("BID_BIG_ENDIAN=0")
@@ -66,7 +66,7 @@ endif()
 
 # Set compiler specific defintions
 if (IntelCompiler)
-    add_compile_options("/Qlong-double" "/Qpc80" "/Qstd=c99")
+    add_compile_options("-Qlong-double" "-Qpc80" "-Qstd=c99")
     if (FLOATING_POINT_WRAPPERS)
         add_compile_definitions("__DFP_WRAPPERS_ON=1")
     endif()
@@ -187,26 +187,6 @@ set(BID32_FUNCTIONS
     "strtod32"
     "wcstod32"
    )
-
-
-# Remove conflicting definitions on Windows
-if(WIN32)
-    LIST(REMOVE_ITEM BID32_FUNCTIONS
-        "bid32_acosh"
-        "bid32_asinh"
-        "bid32_atanh"
-        "bid32_cbrt"
-        "bid32_erf"
-        "bid32_erfc"
-        "bid32_exp2"
-        "bid32_expm1"
-        "bid32_hypot"
-        "bid32_lgamma"
-        "bid32_log1p"
-        "bid32_tgamma"
-       )
-endif()
-
 
 # Create BID64 Functions
 set(BID64_FUNCTIONS
@@ -439,47 +419,6 @@ LIST(APPEND F128_HEADERS
 add_library(IntelDFPF128 OBJECT ${F128_SOURCES} ${F128_HEADERS})
 target_compile_definitions(IntelDFPF128 PRIVATE "USE_NATIVE_QUAD_TYPE=0")
 
-# Create F128 Functions
-# List of double precision functions that are required by the BID package
-if (WIN32)
-    set(F53_FUNCTIONS
-        "acosh"
-        "asinh"
-        "crbt"
-        "erf"
-        "expm1"
-        "lgamma"
-        "tgamma"
-       )
-
-    if (CMAKE_SIZEOF_VOID_P EQUAL 4)
-        LIST(APPEND F53_FUNCTIONS "log2_t")
-    endif()
-
-    # Create F53 Sources And Headers
-    set(F53_HEADERS "")
-    set(F53_SOURCES "")
-    foreach(F53_FUNCTION ${F53_FUNCTIONS})
-        set(F53_FUNCTION_SOURCE "float128/dpml_${F53_FUNCTION}.c")
-        if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${F53_FUNCTION_SOURCE}")
-            LIST(APPEND F53_SOURCES "${F53_FUNCTION_SOURCE}")
-        endif()
-        set(F53_FUNCTION_HEADER "float128/dpml_${F53_FUNCTION}_t.h")
-        if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${F53_FUNCTION_HEADER}")
-            LIST(APPEND F53_SOURCES "${F53_FUNCTION_HEADER}")
-        endif()
-    endforeach()
-
-    LIST(APPEND F53_SOURCES
-         "float128/dpml_cbrt_t_table.c"
-         "float128/dpml_pow_t_table.c"
-        )
-
-    # Create F53 Object Library
-    add_library(IntelDFPF53 OBJECT ${F53_SOURCES} ${F53_HEADERS})
-    target_compile_definitions(IntelDFPF53 PRIVATE "DO_LGAMMA" "HACK_GAMMA_INLINE=0" "USE_CONTROL87" "T_FLOAT" "ERF" "ASINH")
-endif()
-
 # Create the library
 if (BUILD_SHARED_LIBS)
     add_library(IntelDFP SHARED ${BID_SOURCES} ${BID_HEADERS})
@@ -487,9 +426,6 @@ else()
     add_library(IntelDFP STATIC ${BID_SOURCES} ${BID_HEADERS})
 endif()
 target_link_libraries(IntelDFP PRIVATE IntelDFPF128)
-if (WIN32)
-    target_link_libraries(IntelDFP PRIVATE IntelDFPF53)
-endif()
 
 # Add public headers
 #target_include_directories(IntelDFP PUBLIC "src/")

@@ -1710,259 +1710,269 @@ void check_den_passing80(long double x)
 
 
 int
-main (int argc, char *argv[]) {
-  int ch, digit_optind = 0;
-  int skip_test;
-  char **arg;
-  char *end_of_args = (char*)-1;
+main(int argc, char* argv[]) {
+    int ch, digit_optind = 0;
+    int skip_test;
+    char** arg;
+    char* end_of_args = (char*)-1;
 
-  strcpy (rounding, "half_even");
+    strcpy(rounding, "half_even");
 
-  if (sizeof(long int) == 8) {
-    li_size_test = 64; 
-    li_size_run = 64; 
-  } else {
-    li_size_test = 32; 
-    li_size_run = 32; 
-  }	
-
-  arg = argv + 1;	// point to first command-line parameter
-  while (*arg && **arg == '-') {	// Process all options
-    if (strcmp (*arg, "-d") == 0)
-      debug_opt = 1;
-    if (strcmp (*arg, "-ub") == 0)
-      underflow_before_opt = 1;
-    if (strcmp (*arg, "-ua") == 0)
-      underflow_after_opt = 1;
-    if (strcmp (*arg, "-h") == 0) {
-      printf ("Usage: runtests [-d]\n");
-      exit (0);
+    if (sizeof(long int) == 8) {
+        li_size_test = 64;
+        li_size_run = 64;
     }
-    if (strcmp (*arg, "-ulp") == 0) {
+    else {
+        li_size_test = 32;
+        li_size_run = 32;
+    }
+
+    arg = argv + 1;	// point to first command-line parameter
+    while (*arg && **arg == '-') {	// Process all options
+        if (strcmp(*arg, "-d") == 0)
+            debug_opt = 1;
+        if (strcmp(*arg, "-ub") == 0)
+            underflow_before_opt = 1;
+        if (strcmp(*arg, "-ua") == 0)
+            underflow_after_opt = 1;
+        if (strcmp(*arg, "-h") == 0) {
+            printf("Usage: runtests [-d]\n");
+            exit(0);
+        }
+        if (strcmp(*arg, "-ulp") == 0) {
+            arg++;
+            argc--;
+            sscanf(*arg, "%lf", &mre_max[0]);
+            mre_max[4] = mre_max[3] = mre_max[2] = mre_max[1] = mre_max[0];
+        }
+        if (strcmp(*arg, "-bin_flags") == 0) {
+            check_binary_flags_opt = 1;
+            arg++;
+            argc--;
+            sscanf(*arg, "%x", (int*)&ini_binary_flags);
+        }
+        if (strcmp(*arg, "-no128trans") == 0) {
+            no128trans = 1;
+        }
+        if (strcmp(*arg, "-no64trans") == 0) {
+            no64trans = 1;
+        }
         arg++;
-        argc--;
-        sscanf(*arg, "%lf", &mre_max[0]);
-        mre_max[4] = mre_max[3] = mre_max[2] = mre_max[1] = mre_max[0];
     }
-   if (strcmp (*arg, "-bin_flags") == 0) {
-        check_binary_flags_opt = 1;
-        arg++;
-        argc--;
-        sscanf(*arg, "%x", (int*)&ini_binary_flags);
-    }
-    if (strcmp (*arg, "-no128trans") == 0) {
-        no128trans = 1;
-    }
-    if (strcmp (*arg, "-no64trans") == 0) {
-        no64trans = 1;
-    }
-    arg++;
-  }
 
-  if (underflow_before_opt && underflow_after_opt) {
-    printf("Both underflow before and after rounding checking mode set, please specify just one.\n");	
-    printf ("Usage: runtests [-d]\n");
-    exit (0);
-  } else if (!underflow_before_opt && !underflow_after_opt) underflow_before_opt = 1;
+    if (underflow_before_opt && underflow_after_opt) {
+        printf("Both underflow before and after rounding checking mode set, please specify just one.\n");
+        printf("Usage: runtests [-d]\n");
+        exit(0);
+    }
+    else if (!underflow_before_opt && !underflow_after_opt) underflow_before_opt = 1;
 
-  rnd_mode = 0;
-  rnd_mode |= BID_ROUNDING_TO_NEAREST;
+    rnd_mode = 0;
+    rnd_mode |= BID_ROUNDING_TO_NEAREST;
 
-  *((int*)&snan_check64+BID_HIGH_128W) = 0x7ff00000;
-  *((int*)&snan_check64+BID_LOW_128W) =  0x00000001;
-  check_snan_passing64(snan_check64);
-  *((int*)&snan_check32) = 0x7f800010;
-  check_snan_passing32(snan_check32);
+    *((int*)&snan_check64 + BID_HIGH_128W) = 0x7ff00000;
+    *((int*)&snan_check64 + BID_LOW_128W) = 0x00000001;
+    check_snan_passing64(snan_check64);
+    *((int*)&snan_check32) = 0x7f800010;
+    check_snan_passing32(snan_check32);
 #if BID_BIG_ENDIAN
-  *((int*)&snan_check80) = 0x7fff8000;
-  *((int*)&snan_check80+1) = 0;
-  *((short*)&snan_check80+4) = 1;
+    * ((int*)&snan_check80) = 0x7fff8000;
+    *((int*)&snan_check80 + 1) = 0;
+    *((short*)&snan_check80 + 4) = 1;
 #else
-  *((short*)&snan_check80+4) = 0x7fff;
-  *((int*)&snan_check80+1) = 0x80000000;
-  *((int*)&snan_check80+0) =  0x00000001;
+    * ((short*)&snan_check80 + 4) = 0x7fff;
+    *((int*)&snan_check80 + 1) = 0x80000000;
+    *((int*)&snan_check80 + 0) = 0x00000001;
 #endif
-  check_snan_passing80(snan_check80);
+    check_snan_passing80(snan_check80);
 
-  *((int*)&snan_check64+BID_HIGH_128W) = 0x00000000;
-  *((int*)&snan_check64+BID_LOW_128W) =  0x00000001;
+    *((int*)&snan_check64 + BID_HIGH_128W) = 0x00000000;
+    *((int*)&snan_check64 + BID_LOW_128W) = 0x00000001;
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
-  feclearexcept (FE_ALL_EXCEPT);
-  check_den_passing64(snan_check64);
-  *((int*)&snan_check32) = 0x00000001;
-  feclearexcept (FE_ALL_EXCEPT);
-  check_den_passing32(snan_check32);
+    feclearexcept(FE_ALL_EXCEPT);
+    check_den_passing64(snan_check64);
+    *((int*)&snan_check32) = 0x00000001;
+    feclearexcept(FE_ALL_EXCEPT);
+    check_den_passing32(snan_check32);
 #endif
 #if BID_BIG_ENDIAN
-  *((short*)&snan_check80+4) = 0x0000;
-  *((int*)&snan_check80+1) = 0x00000000;
-  *((int*)&snan_check80+0) =  0x00000001;
+    * ((short*)&snan_check80 + 4) = 0x0000;
+    *((int*)&snan_check80 + 1) = 0x00000000;
+    *((int*)&snan_check80 + 0) = 0x00000001;
 #else
-  *((int*)&snan_check80) = 0x00000000;
-  *((int*)&snan_check80+1) = 0;
-  *((short*)&snan_check80+4) = 1;
+    * ((int*)&snan_check80) = 0x00000000;
+    *((int*)&snan_check80 + 1) = 0;
+    *((short*)&snan_check80 + 4) = 1;
 #endif
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
- feclearexcept (FE_ALL_EXCEPT);
-  check_den_passing80(snan_check80);
-  feclearexcept (FE_ALL_EXCEPT);
+    feclearexcept(FE_ALL_EXCEPT);
+    check_den_passing80(snan_check80);
+    feclearexcept(FE_ALL_EXCEPT);
 #endif
-//printf("snan32 passed incorr %d\n", SNaN_passed_incorrectly32);
-//printf("snan64 passed incorr %d\n", SNaN_passed_incorrectly64);
-//printf("snan80 passed incorr %d\n", SNaN_passed_incorrectly80);
-//printf("den32 passed incorr %d\n", Den_passed_incorrectly32);
-//printf("den64 passed incorr %d\n", Den_passed_incorrectly64);
-//printf("den80 passed incorr %d\n", Den_passed_incorrectly80);
+    //printf("snan32 passed incorr %d\n", SNaN_passed_incorrectly32);
+    //printf("snan64 passed incorr %d\n", SNaN_passed_incorrectly64);
+    //printf("snan80 passed incorr %d\n", SNaN_passed_incorrectly80);
+    //printf("den32 passed incorr %d\n", Den_passed_incorrectly32);
+    //printf("den64 passed incorr %d\n", Den_passed_incorrectly64);
+    //printf("den80 passed incorr %d\n", Den_passed_incorrectly80);
 
-  line_counter=0;
-  while (!feof (stdin)) {
-    int st;
+    line_counter = 0;
+    while (!feof(stdin)) {
+        int st;
 
-    op1type = OP_NONE;
-    op2type = OP_NONE;
-    op3type = OP_NONE;
-    restype = OP_NONE;
+        op1type = OP_NONE;
+        op2type = OP_NONE;
+        op3type = OP_NONE;
+        restype = OP_NONE;
 
-    fgets (line, 1023, stdin);
-    line_counter++;
-    strRemove0D0A(line);
-    strcpy(full_line, line);
-    if (feof (stdin))
-      break;
+        fgets(line, 1023, stdin);
+        line_counter++;
+        strRemove0D0A(line);
+        strcpy(full_line, line);
+        if (feof(stdin))
+            break;
 
-    // printf("Read line: %s", line);
-    p = strstr (line, "--");
-    if ( p ) *p = 0; // Remove comment
-    strRemoveTrailingSpaces(line);
+        // printf("Read line: %s", line);
+        p = strstr(line, "--");
+        if (p) *p = 0; // Remove comment
+        strRemoveTrailingSpaces(line);
 
-    // Reset BID status flags
-    *pfpsf = 0;
+        // Reset BID status flags
+        *pfpsf = 0;
 
-    if (line[0] == 0)
-      continue;
+        if (line[0] == 0)
+            continue;
 
-    // Extract ulp field from line, if present:
-    p = strstr (line, "ulp=");
-    if ( p ) {
-        if (p < end_of_args) end_of_args = p;
-        if ( sscanf(p+4, "%le", &ulp_add) != 1 ) ulp_add=0.0;
-    } else {
-        ulp_add=0.0;
-    }
+        // Extract ulp field from line, if present:
+        p = strstr(line, "ulp=");
+        if (p) {
+            if (p < end_of_args) end_of_args = p;
+            if (sscanf(p + 4, "%le", &ulp_add) != 1) ulp_add = 0.0;
+        }
+        else {
+            ulp_add = 0.0;
+        }
 
-    // Determine if underflow, indicated as expected have to be set only for before rounding mode
-    p = strstr (line, "underflow_before_only");
-    if ( p ) {
-        if (p < end_of_args) end_of_args = p;
-        Underflow_Before = 1;
-    } else {
-        Underflow_Before = 0;
-    }
+        // Determine if underflow, indicated as expected have to be set only for before rounding mode
+        p = strstr(line, "underflow_before_only");
+        if (p) {
+            if (p < end_of_args) end_of_args = p;
+            Underflow_Before = 1;
+        }
+        else {
+            Underflow_Before = 0;
+        }
 
-    // Read string prefix for from string conversions
-    p = strstr (line, "str_prefix=");
-    if ( p ) {
-        if (p < end_of_args) end_of_args = p;
-        { int i = 0; while ( *(p+12+i) != '|' && *(p+12+i) != 0 ) {
-                str_prefix[i] = *(p+12+i);
-                i++;
+        // Read string prefix for from string conversions
+        p = strstr(line, "str_prefix=");
+        if (p) {
+            if (p < end_of_args) end_of_args = p;
+            {
+                int i = 0; while (*(p + 12 + i) != '|' && *(p + 12 + i) != 0) {
+                    str_prefix[i] = *(p + 12 + i);
+                    i++;
                 }
                 str_prefix[i] = 0;
-          }
-    } else {
-        strcpy(str_prefix, "");
-    }
+            }
+        }
+        else {
+            strcpy(str_prefix, "");
+        }
 
-    // Extract long int size from line, if present:
-    p = strstr (line, "longintsize=");
-    if ( p ) {
-        if (p < end_of_args) end_of_args = p;
-        if ( sscanf(p+12, "%d", &li_size_test) != 1 ) li_size_test=0;
-    } else {
-        li_size_test=li_size_run;
-    }
+        // Extract long int size from line, if present:
+        p = strstr(line, "longintsize=");
+        if (p) {
+            if (p < end_of_args) end_of_args = p;
+            if (sscanf(p + 12, "%d", &li_size_test) != 1) li_size_test = 0;
+        }
+        else {
+            li_size_test = li_size_run;
+        }
 
-//printf();
-    if (end_of_args != (char*)-1) {	
-        *end_of_args = 0;	
-     strRemoveTrailingSpaces(line);
-     end_of_args = (char*)-1;
-    }
+        //printf();
+        if (end_of_args != (char*)-1) {
+            *end_of_args = 0;
+            strRemoveTrailingSpaces(line);
+            end_of_args = (char*)-1;
+        }
 
-    args_set = 0;
-    if (sscanf (line, "%s %d %s %s %s %s %x", funcstr, &rnd_mode,
-         op1, op2, op3, res, &expected_status) == 7) {
-//printf("read8 %d\n", rnd_mode);
-        args_set = 1;
-    }
-    if (!args_set) {
-        if (sscanf (line, "%s %d %s %s %s %x", funcstr, &rnd_mode,
-             op1, op2, res, &expected_status) == 6) {
-//printf("read7 %d\n", rnd_mode);
+        args_set = 0;
+        if (sscanf(line, "%s %d %s %s %s %s %x", funcstr, &rnd_mode,
+                   op1, op2, op3, res, &expected_status) == 7) {
+            //printf("read8 %d\n", rnd_mode);
             args_set = 1;
         }
-     }
-    if (!args_set) {
-        if (sscanf(line, "%s %d %s %s %x", funcstr, &rnd_mode, op1,
-             res, &expected_status) == 5) {
-//printf("read6 %d\n", rnd_mode);
-            args_set = 1;
+        if (!args_set) {
+            if (sscanf(line, "%s %d %s %s %s %x", funcstr, &rnd_mode,
+                       op1, op2, res, &expected_status) == 6) {
+                //printf("read7 %d\n", rnd_mode);
+                args_set = 1;
+            }
         }
-     }
-
-     skip_test = check_skip(funcstr);
-     pollution_workaround = check_pollution_workaround();
-
-
-//printf("str %s op1 %s, skip %d\n", line, op1, skip_test);
-     if (args_set && !skip_test) {
-        rnd = rnd_mode;
-        // set ulp thresholds for transcendentals
-        p = strstr (funcstr, "128");
-        if ( p ) {
-            mre_max[0] = 2.0;
-            mre_max[1] = 5.0;
-            mre_max[2] = 5.0;
-            mre_max[3] = 5.0;
-            mre_max[4] = 2.0;
+        if (!args_set) {
+            if (sscanf(line, "%s %d %s %s %x", funcstr, &rnd_mode, op1,
+                       res, &expected_status) == 5) {
+                //printf("read6 %d\n", rnd_mode);
+                args_set = 1;
+            }
         }
-    else {
-        p = strstr (funcstr, "64");
-            if ( p ) {
-            mre_max[0] = 0.55;
-            mre_max[1] = 1.05;
-            mre_max[2] = 1.05;
-            mre_max[3] = 1.05;
-            mre_max[4] = 0.55;
-        }
+
+        skip_test = check_skip(funcstr);
+        pollution_workaround = check_pollution_workaround();
+
+
+        //printf("str %s op1 %s, skip %d\n", line, op1, skip_test);
+        if (args_set && !skip_test) {
+            rnd = rnd_mode;
+            // set ulp thresholds for transcendentals
+            p = strstr(funcstr, "128");
+            if (p) {
+                mre_max[0] = 2.0;
+                mre_max[1] = 5.0;
+                mre_max[2] = 5.0;
+                mre_max[3] = 5.0;
+                mre_max[4] = 2.0;
+            }
             else {
-            p = strstr (funcstr, "32");
-                if ( p ) {
-            mre_max[0] = 0.5;
-            mre_max[1] = 1.01;
-            mre_max[2] = 1.01;
-            mre_max[3] = 1.01;
-            mre_max[4] = 0.5;
-        }
-        }
-    }
+                p = strstr(funcstr, "64");
+                if (p) {
+                    mre_max[0] = 0.55;
+                    mre_max[1] = 1.05;
+                    mre_max[2] = 1.05;
+                    mre_max[3] = 1.05;
+                    mre_max[4] = 0.55;
+                }
+                else {
+                    p = strstr(funcstr, "32");
+                    if (p) {
+                        mre_max[0] = 0.5;
+                        mre_max[1] = 1.01;
+                        mre_max[2] = 1.01;
+                        mre_max[3] = 1.01;
+                        mre_max[4] = 0.5;
+                    }
+                }
+            }
 
-      strcpy (rounding, roundstr_bid[rnd]);
+            strcpy(rounding, roundstr_bid[rnd]);
 
-      //clean expected underflow if it is for before rounding mode and we are checking after rounidng 
-        if ((expected_status & 0x10) && Underflow_Before && underflow_after_opt) expected_status &= ~0x00000010;
+            //clean expected underflow if it is for before rounding mode and we are checking after rounidng 
+            if ((expected_status & 0x10) && Underflow_Before && underflow_after_opt) expected_status &= ~0x00000010;
 
 #include "readtest.h"
 
-    } else {
-      if (!skip_test) printf ("SKIPPED (line %d): %s\n", line_counter,line);
+        }
+        else {
+            if (!skip_test) printf("SKIPPED (line %d): %s\n", line_counter, line);
+        }
     }
-  }
 
-  printf ("Total tests: %d, failed result: %d, failed status: %d\n",
-      tests, fail_res, fail_status);
-  return 0;
-
+    printf("Total tests: %d, failed result: %d, failed status: %d\n",
+           tests, fail_res, fail_status);
+    if ((fail_res == 0) && (fail_status == 0)) {
+        return EXIT_SUCCESS;
+    }
+    return EXIT_FAILURE;
 }
 
 int copy_str_to_wstr() {

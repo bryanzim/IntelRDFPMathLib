@@ -198,7 +198,7 @@ int i,k;
    }
 
    *ps = L'\0';
-   ps0_c = malloc(k*sizeof(char));
+   ps0_c = malloc((k+1)*sizeof(char));
    if(!ps0_c)
    { free(ps0); return NULL;}
    for(i=0; i<=k; i++)
