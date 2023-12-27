@@ -450,6 +450,6 @@ set_target_properties(IntelDFP PROPERTIES
                       ARCHIVE_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/lib"
                       PDB_OUTPUT_DIRECTORY         "${CMAKE_BINARY_DIR}/bin"
                       COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-                      DEBUG_POSTFIX "d"
+                      DEBUG_POSTFIX                "d"
                      )
 
