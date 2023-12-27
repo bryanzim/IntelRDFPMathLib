@@ -42,12 +42,17 @@ endif()
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     # using Clang
     add_compile_options("-Wall")
+    add_compile_options("-Wextra")
+    add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # using GCC
     add_compile_options("-Wall")
+    add_compile_options("-Wextra")
+    add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     # using MSVC
     add_compile_options("/Wall")
+    add_compile_options("/Zc:__cplusplus")
 else()
 endif()
 
@@ -82,6 +87,7 @@ set_target_properties(IntelDFPExample PROPERTIES
                       ARCHIVE_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/lib"
                       PDB_OUTPUT_DIRECTORY         "${CMAKE_BINARY_DIR}/bin"
                       COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+                      DEBUG_POSTFIX "d"
                      )
                      
 # Erase the copied files

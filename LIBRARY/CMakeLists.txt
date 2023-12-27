@@ -73,11 +73,16 @@ if (IntelCompiler)
 elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     # using Clang
     add_compile_options("-Wall")
+    add_compile_options("-Wextra")
+    add_compile_options("-pendantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # using GCC
     add_compile_options("-Wall")
+    add_compile_options("-Wextra")
+    add_compile_options("-pendantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     add_compile_options("/Wall")
+    add_compile_options("/Zc:__cplusplus")
 else()
 endif()
 
@@ -445,5 +450,6 @@ set_target_properties(IntelDFP PROPERTIES
                       ARCHIVE_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/lib"
                       PDB_OUTPUT_DIRECTORY         "${CMAKE_BINARY_DIR}/bin"
                       COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+                      DEBUG_POSTFIX "d"
                      )
 

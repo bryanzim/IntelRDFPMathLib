@@ -26,6 +26,10 @@ if (BUILD_TESTS)
     enable_testing()
 endif()
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
 # Add subdirectories
 add_subdirectory("LIBRARY")
 if (BUILD_TESTS)
