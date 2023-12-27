@@ -1,5 +1,5 @@
 #Execute the IntelDFPTest
-execute_process(COMMAND "${TEST_PATH}/IntelDFPTest${CMAKE_EXECUTABLE_SUFFIX}"
+execute_process(COMMAND "${TEST_PATH}/${TEST_EXE}"
                 INPUT_FILE "readtest.in"
                 WORKING_DIRECTORY "${TEST_PATH}"
                 ECHO_OUTPUT_VARIABLE

@@ -1740,16 +1740,16 @@ main(int argc, char* argv[]) {
             exit(0);
         }
         if (strcmp(*arg, "-ulp") == 0) {
-            arg++;
-            argc--;
-            sscanf(*arg, "%lf", &mre_max[0]);
+            ++arg;
+            --argc;
+            const int result = sscanf(*arg, "%lf", &mre_max[0]);
             mre_max[4] = mre_max[3] = mre_max[2] = mre_max[1] = mre_max[0];
         }
         if (strcmp(*arg, "-bin_flags") == 0) {
             check_binary_flags_opt = 1;
-            arg++;
-            argc--;
-            sscanf(*arg, "%x", (int*)&ini_binary_flags);
+            ++arg;
+            --argc;
+            const int result = sscanf(*arg, "%x", (int*)&ini_binary_flags);
         }
         if (strcmp(*arg, "-no128trans") == 0) {
             no128trans = 1;
@@ -2037,17 +2037,16 @@ int check_restore_binary_status()
 
 int check_pollution_workaround(void)
 {
-    char *p;
-    if ((p = strstr (func, "sin")) ||
-       (p = strstr (func, "cos")) ||
-       (p = strstr (func, "tan")) ||
-       (p = strstr (func, "exp")) ||
-       (p = strstr (func, "log")) ||
-       (p = strstr (func, "erf")) ||
-       (p = strstr (func, "hypot")) ||
-       (p = strstr (func, "pow")) ||
-       (p = strstr (func, "cbrt")) ||
-       (p = strstr (func, "gamma")) 
+    if ((strstr (func, "sin") != NULL) ||
+       (strstr (func, "cos") != NULL) ||
+       (strstr (func, "tan") != NULL) ||
+       (strstr (func, "exp") != NULL) ||
+       (strstr (func, "log") != NULL) ||
+       (strstr (func, "erf") != NULL) ||
+       (strstr (func, "hypot") != NULL) ||
+       (strstr (func, "pow") != NULL) ||
+       (strstr (func, "cbrt") != NULL) ||
+       (strstr (func, "gamma") != NULL)
     ) {
         return 1;
     } else {

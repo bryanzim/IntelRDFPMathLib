@@ -62,22 +62,22 @@ set(EXAMPLE_HEADERS
    )
 
 # Create Examnple Source
-set(EXAMPLE_SOURCE
+set(EXAMPLE_SOURCES
     "main.c"
    )
 
-# Copy the appropriate files to build
-execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h_${BIT2}${BIT1}${BIT0}"
-                "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h"
+# Copy the files once during CMake generation
+execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+                        "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h_${BIT2}${BIT1}${BIT0}"
+                        "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h"
                )
-execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                "${CMAKE_CURRENT_SOURCE_DIR}/main.c_${BIT2}${BIT1}${BIT0}"
-                "${CMAKE_CURRENT_SOURCE_DIR}/main.c"
-               )
+execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+                        "${CMAKE_CURRENT_SOURCE_DIR}/main.c_${BIT2}${BIT1}${BIT0}"
+                        "${CMAKE_CURRENT_SOURCE_DIR}/main.c"
+               )     
 
 # Create Example Executable
-add_executable(IntelDFPExample ${EXAMPLE_SOURCE} ${EXAMPLE_HEADERS})
+add_executable(IntelDFPExample ${EXAMPLE_HEADERS} ${EXAMPLE_SOURCES})
 target_link_libraries(IntelDFPExample PRIVATE IntelDFP)
    
 # Set the output directory for build artifacts.
@@ -89,16 +89,6 @@ set_target_properties(IntelDFPExample PROPERTIES
                       COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
                       DEBUG_POSTFIX                "d"
                      )
-                     
-# Erase the copied files
-add_custom_command(TARGET IntelDFPExample POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E remove
-                   "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h"
-                  )
-add_custom_command(TARGET IntelDFPExample POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E remove
-                   "${CMAKE_CURRENT_SOURCE_DIR}/main.c"
-                  )
 
 # Add a test for the example
 add_test(NAME IntelDFPExample

@@ -73,12 +73,12 @@ set(TEST_HEADERS
    )
 
 # Create Test Source
-set(TEST_SOURCE
+set(TEST_SOURCES
     "readtest.c"
    )
 
 # Create Test Executable
-add_executable(IntelDFPTest ${TEST_SOURCE} ${TEST_HEADERS})
+add_executable(IntelDFPTest ${TEST_HEADERS} ${TEST_SOURCES})
 target_link_libraries(IntelDFPTest PRIVATE IntelDFP)
    
 # Set the output directory for build artifacts.
@@ -93,13 +93,19 @@ set_target_properties(IntelDFPTest PROPERTIES
 
 # Copy the test file to the build directory
 add_custom_command(TARGET IntelDFPTest POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy
-                   "${CMAKE_CURRENT_SOURCE_DIR}/readtest.in"
-                   "${CMAKE_BINARY_DIR}/bin/readtest.in"
+                   COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+                           "${CMAKE_CURRENT_SOURCE_DIR}/readtest.in"
+                           "${CMAKE_BINARY_DIR}/bin/readtest.in"
                   )
 
-# add a test
+# Build executable name
+set(TEST_EXECUTABLE "IntelDFPTest")
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(TEST_EXECUTABLE "${TEST_EXECUTABLE}d")
+endif()
+
+# Add a test
 set(TEST_PATH "${CMAKE_BINARY_DIR}/bin")
 add_test(NAME IntelDFPTest
-         COMMAND ${CMAKE_COMMAND} "-DTEST_PATH=${TEST_PATH}" -P "${CMAKE_CURRENT_SOURCE_DIR}/test.cmake"
+         COMMAND "${CMAKE_COMMAND}" "-DTEST_PATH=${TEST_PATH}" "-DTEST_EXE=${TEST_EXECUTABLE}${CMAKE_EXECUTABLE_SUFFIX}" -P "${CMAKE_CURRENT_SOURCE_DIR}/test.cmake"
         )

@@ -1,5 +1,9 @@
-#Ignore Visual Studio Products
+# Ignore Visual Studio Products
 .vs/**
 
-#Ignore Build Directories
+# Ignore Build Directories
 out/**
+
+# Ignore copied files
+EXAMPLES/decimal.h
+EXAMPLES/main.c
