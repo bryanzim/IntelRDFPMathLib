@@ -44,6 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // value (without the leading 0x).
 
 #define STRMAX	1024
+#include <stdbool.h>
 #include <stdio.h>	// for printf
 #include <stdlib.h>
 #include <string.h>
@@ -55,8 +56,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "test_bid_conf.h"
 #include "test_bid_functions.h"
-
-int copy_str_to_wstr();
 
 enum _OPTYPE { OP_NONE, OP_DEC128, OP_DPD128, OP_DEC64, OP_DPD64,
     OP_DEC32, OP_DPD32,
@@ -116,8 +115,9 @@ fexcept_t ini_binary_flags, saved_binary_flags, test_binary_flags;
 int ini_binary_rmode, saved_binary_rmode, test_binary_rmode;
 fexcept_t fp_fl;
 
-void save_binary_status();
-int check_restore_binary_status();
+int copy_str_to_wstr(void);
+void save_binary_status(void);
+int check_restore_binary_status(void);
 int check_pollution_workaround(void);
 
 #ifndef HPUX_OS
@@ -500,7 +500,6 @@ char status_str[STRMAX];
 char exp_result[STRMAX], exp_status[STRMAX];
 char line[STRMAX];
 char full_line[STRMAX];
-char *p;
 BID_UINT64 Qi64, qi64;
 int specop_opt;
 int randop_opt;
@@ -559,9 +558,9 @@ setrounding (char *s) {
 // Return TRUE (1) if 'a' and 'b' are incomtible results from some BID and DPD
 // functions.  Ignore the payload of NaNs
 int
-check128 (BID_UINT128 a, BID_UINT128 b) {
-  if (a.w[BID_LOW_128W] == b.w[BID_LOW_128W]
-      && a.w[BID_HIGH_128W] == b.w[BID_HIGH_128W])
+check128 (BID_UINT128 aIn, BID_UINT128 bIn) {
+  if (aIn.w[BID_LOW_128W] == bIn.w[BID_LOW_128W]
+      && aIn.w[BID_HIGH_128W] == bIn.w[BID_HIGH_128W])
     return 0;
 
   return 1;
@@ -582,16 +581,16 @@ void strRemoveTrailingSpaces(char* s) {
 }
 
 int
-check64 (BID_UINT64 a, BID_UINT64 b) {
-  if (a == b)
+check64 (BID_UINT64 aIn, BID_UINT64 bIn) {
+  if (aIn == bIn)
     return 0;
 
   return 1;
 }
 
 int
-check32 (BID_UINT32 a32, BID_UINT32 b32) {
-  if (a32 == b32)
+check32 (BID_UINT32 a32In, BID_UINT32 b32In) {
+  if (a32In == b32In)
     return 0;
 
   return 1;
@@ -682,74 +681,73 @@ check32 (BID_UINT32 a32, BID_UINT32 b32) {
 
 
 int
-check128_rel(BID_UINT128 a, BID_UINT128 b)
+check128_rel(BID_UINT128 aIn, BID_UINT128 bIn)
 {
-    BID_UINT128 r;
     BID_UINT128 r1, r2, m1, m2;
     BID_UINT64 e1, e2;
     int sign, less;
-        int t1, t2, t3, t4;
+    int t1, t2, t3, t4;
 
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isNaN, t1, a);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isNaN, t2, b);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isInf, t3, a);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isInf, t4, b);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isNaN, t1, aIn);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isNaN, t2, bIn);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isInf, t3, aIn);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isInf, t4, bIn);
 
    //if (bid128_isNaN(a)||bid128_isNaN(b) || bid128_isInf(a)||bid128_isInf(b)) {
    if (t1 || t2 || t3 || t4) {
-        if (a.w[BID_LOW_128W] == b.w[BID_LOW_128W] && a.w[BID_HIGH_128W] == b.w[BID_HIGH_128W]) return 0;
+        if (aIn.w[BID_LOW_128W] == bIn.w[BID_LOW_128W] && aIn.w[BID_HIGH_128W] == bIn.w[BID_HIGH_128W]) return 0;
         else { 
             if(t3) { 
-                a.w[BID_HIGH_128W] = (a.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5FFFED09BEAD87C0ull;  
-                a.w[BID_LOW_128W] = 0x378D8E63FFFFFFFFull;
+                aIn.w[BID_HIGH_128W] = (aIn.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5FFFED09BEAD87C0ull;  
+                aIn.w[BID_LOW_128W] = 0x378D8E63FFFFFFFFull;
             } else if(t4) {
-                b.w[BID_HIGH_128W] = (b.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5FFFED09BEAD87C0ull;  
-                b.w[BID_LOW_128W] = 0x378D8E63FFFFFFFFull;
+                bIn.w[BID_HIGH_128W] = (bIn.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5FFFED09BEAD87C0ull;  
+                bIn.w[BID_LOW_128W] = 0x378D8E63FFFFFFFFull;
             }
             else return 1;
         }
     }
 
-    if ((a.w[BID_HIGH_128W] & 0x8000000000000000ull) != (b.w[BID_HIGH_128W] & 0x8000000000000000ull)) {
+    if ((aIn.w[BID_HIGH_128W] & 0x8000000000000000ull) != (bIn.w[BID_HIGH_128W] & 0x8000000000000000ull)) {
         return 1;
     }
 
-    if (a.w[BID_HIGH_128W] & 0x8000000000000000ull) sign = 1;
+    if (aIn.w[BID_HIGH_128W] & 0x8000000000000000ull) sign = 1;
 
-    GET_EXP_128(e1, a.w[BID_HIGH_128W])
-    GET_EXP_128(e2, b.w[BID_HIGH_128W])
-    GET_MANT_128(m1, a)
-    GET_MANT_128(m2, b)
+    GET_EXP_128(e1, aIn.w[BID_HIGH_128W])
+    GET_EXP_128(e2, bIn.w[BID_HIGH_128W])
+    GET_MANT_128(m1, aIn)
+    GET_MANT_128(m2, bIn)
 
     if (e1 < e2) {
-        BIDECIMAL_CALL2 (bid128_quantize, r1, a, b);
-        r2 = b;
+        BIDECIMAL_CALL2 (bid128_quantize, r1, aIn, bIn);
+        r2 = bIn;
         GET_EXP_128(e1, r1.w[BID_HIGH_128W])
         GET_EXP_128(e2, r2.w[BID_HIGH_128W])
         GET_MANT_128(m1, r1)
         GET_MANT_128(m2, r2)
     } else if (e2 < e1) {
-        r1 = a;
-        BIDECIMAL_CALL2 (bid128_quantize, r2, b, a);
+        r1 = aIn;
+        BIDECIMAL_CALL2 (bid128_quantize, r2, bIn, aIn);
         GET_EXP_128(e1, r1.w[BID_HIGH_128W])
         GET_EXP_128(e2, r2.w[BID_HIGH_128W])
         GET_MANT_128(m1, r1)
         GET_MANT_128(m2, r2)
     } else {
-        r1 = a;
-        r2 = b;
+        r1 = aIn;
+        r2 = bIn;
     }
 
     if (e1 != e2) {
-        printf("ERROR a, b "BID_FMT_LLX16" "BID_FMT_LLX16" "BID_FMT_LLX16" "BID_FMT_LLX16"\n", a.w[BID_HIGH_128W], a.w[BID_LOW_128W], b.w[BID_HIGH_128W], b.w[BID_LOW_128W]);
+        printf("ERROR a, b "BID_FMT_LLX16" "BID_FMT_LLX16" "BID_FMT_LLX16" "BID_FMT_LLX16"\n", aIn.w[BID_HIGH_128W], aIn.w[BID_LOW_128W], bIn.w[BID_HIGH_128W], bIn.w[BID_LOW_128W]);
         printf("ERROR r1, r2 "BID_FMT_LLX16" "BID_FMT_LLX16" "BID_FMT_LLX16" "BID_FMT_LLX16"\n", r1.w[BID_HIGH_128W], r1.w[BID_LOW_128W], r2.w[BID_HIGH_128W], r2.w[BID_LOW_128W]);
         return 1;
     }
 
-    ulp = m1.w[BID_LOW_128W] > m2.w[BID_LOW_128W] ? 
-            m1.w[BID_LOW_128W] - m2.w[BID_LOW_128W] : m2.w[BID_LOW_128W]- m1.w[BID_LOW_128W];
-        //TODO HIGH part difference 
-    BIDECIMAL_CALL2_NORND (bid128_quiet_less, less, a, b);
+    ulp = (double) (m1.w[BID_LOW_128W] > m2.w[BID_LOW_128W] ? 
+            m1.w[BID_LOW_128W] - m2.w[BID_LOW_128W] : m2.w[BID_LOW_128W]- m1.w[BID_LOW_128W]);
+    //TODO HIGH part difference 
+    BIDECIMAL_CALL2_NORND (bid128_quiet_less, less, aIn, bIn);
     if (less) ulp *= -1.0;
 //printf("ulp %f +add %f max %f\n", ulp, ulp+ulp_add, mre_max[rnd_mode]);
     if (fabs(ulp+ulp_add) > mre_max[rnd_mode]) {
@@ -760,61 +758,61 @@ check128_rel(BID_UINT128 a, BID_UINT128 b)
 }
 
 int
-check64_rel(BID_UINT64 a, BID_UINT64 b)
+check64_rel(BID_UINT64 aIn, BID_UINT64 bIn)
 {
     BID_UINT64 r1, r2;
     BID_UINT64 e1, e2, m1, m2;
     int sign, less;
-        int t1, t2, t3, t4;
+    int t1, t2, t3, t4;
  
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isNaN, t1, a);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isNaN, t2, b);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isInf, t3, a);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isInf, t4, b);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isNaN, t1, aIn);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isNaN, t2, bIn);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isInf, t3, aIn);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isInf, t4, bIn);
  
-   //if (bid64_isNaN(a) || bid64_isNaN(b) || bid64_isInf(a) || bid64_isInf(b)) {
+   //if (bid64_isNaN(aIn) || bid64_isNaN(bIn) || bid64_isInf(aIn) || bid64_isInf(bIn)) {
    if (t1 || t2 || t3 || t4) { 
-       if (a == b) return 0;
+       if (aIn == bIn) return 0;
         else return 1;
     }
 
-    if ((a & 0x8000000000000000ull) != (b & 0x8000000000000000ull)) {
+    if ((aIn & 0x8000000000000000ull) != (bIn & 0x8000000000000000ull)) {
         return 1;
     }
-    if (a & 0x8000000000000000ull) sign = 1;
+    if (aIn & 0x8000000000000000ull) sign = 1;
 
-    GET_EXP_64(e1, a)
-    GET_EXP_64(e2, b)
-    GET_MANT_64(m1, a)
-    GET_MANT_64(m2, b)
+    GET_EXP_64(e1, aIn)
+    GET_EXP_64(e2, bIn)
+    GET_MANT_64(m1, aIn)
+    GET_MANT_64(m2, bIn)
 
     if (e1 < e2) {
-        BIDECIMAL_CALL2 (bid64_quantize, r1, a, b);
-        r2 = b;
+        BIDECIMAL_CALL2 (bid64_quantize, r1, aIn, bIn);
+        r2 = bIn;
         GET_EXP_64(e1, r1)
         GET_EXP_64(e2, r2)
         GET_MANT_64(m1, r1)
         GET_MANT_64(m2, r2)
     } else if (e2 < e1) {
-        r1 = a;
-        BIDECIMAL_CALL2 (bid64_quantize, r2, b, a);
+        r1 = aIn;
+        BIDECIMAL_CALL2 (bid64_quantize, r2, bIn, aIn);
         GET_EXP_64(e1, r1)
         GET_EXP_64(e2, r2)
         GET_MANT_64(m1, r1)
         GET_MANT_64(m2, r2)
     } else {
-        r1 = a;
-        r2 = b;
+        r1 = aIn;
+        r2 = bIn;
     }
 
     if (e1 != e2) {
-        printf("ERROR a, b "BID_FMT_LLX16" "BID_FMT_LLX16"\n", a, b);
+        printf("ERROR a, b "BID_FMT_LLX16" "BID_FMT_LLX16"\n", aIn, bIn);
         printf("ERROR r1, r2 "BID_FMT_LLX16" "BID_FMT_LLX16"\n", r1, r2);
         return 1;
     }
 
-    ulp = m1 > m2 ? m1 - m2 : m2 - m1;
-    BIDECIMAL_CALL2_NORND (bid64_quiet_less, less, a, b);
+    ulp = (double) (m1 > m2 ? m1 - m2 : m2 - m1);
+    BIDECIMAL_CALL2_NORND (bid64_quiet_less, less, aIn, bIn);
     if (less) ulp *= -1.0;
 //printf("ulp %f +add %f max %f\n", ulp, ulp+ulp_add, mre_max[rnd_mode]);
     if (fabs(ulp+ulp_add) > mre_max[rnd_mode]) {
@@ -825,64 +823,63 @@ check64_rel(BID_UINT64 a, BID_UINT64 b)
 }
 
 int
-check32_rel(BID_UINT32 a32, BID_UINT32 b32)
+check32_rel(BID_UINT32 a32In, BID_UINT32 b32In)
 {
     BID_UINT32 r1, r2;
     BID_UINT32 e1, e2, m1, m2;
     int sign, less;
-    int aexp, bexp, amant, bmant;
-        int t1, t2, t3, t4;
+    int t1, t2, t3, t4;
  
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isNaN, t1, a32);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isNaN, t2, b32);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, t3, a32);
-        BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, t4, b32);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isNaN, t1, a32In);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isNaN, t2, b32In);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, t3, a32In);
+    BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, t4, b32In);
  
-   //if (bid32_isNaN(a32)||bid32_isNaN(b32)||bid32_isInf(a32)||bid32_isInf(b32)) {
+   //if (bid32_isNaN(a32In)||bid32_isNaN(b32In)||bid32_isInf(a32In)||bid32_isInf(b32In)) {
    if (t1 || t2 || t3 || t4) {
 
-       if (a32 == b32) return 0;
+       if (a32In == b32In) return 0;
         else return 1;
         
     }
 
-    if ((a32 & 0x80000000) != (b32 & 0x80000000)) {
+    if ((a32In & 0x80000000) != (b32In & 0x80000000)) {
         return 1;
     }
-    if (a32 & 0x80000000) sign = 1;
+    if (a32In & 0x80000000) sign = 1;
 
-    GET_EXP_32(e1, a32)
-    GET_EXP_32(e2, b32)
-    GET_MANT_32(m1, a32)
-    GET_MANT_32(m2, b32)
+    GET_EXP_32(e1, a32In)
+    GET_EXP_32(e2, b32In)
+    GET_MANT_32(m1, a32In)
+    GET_MANT_32(m2, b32In)
 
     if (e1 < e2) {
-        BIDECIMAL_CALL2 (bid32_quantize, r1, a32, b32);
-        r2 = b32;
+        BIDECIMAL_CALL2 (bid32_quantize, r1, a32In, b32In);
+        r2 = b32In;
         GET_EXP_32(e1, r1)
         GET_EXP_32(e2, r2)
         GET_MANT_32(m1, r1)
         GET_MANT_32(m2, r2)
     } else if (e2 < e1) {
-        r1 = a32;
-        BIDECIMAL_CALL2 (bid32_quantize, r2, b32, a32);
+        r1 = a32In;
+        BIDECIMAL_CALL2 (bid32_quantize, r2, b32In, a32In);
         GET_EXP_32(e1, r1)
         GET_EXP_32(e2, r2)
         GET_MANT_32(m1, r1)
         GET_MANT_32(m2, r2)
     } else {
-        r1 = a32;
-        r2 = b32;
+        r1 = a32In;
+        r2 = b32In;
     }
 
     if (e1 != e2) {
-        printf("ERROR a, b %08x %08x\n", a32, b32);
+        printf("ERROR a, b %08x %08x\n", a32In, b32In);
         printf("ERROR r1, r2 %08x %08x\n", r1, r2);
         return 1;
     }
 
     ulp = m1 > m2 ? m1 - m2 : m2 - m1;
-    BIDECIMAL_CALL2_NORND (bid32_quiet_less, less, a32, b32);
+    BIDECIMAL_CALL2_NORND (bid32_quiet_less, less, a32In, b32In);
     if (less) ulp *= -1.0;
 //printf("ulp %f +add %f max %f\n", ulp, ulp+ulp_add, mre_max[rnd_mode]);
     if (fabs(ulp+ulp_add) > mre_max[rnd_mode]) {
@@ -928,6 +925,9 @@ get_ops (void) {
   case OP_INT32:
     getop32i (AI32, op1, istr1);
     break;
+  case OP_INT64:
+      getop64i(AI64, op1, istr1);
+      break;
   case OP_BID_UINT8:
     getop8u (AUI32, op1, istr1);
     AUI8=(unsigned char)AUI32;
@@ -938,9 +938,6 @@ get_ops (void) {
     break;
   case OP_BID_UINT32:
     getop32u (AUI32, op1, istr1);
-    break;
-  case OP_INT64:
-    getop64i (AI64, op1, istr1);
     break;
   case OP_BID_UINT64:
     getop64u (AUI64, op1, istr1);
@@ -959,6 +956,11 @@ get_ops (void) {
     break;
   case OP_NONE:
     break;
+  case OP_DPD32:
+  case OP_DPD64:
+  case OP_DPD128:
+  case OP_LINT:
+  case OP_STRING:
   default:
     printf ("Error: getops unexpected operand 1 type, %d\n", op1type);
   }
@@ -992,6 +994,19 @@ get_ops (void) {
     break;
   case OP_NONE:
     break;
+  case OP_DPD32:
+  case OP_DPD64:
+  case OP_DPD128:
+  case OP_INT8:
+  case OP_INT64:
+  case OP_BID_UINT8:
+  case OP_BID_UINT16:
+  case OP_BID_UINT64:
+  case OP_BIN32:
+  case OP_BIN64:
+  case OP_BIN80:
+  case OP_BIN128:
+  case OP_STRING:
   default:
     printf ("Error: getops unexpected operand 2 type, %d\n", op2type);
   }
@@ -1011,9 +1026,25 @@ get_ops (void) {
     break;
   case OP_NONE:
     break;
+  case OP_DPD32:
+  case OP_DPD64:
+  case OP_DPD128:
+  case OP_INT8:
+  case OP_INT16:
+  case OP_INT32:
+  case OP_INT64:
+  case OP_BID_UINT8:
+  case OP_BID_UINT16:
+  case OP_BID_UINT64:
+  case OP_BIN32:
+  case OP_BIN64:
+  case OP_BIN80:
+  case OP_BIN128:
+  case OP_LINT:
+  case OP_STRING:
   default:
     printf ("Error: getops unexpected operand 3 type, %d\n", op3type);
-    exit (-1);
+    exit(EXIT_FAILURE);
   }
   rnd = rnd_mode = save_rnd;
 
@@ -1099,6 +1130,7 @@ get_test (void) {
     break;
   case OP_NONE:
     break;
+  case OP_STRING:
   default:
     printf ("Error: get_test unexpected result type, %d\n", restype);
   }
@@ -1106,8 +1138,7 @@ get_test (void) {
 
 void
 print_mismatch (enum _CMPTYPE cmp) {
-  int i;
-  char str[STRMAX];
+  (void)cmp;
 
   if (answer_opt) {
     if (*op3)
@@ -1189,6 +1220,7 @@ printf("STRING result is not implemented\n");
       printf ("[" BID_FMT_X8 "] %02x\n", *((BID_UINT32 *) & Rflt), *pfpsf);
       break;
 
+    case OP_NONE:
     default:
       printf ("print_mismatch: unknown result type %d\n", restype);
     }
@@ -1285,9 +1317,11 @@ printf("STRING result is not implemented\n");
     printf ("// BID result: " BID_FMT_X8 ", Expected result: " BID_FMT_X8 "\n",
         *((BID_UINT32 *) & Rflt), *((BID_UINT32 *) & Rtflt));
     break;
+  case OP_NONE:
+  case OP_STRING:
   default:
     printf ("print_mismatch: unknown result type %d\n", restype);
-    exit (-1);
+    exit(EXIT_FAILURE);
   }
 
   if (!strcmp(func, "bid32_frexp") || !strcmp(func, "bid64_frexp") || !strcmp(func, "bid128_frexp") ) {
@@ -1387,9 +1421,11 @@ printf("STRING result is not implemented\n");
     printf ("// BID32 double res: %s\n", str1);
     printf ("// decimal32 double res : %s\n", str2);
     break;
+  case OP_NONE:
+  case OP_STRING:
   default:
     printf ("print_mismatch unknown result type %d\n", restype);
-    exit (-1);
+    exit(EXIT_FAILURE);
   }
 
   printf ("// Input operand strings: %s %s %s\n", istr1, istr2, istr3);
@@ -1495,22 +1531,22 @@ check_results (enum _CMPTYPE cmp) {
     if ((expected_status&trans_flags_mask) != (*pfpsf&trans_flags_mask) || check64_rel(R64, Q64))
       print_mismatch (cmp);
   } else if (restype == OP_DEC128 && cmp == CMP_EQUALSTATUS) {
-    int c;
+    int qnrResult;
     unsigned int tmp_pfpsf = *pfpsf;
-    BIDECIMAL_CALL2_NORND (bid128_quiet_not_equal, c, Q, R);
-    if (expected_status != tmp_pfpsf || (check128 (R, Q) && c))
+    BIDECIMAL_CALL2_NORND (bid128_quiet_not_equal, qnrResult, Q, R);
+    if (expected_status != tmp_pfpsf || (check128 (R, Q) && qnrResult))
       print_mismatch (cmp);
   } else if (restype == OP_DEC64 && cmp == CMP_EQUALSTATUS) {
-    int c;
+    int qnrResult;
     unsigned int tmp_pfpsf = *pfpsf;
-    BIDECIMAL_CALL2_NORND (bid64_quiet_not_equal, c, Q64, R64);
-    if (expected_status != tmp_pfpsf || (check64 (R64, Q64) && c))
+    BIDECIMAL_CALL2_NORND (bid64_quiet_not_equal, qnrResult, Q64, R64);
+    if (expected_status != tmp_pfpsf || (check64 (R64, Q64) && qnrResult))
       print_mismatch (cmp);
   } else if (restype == OP_DEC32 && cmp == CMP_EQUALSTATUS) {
-    int c;
+    int qnrResult;
     unsigned int tmp_pfpsf = *pfpsf;
-    BIDECIMAL_CALL2_NORND (bid32_quiet_not_equal, c, Q32, R32);
-    if (expected_status != tmp_pfpsf || (check32 (R32, Q32) && c))
+    BIDECIMAL_CALL2_NORND (bid32_quiet_not_equal, qnrResult, Q32, R32);
+    if (expected_status != tmp_pfpsf || (check32 (R32, Q32) && qnrResult))
       print_mismatch (cmp);
   } else if (restype == OP_DPD32 && cmp == CMP_FUZZYSTATUS) {
     if (expected_status != *pfpsf || check32 (R32, Q32))
@@ -1568,20 +1604,20 @@ check_results (enum _CMPTYPE cmp) {
     printf
       ("Unknown combination of result type (%d) and compare type (%d)\n",
        restype, cmp);
-    // exit (-1);
+    // exit(EXIT_FAILURE);
   }
 }
 
 // int st_compare(void *a, void *b) {
 int
-st_compare (char **a, char **b) {
-  return strcmp (*a, *b);
+st_compare (char **aIn, char **bIn) {
+  return strcmp (*aIn, *bIn);
 }
 
 int
 status_compare (char *stat1, char *stat2) {
   char s1[STRMAX], s2[STRMAX];
-  char *wp1[64], *wp2[64];
+  char wp1[STRMAX], wp2[STRMAX];
   int wp1n = 0, wp2n = 0;
   char *p;
   int i;
@@ -1589,7 +1625,7 @@ status_compare (char *stat1, char *stat2) {
   strcpy (s1, stat1);
   strcpy (s2, stat2);
   for (p = s1; *p; p++) {
-    wp1[wp1n++] = p;
+    wp1[wp1n++] = *p;
     while (*p && *++p != ' ');
     if (*p == ' ') {
       *p = 0;
@@ -1601,7 +1637,7 @@ status_compare (char *stat1, char *stat2) {
     }
   }
   for (p = s2; *p; p++) {
-    wp2[wp2n++] = p;
+    wp2[wp2n++] = *p;
     while (*p && *++p != ' ');
     if (*p == ' ') {
       *p = 0;
@@ -1623,36 +1659,36 @@ status_compare (char *stat1, char *stat2) {
   qsort (wp2, wp2n, sizeof (char *),
      (int (__cdecl *) (const void *, const void *)) st_compare);
 #endif
-  for (i = 0; i < wp1n; i++) {
+  for (i = 0; i < wp1n; ++i) {
     // printf("Comparing %s and %s\n", wp1[i], wp2[i]);
-    if (strcmp (wp1[i], wp2[i]))
+    if (wp1[i] == wp2[i])
       return 1;
   }
   return 0;
 }
 
-int check_skip(char *func)
+int check_skip(char *funcptr)
 {
     if (no128trans) {
-        if (!strcmp(func, "bid128_sin") || !strcmp(func, "bid128_cos") || !strcmp(func, "bid128_tan") ||
-            !strcmp(func, "bid128_asin") || !strcmp(func, "bid128_acos") || !strcmp(func, "bid128_atan") ||
-            !strcmp(func, "bid128_sinh") || !strcmp(func, "bid128_cosh") || !strcmp(func, "bid128_tanh") ||
-            !strcmp(func, "bid128_asinh") || !strcmp(func, "bid128_acosh") || !strcmp(func, "bid128_atanh") ||
-            !strcmp(func, "bid128_exp") || !strcmp(func, "bid128_expm1") ||
-            !strcmp(func, "bid128_log") || !strcmp(func, "bid128_log10") || !strcmp(func, "bid128_log1p") ||
-            !strcmp(func, "bid128_atan2") || !strcmp(func, "bid128_hypot") || !strcmp(func, "bid128_pow") ||
-            !strcmp(func, "bid128_cbrt") 
+        if (!strcmp(funcptr, "bid128_sin") || !strcmp(funcptr, "bid128_cos") || !strcmp(funcptr, "bid128_tan") ||
+            !strcmp(funcptr, "bid128_asin") || !strcmp(funcptr, "bid128_acos") || !strcmp(funcptr, "bid128_atan") ||
+            !strcmp(funcptr, "bid128_sinh") || !strcmp(funcptr, "bid128_cosh") || !strcmp(funcptr, "bid128_tanh") ||
+            !strcmp(funcptr, "bid128_asinh") || !strcmp(funcptr, "bid128_acosh") || !strcmp(funcptr, "bid128_atanh") ||
+            !strcmp(funcptr, "bid128_exp") || !strcmp(funcptr, "bid128_expm1") ||
+            !strcmp(funcptr, "bid128_log") || !strcmp(funcptr, "bid128_log10") || !strcmp(funcptr, "bid128_log1p") ||
+            !strcmp(funcptr, "bid128_atan2") || !strcmp(funcptr, "bid128_hypot") || !strcmp(funcptr, "bid128_pow") ||
+            !strcmp(funcptr, "bid128_cbrt") 
         ) return 1;
     }
     if (no64trans) {
-        if (!strcmp(func, "bid64_sin") || !strcmp(func, "bid64_cos") || !strcmp(func, "bid64_tan") ||
-            !strcmp(func, "bid64_asin") || !strcmp(func, "bid64_acos") || !strcmp(func, "bid64_atan") ||
-            !strcmp(func, "bid64_sinh") || !strcmp(func, "bid64_cosh") || !strcmp(func, "bid64_tanh") ||
-            !strcmp(func, "bid64_asinh") || !strcmp(func, "bid64_acosh") || !strcmp(func, "bid64_atanh") ||
-            !strcmp(func, "bid64_exp") || !strcmp(func, "bid64_expm1") ||
-            !strcmp(func, "bid64_log") || !strcmp(func, "bid64_log10") || !strcmp(func, "bid64_log1p") ||
-            !strcmp(func, "bid64_atan2") || !strcmp(func, "bid64_hypot") || !strcmp(func, "bid64_pow") ||
-            !strcmp(func, "bid64_cbrt") 
+        if (!strcmp(funcptr, "bid64_sin") || !strcmp(funcptr, "bid64_cos") || !strcmp(funcptr, "bid64_tan") ||
+            !strcmp(funcptr, "bid64_asin") || !strcmp(funcptr, "bid64_acos") || !strcmp(funcptr, "bid64_atan") ||
+            !strcmp(funcptr, "bid64_sinh") || !strcmp(funcptr, "bid64_cosh") || !strcmp(funcptr, "bid64_tanh") ||
+            !strcmp(funcptr, "bid64_asinh") || !strcmp(funcptr, "bid64_acosh") || !strcmp(funcptr, "bid64_atanh") ||
+            !strcmp(funcptr, "bid64_exp") || !strcmp(funcptr, "bid64_expm1") ||
+            !strcmp(funcptr, "bid64_log") || !strcmp(funcptr, "bid64_log10") || !strcmp(funcptr, "bid64_log1p") ||
+            !strcmp(funcptr, "bid64_atan2") || !strcmp(funcptr, "bid64_hypot") || !strcmp(funcptr, "bid64_pow") ||
+            !strcmp(funcptr, "bid64_cbrt") 
         ) return 1;
     }
     if (li_size_run != li_size_test) return 1;
@@ -1685,6 +1721,7 @@ void check_snan_passing80(long double x)
 
 void check_den_passing32(float x)
 {
+    (void)x;
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
     fexcept_t ff; 
     fegetexceptflag(&ff, FE_ALL_EXCEPT);
@@ -1693,6 +1730,7 @@ void check_den_passing32(float x)
 }
 void check_den_passing64(double x)
 {
+    (void)x;
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
     fexcept_t ff; 
     fegetexceptflag(&ff, FE_ALL_EXCEPT);
@@ -1701,6 +1739,7 @@ void check_den_passing64(double x)
 }
 void check_den_passing80(long double x)
 {
+    (void)x;
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
     fexcept_t ff; 
     fegetexceptflag(&ff, FE_ALL_EXCEPT);
@@ -1711,14 +1750,14 @@ void check_den_passing80(long double x)
 
 int
 main(int argc, char* argv[]) {
-    int ch, digit_optind = 0;
     int skip_test;
     char** arg;
     char* end_of_args = (char*)-1;
 
     strcpy(rounding, "half_even");
-
-    if (sizeof(long int) == 8) {
+   
+    const bool sizeLongInt = sizeof(long int);
+    if (sizeLongInt == 8) {
         li_size_test = 64;
         li_size_run = 64;
     }
@@ -1742,14 +1781,14 @@ main(int argc, char* argv[]) {
         if (strcmp(*arg, "-ulp") == 0) {
             ++arg;
             --argc;
-            const int result = sscanf(*arg, "%lf", &mre_max[0]);
+            (void) sscanf(*arg, "%lf", &mre_max[0]);
             mre_max[4] = mre_max[3] = mre_max[2] = mre_max[1] = mre_max[0];
         }
         if (strcmp(*arg, "-bin_flags") == 0) {
             check_binary_flags_opt = 1;
             ++arg;
             --argc;
-            const int result = sscanf(*arg, "%x", (int*)&ini_binary_flags);
+            (void) sscanf(*arg, "%x", (int*)&ini_binary_flags);
         }
         if (strcmp(*arg, "-no128trans") == 0) {
             no128trans = 1;
@@ -1818,7 +1857,7 @@ main(int argc, char* argv[]) {
 
     line_counter = 0;
     while (!feof(stdin)) {
-        int st;
+        char* p;
 
         op1type = OP_NONE;
         op2type = OP_NONE;
@@ -1975,7 +2014,7 @@ main(int argc, char* argv[]) {
     return EXIT_FAILURE;
 }
 
-int copy_str_to_wstr() {
+int copy_str_to_wstr(void) {
 int i = 0;
     if (strstr (funcstr, "wcstod")) {
         while (istr1[i] != 0 && istr1[i] != '\n') {
@@ -1987,8 +2026,7 @@ int i = 0;
     return 1;
 }
 
-
-void save_binary_status()
+void save_binary_status(void)
 {
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
     if (check_binary_flags_opt) {
@@ -1999,9 +2037,9 @@ void save_binary_status()
 #endif
 }
 
-int check_restore_binary_status()
+int check_restore_binary_status(void)
 {
-    char *p;
+    char *p = NULL;
 //printf("snan arg, passed incor %d %d\n", arg64_snan, SNaN_passed_incorrectly64);
     if (check_binary_flags_opt || debug_opt) {
 #if !defined _MSC_VER && !defined __INTEL_COMPILER
@@ -2030,6 +2068,8 @@ int check_restore_binary_status()
             printf("//        Saved value %X, value after BID call %X\n", *(int*)&saved_binary_flags, *(int*)&test_binary_flags );
             return 1;
         }
+#else
+        (void)p;
 #endif
     }
     return 0;

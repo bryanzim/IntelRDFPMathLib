@@ -4383,7 +4383,7 @@ if (strcmp(func, "bid32_to_binary128") == 0) {
         check_results(CMP_FUZZYSTATUS);
     }
 }
-#if __ENABLE_BINARY80__  
+#if defined(__ENABLE_BINARY80__) && __ENABLE_BINARY80__
 if (strcmp(func, "bid128_to_binary80") == 0) {
         GETTEST1(OP_BIN80, OP_DEC128);
         {
@@ -4520,7 +4520,7 @@ if (strcmp(func, "binary32_to_bid32") == 0) {
         check_results(CMP_FUZZYSTATUS);
     }
 }
-#if __ENABLE_BINARY80__  
+#if defined(__ENABLE_BINARY80__) && __ENABLE_BINARY80__  
 if (strcmp(func, "binary80_to_bid128") == 0) {
         GETTEST1(OP_DEC128, OP_BIN80);
         {

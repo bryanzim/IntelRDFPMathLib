@@ -126,6 +126,7 @@ typedef BID_UINT128 _Quad;
      typedef struct BID_ALIGN (16)
      {
        BID_UINT64 w[3];
+       char pad[8];
      } BID_UINT192;
      typedef struct BID_ALIGN (16)
      {
