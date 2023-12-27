@@ -37,7 +37,9 @@
 #include "decimal.h"
 
 int
-main () {
+main (int argc, char** argv) {
+  (void) argc;
+  (void) argv;
   Decimal128 x, y, z;
   _IDEC_flags my_fpsf = _IDEC_allflagsclear;
 

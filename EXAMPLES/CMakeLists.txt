@@ -52,6 +52,7 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     # using MSVC
     add_compile_options("/Wall")
+    add_compile_options("/WX")
     add_compile_options("/Zc:__cplusplus")
 else()
 endif()
