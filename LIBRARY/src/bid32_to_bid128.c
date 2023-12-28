@@ -89,7 +89,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
       TP128 = bid_reciprocals10_128[27];
       __mul_128x128_full (Qh, Ql, Tmp, TP128);
       amount = bid_recip_scale[27] - 64;
-      res = ((CX.w[1] >> 32) & 0xfc000000) | (Qh.w[1] >> amount);
+      res = (BID_UINT32) (((CX.w[1] >> 32) & 0xfc000000) | (Qh.w[1] >> amount));
 #ifdef BID_SET_STATUS_FLAGS
       if ((x.w[1] & SNAN_MASK64) == SNAN_MASK64)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);

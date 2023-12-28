@@ -85,7 +85,7 @@ BID_UINT128 Q;
   if (!unpack_BID64 (&sign_x, &exponent_x, &coefficient_x, x)) {
     if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
       t64 = (coefficient_x & 0x0003ffffffffffffull);
-      res = t64/1000000000ull;
+      res = (BID_UINT32) (t64/1000000000ull);
       res |= ((coefficient_x >> 32) & 0xfc000000);
 #ifdef BID_SET_STATUS_FLAGS
       if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN

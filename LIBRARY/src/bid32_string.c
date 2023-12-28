@@ -88,7 +88,7 @@ bid32_to_string (char *ps, BID_UINT32 x
   {
       CT = (BID_UINT64)coefficient_x * 0x431BDE83ull;
       CT >>= 32;
-      d = CT >> (50-32);
+      d = (int) (CT >> (50-32));
       ps[istart++] = d + '0';
 
       coefficient_x -= d*1000000;
@@ -96,7 +96,7 @@ bid32_to_string (char *ps, BID_UINT32 x
       // get lower 6 digits
       CT = (BID_UINT64)coefficient_x * 0x20C49BA6ull;
       CT >>= 32;
-      d = CT >> (39-32);
+      d = (int) (CT >> (39-32));
       ps[istart++] = bid_midi_tbl[d][0];
       ps[istart++] = bid_midi_tbl[d][1];
       ps[istart++] = bid_midi_tbl[d][2];
@@ -111,7 +111,7 @@ bid32_to_string (char *ps, BID_UINT32 x
   else if(coefficient_x>=1000) {
       CT = (BID_UINT64)coefficient_x * 0x20C49BA6ull;
       CT >>= 32;
-      d = CT >> (39-32);
+      d = (int) (CT >> (39-32));
 
       istart0=istart;
       ps[istart] = bid_midi_tbl[d][0];  if(ps[istart]!='0') istart++;
@@ -200,18 +200,18 @@ bid32_from_string (char *ps
         tolower_macro (ps[6]) == 't' && tolower_macro (ps[7]) == 'y' && 
         !ps[8]))) {
       res = 0x78000000ull;
-      BID_RETURN (res);
+      BID_RETURN ((BID_UINT32) res);
     }
     // return sNaN
     if (tolower_macro (ps[0]) == 's' && tolower_macro (ps[1]) == 'n' && 
         tolower_macro (ps[2]) == 'a' && tolower_macro (ps[3]) == 'n') { 
         // case insensitive check for snan
       res = 0x7e000000ul;
-      BID_RETURN (res);
+      BID_RETURN ((BID_UINT32) res);
     } else {
       // return qNaN
       res = 0x7c000000ul;
-      BID_RETURN (res);
+      BID_RETURN ((BID_UINT32) res);
     }
   }
   // detect +INF or -INF
@@ -226,7 +226,7 @@ bid32_from_string (char *ps
       res = 0xf8000000ul;
     else
       res = 0x7c000000ul;
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
   }
   // if +sNaN, +SNaN, -sNaN, or -SNaN
   if (tolower_macro (ps[1]) == 's' && tolower_macro (ps[2]) == 'n'
@@ -235,7 +235,7 @@ bid32_from_string (char *ps
       res = 0xfe000000ul;
     else
       res = 0x7e000000ul;
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
   }
   // determine sign
   if (c == '-')
@@ -252,7 +252,7 @@ bid32_from_string (char *ps
   if (c != '.' && (c < '0' || c > '9')) {
     // return NaN
     res = 0x7c000000ul | sign_x;
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
   }
 
   rdx_pt_enc = 0;
@@ -287,13 +287,13 @@ bid32_from_string (char *ps
         res =
           ((BID_UINT64) (right_radix_leading_zeros) << 23) |
           sign_x;
-        BID_RETURN (res);
+        BID_RETURN ((BID_UINT32) res);
       }
       ps = ps + 1;
     } else {
       // if 2 radix points, return NaN
       res = 0x7c000000ul | sign_x;
-      BID_RETURN (res);
+      BID_RETURN ((BID_UINT32) res);
     }
       } else if (!*(ps)) {
           right_radix_leading_zeros = DECIMAL_EXPONENT_BIAS_32 - right_radix_leading_zeros;
@@ -302,7 +302,7 @@ bid32_from_string (char *ps
         res =
           ((BID_UINT64) (right_radix_leading_zeros) << 23) |
           sign_x;
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
       }
     }
   }
@@ -315,7 +315,7 @@ bid32_from_string (char *ps
       if (rdx_pt_enc) {
     // return NaN
     res = 0x7c000000ul | sign_x;
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
       }
       rdx_pt_enc = 1;
       ps++;
@@ -382,16 +382,16 @@ bid32_from_string (char *ps
       __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
 #endif
     res =
-      get_BID32 (sign_x,
+      get_BID32 ((BID_UINT32) sign_x,
                    add_expon + DECIMAL_EXPONENT_BIAS_32,
                    coefficient_x, 0, pfpsf);
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
   }
 
   if (c != 'E' && c != 'e') {
     // return NaN
     res = 0x7c000000ul | sign_x;
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
   }
   ps++;
   c = *ps;
@@ -403,7 +403,7 @@ bid32_from_string (char *ps
   if (!c || c < '0' || c > '9') {
     // return NaN
     res = 0x7c000000ul | sign_x;
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
   }
 
   while ((c >= '0') && (c <= '9')) {
@@ -418,7 +418,7 @@ bid32_from_string (char *ps
   if (c) {
     // return NaN
     res = 0x7c000000ul | sign_x;
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
   }
 
 #ifdef BID_SET_STATUS_FLAGS
@@ -436,12 +436,12 @@ bid32_from_string (char *ps
       coefficient_x--;
     rnd_mode = 0; 
     res =
-      get_BID32_UF (sign_x, expon_x, coefficient_x, rounded, rnd_mode,
+      get_BID32_UF ((BID_UINT32) sign_x, expon_x, coefficient_x, (BID_UINT32) rounded, rnd_mode,
             pfpsf);
-    BID_RETURN (res);
+    BID_RETURN ((BID_UINT32) res);
   }
-  res = get_BID32 (sign_x, expon_x, coefficient_x, rnd_mode, pfpsf);
-  BID_RETURN (res);
+  res = get_BID32 ((BID_UINT32) sign_x, expon_x, coefficient_x, rnd_mode, pfpsf);
+  BID_RETURN ((BID_UINT32) res);
 
 
 }
