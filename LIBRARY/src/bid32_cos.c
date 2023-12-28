@@ -178,7 +178,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_cos, BID_UINT32, x)
   BID_UINT64 c;
   double xd, yd = 0.0;
   BID_UINT128 m;
-  BID_UINT192 p;
+  BID_UINT196 p;
   int sf, k, ef, el;
 
 // Decompose the input and check for NaN and infinity.

@@ -62,7 +62,7 @@
 // Values of (10^a / 2 pi) mod 1 for -17 <= a <= 369
 // Each one is a 192-bit binary fraction
 
-static BID_UINT192 bid_decimal64_moduli[] =
+static BID_UINT196 bid_decimal64_moduli[] =
 { {{ 0x82d9e5c60f747619ull, 0x5be1334254ee2dfaull, 0x000000000000001dull }},
   {{ 0x1c82f9bc9a8c9cf5ull, 0x96cc0097514dcbc9ull, 0x0000000000000125ull }},
   {{ 0x1d1dc15e097e2197ull, 0xe3f805e92d09f5dbull, 0x0000000000000b77ull }},
@@ -464,7 +464,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_tan, BID_UINT64, x)
   int s, e;
   BID_UINT64 c;
   BID_F80_TYPE xd, yd;
-  BID_UINT192 m;
+  BID_UINT196 m;
   BID_UINT256 p;
   int sf, k, ef, el;
 

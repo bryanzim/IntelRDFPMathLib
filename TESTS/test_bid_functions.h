@@ -127,7 +127,7 @@ typedef BID_UINT128 _Quad;
      {
        BID_UINT64 w[3];
        char pad[8];
-     } BID_UINT192;
+     } BID_UINT196;
      typedef struct BID_ALIGN (16)
      {
        BID_UINT64 w[4];
@@ -5227,8 +5227,8 @@ int bid_fetestexcept( int excepts _EXC_FLAGS_PARAM );
      BID_EXTERN_C void
        bid_round192_39_57 (int q,
                        int x,
-                       BID_UINT192 C,
-                       BID_UINT192 * ptr_Cstar,
+                       BID_UINT196 C,
+                       BID_UINT196 * ptr_Cstar,
                        int *delta_exp,
                        int *ptr_is_midpoint_lt_even,
                        int *ptr_is_midpoint_gt_even,

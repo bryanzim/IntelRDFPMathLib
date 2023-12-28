@@ -457,7 +457,7 @@ bid128_class (BID_UINT128 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT256 sig_x_prime256;
-  BID_UINT192 sig_x_prime192;
+  BID_UINT196 sig_x_prime192;
   BID_UINT128 sig_x;
   int exp_x;
 
@@ -596,7 +596,7 @@ bid128_totalOrder (BID_UINT128 x,
   int res;
   int exp_x, exp_y;
   BID_UINT128 sig_x, sig_y, pyld_y, pyld_x;
-  BID_UINT192 sig_n_prime192;
+  BID_UINT196 sig_n_prime192;
   BID_UINT256 sig_n_prime256;
   char x_is_zero = 0, y_is_zero = 0;
 
@@ -938,7 +938,7 @@ bid128_totalOrderMag (BID_UINT128 x,
   int res;
   int exp_x, exp_y;
   BID_UINT128 sig_x, sig_y, pyld_y, pyld_x;
-  BID_UINT192 sig_n_prime192;
+  BID_UINT196 sig_n_prime192;
   BID_UINT256 sig_n_prime256;
   char x_is_zero = 0, y_is_zero = 0;
 

@@ -38,44 +38,44 @@ static BID_UINT128 BID128_NEGINF = {BID128_LH_INIT( 0x0000000000000000ull, 0xF80
 
 // log(2) and log(10) scaled by 2^160
 
-static BID_UINT192 bid_log_2_entry =
+static BID_UINT196 bid_log_2_entry =
   {{ 0x03f2f6af40f34326ull, 0xd1cf79abc9e3b398ull, 0x00000000b17217f7ull }};
 
-static BID_UINT192 bid_log_10_entry =
+static BID_UINT196 bid_log_10_entry =
   {{ 0x0b4c28a38a3fb3e7ull, 0xaaa2b05ba95b58aeull, 0x000000024d763776ull }};
 
 // 1/2, 1/3, ..., 1/10 as binary fractions
 
-static BID_UINT192 bid_recip_2 =
+static BID_UINT196 bid_recip_2 =
  {{ 0x0000000000000000ull, 0x0000000000000000ull, 0x8000000000000000ull }};
 
-static BID_UINT192 bid_recip_3 =
+static BID_UINT196 bid_recip_3 =
 {{ 0x5555555555555555ull, 0x5555555555555555ull, 0x5555555555555555ull }};
 
-static BID_UINT192 bid_recip_4 =
+static BID_UINT196 bid_recip_4 =
 {{ 0x0000000000000000ull, 0x0000000000000000ull, 0x4000000000000000ull }};
 
-static BID_UINT192 bid_recip_5 =
+static BID_UINT196 bid_recip_5 =
 {{ 0x3333333333333333ull, 0x3333333333333333ull, 0x3333333333333333ull }};
 
-static BID_UINT192 bid_recip_6 =
+static BID_UINT196 bid_recip_6 =
 {{ 0xaaaaaaaaaaaaaaabull, 0xaaaaaaaaaaaaaaaaull, 0x2aaaaaaaaaaaaaaaull }};
 
-static BID_UINT192 bid_recip_7 =
+static BID_UINT196 bid_recip_7 =
 {{ 0x9249249249249249ull, 0x4924924924924924ull, 0x2492492492492492ull }};
 
-static BID_UINT192 bid_recip_8 =
+static BID_UINT196 bid_recip_8 =
 {{ 0x0000000000000000ull, 0x0000000000000000ull, 0x2000000000000000ull }};
 
-static BID_UINT192 bid_recip_9 =
+static BID_UINT196 bid_recip_9 =
 {{ 0x71c71c71c71c71c7ull, 0xc71c71c71c71c71cull, 0x1c71c71c71c71c71ull }};
 
-static BID_UINT192 bid_recip_10 =
+static BID_UINT196 bid_recip_10 =
 {{ 0x999999999999999aull, 0x9999999999999999ull, 0x1999999999999999ull }};
 
 // 10^28 * 2^96, used for final decimal alignment
 
-static BID_UINT192 bid_decimal_multiplier_1 =
+static BID_UINT196 bid_decimal_multiplier_1 =
 {{ 0x0000000000000000ull, 0x1000000000000000ull, 0x204fce5e3e250261ull }};
 
 // Taylor series coefficients -1/2, 1/3, -1/4
@@ -360,7 +360,7 @@ static BID_UINT64 bid_recip_table_2[] =
 // Corresponding logs of the bitfields (1 + e)
 // Scaled by 2^160 so the binary point is in the middle of the top word.
 
-static BID_UINT192 bid_log_table_1[] =
+static BID_UINT196 bid_log_table_1[] =
 {{ { 0xe63073dc8d1016e7ull, 0x20c9011c026d235eull, 0x00000000af741551ull }},
   {{ 0x949b4bd30ae78496ull, 0xb24efd31120864fdull, 0x00000000ad7a02e1ull }},
   {{ 0xa902ef3bca1d3892ull, 0xdc633300f9e6607bull, 0x00000000ab83d135ull }},
@@ -491,7 +491,7 @@ static BID_UINT192 bid_log_table_1[] =
   {{ 0x0000000000000000ull, 0x0000000000000000ull, 0x0000000000000000ull }}
 };
 
-static BID_UINT192 bid_log_table_2[] =
+static BID_UINT196 bid_log_table_2[] =
 {{ { 0x72fe3e8d2a020d93ull, 0xb126788d20bbe98eull, 0x0000000001fdfaa6ull }},
   {{ 0xd10f58ffc08c8951ull, 0xf1701f78d37ed9aaull, 0x0000000001f9f2aeull }},
   {{ 0x6172d205bb2f8b61ull, 0x7175c001e25b2bcdull, 0x0000000001f5eac7ull }},
@@ -1012,13 +1012,13 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
   BID_UINT64 r1, r2, c_lo;
   BID_UINT128 xa;
   BID_UINT128 c;
-  BID_UINT192 p;
+  BID_UINT196 p;
   BID_UINT256 q;
 
-  BID_UINT192 ans;
-  BID_UINT192 loc;
+  BID_UINT196 ans;
+  BID_UINT196 loc;
 
-  BID_UINT192 xx, xp, cxp, sx;
+  BID_UINT196 xx, xp, cxp, sx;
 
 // Get absolute value
 

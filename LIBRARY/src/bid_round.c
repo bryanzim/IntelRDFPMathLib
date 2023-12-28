@@ -397,8 +397,8 @@ void bid_round128_19_38 (int q,
 
 void bid_round192_39_57 (int q,
         int x,
-        BID_UINT192 C,
-        BID_UINT192 * ptr_Cstar,
+        BID_UINT196 C,
+        BID_UINT196 * ptr_Cstar,
         int *incr_exp,
         int *ptr_is_midpoint_lt_even,
         int *ptr_is_midpoint_gt_even,
@@ -407,7 +407,7 @@ void bid_round192_39_57 (int q,
 
   BID_UINT384 P384;
   BID_UINT384 fstar;
-  BID_UINT192 Cstar;
+  BID_UINT196 Cstar;
   BID_UINT64 tmp64;
   int shift;
   int ind;

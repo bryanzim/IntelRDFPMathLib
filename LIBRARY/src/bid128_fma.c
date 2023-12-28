@@ -276,7 +276,7 @@ bid_add_and_round (int q3,
   int ind;
   BID_UINT64 R64;
   BID_UINT128 P128, R128;
-  BID_UINT192 P192, R192;
+  BID_UINT196 P192, R192;
   BID_UINT256 R256;
   int is_midpoint_lt_even = 0;
   int is_midpoint_gt_even = 0;
@@ -694,7 +694,7 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
   int is_tiny = 0;
   BID_UINT64 R64, tmp64;
   BID_UINT128 P128, R128;
-  BID_UINT192 P192, R192;
+  BID_UINT196 P192, R192;
   BID_UINT256 R256;
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
   unsigned int C4gt5toq4m1;

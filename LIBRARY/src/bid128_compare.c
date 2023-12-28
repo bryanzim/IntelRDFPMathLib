@@ -35,7 +35,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_equal, x, y)
      int res;
      int exp_x, exp_y, exp_t;
      BID_UINT128 sig_x, sig_y, sig_t;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -177,7 +177,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_greater, x,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -430,7 +430,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -681,7 +681,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -930,7 +930,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_less, x, y)
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -1181,7 +1181,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_less_equal,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -1435,7 +1435,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -1685,7 +1685,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_not_equal,
      int res;
      int exp_x, exp_y, exp_t;
      BID_UINT128 sig_x, sig_y, sig_t;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -1827,7 +1827,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_not_greater,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -2077,7 +2077,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_quiet_not_less, x,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -2376,7 +2376,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_signaling_greater,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -2626,7 +2626,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -2874,7 +2874,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -3119,7 +3119,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int, bid128_signaling_less, x,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -3369,7 +3369,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -3617,7 +3617,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -3865,7 +3865,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 
@@ -4112,7 +4112,7 @@ BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE (int,
      int exp_x, exp_y;
      int diff;
      BID_UINT128 sig_x, sig_y;
-     BID_UINT192 sig_n_prime192;
+     BID_UINT196 sig_n_prime192;
      BID_UINT256 sig_n_prime256;
      char x_is_zero = 0, y_is_zero = 0, non_canon_x, non_canon_y;
 

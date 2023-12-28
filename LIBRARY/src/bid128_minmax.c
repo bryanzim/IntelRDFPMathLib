@@ -40,7 +40,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum, x, y)
   int exp_x, exp_y;
   int diff;
   BID_UINT128 sig_x, sig_y;
-  BID_UINT192 sig_n_prime192;
+  BID_UINT196 sig_n_prime192;
   BID_UINT256 sig_n_prime256;
   char x_is_zero = 0, y_is_zero = 0;
 
@@ -295,7 +295,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_minnum_mag, x, y)
   int exp_x, exp_y;
   int diff;
   BID_UINT128 sig_x, sig_y;
-  BID_UINT192 sig_n_prime192;
+  BID_UINT196 sig_n_prime192;
   BID_UINT256 sig_n_prime256;
 
   //BID_SWAP128 (x);
@@ -558,7 +558,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum, x, y)
   int exp_x, exp_y;
   int diff;
   BID_UINT128 sig_x, sig_y;
-  BID_UINT192 sig_n_prime192;
+  BID_UINT196 sig_n_prime192;
   BID_UINT256 sig_n_prime256;
   char x_is_zero = 0, y_is_zero = 0;
 
@@ -812,7 +812,7 @@ BID128_FUNCTION_ARG2_NORND(bid128_maxnum_mag, x, y)
   int exp_x, exp_y;
   int diff;
   BID_UINT128 sig_x, sig_y;
-  BID_UINT192 sig_n_prime192;
+  BID_UINT196 sig_n_prime192;
   BID_UINT256 sig_n_prime256;
 
   //BID_SWAP128 (x);

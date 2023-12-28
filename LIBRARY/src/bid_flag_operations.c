@@ -390,7 +390,7 @@ int_float tmp;
           if(crt_flags & _SW_ZERODIVIDE)
           {
               tmp.i = 0x80000000;
-              tmp.d = 1.0/tmp.d;
+              tmp.d = 1.0f/tmp.d;
               n |= tmp.i;
           }
           if(crt_flags & _SW_INVALID)
@@ -403,7 +403,7 @@ int_float tmp;
           if(crt_flags & _SW_DENORMAL)
           {
               tmp.i = 0x80000001;
-              tmp.d = 1.0+tmp.d;
+              tmp.d = 1.0f+tmp.d;
               n |= tmp.i;
           }
     }
