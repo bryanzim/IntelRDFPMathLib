@@ -584,9 +584,8 @@ UX_ASIN_ACOS(
   _X_FLOAT     * packed_result
   OPT_EXCEPTION_INFO_DECLARATION )
     {
-    WORD             fp_class, index, map;
+    WORD             fp_class, index;
     UX_FLOAT         * unpacked_argument, * unpacked_result, tmp[3];
-    UX_SIGN_TYPE     sign;
     UX_EXPONENT_TYPE exponent, exponent_inc;
 
     unpacked_argument = &tmp[0];

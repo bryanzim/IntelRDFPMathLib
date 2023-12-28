@@ -164,7 +164,6 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     {
     WORD fp_class;
-    UX_SIGN_TYPE  sign;
     UX_EXPONENT_TYPE exponent;
     UX_FRACTION_DIGIT_TYPE f_hi;
     UX_FLOAT *unpacked_argument, *unpacked_result, tmp[3];

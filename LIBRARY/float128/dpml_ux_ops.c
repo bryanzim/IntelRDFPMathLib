@@ -97,7 +97,7 @@ FFS_AND_SHIFT ( UX_FLOAT * argument, U_WORD flags)
           ((UX_SIGNED_FRACTION_DIGIT_TYPE) msd < 0))
             {
             sign = UX_SIGN_BIT;
-            msd = -msd;
+            msd = -((UX_SIGNED_FRACTION_DIGIT_TYPE) msd);
             }
         P_UX_MSD(argument, msd);
         CLR_UX_LOW_FRACTION(argument);
@@ -460,8 +460,7 @@ UNPACK_X_OR_Y(
       shift, index_limit;
     UX_FRACTION_DIGIT_TYPE exponent_digit, cur_digit, next_digit, inf_nan,
       zero_denorm, fract_bits, * digit_ptr;
-    UX_EXPONENT_TYPE exponent;
-    _X_FLOAT  * packed_value, * packed_argument, *tmp_ptr;
+    _X_FLOAT * packed_argument;
     EXCEPTION_RECORD_DECLARATION
 
 #   if (BITS_PER_WORD == 32)
@@ -557,7 +556,7 @@ UNPACK_X_OR_Y(
         }
 
     fp_class += sign;
-    IF_OPTNL_ERROR_INFO( EXCPTN_INFO->arg_classes = (1 << fp_class));
+    IF_OPTNL_ERROR_INFO( EXCPTN_INFO->arg_classes = (((U_WORD) 1) << fp_class));
 
     /* Now get the class to action mapping index and action */
 
@@ -753,10 +752,8 @@ PACK (
     {
     WORD shift, error_code;
     UX_FLOAT tmp;
-    _X_FLOAT * x_ptr;
     UX_EXPONENT_TYPE exponent;
-    UX_FRACTION_DIGIT_TYPE incr, tmp_digit, next_digit, current_digit,
-      * error_val_ptr;
+    UX_FRACTION_DIGIT_TYPE incr, tmp_digit, next_digit, current_digit;
     EXCEPTION_RECORD_DECLARATION
 
     /*

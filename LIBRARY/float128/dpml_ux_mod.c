@@ -244,7 +244,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
 
     {
     U_WORD SKLR;
-    UX_EXPONENT_TYPE J, tmp, exponent_y;
+    UX_EXPONENT_TYPE J, exponent_y;
     UX_SIGN_TYPE sign_x, sign_xor;
     UX_FLOAT ux_tmp, ux_g_lo, ux_q, product, *addend;
     UX_FRACTION_DIGIT_TYPE F1, F2, G1, R, Q, T1, T2;
@@ -632,7 +632,7 @@ C_UX_MOD(_X_FLOAT * packed_x, _X_FLOAT * packed_y, U_WORD bit_vector,
   WORD underflow_error, const U_WORD * class_to_action_map,
   _X_FLOAT * packed_result  OPT_EXCEPTION_INFO_DECLARATION)
     {
-    WORD fp_class, index;
+    WORD fp_class;
     WORD quot;
     UX_FLOAT unpacked_x, unpacked_y, unpacked_result;
 

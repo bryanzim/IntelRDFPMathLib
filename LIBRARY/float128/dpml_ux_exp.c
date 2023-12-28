@@ -130,7 +130,7 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
     ** scale*high_bits_of_ln2 before subtracting
     */
 
-    scale_exponent = BITS_PER_UX_FRACTION_DIGIT_TYPE - shift;
+    scale_exponent = (UX_EXPONENT_TYPE) (BITS_PER_UX_FRACTION_DIGIT_TYPE - shift);
     EXTENDED_DIGIT_MULTIPLY(scale, constants[1], msd, lsd);
     exponent = scale_exponent;
     if (((UX_SIGNED_FRACTION_DIGIT_TYPE) msd) > 0)
@@ -174,7 +174,7 @@ UX_EXP_COMMON( UX_FLOAT * unpacked_argument,  UX_FLOAT * unpacked_result,
     UX_FLOAT reduced_argument;
 
     /* Get reduced argument */
-    scale = UX_EXP_REDUCE(unpacked_argument, &reduced_argument, constant_table);
+    scale = (UX_EXPONENT_TYPE) UX_EXP_REDUCE(unpacked_argument, &reduced_argument, constant_table);
 
     /* Compute e^reduced_argument */
 
@@ -259,7 +259,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     {
     WORD fp_class;
     UX_EXPONENT_TYPE scale;
-    UX_FLOAT unpacked_argument, unpacked_result, reduced_argument, one;
+    UX_FLOAT unpacked_argument, unpacked_result, reduced_argument;
     UX_FRACTION_DIGIT_TYPE * constants;
     EXCEPTION_INFO_DECL
     DECLARE_X_FLOAT(packed_result)
@@ -276,7 +276,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
        RETURN_X_FLOAT(packed_result);
 
     constants = EXP_CONSTANT_TABLE_ADDRESS;
-    scale = UX_EXP_REDUCE( &unpacked_argument, &reduced_argument, constants);
+    scale = (UX_EXPONENT_TYPE) UX_EXP_REDUCE( &unpacked_argument, &reduced_argument, constants);
     if (scale == 0)
         {
         /*
@@ -422,8 +422,8 @@ UX_HYPERBOLIC( UX_FLOAT * unpacked_argument, WORD evaluation_flags,
     sign = G_UX_SIGN(unpacked_argument);
     P_UX_SIGN(unpacked_argument, 0);
     sign = ( evaluation_flags & COSH ) ? 0 : sign;
-    scale = UX_EXP_REDUCE( unpacked_argument, &reduced_argument,
-                           EXP_CONSTANT_TABLE_ADDRESS);
+    scale = (UX_EXPONENT_TYPE) UX_EXP_REDUCE( unpacked_argument, &reduced_argument,
+                                              EXP_CONSTANT_TABLE_ADDRESS);
 
     /*
     ** if scale == 0, then abs(x) < ln2/2 ==> sinh(x) or tanh(x) may have

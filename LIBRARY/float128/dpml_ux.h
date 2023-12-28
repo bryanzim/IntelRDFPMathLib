@@ -112,7 +112,7 @@ typedef struct {
 #define G_UX_FRACTION_DIGIT(x,n)   (((UX_FLOAT*)(x))->fraction[n])
 
 #define	P_UX_SIGN(x,v)		   ((((UX_FLOAT*)(x))->sign)=(v))
-#define	P_UX_EXPONENT(x,v)	   ((((UX_FLOAT*)(x))->exponent)=(v))
+#define	P_UX_EXPONENT(x,v)	   ((((UX_FLOAT*)(x))->exponent)=(UX_EXPONENT_TYPE) (v))
 #define	P_UX_MSD(x,v)		   ((((UX_FLOAT*)(x))->fraction[0])=(v))
 #define	P_UX_2nd_MSD(x,v)	   ((((UX_FLOAT*)(x))->fraction[1])=(v))
 #define	P_UX_LSD(x,v)		   ((((UX_FLOAT*)(x))->fraction[LSD_NUM])=(v))

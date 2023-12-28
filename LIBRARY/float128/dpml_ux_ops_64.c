@@ -864,7 +864,7 @@ EVALUATE_RATIONAL(
   UX_FLOAT  * result)
     {
     WORD tmp;
-    WORD sign, shift, byte_length, poly_shift;
+    WORD sign, shift, byte_length;
     UX_EXPONENT_TYPE exponent;
     UX_FLOAT * first_result, *second_result, arg_squared, *poly_arg;
     void (* poly_func)(UX_FLOAT *, WORD, FIXED_128 *, WORD, UX_FLOAT *);

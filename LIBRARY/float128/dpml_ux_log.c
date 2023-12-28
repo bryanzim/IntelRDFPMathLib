@@ -147,7 +147,7 @@ static void
 C_UX_LOG( _X_FLOAT * packed_argument, U_WORD const * class_to_action_map,
    UX_FLOAT * scale, _X_FLOAT * packed_result OPT_EXCEPTION_INFO_DECLARATION )
     {
-    WORD    fp_class, index;
+    WORD    fp_class;
     UX_FLOAT unpacked_argument, unpacked_result;
 
     fp_class  = UNPACK(
