@@ -71,7 +71,7 @@ add_zero32 (int exponent_y, BID_UINT32 sign_z, int exponent_z,
   scale_k = 7 - scale_cz;
   if (diff_expon < scale_k)
     scale_k = diff_expon;
-  coefficient_z *= bid_power10_table_128[scale_k].w[0];
+  coefficient_z *= (BID_UINT32) (bid_power10_table_128[scale_k].w[0]);
 
   return get_BID32 (sign_z, exponent_z - scale_k, coefficient_z,
             *prounding_mode, fpsc);
@@ -180,9 +180,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
 
       if (exponent_y >= exponent_z)
         BID_RETURN (z);
-      res =
-        add_zero32 (exponent_y, sign_z, exponent_z, coefficient_z,
-            &rnd_mode, pfpsf);
+      res = (BID_UINT32) add_zero32 (exponent_y, sign_z, exponent_z, coefficient_z,
+                                     &rnd_mode, pfpsf);
       BID_RETURN (res);
     }
       }
@@ -223,9 +222,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
 
       if (exponent_y >= exponent_z)
         BID_RETURN (z);
-      res =
-        add_zero32 (exponent_y, sign_z, exponent_z, coefficient_z,
-            &rnd_mode, pfpsf);
+      res = (BID_UINT32) add_zero32 (exponent_y, sign_z, exponent_z, coefficient_z,
+                                     &rnd_mode, pfpsf);
       BID_RETURN (res);
     }
       }

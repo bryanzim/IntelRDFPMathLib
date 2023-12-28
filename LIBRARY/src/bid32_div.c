@@ -188,7 +188,7 @@ BID_UINT64 CA, CT, PD;
     DU = (A - B) >> 31;
     ed1 = 6 + (int) DU;
     ed2 = bid_estimate_decimal_digits[bin_index] + ed1;
-    T = bid_power10_table_128[ed1].w[0];
+    T = (BID_UINT32) (bid_power10_table_128[ed1].w[0]);
     CA = ((BID_UINT64)A) * T;
 
     Q = 0;
@@ -221,7 +221,7 @@ BID_UINT64 CA, CT, PD;
 
     ed2 = 7 - bid_estimate_decimal_digits[bin_expon_cx] - (int) DU;
 
-    T = bid_power10_table_128[ed2].w[0];
+    T = (BID_UINT32) (bid_power10_table_128[ed2].w[0]);
     CA = ((BID_UINT64)R) * T;
     B = coefficient_y;
 
@@ -230,10 +230,10 @@ BID_UINT64 CA, CT, PD;
 
   }
 
-    Q2 = CA / B;
+    Q2 = (BID_UINT32) (CA / B);
     B2 = B + B;
     B4 = B2 + B2;
-    R = CA - Q2 * B;
+    R = (BID_UINT32) (CA - Q2 * B);
     Q += Q2;
    
 #ifdef BID_SET_STATUS_FLAGS
