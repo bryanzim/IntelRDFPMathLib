@@ -609,7 +609,7 @@ final_step:
     */
 
      Q &= KMASK;
-     quotient = ((sign_xor) ? -Q : Q );
+     quotient = ((sign_xor) ? -((UX_SIGNED_FRACTION_DIGIT_TYPE) Q) : Q );
 
      /* add final sign */
      UX_TOGGLE_SIGN(result, sign_x);

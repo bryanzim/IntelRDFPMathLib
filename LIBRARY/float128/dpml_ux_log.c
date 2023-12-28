@@ -330,7 +330,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result,packed_argument)
     */
 
     f_hi = f_hi >> 2;
-    f_hi = (sign) ? -f_hi : f_hi;
+    f_hi = (sign) ? -((UX_SIGNED_FRACTION_DIGIT_TYPE) f_hi) : f_hi;
     f_hi += UX_MSB;
 
     if ( (UX_FRACTION_DIGIT_TYPE) (f_hi - I_RECIP_SQRT_2) >=

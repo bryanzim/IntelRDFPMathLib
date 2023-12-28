@@ -104,7 +104,7 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
     UMULH( msd, constants[0], scale);
     shift = (BITS_PER_UX_FRACTION_DIGIT_TYPE - 3) - exponent;
     scale += SET_BIT(shift - 1);
-    scale &= -SET_BIT(shift);
+    scale &= -((UX_SIGNED_FRACTION_DIGIT_TYPE) SET_BIT(shift));
 
     /*
     ** Now compute (x - scale*high_bits_of_ln2) - scale*low_bits_of_ln2
@@ -152,7 +152,7 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
     ADDSUB(&tmp, reduced_argument, SUB | NO_NORMALIZATION, reduced_argument);
 
     scale >>= shift;
-    scale = (sign) ? -scale : scale;
+    scale = (sign) ? -((UX_SIGNED_FRACTION_DIGIT_TYPE) scale) : scale;
     return scale;
     }
 

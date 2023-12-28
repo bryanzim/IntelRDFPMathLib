@@ -373,7 +373,7 @@ bit_shift:
                 {
                 sign ^= UX_SIGN_BIT;
                 P_UX_SIGN(&ux_save, UX_SIGN_BIT);
-                lsd = -lsd;
+                lsd = -((UX_SIGNED_FRACTION_DIGIT_TYPE) lsd);
                 carry = (lsd == 0) ? 0 : -1;
 
 #           if NUM_UX_FRACTION_DIGITS == 4
@@ -960,7 +960,7 @@ PACK (
         lsd = coef->digits[0];					\
         P_UX_FRACTION_DIGIT(ux, LSD_NUM, lsd & ~mask);		\
         op = lsd & 1;						\
-        scale = (((lsd >> 1) & mask) - bias);			\
+        scale = (UX_EXPONENT_TYPE) (((lsd >> 1) & mask) - bias);			\
         }
 
 

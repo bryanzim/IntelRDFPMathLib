@@ -181,7 +181,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
             tmp_digit = (_Z >> cnt);
             _Z        = tmp_digit << cnt;
             tmp_digit = (G_UX_SIGN(&z) != G_UX_SIGN(&tmp[2])) ?
-                         -tmp_digit : tmp_digit;
+                         -((UX_SIGNED_FRACTION_DIGIT_TYPE) tmp_digit) : tmp_digit;
             LOG2_HI += tmp_digit;
             }
         }
@@ -290,7 +290,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
         tmp_digit = inc & MAKE_MASK(cnt, 0);
         P_UX_MSD(&log2_lo, tmp_digit);
         inc >>= cnt;
-        inc = (sign ^ G_UX_SIGN(&log2_lo)) ? -inc : inc;
+        inc = (sign ^ G_UX_SIGN(&log2_lo)) ? -((UX_SIGNED_FRACTION_DIGIT_TYPE) inc) : inc;
         LOG2_HI += inc;
         }
 
@@ -323,7 +323,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
         tmp_digit = I + inc;
         inc += inc; 
         if (tmp_digit >= I)
-            I = tmp_digit & -inc;
+            I = tmp_digit & -((UX_SIGNED_FRACTION_DIGIT_TYPE) inc);
         else
             { /* A carry out occurred on the increment */
             cnt--;
@@ -361,7 +361,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
         result);
 
     I >>= cnt;
-    tmp_digit = -I;
+    tmp_digit = -((UX_SIGNED_FRACTION_DIGIT_TYPE) I);
     I = sign ? tmp_digit : I;
     UX_INCR_EXPONENT(result, I);
     return;
@@ -615,7 +615,7 @@ UX_EXP2( UX_FLOAT * x, UX_FLOAT * result)
         tmp_digit = I + inc;
         inc += inc; 
         if (tmp_digit >= I)
-            I = tmp_digit & -inc;
+            I = tmp_digit & -((UX_SIGNED_FRACTION_DIGIT_TYPE) inc);
         else
             { /* A carry out occurred on the increment */
             cnt--;
@@ -638,7 +638,7 @@ UX_EXP2( UX_FLOAT * x, UX_FLOAT * result)
         result);
 
     I >>= cnt;
-    tmp_digit = -I;
+    tmp_digit = -((UX_SIGNED_FRACTION_DIGIT_TYPE) I);
     I = sign ? tmp_digit : I;
     UX_INCR_EXPONENT(result, I);
     return;

@@ -360,7 +360,7 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     **		compute N3'
     */
 
-    mask = -S;
+    mask = -((UX_SIGNED_FRACTION_DIGIT_TYPE) S);
 
     UMULH( Q1, B2, P11 );
     P01 = Q1 * B1;
@@ -381,7 +381,7 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
 
     /* Subtract the sum from A1:A2 */
 
-    N0 = -N0;
+    N0 = -((UX_SIGNED_FRACTION_DIGIT_TYPE) N0);
     C1 = (A2 < N2);
     N2 = A2 - N2;
     N0 -= (A1 < N1);
@@ -890,7 +890,7 @@ EVALUATE_RATIONAL(
     NORMALIZE(poly_arg);
     exponent = G_UX_EXPONENT(poly_arg);
     P_UX_EXPONENT(poly_arg, exponent);
-    shift = -degree*exponent;
+    shift = -((WORD) (degree*exponent));
     byte_length = (degree + 1)*sizeof(FIXED_128) + sizeof(WORD);
 
     /* allocate locations for 1st and 2nd result */
