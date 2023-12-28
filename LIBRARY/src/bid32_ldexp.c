@@ -48,14 +48,14 @@ BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT32, bid32_ldexp, BID_UINT32, 
        exp64 = (BID_SINT64) exponent_x + (BID_SINT64) n;
        if(exp64<0) exp64=0;
        if(exp64>DECIMAL_MAX_EXPON_32) exp64=DECIMAL_MAX_EXPON_32;
-       exponent_x = exp64;
+       exponent_x = (int) exp64;
      res = very_fast_get_BID32 (sign_x, exponent_x, coefficient_x);	// 0
     }
     BID_RETURN (res);
   }
 
   exp64 = (BID_SINT64) exponent_x + (BID_SINT64) n;
-  exponent_x = exp64;
+  exponent_x = (int) exp64;
 
   if ((BID_UINT32) exponent_x <= DECIMAL_MAX_EXPON_32) {
     res = very_fast_get_BID32 (sign_x, exponent_x, coefficient_x);

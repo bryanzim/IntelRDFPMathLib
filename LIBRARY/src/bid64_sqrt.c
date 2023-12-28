@@ -138,8 +138,8 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT64, bid64_sqrt, x)
   // 2^64
   t_scale.i = 0x43f0000000000000ull;
   // convert CA to DP
-  da_h = CA.w[1];
-  da_l = CA.w[0];
+  da_h = (double) (CA.w[1]);
+  da_l = (double) (CA.w[0]);
   da = da_h * t_scale.d + da_l;
 
   dq = sqrt (da);

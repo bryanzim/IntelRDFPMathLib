@@ -125,7 +125,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
 #else
     rmode = 0;
 #endif
-    coefficient_x += bid_round_const_table[rmode][extra_digits];
+    coefficient_x += (BID_UINT32) bid_round_const_table[rmode][extra_digits];
 
     // get P*(2^M[extra_digits])/10^extra_digits
     CT = (BID_UINT64)coefficient_x * bid_bid_reciprocals10_32[extra_digits];

@@ -199,7 +199,7 @@ short_sqrt128 (BID_UINT128 A10) {
   ES = ((BID_SINT64) ES) >> 1;
 
   if (((BID_SINT64) ES) < 0) {
-    ES = -ES;
+    ES = -((BID_SINT64) ES);
 
     // A*RS*eps (scaled by 2^64)
     __mul_64x192_to_256 (AE0, ES, ARS0);
@@ -300,8 +300,8 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   ARS00.w[3] = ARS0.w[4];
 
   if (((BID_SINT64) ES.w[1]) < 0) {
-    ES.w[0] = -ES.w[0];
-    ES.w[1] = -ES.w[1];
+    ES.w[0] = -((BID_SINT64) ES.w[0]);
+    ES.w[1] = -((BID_SINT64) ES.w[1]);
     if (ES.w[0])
       ES.w[1]--;
 

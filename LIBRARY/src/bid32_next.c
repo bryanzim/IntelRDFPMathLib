@@ -121,11 +121,11 @@ bid32_nextup (BID_UINT32 x
       ind = P7 - q1; // 1 <= ind <= P7 - 1
       // pad with P7 - q1 zeros, until exponent = emin
       // C1 = C1 * 10^ind
-      C1 = C1 * bid_ten2k64[ind];
+      C1 = C1 * ((BID_UINT32) bid_ten2k64[ind]);
       x_exp = x_exp - ind;
     } else { // pad with zeros until the exponent reaches emin
       ind = x_exp;
-      C1 = C1 * bid_ten2k64[ind];
+      C1 = C1 * ((BID_UINT32) bid_ten2k64[ind]);
       x_exp = EXP_MIN32;
     }
       }
@@ -250,11 +250,11 @@ bid32_nextdown (BID_UINT32 x
       ind = P7 - q1; // 1 <= ind <= P7 - 1
       // pad with P7 - q1 zeros, until exponent = emin
       // C1 = C1 * 10^ind
-      C1 = C1 * bid_ten2k64[ind];
+      C1 = C1 * ((BID_UINT32) bid_ten2k64[ind]);
       x_exp = x_exp - ind;
     } else {	// pad with zeros until the exponent reaches emin
       ind = x_exp;
-      C1 = C1 * bid_ten2k64[ind];
+      C1 = C1 * ((BID_UINT32) bid_ten2k64[ind]);
       x_exp = EXP_MIN32;
     }
       }

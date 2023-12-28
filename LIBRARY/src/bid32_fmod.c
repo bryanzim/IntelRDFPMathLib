@@ -151,14 +151,14 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_fmod, BID_UINT32, x
       BID_RETURN (res);
     }
     // set exponent of y to exponent_x, scale coefficient_y
-    T = bid_power10_table_128[diff_expon].w[0];
+    T = (BID_UINT32) (bid_power10_table_128[diff_expon].w[0]);
     CYL = ((BID_UINT64)coefficient_y) * T;
     if (CYL > (BID_UINT64)(coefficient_x)) {
       res = x;
       BID_RETURN (res);
     }
 
-    CY = CYL;
+    CY = (BID_UINT32) CYL;
     Q = coefficient_x / CY;
     R = coefficient_x - Q * CY;
 
