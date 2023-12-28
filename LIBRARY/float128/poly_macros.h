@@ -35,7 +35,7 @@
 /* Define a macro that selects the appropriate polynomial form by adding a
 suffix (an '_' should already be at the end of SELECT_POLY's parameter). */
 
-#if MULTIPLE_ISSUE
+#if (defined(MULTIPLE_ISSUE) && MULTIPLE_ISSUE)
 #	define  SELECT_POLY(x) PASTE_2(x,M)
 #else
 #	define  SELECT_POLY(x) PASTE_2(x,C)
@@ -860,7 +860,7 @@ the other forms in this file */
 /* Ordinary poly macros without linear or constant terms */
 
 
-#if MULTIPLE_ISSUE
+#if (defined(MULTIPLE_ISSUE) && MULTIPLE_ISSUE)
 #	define	POLY_2_X2(x,p,y) POLY_2_X2_M(x,p,y)
 #	define	POLY_3_X2(x,p,y) POLY_3_X2_M(x,p,y)
 #	define	POLY_4_X2(x,p,y) POLY_4_X2_M(x,p,y)
@@ -900,7 +900,7 @@ the other forms in this file */
 /* Poly macros with no linear, constant or square term */
 
 
-#if MULTIPLE_ISSUE
+#if (defined(MULTIPLE_ISSUE) && MULTIPLE_ISSUE)
 
 #       define POLY_3_X3(x,p,y)   POLY_3_X3_M(x,p,y)
 #       define POLY_4_X3(x,p,y)   POLY_4_X3_M(x,p,y)
@@ -1018,7 +1018,7 @@ the other forms in this file */
 
 #define  POLY_0_ALL(x,p,y) POLY_0_C(x,p,y)
 
-#if MULTIPLE_ISSUE
+#if (defined(MULTIPLE_ISSUE) && MULTIPLE_ISSUE)
 #       define  POLY_1_ALL(x,p,y) POLY_1_ALL_M(x,p,y)
 #       define  POLY_2_ALL(x,p,y) POLY_2_ALL_M(x,p,y)
 #       define  POLY_3_ALL(x,p,y) POLY_3_ALL_M(x,p,y)

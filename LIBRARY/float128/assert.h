@@ -30,7 +30,7 @@
 #ifndef ASSERT
 
 
-#if (DPML_DEBUG)
+#if (defined(DPML_DEBUG) && DPML_DEBUG)
 
 #define ASSERT(x) { \
     if (!(x)) { \

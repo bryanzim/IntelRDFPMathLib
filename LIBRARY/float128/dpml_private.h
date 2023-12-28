@@ -47,9 +47,9 @@
 #include "i_format.h"
 #include "f_format.h"
 
-#if NEW_DPML_MACROS == 1
+#if (defined(NEW_DPML_MACROS) && (NEW_DPML_MACROS == 1))
 
-#   if MULTIPLE_ISSUE
+#   if (defined(MULTIPLE_ISSUE) && MULTIPLE_ISSUE)
 #       define PIPELINED	1
 #   else
 #       define PIPELINED	0
@@ -206,39 +206,39 @@ compiler).  [ In practice, we may not get around to writing the generic
 versions until we need them. ] */
 
 
-#if (ARCHITECTURE == vax)
+#if (defined(vax) && (ARCHITECTURE == vax))
 
 #    include "vax_macros.h"
 
-#elif (ARCHITECTURE == mips)
+#elif (defined(mips) && (ARCHITECTURE == mips))
 
 #    include "mips_macros.h"
 
-#elif (ARCHITECTURE == hp_pa)
+#elif (defined(hp_pa) && (ARCHITECTURE == hp_pa))
 
 #    include "ix86_macros.h"
 
-#elif (ARCHITECTURE == cray)
+#elif (defined(cray) && (ARCHITECTURE == cray))
 
 #    include "cray_macros.h"
 
-#elif (ARCHITECTURE == alpha)
+#elif (defined(alpha) && (ARCHITECTURE == alpha))
 
 #    include "alpha_macros.h"
 
-#elif (ARCHITECTURE == ix86)
+#elif (defined(ix86) && (ARCHITECTURE == ix86))
 
 #    include "ix86_macros.h"
 
-#elif (ARCHITECTURE == merced)
+#elif (defined(merced) && (ARCHITECTURE == merced))
 
 #include "ix86_macros.h"
 
-#elif (ARCHITECTURE == amd64 )
+#elif (defined(amd64) && (ARCHITECTURE == amd64))
 
 #    include "ix86_macros.h"
 
-#elif (ARCHITECTURE == sparc )
+#elif (defined(sparc) && (ARCHITECTURE == sparc))
 
 #    include "ix86_macros.h"
 
@@ -378,7 +378,7 @@ specific macro definitions included above.  */
 #endif
 
 
-#if (VAX_FLOATING) 
+#if (defined(VAX_FLOATING) && VAX_FLOATING)
 
 #ifndef F_EXP_WORD_IS_ABNORMAL
 #define F_EXP_WORD_IS_ABNORMAL(exp_word) (!((exp_word) & F_EXP_MASK))
@@ -479,7 +479,7 @@ specific macro definitions included above.  */
 
 
 
-#elif (IEEE_FLOATING)
+#elif (defined(IEEE_FLOATING) && IEEE_FLOATING)
 
 
 
@@ -990,7 +990,7 @@ input value is non-negative and sign is negative, the result will be
 -(value).  If value is non-negative and sign is non-negative, the
 result will = value. */
 
-#if F_COPY_SIGN_IS_FAST
+#if (defined(F_COPY_SIGN_IS_FAST) && F_COPY_SIGN_IS_FAST)
 
 #       define F_COPY_NEG_SIGN(sign,abs_sign,value) \
                 ASSERT((value) >= 0.0); \
@@ -1010,7 +1010,7 @@ result will = value. */
 
 
 
-#if (F_MAX_BIN_EXP > 2 * F_PRECISION)
+#if (defined(F_MAX_BIN_EXP) && defined(F_PRECISION) && (F_MAX_BIN_EXP > 2 * F_PRECISION))
 
 #       define GOTO_CLEANUP_IF_POTENTIAL_OVERFLOW(x, t)
 
@@ -1026,7 +1026,7 @@ result will = value. */
 #endif
 
 
-#if (DPML_DEBUG)
+#if (defined(DPML_DEBUG) && DPML_DEBUG)
 #       define DPML_DEBUG_ABS(x) (((x) < 0.0) ? (-(x)) : (x))
 #endif
 
@@ -1948,7 +1948,7 @@ These do not yet have generic definitions:
 
 
 #ifndef SPLIT_TO_HI_LO_BY_INT
-#if ((F_PRECISION / 2) <= BITS_PER_WORD)
+#if (defined(F_PRECISION) && ((F_PRECISION / 2) <= BITS_PER_WORD))
 #define SPLIT_TO_HI_LO_BY_INT(x,y) { \
         F_UNION u; \
         u.f = (x); \
@@ -1969,7 +1969,7 @@ These do not yet have generic definitions:
 #endif
 
 
-#if PRECISION_BACKUP_AVAILABLE
+#if (defined(PRECISION_BACKUP_AVAILABLE) && PRECISION_BACKUP_AVAILABLE)
 
 #ifndef EXTENDED_MUL_SUB
 #define EXTENDED_MUL_SUB(a,b,c,y) { \
@@ -2006,7 +2006,7 @@ These do not yet have generic definitions:
 #endif  /* PRECISION_BACKUP_AVAILABLE */
 
 
-#if (QUAD_PRECISION) && !(defined(merced) && !defined(VMS))
+#if (defined(QUAD_PRECISION) && QUAD_PRECISION) && !(defined(merced) && !defined(VMS))
 #    define C_C_PROTO(n)          C_p_PROTO(n)
 #    define COMPLEX_QUAD_DECL(n)  F_COMPLEX n
 #    define COMPLEX_ARGS_INIT(x)  F_TYPE PASTE(r,x)=x->r, PASTE(i,x)=x->i
@@ -2148,7 +2148,7 @@ These do not yet have generic definitions:
  */
 
 #if !defined(__LOG2_DENORM_SCALE)
-#   if F_COPY_SIGN_AND_EXP_IS_FAST
+#   if (defined(F_COPY_SIGN_AND_EXP_IS_FAST) && F_COPY_SIGN_AND_EXP_IS_FAST)
 #       define __LOG2_DENORM_SCALE		(F_PRECISION - F_MIN_BIN_EXP)
 #   else
 #       define __LOG2_DENORM_SCALE		F_PRECISION
@@ -2171,7 +2171,7 @@ These do not yet have generic definitions:
 #define	__DENORM_CONST_BIASED_EXP	ALIGN_W_EXP_FIELD(__LOG2_DENORM_CONST \
                       - F_NORM + F_EXP_BIAS)
 
-#if F_COPY_SIGN_AND_EXP_IS_FAST && \
+#if (defined(F_COPY_SIGN_AND_EXP_IS_FAST) && F_COPY_SIGN_AND_EXP_IS_FAST) && \
      (__LOG2_DENORM_CONST >= 0) && (__LOG2_DENORM_CONST <= __MAX_F_POW_2_EXP)
 
 #   undef  __DENORM_CONST
@@ -2348,10 +2348,10 @@ These do not yet have generic definitions:
 **  instruction.
 */
 
-#if IEEE_FLOATING
+#if (defined(IEEE_FLOATING) && IEEE_FLOATING)
 #   define S_HW_SQRT_NAME(x) __SQRTS(x)
 #   define D_HW_SQRT_NAME(x) __SQRTT(x)
-#elif VAX_FLOATING
+#elif (defined(VAX_FLOATING) && VAX_FLOATING)
 #   define S_HW_SQRT_NAME(x) __SQRTF(x)
 #   define D_HW_SQRT_NAME(x) __SQRTG(x)
 #endif
@@ -2359,12 +2359,12 @@ These do not yet have generic definitions:
 #define S_HW_SQRT(x,y) (y = S_HW_SQRT_NAME(x))
 #define D_HW_SQRT(x,y) (y = D_HW_SQRT_NAME(x))
 
-#if SINGLE_PRECISION
+#if (defined(SINGLE_PRECISION) && SINGLE_PRECISION)
 #   define F_HW_SQRT_NAME S_HW_SQRT_NAME
 #   define B_HW_SQRT_NAME D_HW_SQRT_NAME
 #   define F_HW_SQRT S_HW_SQRT
 #   define B_HW_SQRT D_HW_SQRT
-#elif DOUBLE_PRECISION
+#elif (defined(DOUBLE_PRECISION) && DOUBLE_PRECISION)
 #   define F_HW_SQRT_NAME D_HW_SQRT_NAME
 #   define B_HW_SQRT_NAME D_HW_SQRT_NAME
 #   define F_HW_SQRT D_HW_SQRT
