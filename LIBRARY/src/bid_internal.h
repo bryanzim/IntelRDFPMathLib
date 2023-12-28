@@ -2889,8 +2889,8 @@ typedef struct BID_ALIGN (16)
      BID_EXTERN_C BID_UINT256 bid_ten2mxtrunc256[];
 
      typedef union BID_ALIGN (16) __bid64_128 {
-       BID_UINT64 b64;
-       BID_UINT128 b128;
+         BID_UINT128 b128;
+         BID_UINT64 b64;
      } BID64_128;
 
      BID64_128 bid_fma (unsigned int P0,

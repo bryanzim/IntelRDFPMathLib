@@ -123,7 +123,7 @@ wcstod_conversion (const wchar_t* RESTRICT ps_in, wchar_t** RESTRICT endptr)
 {
 wchar_t * ps0, *ps, *ptail;
 char* ps0_c;
-int i,k;
+size_t i, k;
 
    if(!ps_in)
    {
@@ -201,8 +201,8 @@ int i,k;
    ps0_c = malloc((k+1)*sizeof(char));
    if(!ps0_c)
    { free(ps0); return NULL;}
-   for(i=0; i<=k; i++)
-       ps0_c[i] = (ps0[i] - L'0') + '0';
+   for(i=0; i<=k; ++i)
+       ps0_c[i] = (char) ((ps0[i] - L'0') + '0');
    free(ps0);
 
    return ps0_c;
