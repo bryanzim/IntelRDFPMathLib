@@ -32,7 +32,7 @@
 
 #include "bid_internal.h"
 
-#if DOUBLE_EXTENDED_ON
+#if (defined(DOUBLE_EXTENDED_ON) && DOUBLE_EXTENDED_ON)
 
 BID_EXTERN_C BINARY80 SQRT80 (BINARY80);
 

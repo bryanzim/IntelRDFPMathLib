@@ -46,7 +46,7 @@
  * Set up platform specific name that over-ride default names
  */
 
-#if (OP_SYSTEM == vms)
+#if (defined(vms) && (OP_SYSTEM == vms))
 
 #   define __VMS_POW_NAME(name,suf)	PASTE_2(__F_SYSTEM_NAME(name),suf)
 #   define __VMS_B_POW_NAME(name,suf)	PASTE_2(__B_SYSTEM_NAME(name),suf)
@@ -2400,8 +2400,13 @@
 #    define D_BUILD_SUFFIX __D_SUFFIX
 #endif
 
+#if (_MSC_VER)
+#    pragma warning( push )
+#    pragma warning( disable : 4668 )
+#endif
+
 #ifndef TABLE_SUFFIX
-#   if (__F_SUFFIX == DPML_NULL_MACRO_TOKEN)
+#   if (defined(__F_SUFFIX) && defined(DPML_NULL_MACRO_TOKEN) && (__F_SUFFIX == DPML_NULL_MACRO_TOKEN))
 #       define TABLE_SUFFIX _table
 #   else
 #       define TABLE_SUFFIX PASTE_2(__F_SUFFIX, _table)
@@ -2409,11 +2414,15 @@
 #endif
 
 #ifndef F_TABLE_SUFFIX
-#   if (__F_SUFFIX == DPML_NULL_MACRO_TOKEN)
+#   if (defined(__F_SUFFIX) && defined(DPML_NULL_MACRO_TOKEN) && (__F_SUFFIX == DPML_NULL_MACRO_TOKEN))
 #       define F_TABLE_SUFFIX _table
 #   else
 #       define F_TABLE_SUFFIX PASTE_2(__F_SUFFIX, _table)
 #   endif
+#endif
+
+#if (_MSC_VER)
+#    pragma warning( pop )
 #endif
 
 #ifndef BUILD_FILE_EXTENSION
@@ -2423,8 +2432,6 @@
 #       define BUILD_FILE_EXTENSION h
 #   endif
 #endif
-
-
 
 #ifdef B_TYPE
 
@@ -2440,12 +2447,21 @@
 #   endif
 #endif
 
+#if (_MSC_VER)
+#    pragma warning( push )
+#    pragma warning( disable : 4668 )
+#endif
+
 #ifndef B_TABLE_SUFFIX
-#   if (__B_SUFFIX == DPML_NULL_MACRO_TOKEN)
+#   if (defined(__B_SUFFIX) && defined(DPML_NULL_MACRO_TOKEN) && (__B_SUFFIX == DPML_NULL_MACRO_TOKEN))
 #       define B_TABLE_SUFFIX _table
 #   else
 #       define B_TABLE_SUFFIX PASTE_2(__B_SUFFIX, _table)
 #   endif
+#endif
+
+#if (_MSC_VER)
+#    pragma warning( pop )
 #endif
 
 #endif  /* B_TYPE */
@@ -2461,15 +2477,22 @@
 #   define  __D_SUFFIX  PASTE_2(_, D_CHAR)
 #endif
 
+#if (_MSC_VER)
+#    pragma warning( push )
+#    pragma warning( disable : 4668 )
+#endif
+
 #ifndef D_TABLE_SUFFIX
-#   if (__D_SUFFIX == DPML_NULL_MACRO_TOKEN)
+#   if (defined(__D_SUFFIX) && defined(DPML_NULL_MACRO_TOKEN) && (__D_SUFFIX == DPML_NULL_MACRO_TOKEN))
 #       define D_TABLE_SUFFIX _table
 #   else
 #       define D_TABLE_SUFFIX PASTE_2(__D_SUFFIX, _table)
 #   endif
 #endif
 
-
+#if (_MSC_VER)
+#    pragma warning( pop )
+#endif
 
 /*
 ** Macros for constructing file names.
@@ -2487,31 +2510,36 @@
 ** First define macro for adding prefixes
 */
 
-#if (F_NAME_PREFIX == DPML_NULL_MACRO_TOKEN)
+#if (_MSC_VER)
+#    pragma warning( push )
+#    pragma warning( disable : 4668 )
+#endif
+
+#if (defined(F_NAME_PREFIX) && defined(DPML_NULL_MACRO_TOKEN) && (F_NAME_PREFIX == DPML_NULL_MACRO_TOKEN))
 #   define __SYSTEM_NAME(base)	base
 #else
 #   define __SYSTEM_NAME(base)	PASTE_2(F_NAME_PREFIX, base)
 #endif
 
-#if (USER_PREFIX == DPML_NULL_MACRO_TOKEN)
+#if (defined(USER_PREFIX) && defined(DPML_NULL_MACRO_TOKEN) && (USER_PREFIX == DPML_NULL_MACRO_TOKEN))
 #   define __USER_NAME(base)	base
 #else
 #   define __USER_NAME(base)	PASTE_2(USER_PREFIX, base)
 #endif
 
-#if (TABLE_PREFIX == DPML_NULL_MACRO_TOKEN)
+#if (defined(TABLE_PREFIX) && defined(DPML_NULL_MACRO_TOKEN) && (TABLE_PREFIX == DPML_NULL_MACRO_TOKEN))
 #   define __TABLE_NAME(base)	base
 #else
 #   define __TABLE_NAME(base)	PASTE_2(TABLE_PREFIX, base)
 #endif
 
-#if (INTERNAL_PREFIX == DPML_NULL_MACRO_TOKEN)
+#if (defined(INTERNAL_PREFIX) && defined(DPML_NULL_MACRO_TOKEN) && (INTERNAL_PREFIX == DPML_NULL_MACRO_TOKEN))
 #   define __INTERNAL_NAME(base)    base
 #else
 #   define __INTERNAL_NAME(base)    PASTE_2(INTERNAL_PREFIX, base)
 #endif
 
-#if (BUILD_PREFIX == DPML_NULL_MACRO_TOKEN)
+#if (defined(BUILD_PREFIX) && defined(DPML_NULL_MACRO_TOKEN) && (BUILD_PREFIX == DPML_NULL_MACRO_TOKEN))
 #    define ADD_BUILD_PREFIX(base)	base
 #else
 #    define ADD_BUILD_PREFIX(base)	PASTE_2(BUILD_PREFIX, base)
@@ -2521,28 +2549,32 @@
 ** Define macros for adding suffixes
 */
 
-#if (F_NAME_SUFFIX == DPML_NULL_MACRO_TOKEN)
+#if (defined(F_NAME_SUFFIX) && defined(DPML_NULL_MACRO_TOKEN) && (F_NAME_SUFFIX == DPML_NULL_MACRO_TOKEN))
 #   define ADD_F_SUFFIX(base)		base
 #else
 #   define ADD_F_SUFFIX(base)		PASTE_2(base, F_NAME_SUFFIX)
 #endif
 
-#if (B_NAME_SUFFIX == DPML_NULL_MACRO_TOKEN)
+#if (defined(B_NAME_SUFFIX) && defined(DPML_NULL_MACRO_TOKEN) && (B_NAME_SUFFIX == DPML_NULL_MACRO_TOKEN))
 #   define ADD_B_SUFFIX(base)		base
 #else
 #   define ADD_B_SUFFIX(base)		PASTE_2(base, B_NAME_SUFFIX)
 #endif
 
-#if (D_NAME_SUFFIX == DPML_NULL_MACRO_TOKEN)
+#if (defined(D_NAME_SUFFIX) && defined(DPML_NULL_MACRO_TOKEN) && (D_NAME_SUFFIX == DPML_NULL_MACRO_TOKEN))
 #   define ADD_D_SUFFIX(base)		base
 #else
 #   define ADD_D_SUFFIX(base)		PASTE_2(base, D_NAME_SUFFIX)
 #endif
 
-#if (BUILD_SUFFIX == DPML_NULL_MACRO_TOKEN)
+#if (defined(BUILD_SUFFIX) && defined(DPML_NULL_MACRO_TOKEN) && (BUILD_SUFFIX == DPML_NULL_MACRO_TOKEN))
 #   define __BUILD_NAME(base)    ADD_BUILD_PREFIX(base)
 #else
 #   define __BUILD_NAME(base)    PASTE_2(ADD_BUILD_PREFIX(base), BUILD_SUFFIX)
+#endif
+
+#if (_MSC_VER)
+#    pragma warning( pop )
 #endif
 
 #define __F_USER_NAME(base)	  ADD_F_SUFFIX(__USER_NAME(base))
@@ -2580,7 +2612,7 @@
 */
 
 
-#if !defined(TABLE_NAME) && !DONT_DEFAULT_TABLE_NAME
+#if !defined(TABLE_NAME) && (!defined(DONT_DEFAULT_TABLE_NAME) || !DONT_DEFAULT_TABLE_NAME)
 #    define TABLE_NAME  __F_TABLE_NAME(BASE_NAME)
 #endif
 
