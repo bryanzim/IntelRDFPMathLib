@@ -108,7 +108,7 @@ bid64_to_int32_rnint (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -261,22 +261,22 @@ bid64_to_int32_rnint (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -361,7 +361,7 @@ bid64_to_int32_xrnint (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -554,22 +554,22 @@ bid64_to_int32_xrnint (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -654,7 +654,7 @@ bid64_to_int32_floor (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -799,22 +799,22 @@ bid64_to_int32_floor (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -899,7 +899,7 @@ bid64_to_int32_xfloor (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1050,22 +1050,22 @@ bid64_to_int32_xfloor (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1150,7 +1150,7 @@ bid64_to_int32_ceil (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1295,22 +1295,22 @@ bid64_to_int32_ceil (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1395,7 +1395,7 @@ bid64_to_int32_xceil (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1546,22 +1546,22 @@ bid64_to_int32_xceil (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1645,7 +1645,7 @@ bid64_to_int32_int (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1762,22 +1762,22 @@ bid64_to_int32_int (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       shift = bid_shiftright128[ind - 1];	// 0 <= shift <= 39
       Cstar = Cstar >> shift;
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1862,7 +1862,7 @@ bid64_to_int32_xint (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -2004,22 +2004,22 @@ bid64_to_int32_xint (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -2103,7 +2103,7 @@ bid64_to_int32_rninta (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -2236,22 +2236,22 @@ bid64_to_int32_rninta (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -2336,7 +2336,7 @@ bid64_to_int32_xrninta (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 10) {	// x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -2511,22 +2511,22 @@ bid64_to_int32_xrninta (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-    res = -Cstar;
+    res = (int) (-Cstar);
       else
-    res = Cstar;
+    res = (int) Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = (int) (-C1);
       else
-    res = C1;
+    res = (int) C1;
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = (int) (-C1 * bid_ten2k64[exp]);
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (int) (C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
