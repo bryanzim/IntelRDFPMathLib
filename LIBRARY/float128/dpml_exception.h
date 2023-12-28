@@ -278,7 +278,7 @@ typedef struct {
 /*  the follow union to pass them in.					    */
 /*									    */
 
-# if ARCHITECTURE == alpha
+# if (defined(alpha) && (ARCHITECTURE == alpha))
 
 #   define EXCEPTION_INTERFACE_RECEIVE receive_exception_record
 #   if defined MINIMAL_SILENT_MODE_EXCEPTION_HANDLER
@@ -321,25 +321,25 @@ typedef struct {
 
 # else
 
-#   if ARCHITECTURE == mips
+#   if (defined(mips) && (ARCHITECTURE == mips))
 #	define PROCESS_DENORMS 1
 #	define DPML_EXCEPTION_HANDLER DPML_EXCEPTION_NAME
 #	define EXCEPTION_ARGUMENTS( error_code ) error_code
 #	define PLATFORM_SPECIFIC_HEADER_FILE "mips_exception.c"
 
-#   elif ARCHITECTURE == hp_pa
+#   elif (defined(hp_pa) && (ARCHITECTURE == hp_pa))
 #	define PROCESS_DENORMS 1
 #	define DPML_EXCEPTION_HANDLER DPML_EXCEPTION_NAME
 #	define EXCEPTION_ARGUMENTS( error_code ) error_code
 #	define PLATFORM_SPECIFIC_HEADER_FILE "hppa_exception.c"
 
-#   elif ARCHITECTURE == ix86
+#   elif (defined(ix86) && (ARCHITECTURE == ix86))
 #	define PROCESS_DENORMS 1
 #	define DPML_EXCEPTION_HANDLER DPML_EXCEPTION_NAME
 #	define EXCEPTION_ARGUMENTS( error_code ) error_code
 //#	define PLATFORM_SPECIFIC_HEADER_FILE "intel_exception.c"
 
-#   elif ARCHITECTURE == merced 
+#   elif (defined(merced) && (ARCHITECTURE == merced)) 
 
 #     if OP_SYSTEM == linux
 //#	include "linux_exception.h"
@@ -361,7 +361,7 @@ typedef struct {
 
 #   else
 
-#       if IEEE_FLOATING && !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
+#       if (defined(IEEE_FLOATING) && IEEE_FLOATING) && !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
 #          define PROCESS_DENORMS 1
 #       else
 #	   define PROCESS_DENORMS 0
@@ -395,6 +395,7 @@ typedef struct {
     char		     data_type ;
     char		     dpml_error ;
     char		     mode ;
+    char             pad[5];
     DPML_EXCEPTION_VALUE ret_val ;
     DPML_EXCEPTION_VALUE args[ 4 ] ;
     } DPML_EXCEPTION_RECORD ;
@@ -703,7 +704,7 @@ typedef struct {
             ((__DPML_EXCPT_ENVIRONMENT & ENABLE_FLUSH_TO_ZERO) == 0)
 #endif
 
-# if ARCHITECTURE == alpha
+# if (defined(alpha) && (ARCHITECTURE == alpha))
 #   if OP_SYSTEM == osf
 #   elif OP_SYSTEM == vms
 #   elif OP_SYSTEM == wnt
@@ -711,7 +712,7 @@ typedef struct {
 #   else
     typedef void* EXCEPTION_RETURN_TYPE ;
 #   endif
-# elif ARCHITECTURE == merced
+# elif (defined(merced) && (ARCHITECTURE == merced))
 #   if OP_SYSTEM == vms
 #   else
     typedef void* EXCEPTION_RETURN_TYPE ;
@@ -820,7 +821,7 @@ extern EXCEPTION_RETURN_TYPE DPML_EXCEPTION_HANDLER( EXCEPTION_ARG_LIST ) ;
 # define DPML_ERANGE 1
 # define ERROR_WORD_ERRNO_FLAG( errno )		\
     ( ( ( errno ) == DPML_EDOM ) ? 0 : 1 )
-# if OP_SYSTEM == vms
+# if (defined(vms) && (OP_SYSTEM == vms))
 #   define ERROR_WORD_DATA_TYPE_SIZE 3
 # else
 #   define ERROR_WORD_DATA_TYPE_SIZE 2

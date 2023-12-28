@@ -100,8 +100,8 @@ WORD
 UX_RND_TO_INT( UX_FLOAT * unpacked_argument, WORD flags,
   UX_FLOAT * unpacked_result, UX_FLOAT * unpacked_fraction )
     {
-    WORD index, num_digits, shift, LR, SKLR;
-    UX_EXPONENT_TYPE exponent, int_exponent;
+    WORD num_digits, shift, LR, SKLR;
+    UX_EXPONENT_TYPE exponent;
     UX_FRACTION_DIGIT_TYPE *arg_ptr, *int_ptr, current_digit, new_digit,
        incr, sticky, lsd, mask;
     UX_FLOAT dummy;

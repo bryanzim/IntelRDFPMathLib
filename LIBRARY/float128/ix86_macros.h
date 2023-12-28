@@ -103,7 +103,7 @@
 #define FPU_STATUS_WORD_TYPE unsigned short
 
 
-#if (USE_CONTROL87)
+#if (defined(USE_CONTROL87) && USE_CONTROL87)
 
 #define INIT_FPU_STATE_AND_ROUND_TO_NEAREST(status_word) { \
     status_word = _control87(0,0); \
@@ -354,7 +354,7 @@ down will make the combination faster, go ahead and do it.  */
 /*  rather than first shortening it and then lengthening it.  These macros  */
 /*  have been hand-crafted to work around this problem.			    */
 
-#if PRECISION_BACKUP_AVAILABLE
+#if (defined(PRECISION_BACKUP_AVAILABLE) && PRECISION_BACKUP_AVAILABLE)
 #   define X_SQR_TO_HI_LO(x, t, hi, lo) { \
     volatile B_TYPE tv ; \
     volatile F_TYPE hiv, lov ; \
