@@ -423,7 +423,7 @@ typedef struct {
 #define P_EXCPT_REC_RET_VAL_PTR(p,v)	p->ret_val_ptr = (void *)(v) 
 #define P_EXCPT_REC_CONTEXT(p,v)	p->context = (void *)(v) 
 #define P_EXCPT_REC_NAME(p,v)		p->name = (v) 
-#define P_EXCPT_REC_DATA_TYPE(p,v)	p->data_type = (v) 
+#define P_EXCPT_REC_DATA_TYPE(p,v)	p->data_type = (char) (v) 
 #define P_EXCPT_REC_DPML_ECODE(p,v)	p->dpml_error = (v)
 #define P_EXCPT_REC_MODE(p,v)		p->mode = (v)
 #define P_EXCPT_REC_ARG(p,i,type,v)	p->PASTE_3(args[i], ., type) = (v)

@@ -103,7 +103,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
     DECLARE_X_FLOAT(packed_result) 
     WORD fp_class;
     UX_UNSIGNED_EXPONENT_TYPE m, i, j;
-    UX_FRACTION_DIGIT_TYPE msd, tmp_digit;
+    UX_FRACTION_DIGIT_TYPE msd;
     UX_FLOAT unpacked_argument, unpacked_result, y_cubed, tmp[2];
     D_UNION u;
     double y, f, z, f2, z2, z4;
@@ -118,8 +118,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
         PASS_RET_X_FLOAT(packed_result)
         OPT_EXCEPTION_INFO );
 
-    if (0 >= fp_class)
-       RETURN_X_FLOAT(packed_result);
+    if (0 >= fp_class) {
+        RETURN_X_FLOAT(packed_result);
+    }
 
     /*
     **  Get f as a double precision value z ~ 1/cbrt(f)^2 by a polynomial

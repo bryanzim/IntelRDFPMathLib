@@ -237,17 +237,18 @@ C_UX_RND_TO_INT( _X_FLOAT * packed_argument, U_WORD const * class_to_action_map,
         OPT_EXCEPTION_INFO_ARGUMENT );
 
     if (0 > fp_class)
-        {  /* Set error value for fraction also */
-        if (flags & FRACTION_RESULT)
-            (void) UNPACK(
+    {  /* Set error value for fraction also */
+        if (flags & FRACTION_RESULT) {
+            (void)UNPACK(
                 packed_argument,
-                & unpacked_argument,
+                &unpacked_argument,
                 class_to_action_map + WORDS_PER_CLASS_TO_ACTION_MAP,
                 packed_fraction
-                OPT_EXCEPTION_INFO_ARGUMENT );
-        return;
+                OPT_EXCEPTION_INFO_ARGUMENT);
         }
-
+        return;
+    }
+    
     (void) UX_RND_TO_INT( &unpacked_argument, flags, &unpacked_result, 
               &unpacked_fraction );
             

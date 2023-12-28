@@ -215,7 +215,6 @@ C_UX_ERF(
   OPT_EXCEPTION_INFO_DECLARATION )
     {  
     WORD fp_class, index;
-    WORD const * class_to_action_map;
     UX_SIGN_TYPE  sign;
     UX_EXPONENT_TYPE exponent;
     UX_FLOAT unpacked_argument, tmp[3], *eval_result;

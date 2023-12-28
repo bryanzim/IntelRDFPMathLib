@@ -481,7 +481,7 @@ UX_LARGE_ORDER_BESSEL(
 
         f_hi = G_UX_MSD(unpacked_argument);
         N = f_hi >> (BITS_PER_UX_FRACTION_DIGIT_TYPE - n_exponent);
-        if ((0 < exp_diff) || ((0 == exp_diff) && (N < order)))
+        if ((0 < exp_diff) || ((0 == exp_diff) && (((WORD) N) < order)))
             goto backward_recurrence;
         }
 
@@ -595,16 +595,16 @@ backward_recurrence:
 
     A = S_LOG2_NAME(fx) + (float) (exponent - BITS_PER_UX_FRACTION_DIGIT_TYPE)
           + R_LOG2;
-    B = ((((float) F_PRECISION + 1) + R_LOG2) - .5*A)
-          - (forder + .5)*(A - log2_n);
+    B = ((((float) F_PRECISION + 1) + R_LOG2) - .5f*A)
+          - (forder + .5f)*(A - log2_n);
 
     /* Iterate three times to get a good approximation to N */
 
     for (i = 3; i > 0; i--)
         {
         ftmp = S_LOG2_NAME( fN );
-        ftmp = (B + 5.*ftmp)/(ftmp - A);
-        fN = .5*(fN + ftmp);
+        ftmp = (B + 5.0f*ftmp)/(ftmp - A);
+        fN = .5f*(fN + ftmp);
         }
 
     /*
@@ -612,7 +612,7 @@ backward_recurrence:
     */
 
     N = (UX_FRACTION_DIGIT_TYPE) (fN + 9.99999940395355224609375e-1);
-    N =  (N < (order + 1) ) ? (order + 1) : N;
+    N =  (((WORD) N) < (order + 1) ) ? (order + 1) : N;
 
     /*
     ** We want to compute C(k-1,x) = (2k/x)*C(k,x) - C(k+1,x)
@@ -895,7 +895,7 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
     WORD eval_data, op;
     UX_FRACTION_DIGIT_TYPE f_hi;
     UX_EXPONENT_TYPE exponent;
-    UX_FLOAT tmp[3], *multiplier, *poly_argument;
+    UX_FLOAT tmp[3], *poly_argument;
 
     if (2 <= order)
         {
