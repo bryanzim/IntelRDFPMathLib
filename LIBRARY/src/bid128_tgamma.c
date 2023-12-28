@@ -56,7 +56,6 @@ BID128_FUNCTION_ARG1 (bid128_tgamma, x)
 // Declare local variables
 
   BID_UINT128 res, y, x_int, x_frac;
-  BID_F128_TYPE xd_hi, xd_lo, yd;
   int e, cmp_res;
 
 // Check for NaN and just return the same NaN, quieted and canonized

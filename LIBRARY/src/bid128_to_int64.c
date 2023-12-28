@@ -300,20 +300,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -660,20 +660,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -942,20 +942,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       }
 
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -1231,20 +1231,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       }
 
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0] * bid_ten2k64[exp]));
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -1511,20 +1511,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     }	// else the result is exact
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -1800,20 +1800,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       }
 
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -2029,20 +2029,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     Cstar.w[0] = (Cstar.w[0] >> (shift - 64));	// 2 <= shift - 64 <= 38
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -2298,20 +2298,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       }
 
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -2570,20 +2570,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
@@ -2917,20 +2917,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-    res = -Cstar.w[0];
+    res = -((BID_SINT64) (Cstar.w[0]));
       else
     res = Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = -((BID_SINT64) (C1.w[0]));
       else
     res = C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
       else
     res = C1.w[0] * bid_ten2k64[exp];
     }
