@@ -12429,7 +12429,7 @@ BID128_FUNCTION_ARG1 (bid128_cos, x)
 // Local variables.
 
   BID_UINT128 res;
-  int i, s, e;
+  int s, e;
   BID_UINT128 c;
   BID_F128_TYPE xd, yd;
   BID_UINT384 m;

@@ -68,7 +68,6 @@ BID128_FUNCTION_ARG1 (bid128_exp, x)
 
   BID_F128_TYPE rq;
   BID_UINT128 res;
-  BID_UINT128 m, n, t;
   BID_F128_TYPE mq, nq, rt;
   int z, cmp_res;
 

@@ -828,14 +828,10 @@ BID_UINT64 CY, PL0, PL1, PL2;                                       \
 BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 
   BID_UINT128 res = {{ 0xbaddbaddbaddbaddull, 0xbaddbaddbaddbaddull }};
-  BID_UINT64 x_sign, y_sign, p_sign;
-  BID_UINT64 x_exp, y_exp, p_exp;
-  int true_p_exp;
-  BID_UINT128 C1, C2, y_int;
-  BID_F128_TYPE xq, yq, rq;
-  int s, is_odd, tmp_res;
+  BID_UINT128 y_int;
+  int is_odd;
   BID_UINT128 l, l_hi, l_lo, l_neg;
-  int is_nan, is_zero, is_signed, cmp_res, is_int;
+  int cmp_res, is_int;
 
 // We will always signal on signalling NaNs anyway
 
@@ -1008,7 +1004,7 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 
 // Compute accurate logarithm (l_hi,l_lo)
 
-{ int e, k, b, z, s_log;
+{ int e, k, b, s_log;
   BID_UINT64 r1, r2, c_lo;
   BID_UINT128 xa;
   BID_UINT128 c;

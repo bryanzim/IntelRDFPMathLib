@@ -33,7 +33,7 @@
 BID128_FUNCTION_ARG2 (bid128_hypot, x, y)
 
 BID_UINT128 CX, CY, xn, yn, res, tmp, coeff_res;
-BID_UINT64  valid_x, valid_y, sign_x, sign_y, sign_z;
+BID_UINT64  valid_x, valid_y, sign_x, sign_y;
 int exponent_x, exponent_y, cmp_res, exponent_res;
 BID_F128_TYPE rq, xq, yq;
 
