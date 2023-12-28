@@ -222,14 +222,14 @@ bid32_to_uint32_rnint (BID_UINT32 x
       Cstar--; // Cstar is now even
     } // else MP in [ODD, EVEN]
       }
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -468,14 +468,14 @@ bid32_to_uint32_xrnint (BID_UINT32 x
       Cstar--; // Cstar is now even
     } // else MP in [ODD, EVEN]
       }
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -623,14 +623,14 @@ bid32_to_uint32_floor (BID_UINT32 x
       shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
       Cstar = Cstar >> shift;
 
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -803,14 +803,14 @@ bid32_to_uint32_xfloor (BID_UINT32 x
     } // else the result is exact
       }
 
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -991,14 +991,14 @@ bid32_to_uint32_ceil (BID_UINT32 x
     } // else the result is exact
       }
 
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -1185,14 +1185,14 @@ bid32_to_uint32_xceil (BID_UINT32 x
     } // else the result is exact
       }
 
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -1349,14 +1349,14 @@ bid32_to_uint32_int (BID_UINT32 x
       shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
       Cstar = Cstar >> shift;
 
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -1538,14 +1538,14 @@ bid32_to_uint32_xint (BID_UINT32 x
     } // else the result is exact
       }
 
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -1723,14 +1723,14 @@ bid32_to_uint32_rninta (BID_UINT32 x
       Cstar = Cstar >> shift;
 
       // if the result was a midpoint it was rounded away from zero
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);
@@ -1952,14 +1952,14 @@ bid32_to_uint32_xrninta (BID_UINT32 x
       }
 
       // if the result was a midpoint it was rounded away from zero
-      res = Cstar; // the result is positive
+      res = (unsigned int) Cstar; // the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1; // the result is positive
+      res = (unsigned int) C1; // the result is positive
     } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1 * bid_ten2k64[exp]; // the result is positive
+      res = (unsigned int) (C1 * bid_ten2k64[exp]); // the result is positive
     }
   }
   BID_RETURN (res);

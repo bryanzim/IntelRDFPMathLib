@@ -41,7 +41,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_lgamma, BID_UINT64, x)
 // Declare local variables
 
   BID_UINT64 res, x_int, x_frac;
-  BID_F128_TYPE xd, yd, fd, rt;
+  BID_F128_TYPE xd, yd;
   int cmp_res;
 
 // Check for NaN and just return the same NaN, quieted and canonized
