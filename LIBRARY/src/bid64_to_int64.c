@@ -108,7 +108,7 @@ bid64_to_int64_rnint (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -232,14 +232,14 @@ bid64_to_int64_rnint (BID_UINT64 x
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -247,7 +247,7 @@ bid64_to_int64_rnint (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -335,7 +335,7 @@ bid64_to_int64_xrnint (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -499,14 +499,14 @@ bid64_to_int64_xrnint (BID_UINT64 x
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -514,7 +514,7 @@ bid64_to_int64_xrnint (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -601,7 +601,7 @@ bid64_to_int64_floor (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -717,14 +717,14 @@ bid64_to_int64_floor (BID_UINT64 x
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -732,7 +732,7 @@ bid64_to_int64_floor (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -819,7 +819,7 @@ bid64_to_int64_xfloor (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -941,14 +941,14 @@ bid64_to_int64_xfloor (BID_UINT64 x
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -956,7 +956,7 @@ bid64_to_int64_xfloor (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -1043,7 +1043,7 @@ bid64_to_int64_ceil (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -1159,14 +1159,14 @@ bid64_to_int64_ceil (BID_UINT64 x
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -1174,7 +1174,7 @@ bid64_to_int64_ceil (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -1261,7 +1261,7 @@ bid64_to_int64_xceil (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -1383,14 +1383,14 @@ bid64_to_int64_xceil (BID_UINT64 x
       }
 
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -1398,7 +1398,7 @@ bid64_to_int64_xceil (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -1482,7 +1482,7 @@ bid64_to_int64_int (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -1571,14 +1571,14 @@ bid64_to_int64_int (BID_UINT64 x
       Cstar = Cstar >> shift;
 
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -1586,7 +1586,7 @@ bid64_to_int64_int (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -1673,7 +1673,7 @@ bid64_to_int64_xint (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -1785,14 +1785,14 @@ bid64_to_int64_xint (BID_UINT64 x
     }	// else the result is exact
       }
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -1800,7 +1800,7 @@ bid64_to_int64_xint (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -1886,7 +1886,7 @@ bid64_to_int64_rninta (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -1996,14 +1996,14 @@ bid64_to_int64_rninta (BID_UINT64 x
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -2011,7 +2011,7 @@ bid64_to_int64_rninta (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
@@ -2099,7 +2099,7 @@ bid64_to_int64_xrninta (BID_UINT64 x
     if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
       q++;
   }
-  exp = x_exp - 398;	// unbiased exponent
+  exp = (int) (x_exp - 398);	// unbiased exponent
 
   if ((q + exp) > 19) {	// x >= 10^19 ~= 2^63.11... (cannot fit in BID_SINT64)
     // set invalid flag
@@ -2251,14 +2251,14 @@ bid64_to_int64_xrninta (BID_UINT64 x
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-    res = -Cstar;
+    res = -((BID_SINT64) Cstar);
       else
     res = Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1;
+    res = -((BID_SINT64) C1);
       else
     res = C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
@@ -2266,7 +2266,7 @@ bid64_to_int64_xrninta (BID_UINT64 x
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1 * bid_ten2k64[exp];
+    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
       else
     res = C1 * bid_ten2k64[exp];
     }
