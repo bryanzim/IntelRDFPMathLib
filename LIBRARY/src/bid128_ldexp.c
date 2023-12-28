@@ -55,14 +55,14 @@ if (!CX.w[1]) {
        exp64 = (BID_SINT64) exponent_x + (BID_SINT64) n;
        if(exp64<0) exp64=0;
        if(exp64>MAX_DECIMAL_EXPONENT_128) exp64=MAX_DECIMAL_EXPONENT_128;
-       exponent_x = exp64;
+       exponent_x = (int) exp64;
   bid_get_BID128_very_fast (&res, sign_x, exponent_x, CX);
 }
 BID_RETURN (res);
 }
 
 exp64 = (BID_SINT64) exponent_x + (BID_SINT64) n;
-exponent_x = exp64;
+exponent_x = (int) exp64;
 
 if ((BID_UINT32) exponent_x <= MAX_DECIMAL_EXPONENT_128) {
   bid_get_BID128_very_fast (&res, sign_x, exponent_x, CX);

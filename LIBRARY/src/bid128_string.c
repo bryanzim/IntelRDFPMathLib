@@ -213,7 +213,7 @@ bid128_to_string (char *str, BID_UINT128 x
     __L1_Split_MiDi_6_Lead (HI_18Dig, ptr);
     __L1_Split_MiDi_6 (LO_18Dig, ptr);
       }
-      len = ptr - MiDi;
+      len = (int) (ptr - MiDi);
       c_ptr_start = &(str[k]);
       c_ptr = c_ptr_start;
 
@@ -222,7 +222,7 @@ bid128_to_string (char *str, BID_UINT128 x
       for (k_lcv = 1; k_lcv < len; k_lcv++) {
     __L0_MiDi2Str (MiDi[k_lcv], c_ptr);
       }
-      k = k + (c_ptr - c_ptr_start);
+      k = k + ((unsigned int) (c_ptr - c_ptr_start));
     }
 
     // print E and sign of exponent
@@ -559,7 +559,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
   if (ndigits_total <= MAX_FORMAT_DIGITS_128) {
     dec_expon +=
       DECIMAL_EXPONENT_BIAS_128 - ndigits_after -
-      right_radix_leading_zeros;
+      ((int) right_radix_leading_zeros);
     if (dec_expon < 0) {
       res.w[1] = 0 | sign_x;
       res.w[0] = 0;
@@ -602,7 +602,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
 
     dec_expon +=
       ndigits_before + DECIMAL_EXPONENT_BIAS_128 -
-      MAX_FORMAT_DIGITS_128 - right_radix_leading_zeros;
+      MAX_FORMAT_DIGITS_128 - ((int) right_radix_leading_zeros);
 
     if (dec_expon < 0) {
       res.w[1] = 0 | sign_x;
