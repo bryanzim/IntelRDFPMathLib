@@ -331,14 +331,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       Cstar.w[0]--;	// Cstar.w[0] is now even
     }	// else MP in [ODD, EVEN]
       }
-      res = Cstar.w[0];	// the result is positive
+      res = (unsigned int) (Cstar.w[0]);	// the result is positive
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = C (exact)
-      res = C1.w[0];
+      res = (unsigned int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (unsigned int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -723,16 +723,16 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       Cstar.w[0]--;	// Cstar.w[0] is now even
     }	// else MP in [ODD, EVEN]
       }
-      res = Cstar.w[0];	// the result is positive
+      res = (unsigned int) (Cstar.w[0]);	// the result is positive
       if (tmp_inexact)
     *pfpsf |= BID_INEXACT_EXCEPTION;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = C (exact)
-      res = C1.w[0];
+      res = (unsigned int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (unsigned int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -1042,14 +1042,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       } else {
     ;	// the result is already correct
       }
-      res = Cstar.w[0];
+      res = (unsigned int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1.w[0];
+      res = (unsigned int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (unsigned int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -1372,14 +1372,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       } else {
     ;	// the result is already correct
       }
-      res = Cstar.w[0];
+      res = (unsigned int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1.w[0];
+      res = (unsigned int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (unsigned int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -1733,14 +1733,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       } else {
     ;	// the result is already correct
       }
-      res = Cstar.w[0];
+      res = (unsigned int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1.w[0];
+      res = (unsigned int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (unsigned int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -2105,14 +2105,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       } else {
     ;	// the result is already correct
       }
-      res = Cstar.w[0];
+      res = (unsigned int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1.w[0];
+      res = (unsigned int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (unsigned int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -2461,14 +2461,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       } else {
     ;	// exact, the result is already correct
       }
-      res = Cstar.w[0];
+      res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1.w[0];
+      res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -2831,14 +2831,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       } else {
     ;	// exact, the result is already correct
       }
-      res = Cstar.w[0];
+      res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1.w[0];
+      res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -3126,15 +3126,15 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     Cstar.w[0] = (Cstar.w[0] >> (shift - 64));	// 2 <= shift - 64 <= 38
       }
       // if the result was a midpoint, it was already rounded away from zero
-      res = Cstar.w[0];	// always positive
+      res = (unsigned int) (Cstar.w[0]);	// always positive
       // no need to check for midpoints - already rounded away from zero!
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1.w[0];
+      res = (unsigned int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (unsigned int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -3507,16 +3507,16 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     }
       }
       // no need to check for midpoints - already rounded away from zero!
-      res = Cstar.w[0];	// the result is positive
+      res = (unsigned int) (Cstar.w[0]);	// the result is positive
       if (tmp_inexact)
     *pfpsf |= BID_INEXACT_EXCEPTION;
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = C1.w[0];
+      res = (unsigned int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = C1.w[0] * bid_ten2k64[exp];
+      res = (unsigned int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }

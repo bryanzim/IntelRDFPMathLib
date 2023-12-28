@@ -321,22 +321,22 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -699,22 +699,22 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -1066,22 +1066,22 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     ;	// the result is already correct
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -1449,22 +1449,22 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     ;	// the result is already correct
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -1816,22 +1816,22 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     ;	// the result is already correct
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -2197,22 +2197,22 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     ;	// the result is already correct
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -2551,22 +2551,22 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     ;	// exact, the result is already correct
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -2920,22 +2920,22 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     ;	// exact, the result is already correct
       }
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -3214,23 +3214,23 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       }
       // if the result was a midpoint, it was already rounded away from zero
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
       // no need to check for midpoints - already rounded away from zero!
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -3522,9 +3522,9 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       }
       // if the result was a midpoint, it was already rounded away from zero
       if (x_sign)
-    res = -Cstar.w[0];
+    res = (int) (-Cstar.w[0]);
       else
-    res = Cstar.w[0];
+    res = (int) (Cstar.w[0]);
       // determine inexactness of the rounding of C*
       // if (0 < f* - 1/2 < 10^(-x)) then
       //   the result is exact
@@ -3589,15 +3589,15 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       // 1 <= q <= 10
       // res = +/-C (exact)
       if (x_sign)
-    res = -C1.w[0];
+    res = (int) (-C1.w[0]);
       else
-    res = C1.w[0];
+    res = (int) (C1.w[0]);
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -C1.w[0] * bid_ten2k64[exp];
+    res = (int) (-C1.w[0] * bid_ten2k64[exp]);
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (int) (C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
