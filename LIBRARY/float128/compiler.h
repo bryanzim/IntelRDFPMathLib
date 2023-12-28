@@ -218,12 +218,12 @@
 // reassociations.  
 // =============================================================================
  
-#if  COMPILER == intel_icc || COMPILER == intel_icl
+#if (defined(intel_icc) && (COMPILER == intel_icc)) || (defined(intel_icl) && (COMPILER == intel_icl))
 #   define GROUP(x)     __fence(x)
 #endif
 
 
-#if (COMPILER == dec_cc)
+#if (defined(dec_cc) && (COMPILER == dec_cc))
 
 /* Declare decc linkages for various platforms */
 

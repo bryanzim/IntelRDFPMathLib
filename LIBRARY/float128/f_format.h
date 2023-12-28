@@ -309,7 +309,7 @@ typedef union {
 
 
 
-#if (VAX_FLOATING) || (ENDIANESS == big_endian)
+#if (defined(VAX_FLOATING) && VAX_FLOATING) || (ENDIANESS == big_endian)
 
 #   define UNION_IX(i_per_type, k)  (k)
 
@@ -541,7 +541,7 @@ Currently, they assume 32 or 64 bits words.  They should allow 16 bit
 words, et cetera.  */
 
 
-#if (VAX_FLOATING)
+#if (defined(VAX_FLOATING) && VAX_FLOATING)
 
 #   define S_FORMAT f_floating
 #   define S_CHAR f
@@ -613,7 +613,7 @@ words, et cetera.  */
 #   define Q_SIGN_BIT_POS 15
 
 
-#elif IEEE_FLOATING
+#elif (defined(IEEE_FLOATING) && IEEE_FLOATING)
 
 #   define S_FORMAT s_floating
 #   define S_CHAR s
@@ -667,12 +667,12 @@ words, et cetera.  */
 /* Don't define these symbols until the globals table is instantiated */
 
 #if defined(GLOBAL_TABLE_VALUES)
-#   if (ARCHITECTURE == mips)
+#   if (defined(mips) && (ARCHITECTURE == mips))
 #       define  X_NAN_HI	0x7fff7fff
 #       define  T_NAN_HI	0x7ff7ffff
 #       define  S_NAN_HI	0x7fbfffff
 #       define  NAN_LO		0xffffffff
-#   elif (ARCHITECTURE == hp_pa)
+#   elif (defined(hp_pa) && (ARCHITECTURE == hp_pa))
 #       define  X_NAN_HI	0x7fff4000
 #       define  T_NAN_HI	0x7ff40000
 #       define  S_NAN_HI	0x7fa00000
@@ -690,7 +690,7 @@ words, et cetera.  */
 #   error "BITS_PER_WORD not defined"
 #endif
 
-#if (!NO_FLOATING)
+#if (!defined(NO_FLOATING) || !NO_FLOATING)
 
 #define S_HIDDEN_BIT_MASK MAKE_MASK(1, S_EXP_POS)
 #define S_SIGN_BIT_MASK   MAKE_MASK(1, S_SIGN_BIT_POS)
@@ -747,7 +747,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 
 
 
-#if (SINGLE_PRECISION)
+#if (defined(SINGLE_PRECISION) && SINGLE_PRECISION)
 
 #   define F_CHAR S_CHAR
 #   define F_TYPE S_TYPE
@@ -948,7 +948,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #   define R_MANTISSA_MASK S_MANTISSA_MASK
 #   define R_MAX_BIASED_EXP S_MAX_BIASED_EXP
 
-#elif (DOUBLE_PRECISION)
+#elif (defined(DOUBLE_PRECISION) && DOUBLE_PRECISION)
 
 
 #   define F_CHAR D_CHAR
@@ -1137,7 +1137,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #   define R_MAX_BIASED_EXP S_MAX_BIASED_EXP
 
 
-#elif (QUAD_PRECISION)
+#elif (defined(QUAD_PRECISION) && QUAD_PRECISION)
 
 
 #   define F_CHAR Q_CHAR
@@ -1361,15 +1361,15 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #define LO(a) PASTE(a,_lo)
 
 
-#if (PRECISION_BACKUP_AVAILABLE)
+#if (defined(PRECISION_BACKUP_AVAILABLE) && PRECISION_BACKUP_AVAILABLE)
 #   define DECLARE_PREC_BACKUP(x) B_TYPE x
 #else
 #   define DECLARE_PREC_BACKUP(x) F_TYPE HI(x), LO(x) 
 #endif
 
-#if USE_BACKUP
+#if (defined(USE_BACKUP) && USE_BACKUP)
 #   define USE_BACKUP	1
-#elif !defined(USE_BACKUP)&& RANGE_BACKUP_AVAILABLE &&PRECISION_BACKUP_AVAILABLE
+#elif (!defined(USE_BACKUP) && (defined(RANGE_BACKUP_AVAILABLE) && RANGE_BACKUP_AVAILABLE) && (defined(PRECISION_BACKUP_AVAILABLE) && PRECISION_BACKUP_AVAILABLE))
 #   define USE_BACKUP	1
 #else
 #   define USE_BACKUP	0
@@ -1387,7 +1387,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 
 
 #undef  PDP_SHUFFLE
-#if (VAX_FLOATING)
+#if (defined(VAX_FLOATING) && VAX_FLOATING)
 
 #   if (BITS_PER_WORD == 32)
 
@@ -1467,7 +1467,7 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #      define IEEE_FLOATING	0
 #   endif
 
-#   if IEEE_FLOATING
+#   if (defined(IEEE_FLOATING) && IEEE_FLOATING)
 #      define IF_IEEE(x)	x
 #      define IF_VAX(x)
 #      define IEEE_SELECT(x,y)	x
@@ -1479,17 +1479,17 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #      define VMS_SELECT(x,y)	x
 #   endif
 
-#   if SINGLE_PRECISION
+#   if (defined(SINGLE_PRECISION) && SINGLE_PRECISION)
 #      define IF_SNGL(x)	x
 #      define IF_DBLE(x)
 #      define IF_QUAD(x)
 #      define PREC_SELECT(x,y)	x
-#   elif DOUBLE_PRECISION
+#   elif (defined(DOUBLE_PRECISION) && DOUBLE_PRECISION)
 #      define IF_SNGL(x)
 #      define IF_DBLE(x)	x
 #      define IF_QUAD(x)
 #      define PREC_SELECT(x,y)	y
-#   elif QUAD_PRECISION
+#   elif (defined(QUAD_PRECISION) && QUAD_PRECISION)
 #      define IF_SNGL(x)
 #      define IF_DBLE(x)
 #      define IF_QUAD(x)	x
@@ -1498,9 +1498,9 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 
 #   define F_HI_HALF_PRECISION	(F_PRECISION - BITS_PER_F_TYPE/2)
 
-#   if SINGLE_PRECISION
+#   if (defined(SINGLE_PRECISION) && SINGLE_PRECISION)
 #      define F_CLEAR_LO_HALF_WORD(u)		(u).u16[ UNION_IX(1) ] = 0;
-#   elif DOUBLE_PRECISION
+#   elif  (defined(DOUBLE_PRECISION) && DOUBLE_PRECISION)
 #      define F_CLEAR_LO_HALF_WORD(u)		(u).u32[ UNION_IX(1) ] = 0;
 #   else /* QUAD_PRECISION */
 #      if BITS_PER_WORD >= 64

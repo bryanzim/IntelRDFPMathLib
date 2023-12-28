@@ -604,7 +604,7 @@
 #	define BITS_PER_CHAR    8
 #	define BITS_PER_SHORT  16
 #	define BITS_PER_INT    32
-#       if (OP_SYSTEM == linux)
+#       if (defined(linux) && (OP_SYSTEM == linux))
 #    	    define BITS_PER_LONG   64
 #       else
 #    	    define BITS_PER_LONG   32
@@ -617,7 +617,7 @@
 #	define BITS_PER_LONG_DOUBLE 128
 #       define LONG_DOUBLE_128_TYPE	_Quad
 
-#	if ( COMPILER == gnu_cc ) 
+#	if (defined(gnu_cc) && (COMPILER == gnu_cc)) 
 #	    define __INT_64 long long
 #       else
 #	    define __INT_64 __int64
@@ -681,9 +681,9 @@
 #define by_flt 1
 
 
-#if (ARCHITECTURE == vax)
+#if (defined(vax) && (ARCHITECTURE == vax))
 #	define FLOAT_TYPES	VAX_TYPES
-#elif ((ARCHITECTURE == alpha) || (ARCHITECTURE == merced)) && (OP_SYSTEM == vms)
+#elif (((defined(alpha) && (ARCHITECTURE == alpha)) || (defined(merced) && (ARCHITECTURE == merced))) && (defined(vms) && (OP_SYSTEM == vms)))
 #	define FLOAT_TYPES	(VAX_TYPES + IEEE_TYPES)
 #else
 #	define FLOAT_TYPES	IEEE_TYPES
