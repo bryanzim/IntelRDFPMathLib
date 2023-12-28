@@ -30,9 +30,17 @@
 
 #include "bid_internal.h"
 
-BID_EXTERN_C double asinh(double);
+#if (_MSC_VER)
+#    pragma warning( push )
+#    pragma warning( disable : 4273 )
+#endif
+
+     BID_EXTERN_C double asinh(double);
 BID_EXTERN_C double acosh(double);
 
+#if (_MSC_VER)
+#    pragma warning( pop )
+#endif
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_acosh, BID_UINT32, x)
 

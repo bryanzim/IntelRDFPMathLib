@@ -251,7 +251,9 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
 #       define BIAS	(12*(((1 << F_EXP_WIDTH) + 11)/12))
 
         exponent += (BIAS - UX_PRECISION - 3);
-        UMULH((UX_FRACTION_DIGIT_TYPE) exponent, RECIP_TWELVE, k);
+        U_INT_64 kCom;
+        UMULH((UX_FRACTION_DIGIT_TYPE) exponent, RECIP_TWELVE, kCom);
+        k = (UX_EXPONENT_TYPE) kCom;
         exponent = (exponent + (UX_PRECISION + 3)) - 12*k;
         P_UX_EXPONENT(argument, exponent);
         }
@@ -511,7 +513,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         sign ^= UX_SIGN_BIT;
 
         sum_digit = G_UX_LSD(argument);
-        tmp_digit = -sum_digit;
+        tmp_digit = -((UX_SIGNED_FRACTION_DIGIT_TYPE) sum_digit);
         borrow = (sum_digit != 0);
         P_UX_LSD(argument, tmp_digit);
 
@@ -529,7 +531,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
 
 #       endif
 
-        current_digit = - (current_digit + borrow);
+        current_digit = -((UX_SIGNED_FRACTION_DIGIT_TYPE) (current_digit + borrow));
         }
     P_UX_MSD(argument, current_digit);
     NORMALIZE(argument);

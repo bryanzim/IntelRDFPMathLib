@@ -1615,56 +1615,58 @@ st_compare (char **aIn, char **bIn) {
 }
 
 int
-status_compare (char *stat1, char *stat2) {
-  char s1[STRMAX], s2[STRMAX];
-  char wp1[STRMAX], wp2[STRMAX];
-  int wp1n = 0, wp2n = 0;
-  char *p;
-  int i;
+status_compare(char* stat1, char* stat2) {
+    char s1[STRMAX], s2[STRMAX];
+    char* wp1[64], * wp2[64];
+    int wp1n = 0, wp2n = 0;
+    char* p;
+    int i;
 
-  strcpy (s1, stat1);
-  strcpy (s2, stat2);
-  for (p = s1; *p; p++) {
-    wp1[wp1n++] = *p;
-    while (*p && *++p != ' ');
-    if (*p == ' ') {
-      *p = 0;
-      // printf("Found 1: %s\n", wp1[wp1n-1]);
-      continue;
-    } else {
-      // printf("Found 1: %s\n", wp1[wp1n-1]);
-      break;
+    strcpy(s1, stat1);
+    strcpy(s2, stat2);
+    for (p = s1; *p; p++) {
+        wp1[wp1n++] = p;
+        while (*p && *++p != ' ');
+        if (*p == ' ') {
+            *p = 0;
+            // printf("Found 1: %s\n", wp1[wp1n-1]);
+            continue;
+        }
+        else {
+            // printf("Found 1: %s\n", wp1[wp1n-1]);
+            break;
+        }
     }
-  }
-  for (p = s2; *p; p++) {
-    wp2[wp2n++] = *p;
-    while (*p && *++p != ' ');
-    if (*p == ' ') {
-      *p = 0;
-      // printf("Found 2: %s\n", wp2[wp2n-1]);
-      continue;
-    } else {
-      // printf("Found 2: %s\n", wp2[wp2n-1]);
-      break;
+    for (p = s2; *p; p++) {
+        wp2[wp2n++] = p;
+        while (*p && *++p != ' ');
+        if (*p == ' ') {
+            *p = 0;
+            // printf("Found 2: %s\n", wp2[wp2n-1]);
+            continue;
+        }
+        else {
+            // printf("Found 2: %s\n", wp2[wp2n-1]);
+            break;
+        }
     }
-  }
-  if (wp1n != wp2n)
-    return 1;
+    if (wp1n != wp2n)
+        return 1;
 #ifdef LINUX
-  qsort (wp1, wp1n, sizeof (char *), (__compar_fn_t) st_compare);
-  qsort (wp2, wp2n, sizeof (char *), (__compar_fn_t) st_compare);
+    qsort(wp1, wp1n, sizeof(char*), (__compar_fn_t)st_compare);
+    qsort(wp2, wp2n, sizeof(char*), (__compar_fn_t)st_compare);
 #else
-  qsort (wp1, wp1n, sizeof (char *),
-     (int (__cdecl *) (const void *, const void *)) st_compare);
-  qsort (wp2, wp2n, sizeof (char *),
-     (int (__cdecl *) (const void *, const void *)) st_compare);
+    qsort(wp1, wp1n, sizeof(char*),
+          (int(__cdecl*) (const void*, const void*)) st_compare);
+    qsort(wp2, wp2n, sizeof(char*),
+          (int(__cdecl*) (const void*, const void*)) st_compare);
 #endif
-  for (i = 0; i < wp1n; ++i) {
-    // printf("Comparing %s and %s\n", wp1[i], wp2[i]);
-    if (wp1[i] == wp2[i])
-      return 1;
-  }
-  return 0;
+    for (i = 0; i < wp1n; i++) {
+        // printf("Comparing %s and %s\n", wp1[i], wp2[i]);
+        if (strcmp(wp1[i], wp2[i]))
+            return 1;
+    }
+    return 0;
 }
 
 int check_skip(char *funcptr)

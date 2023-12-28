@@ -407,13 +407,13 @@ down will make the combination faster, go ahead and do it.  */
 
 
 #define UMULH(i, j, k) {						\
-    U_INT_64 _ii, _iLo, _iHi, _jj, _jLo, _jHi, _p0, _p1, _p2; 	\
-        _ii = i; _iLo = __LO(_ii); _iHi = __HI(_ii);			\
-        _jj = j; _jLo = __LO(_jj); _jHi = __HI(_jj);			\
-    _p0  = _iLo * _jLo;						\
-    _p1  = (_iLo * _jHi);						\
-    _p2  = (_iHi * _jLo) + __HI(_p0) + __LO(_p1);			\
-        k   = (_iHi * _jHi) + __HI(_p1) + __HI(_p2);			\
+    U_INT_64 _ii, _iLo, _iHi, _jj, _jLo, _jHi, _p0, _p1, _p2; 	    \
+        _ii = i; _iLo = __LO(_ii); _iHi = __HI(_ii);			    \
+        _jj = j; _jLo = __LO(_jj); _jHi = __HI(_jj);			    \
+        _p0  = _iLo * _jLo;						                    \
+        _p1  = (_iLo * _jHi);						                \
+        _p2  = (_iHi * _jLo) + __HI(_p0) + __LO(_p1);			    \
+        k   = (U_INT_64) ((_iHi * _jHi) + __HI(_p1) + __HI(_p2));	\
     }
 
 

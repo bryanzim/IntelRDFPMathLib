@@ -28,10 +28,22 @@
 ******************************************************************************/
 
 #include "bid_internal.h"
+
+#if (_MSC_VER)
+#    pragma warning( push )
+#    pragma warning( disable : 4273 )
+#endif
+
 double lgamma(double);
+
+#if (_MSC_VER)
+#    pragma warning( pop )
+#endif
+
 double fabs(double);
 double log(double);
 double sin(double);
+
 
 #define BID32_INF 0x78000000ul 
 

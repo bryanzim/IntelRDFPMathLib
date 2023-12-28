@@ -1067,7 +1067,7 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
     ** than the digit size.
     */
 
-    quadrant = G_UX_SIGN(x) ? -quadrant : quadrant;
+    quadrant = G_UX_SIGN(x) ? -((SIGNED_DIGIT_TYPE) quadrant) : quadrant;
     P_UX_SIGN(reduced_argument, sign ^ sign_x);
     P_UX_EXPONENT(reduced_argument, 3);
     PUT_W_DIGITS(reduced_argument);

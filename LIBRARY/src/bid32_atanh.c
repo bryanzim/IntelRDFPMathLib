@@ -30,8 +30,16 @@
 
 #include "bid_internal.h"
 
+#if (_MSC_VER)
+#    pragma warning( push )
+#    pragma warning( disable : 4273 )
+#endif
+
 BID_EXTERN_C double log1p(double);
 
+#if (_MSC_VER)
+#    pragma warning( pop )
+#endif
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_atanh, BID_UINT32, x)
 
