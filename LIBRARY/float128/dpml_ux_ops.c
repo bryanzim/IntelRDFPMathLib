@@ -226,7 +226,7 @@ ADDSUB ( UX_FLOAT * x, UX_FLOAT *y, U_WORD flags, UX_FLOAT * result)
         x = y;
         y = ux_tmp;
         shift = -shift;
-        exponent += shift;
+        exponent = exponent + ((UX_EXPONENT_TYPE) shift);
         P_UX_SIGN(&ux_save, UX_SIGN_BIT);
         sign ^= ((op == ADD) ? 0 : UX_SIGN_BIT);
         }

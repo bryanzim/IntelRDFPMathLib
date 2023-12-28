@@ -119,8 +119,8 @@ typedef struct {
 #define	P_UX_2nd_LSD(x,v)	   ((((UX_FLOAT*)(x))->fraction[LSD_NUM-1])=(v))
 #define P_UX_FRACTION_DIGIT(x,n,v) (((UX_FLOAT*)(x))->fraction[n] = (v))
 
-#define UX_INCR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) += (v))
-#define UX_DECR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) -= (v))
+#define UX_INCR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) += (UX_EXPONENT_TYPE) (v))
+#define UX_DECR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) -= (UX_EXPONENT_TYPE) (v))
 #define UX_TOGGLE_SIGN(x,v)	   ((((UX_FLOAT *)(x))->sign) ^= (v))
 
 #define UX_SIGN_BIT	      ((WORD) 1 << 31)

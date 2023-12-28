@@ -90,7 +90,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
     UX_SIGN_TYPE sign;
     UX_EXPONENT_TYPE exponent;
     UX_FRACTION_DIGIT_TYPE _Z, LOG2_HI, tmp_digit, I, inc;
-    UX_FLOAT tmp[3], log2_hi, log2_lo, z, z_lo, u, r, w, h;
+    UX_FLOAT tmp[3], log2_lo, z, u, r, h;
 
     /* 
     ** COMPUTING LOG IN HI AND LOW PIECES
@@ -167,7 +167,7 @@ UX_POW( UX_FLOAT * x, UX_FLOAT * y, UX_FLOAT * result)
         { /* n != 0, convert n to unpacked */
 
         cnt = WORD_TO_UX(exponent, &tmp[2]);
-        exponent = BITS_PER_UX_FRACTION_DIGIT_TYPE - cnt;
+        exponent = (UX_EXPONENT_TYPE) (BITS_PER_UX_FRACTION_DIGIT_TYPE - cnt);
         cnt = exponent - G_UX_EXPONENT(&z);
         LOG2_HI = G_UX_MSD(&tmp[2]);
         sign = G_UX_SIGN(&tmp[2]);
@@ -406,7 +406,6 @@ C_UX_POW(
     UX_EXPONENT_TYPE exponent;
     UX_FRACTION_DIGIT_TYPE tmp_digit;
     WORD underflow_error, overflow_error;
-    WORD local_class_action_array[3], *p;
     UX_FLOAT unpacked_x, unpacked_y, unpacked_result, tmp;
 
     /*

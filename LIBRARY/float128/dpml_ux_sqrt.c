@@ -73,7 +73,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1<<(NUM_FRAC_BITS+1))];
 void
 UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
     {
-    U_WORD  index, shift, cshift;
+    U_WORD  index, shift;
     UX_SIGNED_FRACTION_DIGIT_TYPE signed_digit;
     UX_FRACTION_DIGIT_TYPE msd, lsd, tmp_digit;
     UX_EXPONENT_TYPE exponent, exponent_parity;

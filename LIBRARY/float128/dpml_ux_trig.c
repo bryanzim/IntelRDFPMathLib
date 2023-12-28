@@ -343,7 +343,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         cnt = digit_with_binary_pt & (BITS_PER_UX_FRACTION_DIGIT_TYPE - 1);
         digit_with_binary_pt >>= __LOG2(BITS_PER_UX_FRACTION_DIGIT_TYPE);
         tmp_digit = 0;
-        exponent -= cnt;
+        exponent = exponent - ((UX_EXPONENT_TYPE) cnt);
 
         if (cnt)
             { /* shift digit right (in memory) */
@@ -444,7 +444,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         P_UX_FRACTION_DIGIT(argument, digit_with_binary_pt, current_digit);
         P_UX_EXPONENT(argument, exponent);
 
-        exponent -= NORMALIZE(argument);
+        exponent = exponent - ((UX_EXPONENT_TYPE) NORMALIZE(argument));
         }
 
 
@@ -732,7 +732,7 @@ C_UX_TRIG(
         if (SINCOS_FUNC == (function_code & ~DEGREE))
             {
             second_value =
-                ((1 << F_C_BASE_CLASS(fp_class)) & F_C_NAN_OR_INF_MASK) ?
+                ((((U_WORD) 1) << F_C_BASE_CLASS(fp_class)) & F_C_NAN_OR_INF_MASK) ?
                 &packed_result[0] : (_X_FLOAT *) _X_ONE;
             _X_COPY(second_value, &packed_result[1]);
             }

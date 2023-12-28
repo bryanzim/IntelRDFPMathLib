@@ -79,7 +79,7 @@ bid_to_dpd32 (BID_UINT32 ba) {
   b0 = bcoeff / 1000000;
   b1 = (bcoeff / 1000) % 1000;
   b2 = bcoeff % 1000;
-  dcoeff = (bid_b2d[b1] << 10) | bid_b2d[b2];
+  dcoeff = (BID_UINT32) ((bid_b2d[b1] << 10) | bid_b2d[b2]);
 
   if (b0 >= 8)	// is b0 8 or 9?
     res =
@@ -155,7 +155,7 @@ bid_to_dpd64 (BID_UINT64 ba) {
   yhi =
     ((BID_UINT64) D61 *
      (BID_UINT64) (BID_UINT32) (bcoeff >> (BID_UINT64) 27)) >> (BID_UINT64) 34;
-  ylo = bcoeff - 1000000000ull * yhi;
+  ylo = (BID_UINT32) (bcoeff - 1000000000ull * yhi);
   if (ylo >= 1000000000) {
     ylo = ylo - 1000000000;
     yhi = yhi + 1;
@@ -227,12 +227,12 @@ bid_dpd_to_bid32 (BID_UINT32 da) {
       exp = ((comb & 0x600) >> 3) | (comb & 0x3f);
     }
   }
-  d1 = bid_d2b2[(trailing >> 10) & 0x3ff];
-  d2 = bid_d2b[(trailing) & 0x3ff];
+  d1 = (BID_UINT32) bid_d2b2[(trailing >> 10) & 0x3ff];
+  d2 = (BID_UINT32) bid_d2b[(trailing) & 0x3ff];
 
   bcoeff = d2 + d1 + (1000000 * d0);
   if (bcoeff < 0x800000) {
-    res = (exp << 23) | bcoeff | sign;
+    res = (BID_UINT32) ((exp << 23) | bcoeff | sign);
   } else {
     res = (exp << 21) | sign | 0x60000000 | (bcoeff & 0x1fffff);
   }
@@ -289,13 +289,13 @@ bid_dpd_to_bid64 (BID_UINT64 da) {
   }
   d1 = bid_d2b5[(trailing >> 40) & 0x3ff];
   d2 = bid_d2b4[(trailing >> 30) & 0x3ff];
-  d3 = bid_d2b3[(trailing >> 20) & 0x3ff];
-  d4 = bid_d2b2[(trailing >> 10) & 0x3ff];
-  d5 = bid_d2b[(trailing) & 0x3ff];
+  d3 = (BID_UINT32) bid_d2b3[(trailing >> 20) & 0x3ff];
+  d4 = (BID_UINT32) bid_d2b2[(trailing >> 10) & 0x3ff];
+  d5 = (BID_UINT32) bid_d2b[(trailing) & 0x3ff];
 
   bcoeff = (d5 + d4 + d3) + d2 + d1 + (1000000000000000ull * d0);
   exp += (comb & 0xff);
-  res = very_fast_get_BID64 (sign, exp, bcoeff);
+  res = very_fast_get_BID64 (sign, (int) exp, bcoeff);
 
   res |= nanb;
 
