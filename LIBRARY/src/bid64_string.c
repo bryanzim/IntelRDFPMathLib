@@ -119,10 +119,10 @@ bid64_to_string (char *ps, BID_UINT64 x
       while (exponent_x > 9) {
     D = (BID_UINT64) exponent_x *ER10;
     D >>= 32;
-    exponent_x = exponent_x - (D << 1) - (D << 3);
+    exponent_x = exponent_x - ((int) ((D << 1) + (D << 3)));
 
     ps[j--] = '0' + (char) exponent_x;
-    exponent_x = D;
+    exponent_x = (int) D;
       }
       ps[j] = '0' + (char) exponent_x;
     } else {
@@ -188,7 +188,7 @@ bid64_to_string (char *ps, BID_UINT64 x
 
     ptr = MiDi;
     __L1_Split_MiDi_6_Lead (LO_18Dig, ptr);
-    len = ptr - MiDi;
+    len = (int) (ptr - MiDi);
     c_ptr_start = &(ps[istart]);
     c_ptr = c_ptr_start;
 
@@ -197,7 +197,7 @@ bid64_to_string (char *ps, BID_UINT64 x
     for (k_lcv = 1; k_lcv < len; k_lcv++) {
       __L0_MiDi2Str (MiDi[k_lcv], c_ptr);
     }
-    istart = istart + (c_ptr - c_ptr_start);
+    istart = istart + ((int) (c_ptr - c_ptr_start));
   }
 
   ps[istart++] = 'E';
@@ -225,10 +225,10 @@ bid64_to_string (char *ps, BID_UINT64 x
     while (exponent_x > 9) {
       D = (BID_UINT64) exponent_x *ER10;
       D >>= 32;
-      exponent_x = exponent_x - (D << 1) - (D << 3);
+      exponent_x = exponent_x - ((int) ((D << 1) + (D << 3)));
 
       ps[j--] = '0' + (char) exponent_x;
-      exponent_x = D;
+      exponent_x = (int) D;
     }
     ps[j] = '0' + (char) exponent_x;
   } else {
