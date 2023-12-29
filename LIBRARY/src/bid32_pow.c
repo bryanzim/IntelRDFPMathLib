@@ -163,9 +163,11 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_pow, x, y)
     *pfpsf &= ~BID_INEXACT_EXCEPTION;
     BIDECIMAL_CALL1_NORND(bid32_to_int32_xrnint, exact_y, y);
     if ((*pfpsf & BID_INEXACT_EXCEPTION) == 0) {
-      if (exact_y < 0) sign = 1;
-      exact_y = abs(exact_y);
-      if (exact_y > 0) {
+      if (exact_y < 0) {
+        sign = 1;
+        exact_y = abs(exact_y);
+      }
+      else if (exact_y > 0) {
         BID_UINT32 tmp, r = BID32_1;
         BID_UINT32 p = x;
         for (; exact_y; exact_y >>= 1) {

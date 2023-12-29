@@ -351,83 +351,83 @@ BID_UINT128 bid_midpoint128[] = {	// the 64-bit word order is L, H
 // bid_midpoint192[i - 39] = 1/2 * 10^i = 5 * 10^(i-1), 39 <= i <= 58
 BID_UINT196 bid_midpoint192[] = {	// the 64-bit word order is L, M, H
   {{0x2fb2ab4000000000ULL, 0x78287f49c4a1d662ULL, 0x0000000000000001ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^39 = 5 * 10^38
   {{0xdcfab08000000000ULL, 0xb194f8e1ae525fd5ULL, 0x000000000000000eULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^40 = 5 * 10^39
   {{0xa1cae50000000000ULL, 0xefd1b8d0cf37be5aULL, 0x0000000000000092ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^41 = 5 * 10^40
   {{0x51ecf20000000000ULL, 0x5e313828182d6f8aULL, 0x00000000000005bdULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^42 = 5 * 10^41
   {{0x3341740000000000ULL, 0xadec3190f1c65b67ULL, 0x0000000000003965ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^43 = 5 * 10^42
   {{0x008e880000000000ULL, 0xcb39efa971bf9208ULL, 0x0000000000023df8ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^44 = 5 * 10^43
   {{0x0591500000000000ULL, 0xf0435c9e717bb450ULL, 0x0000000000166bb7ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^45 = 5 * 10^44
   {{0x37ad200000000000ULL, 0x62a19e306ed50b20ULL, 0x0000000000e0352fULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^46 = 5 * 10^45
   {{0x2cc3400000000000ULL, 0xda502de454526f42ULL, 0x0000000008c213d9ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^47 = 5 * 10^46
   {{0xbfa0800000000000ULL, 0x8721caeb4b385895ULL, 0x000000005794c682ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^48 = 5 * 10^47
   {{0x7c45000000000000ULL, 0x4751ed30f03375d9ULL, 0x000000036bcfc119ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^49 = 5 * 10^48
   {{0xdab2000000000000ULL, 0xc93343e962029a7eULL, 0x00000022361d8afcULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^50 = 5 * 10^49
   {{0x8af4000000000000ULL, 0xdc00a71dd41a08f4ULL, 0x000001561d276ddfULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^51 = 5 * 10^50
   {{0x6d88000000000000ULL, 0x9806872a4904598dULL, 0x00000d5d238a4abeULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^52 = 5 * 10^51
   {{0x4750000000000000ULL, 0xf04147a6da2b7f86ULL, 0x000085a36366eb71ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^53 = 5 * 10^52
   {{0xc920000000000000ULL, 0x628ccc8485b2fb3eULL, 0x00053861e2053273ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^54 = 5 * 10^53
   {{0xdb40000000000000ULL, 0xd97ffd2d38fdd073ULL, 0x003433d2d433f881ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^55 = 5 * 10^54
   {{0x9080000000000000ULL, 0x7effe3c439ea2486ULL, 0x020a063c4a07b512ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^56 = 5 * 10^55
   {{0xa500000000000000ULL, 0xf5fee5aa43256d41ULL, 0x14643e5ae44d12b8ULL}
-   ,0 }
+   , {0} }
   ,
   // 1/2 * 10^57 = 5 * 10^56
   {{0x7200000000000000ULL, 0x9bf4f8a69f764490ULL, 0xcbea6f8ceb02bb39ULL}
-   ,0 }
+   , {0} }
   // 1/2 * 10^58 = 5 * 10^57
 };
 
@@ -1100,60 +1100,60 @@ BID_UINT64 bid_onehalf128M[] = {
 // the 64-bit word order is L, M, H
 BID_UINT196 bid_ten2mk192M[] = {
   {{0xcddd6e04c0592104ULL, 0x0fcf80dc33721d53ULL,
-    0xa7c5ac471b478423ULL}, 0},
+    0xa7c5ac471b478423ULL}, {0}},
   //  10^(-5) * 2^208
   {{0xd7e45803cd141a6aULL, 0xa63f9a49c2c1b10fULL,
-    0x8637bd05af6c69b5ULL} ,0},
+    0x8637bd05af6c69b5ULL}, {0}},
   //  10^(-6) * 2^211
   {{0x8ca08cd2e1b9c3dcULL, 0x3d32907604691b4cULL,
-    0xd6bf94d5e57a42bcULL} ,0},
+    0xd6bf94d5e57a42bcULL}, {0}},
   //  10^(-7) * 2^215
   {{0x3d4d3d758161697dULL, 0xfdc20d2b36ba7c3dULL,
-    0xabcc77118461cefcULL} ,0},
+    0xabcc77118461cefcULL}, {0}},
   //  10^(-8) * 2^218
   {{0xfdd7645e011abacaULL, 0x31680a88f8953030ULL,
-    0x89705f4136b4a597ULL} ,0},
+    0x89705f4136b4a597ULL}, {0}},
   //  10^(-9) * 2^221
   {{0x2fbf06fcce912addULL, 0xb573440e5a884d1bULL,
-    0xdbe6fecebdedd5beULL} ,0},
+    0xdbe6fecebdedd5beULL}, {0}},
   //  10^(-10) * 2^225
   {{0xf2ff38ca3eda88b1ULL, 0xf78f69a51539d748ULL,
-    0xafebff0bcb24aafeULL} ,0},
+    0xafebff0bcb24aafeULL}, {0}},
   //  10^(-11) * 2^228
   {{0xf598fa3b657ba08eULL, 0xf93f87b7442e45d3ULL,
-    0x8cbccc096f5088cbULL} ,0},
+    0x8cbccc096f5088cbULL}, {0}},
   //  10^(-12) * 2^231
   {{0x88f4c3923bf900e3ULL, 0x2865a5f206b06fb9ULL,
-    0xe12e13424bb40e13ULL} ,0},
+    0xe12e13424bb40e13ULL}, {0}},
   //  10^(-13) * 2^235
   {{0x6d909c74fcc733e9ULL, 0x538484c19ef38c94ULL,
-    0xb424dc35095cd80fULL} ,0},
+    0xb424dc35095cd80fULL}, {0}},
   //  10^(-14) * 2^238
   {{0x57a6e390ca38f654ULL, 0x0f9d37014bf60a10ULL,
-    0x901d7cf73ab0acd9ULL} ,0},
+    0x901d7cf73ab0acd9ULL}, {0}},
   //  10^(-15) * 2^241
   {{0xbf716c1add27f086ULL, 0x4c2ebe687989a9b3ULL,
-    0xe69594bec44de15bULL} ,0},
+    0xe69594bec44de15bULL}, {0}},
   //  10^(-16) * 2^245
   {{0xff8df0157db98d38ULL, 0x09befeb9fad487c2ULL,
-    0xb877aa3236a4b449ULL} ,0},
+    0xb877aa3236a4b449ULL}, {0}},
   //  10^(-17) * 2^248
   {{0x32d7f344649470faULL, 0x3aff322e62439fcfULL,
-    0x9392ee8e921d5d07ULL} ,0},
+    0x9392ee8e921d5d07ULL}, {0}},
   //  10^(-18) * 2^251
   {{0x1e2652070753e7f5ULL, 0x2b31e9e3d06c32e5ULL,
-    0xec1e4a7db69561a5ULL} ,0},
+    0xec1e4a7db69561a5ULL}, {0}},
   //  10^(-19) * 2^255
   {{0x181ea8059f76532bULL, 0x88f4bb1ca6bcf584ULL,
-    0xbce5086492111aeaULL} ,0},
+    0xbce5086492111aeaULL}, {0}},
   //  10^(-20) * 2^258
   {{0x467eecd14c5ea8efULL, 0xd3f6fc16ebca5e03ULL,
-    0x971da05074da7beeULL} ,0},
+    0x971da05074da7beeULL}, {0}},
   //  10^(-21) * 2^261
   {{0x70cb148213caa7e5ULL, 0x5324c68b12dd6338ULL,
-    0xf1c90080baf72cb1ULL} ,0},
+    0xf1c90080baf72cb1ULL}, {0}},
   //  10^(-22) * 2^265
-  {{0x8d6f439b43088651ULL, 0x75b7053c0f178293ULL, 0xc16d9a0095928a27ULL} ,0}
+  {{0x8d6f439b43088651ULL, 0x75b7053c0f178293ULL, 0xc16d9a0095928a27ULL}, {0}}
   //  10^(-23) * 2^268
 };
 
@@ -1162,60 +1162,60 @@ BID_UINT196 bid_ten2mk192M[] = {
 // the 64-bit word order is L, M, H
 BID_UINT196 bid_ten2mk192truncM[] = {
   {{0xcddd6e04c0592103ULL, 0x0fcf80dc33721d53ULL,
-    0xa7c5ac471b478423ULL} ,0},
+    0xa7c5ac471b478423ULL}, {0}},
   //  10^(-5) * 2^208
   {{0xd7e45803cd141a69ULL, 0xa63f9a49c2c1b10fULL,
-    0x8637bd05af6c69b5ULL} ,0},
+    0x8637bd05af6c69b5ULL}, {0}},
   //  10^(-6) * 2^211
   {{0x8ca08cd2e1b9c3dbULL, 0x3d32907604691b4cULL,
-    0xd6bf94d5e57a42bcULL} ,0},
+    0xd6bf94d5e57a42bcULL}, {0}},
   //  10^(-7) * 2^215
   {{0x3d4d3d758161697cULL, 0xfdc20d2b36ba7c3dULL,
-    0xabcc77118461cefcULL} ,0},
+    0xabcc77118461cefcULL}, {0}},
   //  10^(-8) * 2^218
   {{0xfdd7645e011abac9ULL, 0x31680a88f8953030ULL,
-    0x89705f4136b4a597ULL} ,0},
+    0x89705f4136b4a597ULL}, {0}},
   //  10^(-9) * 2^221
   {{0x2fbf06fcce912adcULL, 0xb573440e5a884d1bULL,
-    0xdbe6fecebdedd5beULL} ,0},
+    0xdbe6fecebdedd5beULL}, {0}},
   //  10^(-10) * 2^225
   {{0xf2ff38ca3eda88b0ULL, 0xf78f69a51539d748ULL,
-    0xafebff0bcb24aafeULL} ,0},
+    0xafebff0bcb24aafeULL}, {0}},
   //  10^(-11) * 2^228
   {{0xf598fa3b657ba08dULL, 0xf93f87b7442e45d3ULL,
-    0x8cbccc096f5088cbULL} ,0},
+    0x8cbccc096f5088cbULL}, {0}},
   //  10^(-12) * 2^231
   {{0x88f4c3923bf900e2ULL, 0x2865a5f206b06fb9ULL,
-    0xe12e13424bb40e13ULL} ,0},
+    0xe12e13424bb40e13ULL}, {0}},
   //  10^(-13) * 2^235
   {{0x6d909c74fcc733e8ULL, 0x538484c19ef38c94ULL,
-    0xb424dc35095cd80fULL} ,0},
+    0xb424dc35095cd80fULL}, {0}},
   //  10^(-14) * 2^238
   {{0x57a6e390ca38f653ULL, 0x0f9d37014bf60a10ULL,
-    0x901d7cf73ab0acd9ULL} ,0},
+    0x901d7cf73ab0acd9ULL}, {0}},
   //  10^(-15) * 2^241
   {{0xbf716c1add27f085ULL, 0x4c2ebe687989a9b3ULL,
-    0xe69594bec44de15bULL} ,0},
+    0xe69594bec44de15bULL}, {0}},
   //  10^(-16) * 2^245
   {{0xff8df0157db98d37ULL, 0x09befeb9fad487c2ULL,
-    0xb877aa3236a4b449ULL} ,0},
+    0xb877aa3236a4b449ULL}, {0}},
   //  10^(-17) * 2^248
   {{0x32d7f344649470f9ULL, 0x3aff322e62439fcfULL,
-    0x9392ee8e921d5d07ULL} ,0},
+    0x9392ee8e921d5d07ULL}, {0}},
   //  10^(-18) * 2^251
   {{0x1e2652070753e7f4ULL, 0x2b31e9e3d06c32e5ULL,
-    0xec1e4a7db69561a5ULL} ,0},
+    0xec1e4a7db69561a5ULL}, {0}},
   //  10^(-19) * 2^255
   {{0x181ea8059f76532aULL, 0x88f4bb1ca6bcf584ULL,
-    0xbce5086492111aeaULL} ,0},
+    0xbce5086492111aeaULL}, {0}},
   //  10^(-20) * 2^258
   {{0x467eecd14c5ea8eeULL, 0xd3f6fc16ebca5e03ULL,
-    0x971da05074da7beeULL} ,0},
+    0x971da05074da7beeULL}, {0}},
   //  10^(-21) * 2^261
   {{0x70cb148213caa7e4ULL, 0x5324c68b12dd6338ULL,
-    0xf1c90080baf72cb1ULL} ,0},
+    0xf1c90080baf72cb1ULL}, {0}},
   //  10^(-22) * 2^265
-  {{0x8d6f439b43088650ULL, 0x75b7053c0f178293ULL, 0xc16d9a0095928a27ULL} ,0}
+  {{0x8d6f439b43088650ULL, 0x75b7053c0f178293ULL, 0xc16d9a0095928a27ULL}, {0}}
   //  10^(-23) * 2^268
 };
 
@@ -2983,171 +2983,171 @@ BID_UINT128 bid_ten2mxtrunc128[] = {
 
 BID_UINT196 bid_Kx192[] = {
   {{0xcccccccccccccccdULL, 0xccccccccccccccccULL,
-    0xccccccccccccccccULL}, 0},
+    0xccccccccccccccccULL}, {0}},
   // 10^-1 ~= cccccccccccccccccccccccccccccccccccccccccccccccd * 2^-195
   {{0xd70a3d70a3d70a3eULL, 0x3d70a3d70a3d70a3ULL,
-    0xa3d70a3d70a3d70aULL}, 0},
+    0xa3d70a3d70a3d70aULL}, {0}},
   // 10^-2 ~= a3d70a3d70a3d70a3d70a3d70a3d70a3d70a3d70a3d70a3e * 2^-198
   {{0x78d4fdf3b645a1cbULL, 0x645a1cac083126e9ULL,
-    0x83126e978d4fdf3bULL}, 0},
+    0x83126e978d4fdf3bULL}, {0}},
   // 10^-3 ~= 83126e978d4fdf3b645a1cac083126e978d4fdf3b645a1cb * 2^-201
   {{0xc154c985f06f6945ULL, 0xd3c36113404ea4a8ULL,
-    0xd1b71758e219652bULL}, 0},
+    0xd1b71758e219652bULL}, {0}},
   // 10^-4 ~= d1b71758e219652bd3c36113404ea4a8c154c985f06f6945 * 2^-205
   {{0xcddd6e04c0592104ULL, 0x0fcf80dc33721d53ULL,
-    0xa7c5ac471b478423ULL}, 0},
+    0xa7c5ac471b478423ULL}, {0}},
   // 10^-5 ~= a7c5ac471b4784230fcf80dc33721d53cddd6e04c0592104 * 2^-208
   {{0xd7e45803cd141a6aULL, 0xa63f9a49c2c1b10fULL,
-    0x8637bd05af6c69b5ULL}, 0},
+    0x8637bd05af6c69b5ULL}, {0}},
   // 10^-6 ~= 8637bd05af6c69b5a63f9a49c2c1b10fd7e45803cd141a6a * 2^-211
   {{0x8ca08cd2e1b9c3dcULL, 0x3d32907604691b4cULL,
-    0xd6bf94d5e57a42bcULL}, 0},
+    0xd6bf94d5e57a42bcULL}, {0}},
   // 10^-7 ~= d6bf94d5e57a42bc3d32907604691b4c8ca08cd2e1b9c3dc * 2^-215
   {{0x3d4d3d758161697dULL, 0xfdc20d2b36ba7c3dULL,
-    0xabcc77118461cefcULL}, 0},
+    0xabcc77118461cefcULL}, {0}},
   // 10^-8 ~= abcc77118461cefcfdc20d2b36ba7c3d3d4d3d758161697d * 2^-218
   {{0xfdd7645e011abacaULL, 0x31680a88f8953030ULL,
-    0x89705f4136b4a597ULL}, 0},
+    0x89705f4136b4a597ULL}, {0}},
   // 10^-9 ~= 89705f4136b4a59731680a88f8953030fdd7645e011abaca * 2^-221
   {{0x2fbf06fcce912addULL, 0xb573440e5a884d1bULL,
-    0xdbe6fecebdedd5beULL}, 0},
+    0xdbe6fecebdedd5beULL}, {0}},
   // 10^-10 ~= dbe6fecebdedd5beb573440e5a884d1b2fbf06fcce912add * 2^-225
   {{0xf2ff38ca3eda88b1ULL, 0xf78f69a51539d748ULL,
-    0xafebff0bcb24aafeULL}, 0},
+    0xafebff0bcb24aafeULL}, {0}},
   // 10^-11 ~= afebff0bcb24aafef78f69a51539d748f2ff38ca3eda88b1 * 2^-228
   {{0xf598fa3b657ba08eULL, 0xf93f87b7442e45d3ULL,
-    0x8cbccc096f5088cbULL}, 0},
+    0x8cbccc096f5088cbULL}, {0}},
   // 10^-12 ~= 8cbccc096f5088cbf93f87b7442e45d3f598fa3b657ba08e * 2^-231
   {{0x88f4c3923bf900e3ULL, 0x2865a5f206b06fb9ULL,
-    0xe12e13424bb40e13ULL}, 0},
+    0xe12e13424bb40e13ULL}, {0}},
   // 10^-13 ~= e12e13424bb40e132865a5f206b06fb988f4c3923bf900e3 * 2^-235
   {{0x6d909c74fcc733e9ULL, 0x538484c19ef38c94ULL,
-    0xb424dc35095cd80fULL}, 0},
+    0xb424dc35095cd80fULL}, {0}},
   // 10^-14 ~= b424dc35095cd80f538484c19ef38c946d909c74fcc733e9 * 2^-238
   {{0x57a6e390ca38f654ULL, 0x0f9d37014bf60a10ULL,
-    0x901d7cf73ab0acd9ULL}, 0},
+    0x901d7cf73ab0acd9ULL}, {0}},
   // 10^-15 ~= 901d7cf73ab0acd90f9d37014bf60a1057a6e390ca38f654 * 2^-241
   {{0xbf716c1add27f086ULL, 0x4c2ebe687989a9b3ULL,
-    0xe69594bec44de15bULL}, 0},
+    0xe69594bec44de15bULL}, {0}},
   // 10^-16 ~= e69594bec44de15b4c2ebe687989a9b3bf716c1add27f086 * 2^-245
   {{0xff8df0157db98d38ULL, 0x09befeb9fad487c2ULL,
-    0xb877aa3236a4b449ULL}, 0},
+    0xb877aa3236a4b449ULL}, {0}},
   // 10^-17 ~= b877aa3236a4b44909befeb9fad487c2ff8df0157db98d38 * 2^-248
   {{0x32d7f344649470faULL, 0x3aff322e62439fcfULL,
-    0x9392ee8e921d5d07ULL}, 0},
+    0x9392ee8e921d5d07ULL}, {0}},
   // 10^-18 ~= 9392ee8e921d5d073aff322e62439fcf32d7f344649470fa * 2^-251
   {{0x1e2652070753e7f5ULL, 0x2b31e9e3d06c32e5ULL,
-    0xec1e4a7db69561a5ULL}, 0},
+    0xec1e4a7db69561a5ULL}, {0}},
   // 10^-19 ~= ec1e4a7db69561a52b31e9e3d06c32e51e2652070753e7f5 * 2^-255
   {{0x181ea8059f76532bULL, 0x88f4bb1ca6bcf584ULL,
-    0xbce5086492111aeaULL}, 0},
+    0xbce5086492111aeaULL}, {0}},
   // 10^-20 ~= bce5086492111aea88f4bb1ca6bcf584181ea8059f76532b * 2^-258
   {{0x467eecd14c5ea8efULL, 0xd3f6fc16ebca5e03ULL,
-    0x971da05074da7beeULL}, 0},
+    0x971da05074da7beeULL}, {0}},
   // 10^-21 ~= 971da05074da7beed3f6fc16ebca5e03467eecd14c5ea8ef * 2^-261
   {{0x70cb148213caa7e5ULL, 0x5324c68b12dd6338ULL,
-    0xf1c90080baf72cb1ULL}, 0},
+    0xf1c90080baf72cb1ULL}, {0}},
   // 10^-22 ~= f1c90080baf72cb15324c68b12dd633870cb148213caa7e5 * 2^-265
   {{0x8d6f439b43088651ULL, 0x75b7053c0f178293ULL,
-    0xc16d9a0095928a27ULL}, 0},
+    0xc16d9a0095928a27ULL}, {0}},
   // 10^-23 ~= c16d9a0095928a2775b7053c0f1782938d6f439b43088651 * 2^-268
   {{0xd78c3615cf3a050dULL, 0xc4926a9672793542ULL,
-    0x9abe14cd44753b52ULL}, 0},
+    0x9abe14cd44753b52ULL}, {0}},
   // 10^-24 ~= 9abe14cd44753b52c4926a9672793542d78c3615cf3a050d * 2^-271
   {{0x8c1389bc7ec33b48ULL, 0x3a83ddbd83f52204ULL,
-    0xf79687aed3eec551ULL}, 0},
+    0xf79687aed3eec551ULL}, {0}},
   // 10^-25 ~= f79687aed3eec5513a83ddbd83f522048c1389bc7ec33b48 * 2^-275
   {{0x3cdc6e306568fc3aULL, 0x95364afe032a819dULL,
-    0xc612062576589ddaULL}, 0},
+    0xc612062576589ddaULL}, {0}},
   // 10^-26 ~= c612062576589dda95364afe032a819d3cdc6e306568fc3a * 2^-278
   {{0xca49f1c05120c9c8ULL, 0x775ea264cf55347dULL,
-    0x9e74d1b791e07e48ULL}, 0},
+    0x9e74d1b791e07e48ULL}, {0}},
   // 10^-27 ~= 9e74d1b791e07e48775ea264cf55347dca49f1c05120c9c8 * 2^-281
   {{0x76dcb60081ce0fa6ULL, 0x8bca9d6e188853fcULL,
-    0xfd87b5f28300ca0dULL}, 0},
+    0xfd87b5f28300ca0dULL}, {0}},
   // 10^-28 ~= fd87b5f28300ca0d8bca9d6e188853fc76dcb60081ce0fa6 * 2^-285
   {{0x5f16f80067d80c85ULL, 0x096ee45813a04330ULL,
-    0xcad2f7f5359a3b3eULL}, 0},
+    0xcad2f7f5359a3b3eULL}, {0}},
   // 10^-29 ~= cad2f7f5359a3b3e096ee45813a043305f16f80067d80c85 * 2^-288
   {{0x18df2ccd1fe00a04ULL, 0xa1258379a94d028dULL,
-    0xa2425ff75e14fc31ULL}, 0},
+    0xa2425ff75e14fc31ULL}, {0}},
   // 10^-30 ~= a2425ff75e14fc31a1258379a94d028d18df2ccd1fe00a04 * 2^-291
   {{0x4718f0a419800803ULL, 0x80eacf948770ced7ULL,
-    0x81ceb32c4b43fcf4ULL}, 0},
+    0x81ceb32c4b43fcf4ULL}, {0}},
   // 10^-31 ~= 81ceb32c4b43fcf480eacf948770ced74718f0a419800803 * 2^-294
   {{0x0b5b1aa028ccd99fULL, 0x67de18eda5814af2ULL,
-    0xcfb11ead453994baULL}, 0},
+    0xcfb11ead453994baULL}, {0}},
   // 10^-32 ~= cfb11ead453994ba67de18eda5814af20b5b1aa028ccd99f * 2^-298
   {{0x6f7c154ced70ae19ULL, 0xecb1ad8aeacdd58eULL,
-    0xa6274bbdd0fadd61ULL}, 0},
+    0xa6274bbdd0fadd61ULL}, {0}},
   // 10^-33 ~= a6274bbdd0fadd61ecb1ad8aeacdd58e6f7c154ced70ae19 * 2^-301
   {{0xbf967770bdf3be7aULL, 0xbd5af13bef0b113eULL,
-    0x84ec3c97da624ab4ULL}, 0},
+    0x84ec3c97da624ab4ULL}, {0}},
   // 10^-34 ~= 84ec3c97da624ab4bd5af13bef0b113ebf967770bdf3be7a * 2^-304
   {{0x65bd8be79652ca5dULL, 0x955e4ec64b44e864ULL,
-    0xd4ad2dbfc3d07787ULL}, 0},
+    0xd4ad2dbfc3d07787ULL}, {0}},
   // 10^-35 ~= d4ad2dbfc3d07787955e4ec64b44e86465bd8be79652ca5d * 2^-308
   {{0xeafe098611dbd517ULL, 0xdde50bd1d5d0b9e9ULL,
-    0xaa242499697392d2ULL}, 0},
+    0xaa242499697392d2ULL}, {0}},
   // 10^-36 ~= aa242499697392d2dde50bd1d5d0b9e9eafe098611dbd517 * 2^-311
   {{0xbbfe6e04db164413ULL, 0x7e50d64177da2e54ULL,
-    0x881cea14545c7575ULL}, 0},
+    0x881cea14545c7575ULL}, {0}},
   // 10^-37 ~= 881cea14545c75757e50d64177da2e54bbfe6e04db164413 * 2^-314
   {{0x2cca49a15e8a0684ULL, 0x96e7bd358c904a21ULL,
-    0xd9c7dced53c72255ULL}, 0},
+    0xd9c7dced53c72255ULL}, {0}},
   // 10^-38 ~= d9c7dced53c7225596e7bd358c904a212cca49a15e8a0684 * 2^-318
   {{0x8a3b6e1ab2080537ULL, 0xabec975e0a0d081aULL,
-    0xae397d8aa96c1b77ULL}, 0},
+    0xae397d8aa96c1b77ULL}, {0}},
   // 10^-39 ~= ae397d8aa96c1b77abec975e0a0d081a8a3b6e1ab2080537 * 2^-321
   {{0x3b62be7bc1a0042cULL, 0x2323ac4b3b3da015ULL,
-    0x8b61313bbabce2c6ULL}, 0},
+    0x8b61313bbabce2c6ULL}, {0}},
   // 10^-40 ~= 8b61313bbabce2c62323ac4b3b3da0153b62be7bc1a0042c * 2^-324
   {{0x5f0463f935ccd379ULL, 0x6b6c46dec52f6688ULL,
-    0xdf01e85f912e37a3ULL}, 0},
+    0xdf01e85f912e37a3ULL}, {0}},
   // 10^-41 ~= df01e85f912e37a36b6c46dec52f66885f0463f935ccd379 * 2^-328
   {{0x7f36b660f7d70f94ULL, 0x55f038b237591ed3ULL,
-    0xb267ed1940f1c61cULL}, 0},
+    0xb267ed1940f1c61cULL}, {0}},
   // 10^-42 ~= b267ed1940f1c61c55f038b237591ed37f36b660f7d70f94 * 2^-331
   {{0xcc2bc51a5fdf3faaULL, 0x77f3608e92adb242ULL,
-    0x8eb98a7a9a5b04e3ULL}, 0},
+    0x8eb98a7a9a5b04e3ULL}, {0}},
   // 10^-43 ~= 8eb98a7a9a5b04e377f3608e92adb242cc2bc51a5fdf3faa * 2^-334
   {{0xe046082a32fecc42ULL, 0x8cb89a7db77c506aULL,
-    0xe45c10c42a2b3b05ULL}, 0},
+    0xe45c10c42a2b3b05ULL}, {0}},
   // 10^-44 ~= e45c10c42a2b3b058cb89a7db77c506ae046082a32fecc42 * 2^-338
   {{0x4d04d354f598a368ULL, 0x3d607b97c5fd0d22ULL,
-    0xb6b00d69bb55c8d1ULL}, 0},
+    0xb6b00d69bb55c8d1ULL}, {0}},
   // 10^-45 ~= b6b00d69bb55c8d13d607b97c5fd0d224d04d354f598a368 * 2^-341
   {{0x3d9d75dd9146e920ULL, 0xcab3961304ca70e8ULL,
-    0x9226712162ab070dULL}, 0},
+    0x9226712162ab070dULL}, {0}},
   // 10^-46 ~= 9226712162ab070dcab3961304ca70e83d9d75dd9146e920 * 2^-344
   {{0xc8fbefc8e8717500ULL, 0xaab8f01e6e10b4a6ULL,
-    0xe9d71b689dde71afULL}, 0},
+    0xe9d71b689dde71afULL}, {0}},
   // 10^-47 ~= e9d71b689dde71afaab8f01e6e10b4a6c8fbefc8e8717500 * 2^-348
   {{0x3a63263a538df734ULL, 0x5560c018580d5d52ULL,
-    0xbb127c53b17ec159ULL}, 0},
+    0xbb127c53b17ec159ULL}, {0}},
   // 10^-48 ~= bb127c53b17ec1595560c018580d5d523a63263a538df734 * 2^-351
   {{0x2eb5b82ea93e5f5dULL, 0xdde7001379a44aa8ULL,
-    0x95a8637627989aadULL}, 0},
+    0x95a8637627989aadULL}, {0}},
   // 10^-49 ~= 95a8637627989aaddde7001379a44aa82eb5b82ea93e5f5d * 2^-354
   {{0x4abc59e441fd6561ULL, 0x963e66858f6d4440ULL,
-    0xef73d256a5c0f77cULL}, 0},
+    0xef73d256a5c0f77cULL}, {0}},
   // 10^-50 ~= ef73d256a5c0f77c963e66858f6d44404abc59e441fd6561 * 2^-358
   {{0x6efd14b69b311de7ULL, 0xde98520472bdd033ULL,
-    0xbf8fdb78849a5f96ULL}, 0},
+    0xbf8fdb78849a5f96ULL}, {0}},
   // 10^-51 ~= bf8fdb78849a5f96de98520472bdd0336efd14b69b311de7 * 2^-361
   {{0x259743c548f417ecULL, 0xe546a8038efe4029ULL,
-    0x993fe2c6d07b7fabULL}, 0},
+    0x993fe2c6d07b7fabULL}, {0}},
   // 10^-52 ~= 993fe2c6d07b7fabe546a8038efe4029259743c548f417ec * 2^-364
   {{0x3c25393ba7ecf313ULL, 0xd53dd99f4b3066a8ULL,
-    0xf53304714d9265dfULL}, 0},
+    0xf53304714d9265dfULL}, {0}},
   // 10^-53 ~= f53304714d9265dfd53dd99f4b3066a83c25393ba7ecf313 * 2^-368
   {{0x96842dc95323f5a9ULL, 0xaa97e14c3c26b886ULL,
-    0xc428d05aa4751e4cULL}, 0},
+    0xc428d05aa4751e4cULL}, {0}},
   // 10^-54 ~= c428d05aa4751e4caa97e14c3c26b88696842dc95323f5a9 * 2^-371
   {{0xab9cf16ddc1cc487ULL, 0x55464dd69685606bULL,
-    0x9ced737bb6c4183dULL}, 0},
+    0x9ced737bb6c4183dULL}, {0}},
   // 10^-55 ~= 9ced737bb6c4183d55464dd69685606bab9cf16ddc1cc487 * 2^-374
-  {{0xac2e4f162cfad40bULL, 0xeed6e2f0f0d56712ULL, 0xfb158592be068d2eULL}, 0}
+  {{0xac2e4f162cfad40bULL, 0xeed6e2f0f0d56712ULL, 0xfb158592be068d2eULL}, {0}}
   // 10^-56 ~= fb158592be068d2eeed6e2f0f0d56712ac2e4f162cfad40b * 2^-378
 };
 
@@ -3330,171 +3330,171 @@ BID_UINT64 bid_mask192[] = {
 
 BID_UINT196 bid_ten2mxtrunc192[] = {
   {{0xccccccccccccccccULL, 0xccccccccccccccccULL,
-    0xccccccccccccccccULL}, 0},
+    0xccccccccccccccccULL}, {0}},
   // (ten2mx >> 192) = cccccccccccccccccccccccccccccccccccccccccccccccc
   {{0xd70a3d70a3d70a3dULL, 0x3d70a3d70a3d70a3ULL,
-    0xa3d70a3d70a3d70aULL}, 0},
+    0xa3d70a3d70a3d70aULL}, {0}},
   // (ten2mx >> 192) = a3d70a3d70a3d70a3d70a3d70a3d70a3d70a3d70a3d70a3d
   {{0x78d4fdf3b645a1caULL, 0x645a1cac083126e9ULL,
-    0x83126e978d4fdf3bULL}, 0},
+    0x83126e978d4fdf3bULL}, {0}},
   // (ten2mx >> 192) = 83126e978d4fdf3b645a1cac083126e978d4fdf3b645a1ca
   {{0xc154c985f06f6944ULL, 0xd3c36113404ea4a8ULL,
-    0xd1b71758e219652bULL}, 0},
+    0xd1b71758e219652bULL}, {0}},
   // (ten2mx >> 192) = d1b71758e219652bd3c36113404ea4a8c154c985f06f6944
   {{0xcddd6e04c0592103ULL, 0x0fcf80dc33721d53ULL,
-    0xa7c5ac471b478423ULL}, 0},
+    0xa7c5ac471b478423ULL}, {0}},
   // (ten2mx >> 192) = a7c5ac471b4784230fcf80dc33721d53cddd6e04c0592103
   {{0xd7e45803cd141a69ULL, 0xa63f9a49c2c1b10fULL,
-    0x8637bd05af6c69b5ULL}, 0},
+    0x8637bd05af6c69b5ULL}, {0}},
   // (ten2mx >> 192) = 8637bd05af6c69b5a63f9a49c2c1b10fd7e45803cd141a69
   {{0x8ca08cd2e1b9c3dbULL, 0x3d32907604691b4cULL,
-    0xd6bf94d5e57a42bcULL}, 0},
+    0xd6bf94d5e57a42bcULL}, {0}},
   // (ten2mx >> 192) = d6bf94d5e57a42bc3d32907604691b4c8ca08cd2e1b9c3db
   {{0x3d4d3d758161697cULL, 0xfdc20d2b36ba7c3dULL,
-    0xabcc77118461cefcULL}, 0},
+    0xabcc77118461cefcULL}, {0}},
   // (ten2mx >> 192) = abcc77118461cefcfdc20d2b36ba7c3d3d4d3d758161697c
   {{0xfdd7645e011abac9ULL, 0x31680a88f8953030ULL,
-    0x89705f4136b4a597ULL}, 0},
+    0x89705f4136b4a597ULL}, {0}},
   // (ten2mx >> 192) = 89705f4136b4a59731680a88f8953030fdd7645e011abac9
   {{0x2fbf06fcce912adcULL, 0xb573440e5a884d1bULL,
-    0xdbe6fecebdedd5beULL}, 0},
+    0xdbe6fecebdedd5beULL}, {0}},
   // (ten2mx >> 192) = dbe6fecebdedd5beb573440e5a884d1b2fbf06fcce912adc
   {{0xf2ff38ca3eda88b0ULL, 0xf78f69a51539d748ULL,
-    0xafebff0bcb24aafeULL}, 0},
+    0xafebff0bcb24aafeULL}, {0}},
   // (ten2mx >> 192) = afebff0bcb24aafef78f69a51539d748f2ff38ca3eda88b0
   {{0xf598fa3b657ba08dULL, 0xf93f87b7442e45d3ULL,
-    0x8cbccc096f5088cbULL}, 0},
+    0x8cbccc096f5088cbULL}, {0}},
   // (ten2mx >> 192) = 8cbccc096f5088cbf93f87b7442e45d3f598fa3b657ba08d
   {{0x88f4c3923bf900e2ULL, 0x2865a5f206b06fb9ULL,
-    0xe12e13424bb40e13ULL}, 0},
+    0xe12e13424bb40e13ULL}, {0}},
   // (ten2mx >> 192) = e12e13424bb40e132865a5f206b06fb988f4c3923bf900e2
   {{0x6d909c74fcc733e8ULL, 0x538484c19ef38c94ULL,
-    0xb424dc35095cd80fULL}, 0},
+    0xb424dc35095cd80fULL}, {0}},
   // (ten2mx >> 192) = b424dc35095cd80f538484c19ef38c946d909c74fcc733e8
   {{0x57a6e390ca38f653ULL, 0x0f9d37014bf60a10ULL,
-    0x901d7cf73ab0acd9ULL}, 0},
+    0x901d7cf73ab0acd9ULL}, {0}},
   // (ten2mx >> 192) = 901d7cf73ab0acd90f9d37014bf60a1057a6e390ca38f653
   {{0xbf716c1add27f085ULL, 0x4c2ebe687989a9b3ULL,
-    0xe69594bec44de15bULL}, 0},
+    0xe69594bec44de15bULL}, {0}},
   // (ten2mx >> 192) = e69594bec44de15b4c2ebe687989a9b3bf716c1add27f085
   {{0xff8df0157db98d37ULL, 0x09befeb9fad487c2ULL,
-    0xb877aa3236a4b449ULL}, 0},
+    0xb877aa3236a4b449ULL}, {0}},
   // (ten2mx >> 192) = b877aa3236a4b44909befeb9fad487c2ff8df0157db98d37
   {{0x32d7f344649470f9ULL, 0x3aff322e62439fcfULL,
-    0x9392ee8e921d5d07ULL}, 0},
+    0x9392ee8e921d5d07ULL}, {0}},
   // (ten2mx >> 192) = 9392ee8e921d5d073aff322e62439fcf32d7f344649470f9
   {{0x1e2652070753e7f4ULL, 0x2b31e9e3d06c32e5ULL,
-    0xec1e4a7db69561a5ULL}, 0},
+    0xec1e4a7db69561a5ULL}, {0}},
   // (ten2mx >> 192) = ec1e4a7db69561a52b31e9e3d06c32e51e2652070753e7f4
   {{0x181ea8059f76532aULL, 0x88f4bb1ca6bcf584ULL,
-    0xbce5086492111aeaULL}, 0},
+    0xbce5086492111aeaULL}, {0}},
   // (ten2mx >> 192) = bce5086492111aea88f4bb1ca6bcf584181ea8059f76532a
   {{0x467eecd14c5ea8eeULL, 0xd3f6fc16ebca5e03ULL,
-    0x971da05074da7beeULL}, 0},
+    0x971da05074da7beeULL}, {0}},
   // (ten2mx >> 192) = 971da05074da7beed3f6fc16ebca5e03467eecd14c5ea8ee
   {{0x70cb148213caa7e4ULL, 0x5324c68b12dd6338ULL,
-    0xf1c90080baf72cb1ULL}, 0},
+    0xf1c90080baf72cb1ULL}, {0}},
   // (ten2mx >> 192) = f1c90080baf72cb15324c68b12dd633870cb148213caa7e4
   {{0x8d6f439b43088650ULL, 0x75b7053c0f178293ULL,
-    0xc16d9a0095928a27ULL}, 0},
+    0xc16d9a0095928a27ULL}, {0}},
   // (ten2mx >> 192) = c16d9a0095928a2775b7053c0f1782938d6f439b43088650
   {{0xd78c3615cf3a050cULL, 0xc4926a9672793542ULL,
-    0x9abe14cd44753b52ULL}, 0},
+    0x9abe14cd44753b52ULL}, {0}},
   // (ten2mx >> 192) = 9abe14cd44753b52c4926a9672793542d78c3615cf3a050c
   {{0x8c1389bc7ec33b47ULL, 0x3a83ddbd83f52204ULL,
-    0xf79687aed3eec551ULL}, 0},
+    0xf79687aed3eec551ULL}, {0}},
   // (ten2mx >> 192) = f79687aed3eec5513a83ddbd83f522048c1389bc7ec33b47
   {{0x3cdc6e306568fc39ULL, 0x95364afe032a819dULL,
-    0xc612062576589ddaULL}, 0},
+    0xc612062576589ddaULL}, {0}},
   // (ten2mx >> 192) = c612062576589dda95364afe032a819d3cdc6e306568fc39
   {{0xca49f1c05120c9c7ULL, 0x775ea264cf55347dULL,
-    0x9e74d1b791e07e48ULL}, 0},
+    0x9e74d1b791e07e48ULL}, {0}},
   // (ten2mx >> 192) = 9e74d1b791e07e48775ea264cf55347dca49f1c05120c9c7
   {{0x76dcb60081ce0fa5ULL, 0x8bca9d6e188853fcULL,
-    0xfd87b5f28300ca0dULL}, 0},
+    0xfd87b5f28300ca0dULL}, {0}},
   // (ten2mx >> 192) = fd87b5f28300ca0d8bca9d6e188853fc76dcb60081ce0fa5
   {{0x5f16f80067d80c84ULL, 0x096ee45813a04330ULL,
-    0xcad2f7f5359a3b3eULL}, 0},
+    0xcad2f7f5359a3b3eULL}, {0}},
   // (ten2mx >> 192) = cad2f7f5359a3b3e096ee45813a043305f16f80067d80c84
   {{0x18df2ccd1fe00a03ULL, 0xa1258379a94d028dULL,
-    0xa2425ff75e14fc31ULL}, 0},
+    0xa2425ff75e14fc31ULL}, {0}},
   // (ten2mx >> 192) = a2425ff75e14fc31a1258379a94d028d18df2ccd1fe00a03
   {{0x4718f0a419800802ULL, 0x80eacf948770ced7ULL,
-    0x81ceb32c4b43fcf4ULL}, 0},
+    0x81ceb32c4b43fcf4ULL}, {0}},
   // (ten2mx >> 192) = 81ceb32c4b43fcf480eacf948770ced74718f0a419800802
   {{0x0b5b1aa028ccd99eULL, 0x67de18eda5814af2ULL,
-    0xcfb11ead453994baULL}, 0},
+    0xcfb11ead453994baULL}, {0}},
   // (ten2mx >> 192) = cfb11ead453994ba67de18eda5814af20b5b1aa028ccd99e
   {{0x6f7c154ced70ae18ULL, 0xecb1ad8aeacdd58eULL,
-    0xa6274bbdd0fadd61ULL}, 0},
+    0xa6274bbdd0fadd61ULL}, {0}},
   // (ten2mx >> 192) = a6274bbdd0fadd61ecb1ad8aeacdd58e6f7c154ced70ae18
   {{0xbf967770bdf3be79ULL, 0xbd5af13bef0b113eULL,
-    0x84ec3c97da624ab4ULL}, 0},
+    0x84ec3c97da624ab4ULL}, {0}},
   // (ten2mx >> 192) = 84ec3c97da624ab4bd5af13bef0b113ebf967770bdf3be79
   {{0x65bd8be79652ca5cULL, 0x955e4ec64b44e864ULL,
-    0xd4ad2dbfc3d07787ULL}, 0},
+    0xd4ad2dbfc3d07787ULL}, {0}},
   // (ten2mx >> 192) = d4ad2dbfc3d07787955e4ec64b44e86465bd8be79652ca5c
   {{0xeafe098611dbd516ULL, 0xdde50bd1d5d0b9e9ULL,
-    0xaa242499697392d2ULL}, 0},
+    0xaa242499697392d2ULL}, {0}},
   // (ten2mx >> 192) = aa242499697392d2dde50bd1d5d0b9e9eafe098611dbd516
   {{0xbbfe6e04db164412ULL, 0x7e50d64177da2e54ULL,
-    0x881cea14545c7575ULL}, 0},
+    0x881cea14545c7575ULL}, {0}},
   // (ten2mx >> 192) = 881cea14545c75757e50d64177da2e54bbfe6e04db164412
   {{0x2cca49a15e8a0683ULL, 0x96e7bd358c904a21ULL,
-    0xd9c7dced53c72255ULL}, 0},
+    0xd9c7dced53c72255ULL}, {0}},
   // (ten2mx >> 192) = d9c7dced53c7225596e7bd358c904a212cca49a15e8a0683
   {{0x8a3b6e1ab2080536ULL, 0xabec975e0a0d081aULL,
-    0xae397d8aa96c1b77ULL}, 0},
+    0xae397d8aa96c1b77ULL}, {0}},
   // (ten2mx >> 192) = ae397d8aa96c1b77abec975e0a0d081a8a3b6e1ab2080536
   {{0x3b62be7bc1a0042bULL, 0x2323ac4b3b3da015ULL,
-    0x8b61313bbabce2c6ULL}, 0},
+    0x8b61313bbabce2c6ULL}, {0}},
   // (ten2mx >> 192) = 8b61313bbabce2c62323ac4b3b3da0153b62be7bc1a0042b
   {{0x5f0463f935ccd378ULL, 0x6b6c46dec52f6688ULL,
-    0xdf01e85f912e37a3ULL}, 0},
+    0xdf01e85f912e37a3ULL}, {0}},
   // (ten2mx >> 192) = df01e85f912e37a36b6c46dec52f66885f0463f935ccd378
   {{0x7f36b660f7d70f93ULL, 0x55f038b237591ed3ULL,
-    0xb267ed1940f1c61cULL}, 0},
+    0xb267ed1940f1c61cULL}, {0}},
   // (ten2mx >> 192) = b267ed1940f1c61c55f038b237591ed37f36b660f7d70f93
   {{0xcc2bc51a5fdf3fa9ULL, 0x77f3608e92adb242ULL,
-    0x8eb98a7a9a5b04e3ULL}, 0},
+    0x8eb98a7a9a5b04e3ULL}, {0}},
   // (ten2mx >> 192) = 8eb98a7a9a5b04e377f3608e92adb242cc2bc51a5fdf3fa9
   {{0xe046082a32fecc41ULL, 0x8cb89a7db77c506aULL,
-    0xe45c10c42a2b3b05ULL}, 0},
+    0xe45c10c42a2b3b05ULL}, {0}},
   // (ten2mx >> 192) = e45c10c42a2b3b058cb89a7db77c506ae046082a32fecc41
   {{0x4d04d354f598a367ULL, 0x3d607b97c5fd0d22ULL,
-    0xb6b00d69bb55c8d1ULL}, 0},
+    0xb6b00d69bb55c8d1ULL}, {0}},
   // (ten2mx >> 192) = b6b00d69bb55c8d13d607b97c5fd0d224d04d354f598a367
   {{0x3d9d75dd9146e91fULL, 0xcab3961304ca70e8ULL,
-    0x9226712162ab070dULL}, 0},
+    0x9226712162ab070dULL}, {0}},
   // (ten2mx >> 192) = 9226712162ab070dcab3961304ca70e83d9d75dd9146e91f
   {{0xc8fbefc8e87174ffULL, 0xaab8f01e6e10b4a6ULL,
-    0xe9d71b689dde71afULL}, 0},
+    0xe9d71b689dde71afULL}, {0}},
   // (ten2mx >> 192) = e9d71b689dde71afaab8f01e6e10b4a6c8fbefc8e87174ff
   {{0x3a63263a538df733ULL, 0x5560c018580d5d52ULL,
-    0xbb127c53b17ec159ULL}, 0},
+    0xbb127c53b17ec159ULL}, {0}},
   // (ten2mx >> 192) = bb127c53b17ec1595560c018580d5d523a63263a538df733
   {{0x2eb5b82ea93e5f5cULL, 0xdde7001379a44aa8ULL,
-    0x95a8637627989aadULL}, 0},
+    0x95a8637627989aadULL}, {0}},
   // (ten2mx >> 192) = 95a8637627989aaddde7001379a44aa82eb5b82ea93e5f5c
   {{0x4abc59e441fd6560ULL, 0x963e66858f6d4440ULL,
-    0xef73d256a5c0f77cULL}, 0},
+    0xef73d256a5c0f77cULL}, {0}},
   // (ten2mx >> 192) = ef73d256a5c0f77c963e66858f6d44404abc59e441fd6560
   {{0x6efd14b69b311de6ULL, 0xde98520472bdd033ULL,
-    0xbf8fdb78849a5f96ULL}, 0},
+    0xbf8fdb78849a5f96ULL}, {0}},
   // (ten2mx >> 192) = bf8fdb78849a5f96de98520472bdd0336efd14b69b311de6
   {{0x259743c548f417ebULL, 0xe546a8038efe4029ULL,
-    0x993fe2c6d07b7fabULL}, 0},
+    0x993fe2c6d07b7fabULL}, {0}},
   // (ten2mx >> 192) = 993fe2c6d07b7fabe546a8038efe4029259743c548f417eb
   {{0x3c25393ba7ecf312ULL, 0xd53dd99f4b3066a8ULL,
-    0xf53304714d9265dfULL}, 0},
+    0xf53304714d9265dfULL}, {0}},
   // (ten2mx >> 192) = f53304714d9265dfd53dd99f4b3066a83c25393ba7ecf312
   {{0x96842dc95323f5a8ULL, 0xaa97e14c3c26b886ULL,
-    0xc428d05aa4751e4cULL}, 0},
+    0xc428d05aa4751e4cULL}, {0}},
   // (ten2mx >> 192) = c428d05aa4751e4caa97e14c3c26b88696842dc95323f5a8
   {{0xab9cf16ddc1cc486ULL, 0x55464dd69685606bULL,
-    0x9ced737bb6c4183dULL}, 0},
+    0x9ced737bb6c4183dULL}, {0}},
   // (ten2mx >> 192) = 9ced737bb6c4183d55464dd69685606bab9cf16ddc1cc486
-  {{0xac2e4f162cfad40aULL, 0xeed6e2f0f0d56712ULL, 0xfb158592be068d2eULL}, 0}
+  {{0xac2e4f162cfad40aULL, 0xeed6e2f0f0d56712ULL, 0xfb158592be068d2eULL}, {0}}
   // (ten2mx >> 192) = fb158592be068d2eeed6e2f0f0d56712ac2e4f162cfad40a
 };
 

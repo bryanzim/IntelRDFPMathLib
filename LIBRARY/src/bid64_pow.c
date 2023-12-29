@@ -179,9 +179,11 @@ BID_UINT64 y_int, res, xa;
     *pfpsf &= ~BID_INEXACT_EXCEPTION;
     BIDECIMAL_CALL1_NORND(bid64_to_int32_xrnint, exact_y, y);
     if ((*pfpsf & BID_INEXACT_EXCEPTION) == 0) {
-      if (exact_y < 0) sign = 1;
-      exact_y = abs(exact_y);
-      if (exact_y > 0) {
+      if (exact_y < 0) {
+          sign = 1;
+          exact_y = abs(exact_y);
+      }
+      else if (exact_y > 0) {
         BID_UINT64 tmp, r = BID64_1;
         BID_UINT64 p = x;
         for (; exact_y; exact_y >>= 1) {
