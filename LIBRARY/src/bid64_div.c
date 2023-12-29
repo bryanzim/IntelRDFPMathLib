@@ -264,8 +264,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     // 2^64
     t_scale.i = 0x43f0000000000000ull;
     // convert CA to DP
-    da_h = CA.w[1];
-    da_l = CA.w[0];
+    da_h = (double) (CA.w[1]);
+    da_l = (double) (CA.w[0]);
     da = da_h * t_scale.d + da_l;
 
     // quotient
@@ -351,7 +351,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
       tdigit[0] = Q & 0x3ffffff;
       tdigit[1] = 0;
       QX = Q >> 26;
-      QX32 = QX;
+      QX32 = (BID_UINT32) QX;
       nzeros = 0;
 
       for (j = 0; QX32; j++, QX32 >>= 7) {
@@ -718,7 +718,7 @@ if (!done) {
     tdigit[0] = Q_low & 0x3ffffff;
     tdigit[1] = 0;
     QX = Q_low >> 26;
-    QX32 = QX;
+    QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
@@ -1137,7 +1137,7 @@ if (!done) {
     tdigit[0] = Q_low & 0x3ffffff;
     tdigit[1] = 0;
     QX = Q_low >> 26;
-    QX32 = QX;
+    QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
@@ -1565,7 +1565,7 @@ if (!done) {
     tdigit[0] = Q_low & 0x3ffffff;
     tdigit[1] = 0;
     QX = Q_low >> 26;
-    QX32 = QX;
+    QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
