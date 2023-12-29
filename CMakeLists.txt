@@ -12,7 +12,7 @@ set(CMAKE_C_EXTENSIONS OFF)
 
 # Define options
 option(CALL_BY_REFERENCE 
-       "Whether to pass function arguments and return values by reference or value" ON)
+       "Whether to pass function arguments and return values by reference or value" OFF)
 option(GLOBAL_ROUNDING
        "Whether the rounding option is stored in global varibale '_IDEC_round __bid_IDEC_glbround;'" OFF)
 option(GLOBAL_EXCEPTION_FLAGS
