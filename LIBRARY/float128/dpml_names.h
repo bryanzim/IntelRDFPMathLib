@@ -2400,7 +2400,7 @@
 #    define D_BUILD_SUFFIX __D_SUFFIX
 #endif
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( push )
 #    pragma warning( disable : 4668 )
 #endif
@@ -2421,7 +2421,7 @@
 #   endif
 #endif
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( pop )
 #endif
 
@@ -2447,7 +2447,7 @@
 #   endif
 #endif
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( push )
 #    pragma warning( disable : 4668 )
 #endif
@@ -2460,7 +2460,7 @@
 #   endif
 #endif
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( pop )
 #endif
 
@@ -2477,7 +2477,7 @@
 #   define  __D_SUFFIX  PASTE_2(_, D_CHAR)
 #endif
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( push )
 #    pragma warning( disable : 4668 )
 #endif
@@ -2490,7 +2490,7 @@
 #   endif
 #endif
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( pop )
 #endif
 
@@ -2510,7 +2510,7 @@
 ** First define macro for adding prefixes
 */
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( push )
 #    pragma warning( disable : 4668 )
 #endif
@@ -2573,7 +2573,7 @@
 #   define __BUILD_NAME(base)    PASTE_2(ADD_BUILD_PREFIX(base), BUILD_SUFFIX)
 #endif
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( pop )
 #endif
 

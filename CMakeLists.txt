@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 project(Intel_Decimal_Floating_Point_Math)
 
 # Set required C++ standard which will cause appropriate compile flags per generator
-if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+if ((CMAKE_C_COMPILER_ID STREQUAL "MSVC") OR (CMAKE_C_COMPILER_ID STREQUAL "Clang"))
     set(CMAKE_C_STANDARD 17)
 else()
     set(CMAKE_C_STANDARD 23)

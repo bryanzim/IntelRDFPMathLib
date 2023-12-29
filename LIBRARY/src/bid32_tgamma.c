@@ -31,14 +31,14 @@
 
 double sin(double);
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( push )
 #    pragma warning( disable : 4273 )
 #endif
 
 double tgamma(double);
 
-#if (_MSC_VER)
+#if defined(_MSC_VER)
 #    pragma warning( pop )
   
 #endif

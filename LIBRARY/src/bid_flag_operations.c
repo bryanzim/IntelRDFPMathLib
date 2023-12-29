@@ -383,20 +383,29 @@ int_float tmp;
           }
           if(crt_flags & _SW_OVERFLOW)
           {
+#if !defined(_MSC_VER)
+              // Intentional overflow
               tmp.i = 0x7f000001;
+#endif
               tmp.d *= tmp.d;
               n |= tmp.i;
           }
           if(crt_flags & _SW_ZERODIVIDE)
           {
               tmp.i = 0x80000000;
+#if !defined(_MSC_VER)
+              // Intentional divide by 0
               tmp.d = 1.0f/tmp.d;
+#endif
               n |= tmp.i;
           }
           if(crt_flags & _SW_INVALID)
           {
               tmp.i = 0x80000000;
+#if !defined(_MSC_VER)
+              // Intentional divide by 0
               tmp.d /= tmp.d;
+#endif
               n |= tmp.i;
           }
 

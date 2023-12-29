@@ -41,17 +41,17 @@ endif()
 # Set compiler specific defintions
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     # using Clang
-    add_compile_options("-Wall")
+    #add_compile_options("-Wall")
     add_compile_options("-Wextra")
     add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # using GCC
-    add_compile_options("-Wall")
+    #add_compile_options("-Wall")
     add_compile_options("-Wextra")
     add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     # using MSVC
-    add_compile_options("/Wall")
+    add_compile_options("/W3")
     add_compile_options("/WX")
     add_compile_options("/Zc:__cplusplus")
 else()
