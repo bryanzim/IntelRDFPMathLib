@@ -174,12 +174,12 @@ BID_UINT64 X1=X;                           \
     S = X + Y;                         \
     CY = (S<X1) ? 1 : 0;                \
 }
-#define __add_carry_in_out(S, CY, X, Y, CI)    \
-{                                             \
-BID_UINT64 X1;                                    \
-    X1 = X + CI;                              \
-    S = X1 + Y;                               \
-    CY = ((S<X1) || (X1<CI)) ? 1 : 0;          \
+#define __add_carry_in_out(S, CY, X, Y, CI)                       \
+{                                                                 \
+BID_UINT64 X1;                                                    \
+        X1 = X + CI;                                              \
+        S = X1 + Y;                                               \
+        CY = ((S<X1) || (X1<((BID_UINT64) CI))) ? 1 : 0;          \
 }
 #define __sub_borrow_out(S, CY, X, Y)    \
 {                                      \
