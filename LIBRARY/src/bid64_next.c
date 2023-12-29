@@ -140,7 +140,7 @@ bid64_nextup (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       C1 = C1 * bid_ten2k64[ind];
       x_exp = x_exp - ind;
     } else {	// pad with zeros until the exponent reaches emin
-      ind = x_exp;
+      ind = (int) x_exp;
       C1 = C1 * bid_ten2k64[ind];
       x_exp = EXP_MIN;
     }
@@ -287,7 +287,7 @@ bid64_nextdown (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       C1 = C1 * bid_ten2k64[ind];
       x_exp = x_exp - ind;
     } else {	// pad with zeros until the exponent reaches emin
-      ind = x_exp;
+      ind = (int) x_exp;
       C1 = C1 * bid_ten2k64[ind];
       x_exp = EXP_MIN;
     }
