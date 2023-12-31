@@ -12496,17 +12496,20 @@ BID128_FUNCTION_ARG1 (bid128_cos, x)
 // Otherwise just call the conversion and cos function directly,
 // since no range reduction is needed and the function is well-conditioned
 
-  if (e < -35)
-     if (e < -52)
-      { BIDECIMAL_CALL2(bid128_sub,res,BID128_1,BID128_10PM40);
-        BID_RETURN(res);
+  if (e < -35) {
+      if (e < -52)
+      {
+          BIDECIMAL_CALL2(bid128_sub, res, BID128_1, BID128_10PM40);
+          BID_RETURN(res);
       }
-     else
-      { BIDECIMAL_CALL1(bid128_to_binary128,xd,x);
-        __bid_f128_cos(yd, xd);
-        BIDECIMAL_CALL1(binary128_to_bid128,res,yd);
-        BID_RETURN(res);
+      else
+      {
+          BIDECIMAL_CALL1(bid128_to_binary128, xd, x);
+          __bid_f128_cos(yd, xd);
+          BIDECIMAL_CALL1(binary128_to_bid128, res, yd);
+          BID_RETURN(res);
       }
+  }
 
 // Pick out the appropriate modulus for the exponent and multiply by coeff
 // Since we discard the top word p.w[3], we could specially optimize this.

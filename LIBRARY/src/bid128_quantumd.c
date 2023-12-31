@@ -43,8 +43,8 @@
 */
 
 
-BID128_FUNCTION_ARG1_NORND (bid128_quantum, x)
-
+BID128_FUNCTION_ARG1_NORND(bid128_quantum, x)
+  (void) pfpsf;
   BID_UINT128 res;
   int int_exp;
 

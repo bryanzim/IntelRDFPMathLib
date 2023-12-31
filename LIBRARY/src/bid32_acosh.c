@@ -35,7 +35,7 @@
 #    pragma warning( disable : 4273 )
 #endif
 
-     BID_EXTERN_C double asinh(double);
+BID_EXTERN_C double asinh(double);
 BID_EXTERN_C double acosh(double);
 
 #if defined(_MSC_VER)

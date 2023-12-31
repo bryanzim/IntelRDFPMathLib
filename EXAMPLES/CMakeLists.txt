@@ -43,12 +43,12 @@ if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     # using Clang
     #add_compile_options("-Wall")
     add_compile_options("-Wextra")
-    add_compile_options("-pedantic")
+    #add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # using GCC
     #add_compile_options("-Wall")
     add_compile_options("-Wextra")
-    add_compile_options("-pedantic")
+    #add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     # using MSVC
     add_compile_options("/W3")

@@ -123,11 +123,11 @@ typedef struct {
 #define UX_DECR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) -= (UX_EXPONENT_TYPE) (v))
 #define UX_TOGGLE_SIGN(x,v)	   ((((UX_FLOAT *)(x))->sign) ^= (v))
 
-#define UX_SIGN_BIT	      ((WORD) 1 << 31)
+#define UX_SIGN_BIT	      ((UX_SIGN_TYPE) (((UX_SIGN_TYPE ) 1) << 31))
 #define UX_MSB		      ((U_WORD)1 <<(BITS_PER_UX_FRACTION_DIGIT_TYPE-1))
 #define UX_OVERFLOW_EXPONENT  (1 << F_EXP_WIDTH)
 #define UX_UNDERFLOW_EXPONENT (- UX_OVERFLOW_EXPONENT)
-#define UX_ZERO_EXPONENT      (- (UX_EXPONENT_TYPE) 1 << (F_EXP_WIDTH + 2))
+#define UX_ZERO_EXPONENT      ((UX_EXPONENT_TYPE) (~((UX_UNSIGNED_EXPONENT_TYPE) 0) << (F_EXP_WIDTH + 2)))
 #define UX_INFINITY_EXPONENT  (-(UX_ZERO_EXPONENT + 1)) 
 
 

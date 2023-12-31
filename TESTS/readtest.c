@@ -1758,8 +1758,8 @@ main(int argc, char* argv[]) {
 
     strcpy(rounding, "half_even");
    
-    const bool sizeLongInt = sizeof(long int);
-    if (sizeLongInt == 8) {
+    const size_t sizeLongInt = sizeof(long int);
+    if (sizeLongInt == 8U) {
         li_size_test = 64;
         li_size_run = 64;
     }
@@ -1769,7 +1769,7 @@ main(int argc, char* argv[]) {
     }
 
     arg = argv + 1;	// point to first command-line parameter
-    while (*arg && **arg == '-') {	// Process all options
+    while ((*arg) && (**arg == '-') && (argc > 0)) {	// Process all options
         if (strcmp(*arg, "-d") == 0)
             debug_opt = 1;
         if (strcmp(*arg, "-ub") == 0)

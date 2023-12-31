@@ -651,7 +651,7 @@ backward_recurrence:
 
         /* if N == n, C2 = K*J(n,x).  Save it for later */
 
-        if (N == order)
+        if (N == ((UX_FRACTION_DIGIT_TYPE) order))
             UX_COPY(C2, unpacked_result);
 
         /* Add to sum if N is even */
@@ -999,7 +999,8 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
 #endif
         }
 
-    if ( op = EXTR_BITS( EVEN_ODD_OP, eval_data) )
+    op = EXTR_BITS(EVEN_ODD_OP, eval_data);
+    if ( op )
         ADDSUB(unpacked_result, unpacked_result + 1, op - 1, unpacked_result);
 
     if ( eval_data & BESSEL_POST_MULTIPLY )

@@ -42,7 +42,7 @@
 
 
 BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_quantum, BID_UINT32, x)
-
+  (void) pfpsf;
   BID_UINT32 res;
   int int_exp;
 

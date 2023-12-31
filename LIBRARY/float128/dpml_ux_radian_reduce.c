@@ -1044,7 +1044,7 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
     TMP_DIGIT = MSD_OF_W;
     quadrant -= MSD_OF_W;
 
-    if ( MSD_OF_W == ((SIGNED_DIGIT_TYPE) MSD_OF_W >> (BITS_PER_DIGIT - 1)) )
+    if (MSD_OF_W == (MSD_OF_W >> (BITS_PER_DIGIT - 1)) )
         {
         MSD_OF_W = SECOND_MSD_OF_W;
         LEFT_SHIFT_W_LOW_DIGITS_BY_ONE(EXTRA_W_DIGIT);

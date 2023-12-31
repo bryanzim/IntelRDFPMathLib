@@ -54,9 +54,9 @@
 #define SUB_INF_FROM_INF	SQRT_OF_NEGATIVE
 
 /******************************************************************************/
-/*
-/* Basic arithmetic operations
-/*
+//
+// Basic arithmetic operations
+//
 /******************************************************************************/
 
 #undef  F_ENTRY_NAME

@@ -294,8 +294,8 @@ UX_LGAMMA(UX_FLOAT * unpacked_argument, int * signgam,
     *signgam = 1 - ((sign >> (BITS_PER_UX_SIGN_TYPE - 2)) & (floor_2x & 2));
 
     if (exponent < 5)
-    { /* | x | < 16
-
+    {
+        /* | x | < 16 */
         /* Set initial product to 1 and get  */
 
         UX_SET_SIGN_EXP_MSD(tmp, 0, 1, UX_MSB);
