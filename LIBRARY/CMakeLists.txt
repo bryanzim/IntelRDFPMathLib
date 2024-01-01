@@ -72,9 +72,9 @@ if (IntelCompiler)
     endif()
 elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     # using Clang
-    #add_compile_options("-Wall")
+    add_compile_options("-Wall")
     add_compile_options("-Wextra")
-    #add_compile_options("-pendantic")
+    #add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # using GCC
     #add_compile_options("-Wall")
