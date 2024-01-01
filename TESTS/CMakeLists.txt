@@ -38,7 +38,7 @@ if (IntelCompiler)
 elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     # using Clang
     add_compile_definitions("_CRT_SECURE_NO_WARNINGS")
-    add_compile_options("-Wall")
+    #add_compile_options("-Wall")
     add_compile_options("-Wextra")
     #add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
