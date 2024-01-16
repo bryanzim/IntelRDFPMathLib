@@ -45,19 +45,19 @@ set(FLOATING_POINT_WRAPPERS OFF)
 
 
 # Add definitions based on options
-if (CALL_BY_REFERENCE)
+if (IDFP_CALL_BY_REFERENCE)
     add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=1")    
 else()
     add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=0")
     set(FLOATING_POINT_WRAPPERS OFF)
 endif()
-if (GLOBAL_ROUNDING)
+if (IDFP_GLOBAL_ROUNDING)
     add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=1")
     set(FLOATING_POINT_WRAPPERS OFF)
 else()
     add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=0")
 endif()
-if (GLOBAL_EXCEPTIONS)
+if (IDFP_GLOBAL_EXCEPTIONS)
     add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=1")
     set(FLOATING_POINT_WRAPPERS OFF)
 else()
@@ -66,26 +66,59 @@ endif()
 
 # Set compiler specific defintions
 if (IntelCompiler)
+    # Using Intel compiler
     add_compile_options("-Qlong-double" "-Qpc80" "-Qstd=c99")
     if (FLOATING_POINT_WRAPPERS)
         add_compile_definitions("__DFP_WRAPPERS_ON=1")
     endif()
 elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    # using Clang
+    # Using Clang
     #add_compile_options("-Wall")
     add_compile_options("-Wno-reserved-identifier")
     add_compile_options("-Wextra")
     #add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    # using GCC
+    # Using GCC
     #add_compile_options("-Wall")
     add_compile_options("-Wextra")
     #add_compile_options("-pendantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    # Using MSVC
     add_compile_options("/W3")
     add_compile_options("/WX")
     add_compile_options("/Zc:__cplusplus")
 else()
+    message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+endif()
+
+# Add debugging info
+if ((CMAKE_BUILD_TYPE STREQUAL "Debug") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
+    if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+        add_compile_options("/Zi")
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        add_compile_options("-g") 
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+        add_compile_options("-g") 
+    else()
+        message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+    endif()
+endif()
+
+# Link with static C/C++ libraries
+if (IDFP_LINK_STATIC_RUNTIME)
+    if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        if (WIN32)
+            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        else()
+            add_compile_options("-static-libstdc++" "-static-libgcc")
+        endif()
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+        add_compile_options("-static-libstdc++" "-static-libgcc")
+    else()
+        message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+    endif()
 endif()
 
 # Add OS specific defintions
@@ -153,7 +186,7 @@ set(BID32_FUNCTIONS
     "bid32_sin"
     "bid32_sinh"
     "bid32_tan"
-# operations
+# Operations
     "bid32_add"
     "bid32_compare"
     "bid32_div"
@@ -198,7 +231,7 @@ set(BID32_FUNCTIONS
     "bid32_to_uint32"
     "bid32_to_uint64"
     "bid32_to_uint8"
- #string operations
+ # String operations
     "strtod32"
     "wcstod32"
    )
@@ -231,7 +264,7 @@ set(BID64_FUNCTIONS
     "bid64_sin"
     "bid64_sinh"
     "bid64_tan"
-# operations
+# Operations
     "bid64_add"
     "bid64_compare"
     "bid64_div"
@@ -274,7 +307,7 @@ set(BID64_FUNCTIONS
     "bid64_to_uint32"
     "bid64_to_uint64"
     "bid64_to_uint8"
- #string operations
+ # String operations
     "strtod64"
     "wcstod64"
    )
@@ -307,7 +340,7 @@ set(BID128_FUNCTIONS
     "bid128_sin"
     "bid128_sinh"
     "bid128_tan"
-# operations
+# Operations
     "bid128"
     "bid128_2_str_tables"
     "bid128_add"
@@ -351,7 +384,7 @@ set(BID128_FUNCTIONS
     "bid128_to_uint32"
     "bid128_to_uint64"
     "bid128_to_uint8"
- #string operations
+ # String operations
     "strtod128"
     "wcstod128"
    )

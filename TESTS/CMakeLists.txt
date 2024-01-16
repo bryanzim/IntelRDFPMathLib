@@ -15,17 +15,17 @@ else()
 endif()
 
 # Add definitions based on options
-if (CALL_BY_REFERENCE)
+if (IDFP_CALL_BY_REFERENCE)
     add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=1")    
 else()
     add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=0")
 endif()
-if (GLOBAL_ROUNDING)
+if (IDFP_GLOBAL_ROUNDING)
     add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=1")
 else()
     add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=0")
 endif()
-if (GLOBAL_EXCEPTIONS)
+if (IDFP_GLOBAL_EXCEPTIONS)
     add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=1")
 else()
     add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=0")
@@ -33,25 +33,58 @@ endif()
 
 # Set compiler specific defintions
 if (IntelCompiler)
+    # Using Intel compiler
     add_compile_options("-Qoption,cpp,--extended_float_types")
     add_compile_options("-Qlong-double" "-Qpc80" "-Qstd=c99")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    # using Clang
+    # Using Clang
     add_compile_definitions("_CRT_SECURE_NO_WARNINGS")
     #add_compile_options("-Wall")
     add_compile_options("-Wextra")
     #add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    # using GCC
+    # Using GCC
     #add_compile_options("-Wall")
     add_compile_options("-Wextra")
     #add_compile_options("-pedantic")
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    # Using MSVC
     add_compile_definitions("_CRT_SECURE_NO_WARNINGS")
     add_compile_options("/W3")
     add_compile_options("/WX")
     add_compile_options("/Zc:__cplusplus")
 else()
+    message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+endif()
+
+# Add debugging info
+if ((CMAKE_BUILD_TYPE STREQUAL "Debug") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
+    if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+        add_compile_options("/Zi")
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        add_compile_options("-g") 
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+        add_compile_options("-g") 
+    else()
+        message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+    endif()
+endif()
+
+# Link with static C/C++ libraries
+if (IDFP_LINK_STATIC_RUNTIME)
+    if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        if (WIN32)
+            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        else()
+            add_compile_options("-static-libstdc++" "-static-libgcc")
+        endif()
+    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+        add_compile_options("-static-libstdc++" "-static-libgcc")
+    else()
+        message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+    endif()
 endif()
 
 # Add OS specific defintions
