@@ -46,16 +46,14 @@ else()
 endif()
 
 # Add debugging info
-if ((CMAKE_BUILD_TYPE STREQUAL "Debug") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
-    if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-        add_compile_options("/Zi")
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-        add_compile_options("-g") 
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-        add_compile_options("-g") 
-    else()
-        message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
-    endif()
+if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:/Zi>")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:-g>")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:-g>")
+else()
+    message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
 endif()
 
 # Link with static C/C++ libraries
@@ -75,6 +73,21 @@ if (IDFP_LINK_STATIC_RUNTIME)
     endif()
 endif()
 
+# Enable static flag
+if (NOT BUILD_SHARED_LIBS)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        if (WIN32)
+        else()
+            add_compile_options("-static")
+        endif()
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options("-static")
+    else()
+        message(FATAL_ERROR "Unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+endif()
+
 # Add OS specific defintions
 if (UNIX AND APPLE)
     add_compile_definitions("LINUX")
@@ -90,23 +103,29 @@ endif()
 
 # Create Example Headers
 set(EXAMPLE_HEADERS
-    "decimal.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h"
    )
 
 # Create Examnple Source
 set(EXAMPLE_SOURCES
-    "main.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.c"
    )
 
-# Copy the files once during CMake generation
-execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-                        "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h_${BIT2}${BIT1}${BIT0}"
-                        "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h"
-               )
-execute_process(COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-                        "${CMAKE_CURRENT_SOURCE_DIR}/main.c_${BIT2}${BIT1}${BIT0}"
-                        "${CMAKE_CURRENT_SOURCE_DIR}/main.c"
-               )     
+set(EXAMPLE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h_${BIT2}${BIT1}${BIT0}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/main.c_${BIT2}${BIT1}${BIT0}"
+   )
+
+# Create files if necessary
+add_custom_command(OUTPUT ${EXAMPLE_HEADERS} ${EXAMPLE_SOURCES}
+                   COMMAND "${CMAKE_COMMAND}" ARGS "-E" "copy_if_different"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h_${BIT2}${BIT1}${BIT0}"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h"
+                   COMMAND "${CMAKE_COMMAND}" ARGS "-E" "copy_if_different"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/main.c_${BIT2}${BIT1}${BIT0}"
+                           "${CMAKE_CURRENT_SOURCE_DIR}/main.c"
+                   DEPENDS ${EXAMPLE_DEPENDS}
+                  )     
 
 # Create Example Executable
 add_executable(IntelDFPExample ${EXAMPLE_HEADERS} ${EXAMPLE_SOURCES})
@@ -124,5 +143,5 @@ set_target_properties(IntelDFPExample PROPERTIES
 
 # Add a test for the example
 add_test(NAME IntelDFPExample
-         COMMAND IntelDFPExample
+         COMMAND "$<TARGET_FILE:IntelDFPExample>"
         )

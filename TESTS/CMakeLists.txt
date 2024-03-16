@@ -58,16 +58,14 @@ else()
 endif()
 
 # Add debugging info
-if ((CMAKE_BUILD_TYPE STREQUAL "Debug") OR (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
-    if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-        add_compile_options("/Zi")
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-        add_compile_options("-g") 
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-        add_compile_options("-g") 
-    else()
-        message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
-    endif()
+if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:/Zi>")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:-g>")
+elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:-g>")
+else()
+    message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
 endif()
 
 # Link with static C/C++ libraries
@@ -84,6 +82,21 @@ if (IDFP_LINK_STATIC_RUNTIME)
         add_compile_options("-static-libstdc++" "-static-libgcc")
     else()
         message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+    endif()
+endif()
+
+# Enable static flag
+if (NOT BUILD_SHARED_LIBS)
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        if (WIN32)
+        else()
+            add_compile_options("-static")
+        endif()
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options("-static")
+    else()
+        message(FATAL_ERROR "Unsupported compiler ${CMAKE_CXX_COMPILER_ID}")
     endif()
 endif()
 
@@ -133,14 +146,10 @@ add_custom_command(TARGET IntelDFPTest POST_BUILD
                            "${CMAKE_BINARY_DIR}/bin/readtest.in"
                   )
 
-# Build executable name
-set(TEST_EXECUTABLE "IntelDFPTest")
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(TEST_EXECUTABLE "${TEST_EXECUTABLE}d")
-endif()
-
 # Add a test
 set(TEST_PATH "${CMAKE_BINARY_DIR}/bin")
 add_test(NAME IntelDFPTest
-         COMMAND "${CMAKE_COMMAND}" "-DTEST_PATH=${TEST_PATH}" "-DTEST_EXE=${TEST_EXECUTABLE}${CMAKE_EXECUTABLE_SUFFIX}" -P "${CMAKE_CURRENT_SOURCE_DIR}/test.cmake"
+         COMMAND "${CMAKE_COMMAND}" ARGS "-DTEST_PATH=$<TARGET_FILE_DIR:IntelDFPTest>"
+                 "-DTEST_EXE=$<TARGET_FILE_NAME:IntelDFPTest>" 
+                 "-P" "${CMAKE_CURRENT_SOURCE_DIR}/test.cmake"
         )
