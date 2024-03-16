@@ -13,6 +13,10 @@ endif()
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+if (MSVC)
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON) # turn on folder hierarchies
+endif()
+
 # Define options
 option(IDFP_CALL_BY_REFERENCE 
        "Whether to pass function arguments and return values by reference or value" OFF)
