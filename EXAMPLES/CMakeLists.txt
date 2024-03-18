@@ -28,19 +28,23 @@ endif()
 # Set compiler specific defintions
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
     # Using Clang
-    #add_compile_options("-Wall")
-    add_compile_options("-Wextra")
-    #add_compile_options("-pedantic")
+    add_compile_options(#"-Wall"
+                        "-Wextra"
+                        #"-pedantic"
+                        "-Wno-error=unused-command-line-argument"
+                       )
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # Using GCC
-    #add_compile_options("-Wall")
-    add_compile_options("-Wextra")
-    #add_compile_options("-pedantic")
+    add_compile_options(#"-Wall"
+                        "-Wextra"
+                        #"-pedantic"
+                       )
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     # Using MSVC
-    add_compile_options("/W3")
-    add_compile_options("/WX")
-    add_compile_options("/Zc:__cplusplus")
+    add_compile_options("/W3"
+                        "/WX"
+                        "/Zc:__cplusplus"
+                       )
 else()
     message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
 endif()
@@ -64,10 +68,12 @@ if (IDFP_LINK_STATIC_RUNTIME)
         if (WIN32)
             set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
         else()
-            add_compile_options("-static-libstdc++" "-static-libgcc")
+            add_compile_options("-static-libstdc++")
+            # add_compile_options("-lstdc++")
         endif()
     elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
         add_compile_options("-static-libstdc++" "-static-libgcc")
+        # add_compile_options("-lstdc++" "-lgcc")
     else()
         message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
     endif()
