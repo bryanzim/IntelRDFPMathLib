@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_INV_HYPER_X_H
+#define DPML_INV_HYPER_X_H
+
 #include "endian.h"
 
 
@@ -60,3 +63,5 @@
 #define	SQRT_2_M1_SQR			*((UX_FRACTION_DIGIT_TYPE *) ((char *) TABLE_NAME + 56))
 #define	UX_ONE				((UX_FLOAT *) ((char *) TABLE_NAME + 64))
 #define	UX_LN2				((UX_FLOAT *) ((char *) TABLE_NAME + 88))
+
+#endif

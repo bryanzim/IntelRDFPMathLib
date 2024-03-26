@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_MOD_X_H
+#define DPML_MOD_X_H
+
 #include "endian.h"
 
 
@@ -94,3 +97,5 @@
 #define	D_TWO_POW_78		*((double *) ((char *) __mod_x_table + 288))
 #define	D_TWO_POW_Km53		*((double *) ((char *) __mod_x_table + 296))
 #define	D_TWO_POW_2Km1		*((double *) ((char *) __mod_x_table + 304))
+
+#endif

@@ -27,10 +27,10 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-#include"architecture.h"
-
 #ifndef ENDIAN_H
 #define ENDIAN_H
+
+#include "architecture.h"
 
 #define big_endian	1
 #define little_endian	0

@@ -27,7 +27,8 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-#ifndef ASSERT
+#ifndef ASSERT_H
+#define ASSERT_H
 
 
 #if (defined(DPML_DEBUG) && DPML_DEBUG)

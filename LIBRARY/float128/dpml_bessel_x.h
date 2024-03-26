@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_BESSEL_X_H
+#define DPML_BESSEL_X_H
+
 #include "endian.h"
 
 
@@ -1520,3 +1523,5 @@
 #define BESSEL_TABLE_DATA_MAP	(TABLE_DATA_MAP *)((char *) TABLE_NAME + 19544)
 #define	UX_TWO_OVER_PI	((UX_FLOAT *) ((char *) TABLE_NAME + 19640))
 #define	UX_TWO_LN2_OVER_PI	((UX_FLOAT *) ((char *) TABLE_NAME + 19664))
+
+#endif

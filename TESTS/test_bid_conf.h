@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef TEST_BID_CONF_H
+#define TEST_BID_CONF_H
+
 #if defined(__cplusplus) 
 #define BID_EXTERN_C extern "C" 
 #else 
@@ -1682,3 +1685,4 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
                    }
 #endif
 
+#endif

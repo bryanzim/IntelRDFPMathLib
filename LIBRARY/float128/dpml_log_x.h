@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_LOG_X_H
+#define DPML_LOG_X_H
+
 #include "endian.h"
 
 
@@ -97,3 +100,5 @@
 #define	UX_TWO	((UX_FLOAT *) ((char *) TABLE_NAME + 424))
 #define	LN_2	((UX_FLOAT *) ((char *) TABLE_NAME + 448))
 #define	LOG10_2	((UX_FLOAT *) ((char *) TABLE_NAME + 472))
+
+#endif

@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_LOG2_T_H
+#define DPML_LOG2_T_H
+
 #include "endian.h"
 
 
@@ -261,4 +264,6 @@
 #define T2_64  (WORD) 0x3ff1380000000000  
 #define T1_32  (WORD) 0x3fed9000  
 #define T2_32  (WORD) 0x3ff13800  
-#define T2_MINUS_T1    (T2 - T1) 
+#define T2_MINUS_T1    (T2 - T1)
+
+#endif

@@ -27,6 +27,7 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#include <math.h>
 
 #include "bid_trans.h"
 

@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_CONS_X_H
+#define DPML_CONS_X_H
+
 #include "endian.h"
 
 
@@ -62,5 +65,7 @@
     /* 08 */ DATA_4R( 0x00000000, 0x00000000, 0x00000000, 0x40066800 ),
     /* 09 */ DATA_4R( 0x00000000, 0x00000000, 0x00000000, 0x7fff0000 ),
     };
+
+#endif
 
 #endif

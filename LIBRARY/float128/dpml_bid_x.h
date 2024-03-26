@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_BID_X_H
+#define DPML_BID_X_H
+
 #include "endian.h"
 
 
@@ -124,3 +127,5 @@
 #define	D_SEVEN_EIGHTS	*((double *) ((char *) TABLE_NAME + 344))
 #define	D_THREE_EIGHTS	*((double *) ((char *) TABLE_NAME + 352))
 #define	UX_THREE			((UX_FLOAT *) ((char *) TABLE_NAME + 360))
+
+#endif

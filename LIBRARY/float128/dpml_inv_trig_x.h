@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_INV_TRIG_X_H
+#define DPML_INV_TRIG_X_H
+
 #include "endian.h"
 
 
@@ -180,3 +183,5 @@
 #define	ATAN_COEF_ARRAY_DEGREE		(( signed long long ) 0x000000000000000b )
 #define	ASIN_COEF_ARRAY			((FIXED_128 *) ((char *) TABLE_NAME + 912))
 #define	ASIN_COEF_ARRAY_DEGREE		(( signed long long ) 0x000000000000000b )
+
+#endif

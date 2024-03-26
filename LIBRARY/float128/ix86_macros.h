@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef IX86_MACROS_H
+#define IX86_MACROS_H
+
 #include <float.h>
 
 
@@ -538,4 +541,4 @@ down will make the combination faster, go ahead and do it.  */
     ( carry_out )= v >> ( BITS_PER_DIGIT / 2 ) ; \
     }
 
-
+#endif

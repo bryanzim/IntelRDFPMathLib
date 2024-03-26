@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_ERROR_CODES_ENUM_H
+#define DPML_ERROR_CODES_ENUM_H
+
 #define	M_ACOS	0
 #define	M_ACOSD	1
 #define	M_ACOSH	2
@@ -286,3 +289,5 @@
 #define	FMA_INF_AND_ZERO	176
 #define	FMA_INF_AND_INF	177
 #define	LAST_ERROR_CODE	178
+
+#endif

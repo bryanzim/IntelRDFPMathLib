@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_TRIG_X_H
+#define DPML_TRIG_X_H
+
 #include "endian.h"
 
 
@@ -165,3 +168,5 @@
 #define	TANCOT_COEF_ARRAY		((FIXED_128 *) ((char *) TABLE_NAME + 736))
 #define	TANCOT_COEF_ARRAY_DEGREE	(( signed __int64 ) 0x0000000000000007 )
 #define	UX_PI_OVER_FOUR	((UX_FLOAT *) ((char *) TABLE_NAME + 1008))
+
+#endif
