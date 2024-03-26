@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_POW_X_H
+#define DPML_POW_X_H
+
 #include "endian.h"
 
 
@@ -149,3 +152,5 @@
 #define	POW_LOG2_COEF_ARRAY_DEGREE	(( signed __int64 ) 0x0000000000000011 )
 #define	POW2_COEF_ARRAY			((FIXED_128 *) ((char *) __pow_x_table + 672))
 #define	POW2_COEF_ARRAY_DEGREE		(( signed __int64 ) 0x0000000000000016 )
+
+#endif

@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_LGAMMA_T_H
+#define DPML_LGAMMA_T_H
+
 #include "endian.h"
 
 
@@ -78,3 +81,5 @@
 #define	PHI_COEFS	((double *) ((char *)__lgamma_t_table + 152))
 #define PHI(a,u)         u = a*a; u = a*POLY6(PHI_COEFS, u)
 #define Q(x)             (POLY6(P_COEFS, x)/POLY6(Q_COEFS, x))
+
+#endif

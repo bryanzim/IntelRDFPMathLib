@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_INT_X_H
+#define DPML_INT_X_H
+
 #include "endian.h"
 
 
@@ -53,3 +56,5 @@
 #define	FLOOR_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 0))
 #define	CEIL_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 8))
 #define	TRUNC_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 16))
+
+#endif

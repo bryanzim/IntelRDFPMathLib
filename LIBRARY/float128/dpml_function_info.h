@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_FUNCTION_INFO_H
+#define DPML_FUNCTION_INFO_H
+
 #define __INTEGER		0
 #define	__FLOAT			1
 #define __COMPLEX		2
@@ -141,3 +144,5 @@
     GEN_FUNC_INFO(FMIN,         F_FF,    Unspecified )
     GEN_FUNC_INFO(FMA,          F_FF,    Unspecified )
     GEN_FUNC_INFO( NANFUNC,     F_F,     Unspecified )
+
+#endif

@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_UX_32_64_H
+#define DPML_UX_32_64_H
+
 #define AS_DIGIT(p,n)	(((UX_FRACTION_DIGIT_TYPE *)(p))[n])
 
 #if BITS_PER_WORD == 32
@@ -154,3 +157,4 @@
 
 #endif
 
+#endif

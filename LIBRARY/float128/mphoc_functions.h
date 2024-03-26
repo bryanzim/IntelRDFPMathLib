@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef MPHOC_FUNCTIONS_H
+#define MPHOC_FUNCTIONS_H
+
 complementary_rnd_mode[MP_RM] = MP_RP;
 complementary_rnd_mode[MP_RP] = MP_RM;
 complementary_rnd_mode[MP_RZ] = MP_RZ;
@@ -192,3 +195,5 @@ function ffs(x)
         }
     return 1-i;
     }
+
+#endif

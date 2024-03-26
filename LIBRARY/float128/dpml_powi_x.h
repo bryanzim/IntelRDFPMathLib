@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_POWI_X_H
+#define DPML_POWI_X_H
+
 #include "endian.h"
 
 
@@ -69,3 +72,5 @@
 #define ZERO_EXPONENT_RETURN_ERROR_INDEX	4
 #define POS_EXPONENT_INDEX			5
 #define EXPONENT_INDEX_FIELD_WIDTH		3
+
+#endif

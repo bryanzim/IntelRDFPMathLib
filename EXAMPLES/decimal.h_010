@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DECIMAL_H
+#define DECIMAL_H
+
 // 010:
 // 0 arguments passed by value (except fpsf)
 // 1 rounding mode passed in global variable
@@ -108,4 +111,6 @@ Decimal128 __bid128_mul (
 #else
 #define HIGH_128W 1
 #define LOW_128W  0
+#endif
+
 #endif

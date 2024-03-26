@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_POW_H
+#define DPML_POW_H
+
 #if ANSI_C_DEF
 
 #   define IF_ANSI_C(x)	x
@@ -154,4 +157,6 @@
                 u32 = ((u32 >> 16) | (u32 << 16));	\
                 i = (WORD) ((INT_32) u32);		\
                 } 
+#endif
+
 #endif

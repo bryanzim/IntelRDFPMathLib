@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_CRBT_X_H
+#define DPML_CRBT_X_H
+
 #include "endian.h"
 
 
@@ -67,3 +70,4 @@
     +x*(COEFS[4]+x*COEFS[5])))))
 # define RECIP_CBRT_POLY SELECT_POLY(RECIP_CBRT_POLY_)
 
+#endif

@@ -3,6 +3,7 @@
 
 # Ignore Build Directories
 out/**
+build/**
 
 # Ignore copied files
 EXAMPLES/decimal.h

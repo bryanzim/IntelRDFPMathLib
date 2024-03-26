@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_EXP_X_H
+#define DPML_EXP_X_H
+
 #include "endian.h"
 
 
@@ -175,3 +178,5 @@
 #define	EXP10_CONSTANT_TABLE_ADDRESS	((UX_FRACTION_DIGIT_TYPE *) ((char *) TABLE_NAME + 520))
 #define	SINHCOSH_COEF_ARRAY		((FIXED_128 *) ((char *) TABLE_NAME + 952))
 #define	SINHCOSH_COEF_ARRAY_DEGREE	(( signed __int64 ) 0x000000000000000b )
+
+#endif

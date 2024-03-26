@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_ACOSH_T_H
+#define DPML_ACOSH_T_H
+
 #include "endian.h"
 
 
@@ -54,3 +57,4 @@ static const TABLE_UNION log_2[] = {
         DATA_1x2( 0xfefa39ef, 0x3fe62e42 ) 
 };
 
+#endif

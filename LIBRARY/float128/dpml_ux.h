@@ -27,7 +27,7 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-#if !defined(DPML_UX_H)
+#ifndef DPML_UX_H
 #define DPML_UX_H
 
 #if !defined(X_FLOAT)

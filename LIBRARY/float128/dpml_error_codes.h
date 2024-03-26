@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_ERROR_CODES_H
+#define DPML_ERROR_CODES_H
+
 #define RESPONSE_TABLE      __dpml_response_table
 static const DPML_EXCEPTION_RESPONSE RESPONSE_TABLE[] = {
     /* 0 */ {0, 1, 1, 1, 0},
@@ -208,3 +211,5 @@ static const DPML_EXCEPTION_RESPONSE RESPONSE_TABLE[] = {
     /* 176 */ {75, 1, 1, 1, 0},
     /* 177 */ {75, 1, 1, 1, 0},
     };
+
+#endif

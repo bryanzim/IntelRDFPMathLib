@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_LGAMMA_X_H
+#define DPML_LGAMMA_X_H
+
 #include "endian.h"
 
 
@@ -115,3 +118,5 @@
 #define	LGAMMA_P_COEF_ARRAY_DEGREE	(( signed __int64 ) 0x000000000000000e )
 #define	LGAMMA_PHI_COEF_ARRAY		((FIXED_128 *) ((char *) TABLE_NAME + 696))
 #define	LGAMMA_PHI_COEF_ARRAY_DEGREE	(( signed __int64 ) 0x0000000000000007 )
+
+#endif

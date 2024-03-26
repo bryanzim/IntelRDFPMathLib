@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_ERF_T_H
+#define DPML_ERF_T_H
+
 #include "endian.h"
 
 
@@ -116,3 +119,5 @@
 #define ERF_MIN_CONSTANT_ARG	0x4017afb48dc96626
 #define MIN_ASYMTOTIC_ARG	0x4017afb48dc96626
 #define MIN_UNDERFLOW_ARG	0x403b58df9656ccc3
+
+#endif

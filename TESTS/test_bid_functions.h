@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef TEST_BID_FUNCTIONS_H
+#define TEST_BID_FUNCTIONS_H
+
 #if defined(__cplusplus)
 #define BID_EXTERN_C extern "C"
 #else
@@ -5248,3 +5251,4 @@ int bid_fetestexcept( int excepts _EXC_FLAGS_PARAM );
 
 #endif
 
+#endif

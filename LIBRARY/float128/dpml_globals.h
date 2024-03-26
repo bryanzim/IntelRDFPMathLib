@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_GLOBALS_H
+#define DPML_GLOBALS_H
+
 #include "endian.h"
 
 
@@ -118,3 +121,5 @@
 #define	NEG_ULP_FACTOR	GLOBAL(NEG_ULP_FACTOR_INDEX)
 #define	POS_ONE	GLOBAL(POS_ONE_INDEX)
 #define	NEG_ONE	GLOBAL(NEG_ONE_INDEX)
+
+#endif

@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_ERF_X_H
+#define DPML_ERF_X_H
+
 #include "endian.h"
 
 
@@ -153,3 +156,5 @@
 #define	MID_DEN_COEF_ARRAY_DEGREE	(( signed __int64 ) 0x0000000000000011 )
 #define	MID_DEN_SCALE_BIAS		(( signed __int64 ) 0x0000000000000005 )
 #define	MID_DEN_SCALE_MASK		(( signed __int64 ) 0x0000000000000007 )
+
+#endif

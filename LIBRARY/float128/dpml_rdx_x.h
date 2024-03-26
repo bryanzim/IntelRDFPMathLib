@@ -27,6 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
+#ifndef DPML_RDX_X_H
+#define DPML_RDX_X_H
+
 #if !defined FOUR_OVER_PI_BUILD_FILE_NAME
 #define FOUR_OVER_PI_BUILD_FILE_NAME	dpml_four_over_pi.c
 #endif
@@ -101,4 +104,4 @@
     g1 = g0; \
     g0 = extra_w_digit
 
-
+#endif

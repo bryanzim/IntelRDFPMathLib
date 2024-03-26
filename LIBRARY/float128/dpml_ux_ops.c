@@ -28,6 +28,8 @@
 ******************************************************************************/
 
 #include <stdio.h>
+
+
 /* File: dpml_ux_ops.c */
 /*
 **  Facility:
@@ -51,9 +53,11 @@
 **
 */
 
-#include "dpml_ux.h"
-
 /* Pick up packed constant table */
+
+#define BUILD_UX_CONS_TABLE
+
+#include "dpml_ux.h"
 
 #undef  INSTANTIATE_TABLE
 #undef  INSTANTIATE_DEFINES
