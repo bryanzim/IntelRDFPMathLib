@@ -1,6 +1,9 @@
 # Ignore Visual Studio Products
 .vs/**
 
+# Ignode VS Code Products
+.cache/**
+
 # Ignore Build Directories
 out/**
 build/**
