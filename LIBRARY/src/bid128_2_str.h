@@ -35,5 +35,5 @@ BID_EXTERN_C BID_UINT32 bid_Tento9;
 BID_EXTERN_C BID_UINT32 bid_Tento6;
 BID_EXTERN_C BID_UINT32 bid_Tento3;
 
-BID_EXTERN_C const char bid_midi_tbl[1000][3];
+BID_EXTERN_C const char bid_midi_tbl[1000][4];
 BID_EXTERN_C const BID_UINT64 mod10_18_tbl[9][128];
