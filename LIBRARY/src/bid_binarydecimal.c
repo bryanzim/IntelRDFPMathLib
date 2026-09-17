@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2018, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -59,7 +59,7 @@ void bid128_to_binary128_2part(BINARY128 *res_hi,BINARY128 *res_lo,BID_UINT128 x
   (((n) & ~CLZ32_MASK2) ? 0 : 2) +                              \
   (((n) & ~CLZ32_MASK1) ? 0 : 1))
 
-#define ctz32(n) (((n) == 0) ? 32 : ctz32_1bit((n) & -((BID_SINT32) n)))
+#define ctz32(n) (((n) == 0) ? 32 : ctz32_1bit((n) & ((BID_UINT32)0 - (BID_UINT32)(n))))
 
 // Counting leading zeros in an unsigned 64-bit word
 // The "_nz" version will return the wrong answer (63) for zero inputs
@@ -92,7 +92,7 @@ void bid128_to_binary128_2part(BINARY128 *res_hi,BINARY128 *res_lo,BID_UINT128 x
   (((n) & ~CLZ64_MASK2) ? 0 : 2) +                              \
   (((n) & ~CLZ64_MASK1) ? 0 : 1))
 
-#define ctz64(n) (((n) == 0) ? 64 : ctz64_1bit((n) & -((BID_SINT64) n)))
+#define ctz64(n) (((n) == 0) ? 64 : ctz64_1bit((n) & ((BID_UINT64)0 - (BID_UINT64)(n))))
 
 // Counting leading zeros in an unsigned 2-part 128-bit word
 
@@ -115,7 +115,8 @@ void bid128_to_binary128_2part(BINARY128 *res_hi,BINARY128 *res_lo,BID_UINT128 x
 
 #define sll128(hi,lo,c)                                         \
   (((c) == 0) ? hi = hi, lo = lo :                              \
-  (((c) >= 64) ? hi = lo << ((c) - 64), lo = 0 : sll128_short(hi,lo,c)))
+  (((c) >= 128) ? hi = 0, lo = 0 :                              \
+  (((c) >= 64) ? hi = lo << ((c) - 64), lo = 0 : sll128_short(hi,lo,c))))
 
 // Shift 2-part 2^64 * hi + lo right by "c" bits
 // The "short" form requires a shift 0 < c < 64 and will be faster
@@ -128,7 +129,8 @@ void bid128_to_binary128_2part(BINARY128 *res_hi,BINARY128 *res_lo,BID_UINT128 x
 
 #define srl128(hi,lo,c)                                         \
   (((c) == 0) ? hi = hi, lo = lo :                              \
-  (((c) >= 64) ? lo = hi >> ((c) - 64), hi = 0 : srl128_short(hi,lo,c)))
+  (((c) >= 128) ? hi = 0, lo = 0 :                              \
+  (((c) >= 64) ? lo = hi >> ((c) - 64), hi = 0 : srl128_short(hi,lo,c))))
 
 // Shift 4-part 2^196 * x3 + 2^128 * x2 + 2^64 * x1 + x0
 // right by "c" bits (must have c < 64)
@@ -306,7 +308,7 @@ BID_BINARY80BID_LDOUBLE;
    x_out.i.lo3 = ((c)&0xffff0000) >> 16;            \
    x_out.i.lo2 = ((c)&0xffff00000000ull) >> 32;     \
    x_out.i.lo1 = ((c)&0xffff000000000000ull) >> 48; \
-   x_out.i.hi = ((s) << 15) +                       \
+   x_out.i.hi = (((BID_UINT64)(s)) << 15) +         \
                 (e);                                \
    *pres = x_out.f;                                 \
    return;                                          \
@@ -144046,6 +144048,13 @@ bid32_to_binary32 (BID_UINT32 x
       c_prov = 1ull << 23;
       e_out = e_out + 1;
     }
+#if BINARY_TINY_DETECTION_AFTER_ROUNDING
+    else if ((c_prov == (1ull << 23)) && (e_out == 1)) {
+      if ((((rnd_mode & 3) == 0) && (z.w[4] < (3ull << 62))) ||
+          ((rnd_mode + (s & 1) == 2) && (z.w[4] < (1ull << 63))))
+        __set_status_flags(pfpsf,BID_UNDERFLOW_EXCEPTION);
+    }
+#endif
   }
 // Check for overflow
 

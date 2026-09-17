@@ -16,6 +16,12 @@ else()
     SET(USE_COMPILER_F80_TYPE OFF)
 endif()
 
+# Intel 2.0 Update 3: disable 80-bit binary paths on ARM, where long double
+# is not Intel 80-bit extended precision.
+if (CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm|ARM|aarch64|AARCH64)")
+    add_compile_definitions("__NO_BINARY80__")
+endif()
+
 # Set floating point 80 bit definitions
 if (USE_COMPILER_F80_TYPE)
     add_compile_definitions("USE_COMPILER_F80_TYPE=1")

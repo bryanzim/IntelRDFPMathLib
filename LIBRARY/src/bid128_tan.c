@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2018, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -12496,17 +12496,15 @@ BID128_FUNCTION_ARG1 (bid128_tan, x)
 // since no range reduction is needed and the function is well-conditioned
 
   if (e < -35) {
-      if (e < -52)
-      {
-          BIDECIMAL_CALL3(bid128_fma, res, x, BID128_10PP40, x);
-          BID_RETURN(res);
+     if (e < -52)
+      { BIDECIMAL_CALL3(bid128_fma,res,x,BID128_10PP40,x);
+        BID_RETURN(res);
       }
-      else
-      {
-          BIDECIMAL_CALL1(bid128_to_binary128, xd, x);
-          __bid_f128_tan(yd, xd);
-          BIDECIMAL_CALL1(binary128_to_bid128, res, yd);
-          BID_RETURN(res);
+     else
+      { BIDECIMAL_CALL1(bid128_to_binary128,xd,x);
+        __bid_f128_tan(yd, xd);
+        BIDECIMAL_CALL1(binary128_to_bid128,res,yd);
+        BID_RETURN(res);
       }
   }
 
@@ -12582,6 +12580,7 @@ BID128_FUNCTION_ARG1 (bid128_tan, x)
   { case 0: case 2: __bid_f128_tan(yd, xd); break;
     case 1: case 3: __bid_f128_tan(yd, xd);
                     __bid_f128_div(yd, c_neg_one.v, yd); break;
+    default: break; // default added to avoid compiler warning
   }
 
   BIDECIMAL_CALL1(binary128_to_bid128,res,yd);

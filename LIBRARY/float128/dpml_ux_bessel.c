@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2018, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -186,7 +186,7 @@ UX_ASYMPTOTIC_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
     UX_SINCOS(
         unpacked_argument,
         1 - kind - 2*order,
-    SINCOS_FUNC,
+	SINCOS_FUNC,
         &tmp[2]);
 
     /* Now multiply the results */
@@ -414,7 +414,7 @@ static void UX_BESSEL( UX_FLOAT *, WORD, WORD, UX_FLOAT *);
 
 extern S_TYPE S_LOG2_NAME( S_TYPE );
 
-    
+	
 static void
 UX_LARGE_ORDER_BESSEL(
   UX_FLOAT * unpacked_argument,
@@ -481,7 +481,7 @@ UX_LARGE_ORDER_BESSEL(
 
         f_hi = G_UX_MSD(unpacked_argument);
         N = f_hi >> (BITS_PER_UX_FRACTION_DIGIT_TYPE - n_exponent);
-        if ((0 < exp_diff) || ((0 == exp_diff) && (((WORD) N) < order)))
+        if ((0 < exp_diff) || ((0 == exp_diff) && (N < order)))
             goto backward_recurrence;
         }
 
@@ -519,7 +519,7 @@ UX_LARGE_ORDER_BESSEL(
         C1 = C2;
         C2 = save;
 
-    f_hi = G_UX_MSD(&twice_n) + incr;
+	f_hi = G_UX_MSD(&twice_n) + incr;
         if (f_hi < incr)
             { /* carry out occurred on the addition */
             UX_INCR_EXPONENT(&twice_n, 1);
@@ -562,7 +562,7 @@ backward_recurrence:
     */
 
 #   define MSD_TO_FLOAT(p) \
-        (float)(( UX_SIGNED_FRACTION_DIGIT_TYPE) (G_UX_MSD(p) >> 1))
+		(float)(( UX_SIGNED_FRACTION_DIGIT_TYPE) (G_UX_MSD(p) >> 1))
 #   define SCALE_DOWN	((float) 1./ S_POW_2(BITS_PER_UX_FRACTION_DIGIT_TYPE - 1))
 
     fx = MSD_TO_FLOAT(unpacked_argument);
@@ -595,16 +595,16 @@ backward_recurrence:
 
     A = S_LOG2_NAME(fx) + (float) (exponent - BITS_PER_UX_FRACTION_DIGIT_TYPE)
           + R_LOG2;
-    B = ((((float) F_PRECISION + 1) + R_LOG2) - .5f*A)
-          - (forder + .5f)*(A - log2_n);
+    B = ((((float) F_PRECISION + 1) + R_LOG2) - .5*A)
+          - (forder + .5)*(A - log2_n);
 
     /* Iterate three times to get a good approximation to N */
 
     for (i = 3; i > 0; i--)
         {
         ftmp = S_LOG2_NAME( fN );
-        ftmp = (B + 5.0f*ftmp)/(ftmp - A);
-        fN = .5f*(fN + ftmp);
+        ftmp = (B + 5.*ftmp)/(ftmp - A);
+        fN = .5*(fN + ftmp);
         }
 
     /*
@@ -612,7 +612,7 @@ backward_recurrence:
     */
 
     N = (UX_FRACTION_DIGIT_TYPE) (fN + 9.99999940395355224609375e-1);
-    N =  (((WORD) N) < (order + 1) ) ? (order + 1) : N;
+    N =  (N < (order + 1) ) ? (order + 1) : N;
 
     /*
     ** We want to compute C(k-1,x) = (2k/x)*C(k,x) - C(k+1,x)
@@ -651,7 +651,7 @@ backward_recurrence:
 
         /* if N == n, C2 = K*J(n,x).  Save it for later */
 
-        if (N == ((UX_FRACTION_DIGIT_TYPE) order))
+        if (N == order)
             UX_COPY(C2, unpacked_result);
 
         /* Add to sum if N is even */
@@ -668,7 +668,7 @@ backward_recurrence:
 
         /* decrement twice_n by  2 */
 
-    f_hi = G_UX_MSD(&twice_n) - incr;
+	f_hi = G_UX_MSD(&twice_n) - incr;
         if (f_hi < UX_MSB)
             { /* borrow from MSB on the subtraction */
             UX_DECR_EXPONENT(&twice_n, 1);
@@ -697,7 +697,7 @@ return_exception:
         exponent,
         UX_MSB);
     }
-        
+	    
 /* 
 ** 2.3 POLYNOMIAL RANGE FOR ORDER LESS THAN 2
 ** ------------------------------------------
@@ -756,18 +756,18 @@ return_exception:
 */
 
 typedef struct {
-    UX_FRACTION_DIGIT_TYPE extrema;
+	UX_FRACTION_DIGIT_TYPE extrema;
         WORD                   eval_data;
 #       if (BITS_PER_WORD < 64)
             WORD                   eval_data_hi;
 #       endif
-    UX_FRACTION_DIGIT_TYPE zero[2*NUM_UX_FRACTION_DIGITS];
-    FIXED_128              coefficients[1];
-    } INTERVAL_DATA;
+	UX_FRACTION_DIGIT_TYPE zero[2*NUM_UX_FRACTION_DIGITS];
+	FIXED_128              coefficients[1];
+	} INTERVAL_DATA;
 
 #define FIXED_BITS_PER_INTERVAL_DATA \
-        ((2*NUM_UX_FRACTION_DIGITS + 1)*BITS_PER_UX_FRACTION_DIGIT_TYPE \
-          + __NUM_WORDS * BITS_PER_WORD)
+	    ((2*NUM_UX_FRACTION_DIGITS + 1)*BITS_PER_UX_FRACTION_DIGIT_TYPE \
+	      + __NUM_WORDS * BITS_PER_WORD)
 
 #define OFFSET_POS	32
 #define OFFSET_WIDTH	10
@@ -802,10 +802,10 @@ typedef struct {
 
 
 typedef struct {
-    UX_FRACTION_DIGIT_TYPE min_asymptotic_value;
-    WORD                   interval_data_offset;
-    WORD                   asymptotic_coef_offset;
-    } TABLE_DATA_MAP;
+	UX_FRACTION_DIGIT_TYPE min_asymptotic_value;
+	WORD                   interval_data_offset;
+	WORD                   asymptotic_coef_offset;
+	} TABLE_DATA_MAP;
 
 /*
 ** The following definitions are used to pack and extract data from the
@@ -873,7 +873,7 @@ typedef struct {
 #define BESSEL_EXP_WIDTH_WIDTH		 7
 
 #define EXTR_BITS(name,val)	(((val) >> PASTE_3(BESSEL_,name,_POS)) & \
-                  MAKE_MASK(PASTE_3(BESSEL_,name,_WIDTH),0))
+				  MAKE_MASK(PASTE_3(BESSEL_,name,_WIDTH),0))
 
 /*
 ** The next 4 definitions are used to extract the exponent information from
@@ -884,7 +884,7 @@ typedef struct {
 #define	LAST			(2*NUM_UX_FRACTION_DIGITS-1)
 #define ZERO_EXPONENT_BITS	3
 #define G_ZERO_EXPONENT(p)	((((INTERVAL_DATA *)(p))->zero[LAST]) & \
-                    MAKE_MASK(ZERO_EXPONENT_BITS, 0))
+				    MAKE_MASK(ZERO_EXPONENT_BITS, 0))
 
 static void
 UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
@@ -895,7 +895,7 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
     WORD eval_data, op;
     UX_FRACTION_DIGIT_TYPE f_hi;
     UX_EXPONENT_TYPE exponent;
-    UX_FLOAT tmp[3], *poly_argument;
+    UX_FLOAT tmp[3], *multiplier, *poly_argument;
 
     if (2 <= order)
         {
@@ -991,15 +991,14 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
             unpacked_result);
 
 #if 0
-    /*
+	/*
         ** The call to EVALUATE_RATIONAL will have scaled poly_argument, so
         ** unscale it for possible use in the POST_MULTIPLY code.
         */
         UX_DECR_EXPONENT(poly_argument, G_SCALE(eval_data));
 #endif
         }
-
-    op = EXTR_BITS(EVEN_ODD_OP, eval_data);
+    op = EXTR_BITS( EVEN_ODD_OP, eval_data);
     if ( op )
         ADDSUB(unpacked_result, unpacked_result + 1, op - 1, unpacked_result);
 
@@ -1022,8 +1021,8 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
         ** have just been evaluated
         **
         ** The previous call to the polynomial evaluation routines may
-    ** have implicitly scaled the input argument, so we may need to
-    ** unscale before proceeding
+	** have implicitly scaled the input argument, so we may need to
+	** unscale before proceeding
         */
 
         if (poly_argument == unpacked_argument)
@@ -1064,15 +1063,15 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
 
 static WORD const
 BESSEL_ERROR_CODE_TABLE[] = {
-    NULL,
-    BES_J1_UNDERFLOW,
-    BES_J1_NEG_UNDERFLOW,
-    BES_JN_UNDERFLOW,
-    BES_JN_NEG_UNDERFLOW,
-    BES_Y1_OVERFLOW,
-    BES_YN_POS_OVERFLOW,
-    BES_YN_NEG_OVERFLOW,
-    };
+	NULL,
+	BES_J1_UNDERFLOW,
+	BES_J1_NEG_UNDERFLOW,
+	BES_JN_UNDERFLOW,
+	BES_JN_NEG_UNDERFLOW,
+	BES_Y1_OVERFLOW,
+	BES_YN_POS_OVERFLOW,
+	BES_YN_NEG_OVERFLOW,
+	};
 
 #define NO_ERROR		0
 #define J1_UNDERFLOW		1
@@ -1090,9 +1089,9 @@ BESSEL_ERROR_CODE_TABLE[] = {
 #define	N_OVERFLOW_POS		(P_OVERFLOW_POS + _FIELD_WITDTH)
 
 #define ERROR_MAP(pu,nu,po,no)	(((pu) << P_UNDERFLOW_POS)	|  \
-                 ((nu) << N_UNDERFLOW_POS)	|  \
-                 ((po) << P_OVERFLOW_POS)	|  \
-                 ((no) << N_OVERFLOW_POS) )
+				 ((nu) << N_UNDERFLOW_POS)	|  \
+				 ((po) << P_OVERFLOW_POS)	|  \
+				 ((no) << N_OVERFLOW_POS) )
 
 #define MAP_MASK		MAKE_MASK(_FIELD_WITDTH,0)
 #define ERROR_INDEX(s,m,n,p)	(m >> (s ? n : p)) & MAP_MASK
@@ -1178,22 +1177,22 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
             BESSEL_BODY(order, kind, class, map)
 
 #define BESSEL_N_ENTRY(kind, class, map)			\
-    X_IX_PROTO(F_ENTRY_NAME, packed_result, order, packed_argument) \
+	X_IX_PROTO(F_ENTRY_NAME, packed_result, order, packed_argument) \
             BESSEL_BODY(order, kind, class, map)
 
 #define BESSEL_BODY(order, kind, class, map)	\
-        {				\
-        EXCEPTION_INFO_DECL	\
+		{				\
+		EXCEPTION_INFO_DECL	\
                 DECLARE_X_FLOAT(packed_result) \
-                        \
-        INIT_EXCEPTION_INFO;		\
-        C_BESSEL(			\
-            PASS_ARG_X_FLOAT(packed_argument),		\
-            order, kind, class, map,	\
-            PASS_RET_X_FLOAT(packed_result)		\
-            OPT_EXCEPTION_INFO);	\
+						\
+		INIT_EXCEPTION_INFO;		\
+		C_BESSEL(			\
+		    PASS_ARG_X_FLOAT(packed_argument),		\
+		    order, kind, class, map,	\
+		    PASS_RET_X_FLOAT(packed_result)		\
+		    OPT_EXCEPTION_INFO);	\
                 RETURN_X_FLOAT(packed_result);   \
-        }
+		}
 
 #undef  F_ENTRY_NAME
 #define F_ENTRY_NAME F_J0_NAME
@@ -1248,7 +1247,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     TABLE_COMMENT("j0 class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "J0_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(3) +
-          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_VALUE,     1) +
@@ -1262,7 +1261,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     TABLE_COMMENT("j1 class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "J1_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) +
-          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_VALUE,     1) +
@@ -1276,7 +1275,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     TABLE_COMMENT("jn class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "JN_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_VALUE,     1) +
@@ -1296,7 +1295,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     TABLE_COMMENT("y0 class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "Y0_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(3) +
-          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     2) +
@@ -1311,7 +1310,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     TABLE_COMMENT("y1 class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "Y1_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(2) +
-          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,     1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     4) +
@@ -1325,7 +1324,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     TABLE_COMMENT("yn class-to-action-mapping");
     PRINT_CLASS_TO_ACTION_TBL_DEF( "YN_CLASS_TO_ACTION_MAP");
     PRINT_64_TBL_ITEM( CLASS_TO_ACTION_DISP(1) +
-          CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
+	      CLASS_TO_ACTION( F_C_SIG_NAN,    RETURN_QUIET_NAN, 0) +
               CLASS_TO_ACTION( F_C_QUIET_NAN,  RETURN_VALUE,     0) +
               CLASS_TO_ACTION( F_C_POS_INF,    RETURN_VALUE,  1) +
               CLASS_TO_ACTION( F_C_NEG_INF,    RETURN_ERROR,     6) +
@@ -1783,7 +1782,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
                 }
 
             flags += ((((ux_tmp_coefs[0]*ux_tmp_coefs[1] < 0) ?
-        SUB : ADD) + 1) << BESSEL_EVEN_ODD_OP_POS);
+		SUB : ADD) + 1) << BESSEL_EVEN_ODD_OP_POS);
 
             if ((ux_tmp_coefs[0] < 0))
                 flags += BESSEL_NEGATE_POLY;
@@ -1992,7 +1991,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
         save_precision = precision;
         precision = p;
 
-    /*
+	/*
         ** We assume here that if z == 0 ==> a == 0
         */
 
@@ -2390,7 +2389,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
         num_intervals[Y1_ENUM] =  9;
 
 #       define PACK6(a,b,c,d,e,f) \
-        (a + (b + (c + (d + (e + f/64)/64)/64)/64)/64)/64
+		(a + (b + (c + (d + (e + f/64)/64)/64)/64)/64)/64
 #       define PACK7(a,b,c,d,e,f,g)	(a + PACK6(b,c,d,e,f,g))/64
 #       define PACK8(a,b,c,d,e,f,g,h)	(a + PACK7(b,c,d,e,f,g,h))/64
 #       define PACK9(a,b,c,d,e,f,g,h,i)	   (a + PACK8(b,c,d,e,f,g,h,i))/64
@@ -2400,7 +2399,7 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
         precision = ceil(16*6/8) + 1;
         fixed_degrees[ J0_ENUM ] = PACK7(30, 28, 28, 28, 28, 28, 28);
         fixed_degrees[ J1_ENUM ] = PACK8(14, 29, 28, 28, 28, 28, 28, 28);
-    fixed_degrees[ Y0_ENUM ] = PACK10(20, 19, 23, 49, 34, 29, 28, 28, 28,
+	fixed_degrees[ Y0_ENUM ] = PACK10(20, 19, 23, 49, 34, 29, 28, 28, 28,
            28);
         fixed_degrees[ Y1_ENUM ] = PACK9(14, 29, 23, 41, 32, 28, 28, 28, 28);
         precision = save_precision;

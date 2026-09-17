@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2018, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -40,14 +40,14 @@
 
 void
 bid64_to_string (char *ps, BID_UINT64 * px
-         _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+		 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT64 x;
 #else
 
 VOID_WRAPFN_OTHERTYPERES_DFP(bid64_to_string, char, 64)
 void
 bid64_to_string (char *ps, BID_UINT64 x
-         _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+		 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
 // the destination string (pointed to by ps) must be pre-allocated
   BID_UINT64 sign_x, coefficient_x, D, ER10;
@@ -71,14 +71,14 @@ bid64_to_string (char *ps, BID_UINT64 x
     // Inf or NaN?
     if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
       if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
-    ps[0] = (sign_x) ? '-' : '+';
-    ps[1] = 'S';
-        j = ((x & MASK_SNAN) == MASK_SNAN)? 2: 1;
-    ps[j++] = 'N';
-    ps[j++] = 'a';
-    ps[j++] = 'N';
-    ps[j++] = 0;
-    return;
+	ps[0] = (sign_x) ? '-' : '+';
+	ps[1] = 'S';
+	j = ((x & MASK_SNAN) == MASK_SNAN)? 2: 1;
+	ps[j++] = 'N';
+	ps[j++] = 'a';
+	ps[j++] = 'N';
+	ps[j++] = 0;
+	return;
       }
       // x is Inf
       ps[0] = (sign_x) ? '-' : '+';
@@ -108,7 +108,7 @@ bid64_to_string (char *ps, BID_UINT64 x
       bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
       digits_x = bid_estimate_decimal_digits[bin_expon_cx];
       if ((BID_UINT64)exponent_x >= bid_power10_table_128[digits_x].w[0])
-    digits_x++;
+	digits_x++;
 
       j = istart + digits_x - 1;
       istart = j + 1;
@@ -117,12 +117,12 @@ bid64_to_string (char *ps, BID_UINT64 x
       ER10 = 0x1999999a;
 
       while (exponent_x > 9) {
-    D = (BID_UINT64) exponent_x *ER10;
-    D >>= 32;
-    exponent_x = exponent_x - ((int) ((D << 1) + (D << 3)));
+        D = (BID_UINT64) exponent_x *ER10;
+        D >>= 32;
+        exponent_x = exponent_x - (D << 1) - (D << 3);
 
-    ps[j--] = '0' + (char) exponent_x;
-    exponent_x = (int) D;
+        ps[j--] = '0' + (char) exponent_x;
+        exponent_x = D;
       }
       ps[j] = '0' + (char) exponent_x;
     } else {
@@ -142,12 +142,12 @@ bid64_to_string (char *ps, BID_UINT64 x
     ps[0] = (sign_x)? '-': '+';
 
   // if zero or non-canonical, set coefficient to '0'
-  if ((coefficient_x > 9999999999999999ull) ||	// non-canonical
-      ((coefficient_x == 0))	// significand is zero
-    ) {
-    ps[istart++] = '0';
-  } else {
-    /* ****************************************************
+    if ((coefficient_x > 9999999999999999ull) ||	// non-canonical
+        ((coefficient_x == 0))	// significand is zero
+        ) {
+      ps[istart++] = '0';
+    } else {
+      /* ****************************************************
        This takes a bid coefficient in C1.w[1],C1.w[0] 
        and put the converted character sequence at location 
        starting at &(str[k]). The function returns the number
@@ -158,7 +158,7 @@ bid64_to_string (char *ps, BID_UINT64 x
        Millenial Digits "MiDi" and then uses table lookup to get the
        character strings of these MiDis.
        **************************************************** */
-    /* Algorithm first decompose possibly 34 digits in hi and lo
+      /* Algorithm first decompose possibly 34 digits in hi and lo
        18 digits. (The high can have at most 16 digits). It then
        uses macro that handle 18 digit portions.
        The first step is to get hi and lo such that
@@ -172,72 +172,72 @@ bid64_to_string (char *ps, BID_UINT64 x
        hi += A ; lo += B; After each accumulation into lo, we normalize 
        immediately. So at the end, we have the decomposition as we need. */
 
-    Tmp = coefficient_x >> 59;
-    LO_18Dig = (coefficient_x << 5) >> 5;
-    HI_18Dig = 0;
-    k_lcv = 0;
+      Tmp = coefficient_x >> 59;
+      LO_18Dig = (coefficient_x << 5) >> 5;
+      HI_18Dig = 0;
+      k_lcv = 0;
 
-    while (Tmp) {
-      midi_ind = (int) (Tmp & 0x000000000000003FLL);
-      midi_ind <<= 1;
-      Tmp >>= 6;
-      HI_18Dig += mod10_18_tbl[k_lcv][midi_ind++];
-      LO_18Dig += mod10_18_tbl[k_lcv++][midi_ind];
-      __L0_Normalize_10to18 (HI_18Dig, LO_18Dig);
+      while (Tmp) {
+        midi_ind = (int) (Tmp & 0x000000000000003FLL);
+        midi_ind <<= 1;
+        Tmp >>= 6;
+        HI_18Dig += mod10_18_tbl[k_lcv][midi_ind++];
+        LO_18Dig += mod10_18_tbl[k_lcv++][midi_ind];
+        __L0_Normalize_10to18 (HI_18Dig, LO_18Dig);
+      }
+
+      ptr = MiDi;
+      __L1_Split_MiDi_6_Lead (LO_18Dig, ptr);
+      len = ptr - MiDi;
+      c_ptr_start = &(ps[istart]);
+      c_ptr = c_ptr_start;
+
+      /* now convert the MiDi into character strings */
+      __L0_MiDi2Str_Lead (MiDi[0], c_ptr);
+      for (k_lcv = 1; k_lcv < len; k_lcv++) {
+        __L0_MiDi2Str (MiDi[k_lcv], c_ptr);
+      }
+      istart = istart + (c_ptr - c_ptr_start);
     }
 
-    ptr = MiDi;
-    __L1_Split_MiDi_6_Lead (LO_18Dig, ptr);
-    len = (int) (ptr - MiDi);
-    c_ptr_start = &(ps[istart]);
-    c_ptr = c_ptr_start;
+    ps[istart++] = 'E';
 
-    /* now convert the MiDi into character strings */
-    __L0_MiDi2Str_Lead (MiDi[0], c_ptr);
-    for (k_lcv = 1; k_lcv < len; k_lcv++) {
-      __L0_MiDi2Str (MiDi[k_lcv], c_ptr);
+    if (exponent_x < 0) {
+      ps[istart++] = '-';
+      exponent_x = -exponent_x;
+    } else
+      ps[istart++] = '+';
+
+    if (exponent_x) {
+      // get decimal digits in coefficient_x
+      tempx.d = (float) exponent_x;
+      bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+      digits_x = bid_estimate_decimal_digits[bin_expon_cx];
+      if ((BID_UINT64)exponent_x >= bid_power10_table_128[digits_x].w[0])
+        digits_x++;
+
+      j = istart + digits_x - 1;
+      istart = j + 1;
+
+      // 2^32/10
+      ER10 = 0x1999999a;
+
+      while (exponent_x > 9) {
+        D = (BID_UINT64) exponent_x *ER10;
+        D >>= 32;
+        exponent_x = exponent_x - (D << 1) - (D << 3);
+
+        ps[j--] = '0' + (char) exponent_x;
+        exponent_x = D;
+      }
+      ps[j] = '0' + (char) exponent_x;
+    } else {
+      ps[istart++] = '0';
     }
-    istart = istart + ((int) (c_ptr - c_ptr_start));
-  }
 
-  ps[istart++] = 'E';
+    ps[istart] = 0;
 
-  if (exponent_x < 0) {
-    ps[istart++] = '-';
-    exponent_x = -exponent_x;
-  } else
-    ps[istart++] = '+';
-
-  if (exponent_x) {
-    // get decimal digits in coefficient_x
-    tempx.d = (float) exponent_x;
-    bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
-    digits_x = bid_estimate_decimal_digits[bin_expon_cx];
-    if ((BID_UINT64)exponent_x >= bid_power10_table_128[digits_x].w[0])
-      digits_x++;
-
-    j = istart + digits_x - 1;
-    istart = j + 1;
-
-    // 2^32/10
-    ER10 = 0x1999999a;
-
-    while (exponent_x > 9) {
-      D = (BID_UINT64) exponent_x *ER10;
-      D >>= 32;
-      exponent_x = exponent_x - ((int) ((D << 1) + (D << 3)));
-
-      ps[j--] = '0' + (char) exponent_x;
-      exponent_x = (int) D;
-    }
-    ps[j] = '0' + (char) exponent_x;
-  } else {
-    ps[istart++] = '0';
-  }
-
-  ps[istart] = 0;
-
-  return;
+    return;
 
 }
 
@@ -245,18 +245,18 @@ bid64_to_string (char *ps, BID_UINT64 x
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid64_from_string (BID_UINT64 * pres, char *ps
-           _RND_MODE_PARAM _EXC_FLAGS_PARAM 
+                   _RND_MODE_PARAM _EXC_FLAGS_PARAM 
                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #else
 DFP_WRAPFN_OTHERTYPE(64, bid64_from_string, char*)
 BID_UINT64
 bid64_from_string (char *ps
-           _RND_MODE_PARAM _EXC_FLAGS_PARAM 
+                   _RND_MODE_PARAM _EXC_FLAGS_PARAM 
                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   BID_UINT64 sign_x, coefficient_x = 0, rounded = 0, res;
   int expon_x = 0, sgn_expon, ndigits, add_expon = 0, midpoint =
-    0, rounded_up = 0;
+    0, rounded_up = 0, dround = 0;
   int dec_expon_scale = 0, right_radix_leading_zeros = 0, rdx_pt_enc =
     0;
   char c;
@@ -357,32 +357,32 @@ bid64_from_string (char *ps
       // for numbers such as 0.0000000000000000000000000000000000001001, 
       // we want to count the leading zeros
       if (rdx_pt_enc) {
-    right_radix_leading_zeros++;
+        right_radix_leading_zeros++;
       }
       // if this character is a radix point, make sure we haven't already 
       // encountered one
       if (*(ps) == '.') {
-    if (rdx_pt_enc == 0) {
-      rdx_pt_enc = 1;
-      // if this is the first radix point, and the next character is NULL, 
+	if (rdx_pt_enc == 0) {
+	  rdx_pt_enc = 1;
+	  // if this is the first radix point, and the next character is NULL, 
           // we have a zero
-      if (!*(ps + 1)) {
-        res =
-          ((BID_UINT64) (398 - right_radix_leading_zeros) << 53) |
-          sign_x;
-        BID_RETURN (res);
-      }
-      ps = ps + 1;
-    } else {
-      // if 2 radix points, return NaN
-      res = 0x7c00000000000000ull | sign_x;
-      BID_RETURN (res);
-    }
+	  if (!*(ps + 1)) {
+	    res =
+	      ((BID_UINT64) (398 - right_radix_leading_zeros) << 53) |
+	      sign_x;
+	    BID_RETURN (res);
+	  }
+	  ps = ps + 1;
+	} else {
+	  // if 2 radix points, return NaN
+	  res = 0x7c00000000000000ull | sign_x;
+	  BID_RETURN (res);
+	}
       } else if (!*(ps)) {
-    //pres->w[1] = 0x3040000000000000ull | sign_x;
-    res =
-      ((BID_UINT64) (398 - right_radix_leading_zeros) << 53) | sign_x;
-    BID_RETURN (res);
+	//pres->w[1] = 0x3040000000000000ull | sign_x;
+	res =
+	  ((BID_UINT64) (398 - right_radix_leading_zeros) << 53) | sign_x;
+	BID_RETURN (res);
       }
     }
   }
@@ -393,9 +393,9 @@ bid64_from_string (char *ps
   while ((c >= '0' && c <= '9') || c == '.') {
     if (c == '.') {
       if (rdx_pt_enc) {
-    // return NaN
-    res = 0x7c00000000000000ull | sign_x;
-    BID_RETURN (res);
+	// return NaN
+	res = 0x7c00000000000000ull | sign_x;
+	BID_RETURN (res);
       }
       rdx_pt_enc = 1;
       ps++;
@@ -410,45 +410,58 @@ bid64_from_string (char *ps
       coefficient_x += (BID_UINT64) (c - '0');
     } else if (ndigits == 17) {
       // coefficient rounding
-        switch(rnd_mode){
-    case BID_ROUNDING_TO_NEAREST:
-      midpoint = (c == '5' && !(coefficient_x & 1)) ? 1 : 0; 
+      switch(rnd_mode){
+	case BID_ROUNDING_TO_NEAREST:
+	  midpoint = (c == '5' && !(coefficient_x & 1)) ? 1 : 0; 
           // if coefficient is even and c is 5, prepare to round up if 
           // subsequent digit is nonzero
-      // if str[MAXDIG+1] > 5, we MUST round up
-      // if str[MAXDIG+1] == 5 and coefficient is ODD, ROUND UP!
-      if (c > '5' || (c == '5' && (coefficient_x & 1))) {
-    coefficient_x++;
-    rounded_up = 1;
-    break;
+	  // if str[MAXDIG+1] > 5, we MUST round up
+	  // if str[MAXDIG+1] == 5 and coefficient is ODD, ROUND UP!
+	  if (c > '5' || (c == '5' && (coefficient_x & 1))) {
+	    coefficient_x++;
+	    rounded_up = 1;
+	    break;
 
-    case BID_ROUNDING_DOWN:
-        if(sign_x) { coefficient_x++; rounded_up=1; }
-        break;
-    case BID_ROUNDING_UP:
-        if(!sign_x) { coefficient_x++; rounded_up=1; }
-        break;
-    case BID_ROUNDING_TIES_AWAY:
-        if(c>='5') { coefficient_x++; rounded_up=1; }
-        break;
-      }
-    if (coefficient_x == 10000000000000000ull) {
-      coefficient_x = 1000000000000000ull;
-      add_expon = 1;
-    }
+	  case BID_ROUNDING_DOWN:
+	    if(sign_x) { if(c>'0') {coefficient_x++; rounded_up=1;} else dround=1; }
+	    break;
+	  case BID_ROUNDING_UP:
+	    if(!sign_x) { if(c>'0') {coefficient_x++; rounded_up=1;} else dround=1; }
+	    break;
+	  case BID_ROUNDING_TIES_AWAY:
+	    if(c>='5') { coefficient_x++; rounded_up=1; }
+	    break;
+	  }
+	  if (coefficient_x == 10000000000000000ull) {
+	    coefficient_x = 1000000000000000ull;
+	    add_expon = 1;
+	  }
       }
       if (c > '0')
-    rounded = 1;
+	rounded = 1;
       add_expon += 1;
     } else { // ndigits > 17
       add_expon++;
       if (midpoint && c > '0') {
-    coefficient_x++;
-    midpoint = 0;
-    rounded_up = 1;
+	coefficient_x++;
+	midpoint = 0;
+	rounded_up = 1;
       }
-      if (c > '0')
-    rounded = 1;
+      if (c > '0') {
+	rounded = 1;
+
+        if(dround)
+        {
+          dround = 0;
+          coefficient_x ++;
+          rounded_up = 1;
+
+          if (coefficient_x == 10000000000000000ull) {
+            coefficient_x = 1000000000000000ull; 
+            add_expon++;
+	  }
+	}
+      }
     }
     ps++;
     c = *ps;
@@ -458,13 +471,13 @@ bid64_from_string (char *ps
 
   if (!c) {
  #ifdef BID_SET_STATUS_FLAGS
-    if(rounded)
+	if(rounded)
       __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
 #endif
-    res =
+	res =
       fast_get_BID64_check_OF (sign_x,
-                   add_expon + DECIMAL_EXPONENT_BIAS,
-                   coefficient_x, 0, pfpsf);
+			       add_expon + DECIMAL_EXPONENT_BIAS,
+			       coefficient_x, 0, pfpsf);
     BID_RETURN (res);
   }
 
@@ -489,7 +502,7 @@ bid64_from_string (char *ps
   while ((c >= '0') && (c <= '9')) {
    if(expon_x<(1<<20)) {
     expon_x = (expon_x << 1) + (expon_x << 3);
-    expon_x += (int) (c - '0'); }
+	expon_x += (int) (c - '0'); }
 
     ps++;
     c = *ps;
@@ -502,7 +515,7 @@ bid64_from_string (char *ps
   }
 
 #ifdef BID_SET_STATUS_FLAGS
-    if(rounded)
+	if(rounded)
       __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
 #endif
 
@@ -517,7 +530,7 @@ bid64_from_string (char *ps
     rnd_mode = 0;
     res =
       get_BID64_UF (sign_x, expon_x, coefficient_x, rounded, rnd_mode,
-            pfpsf);
+		    pfpsf);
     BID_RETURN (res);
   }
   res = get_BID64 (sign_x, expon_x, coefficient_x, rnd_mode, pfpsf);

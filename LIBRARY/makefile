@@ -1,6 +1,6 @@
-# ##############################################################################
+ ##############################################################################
 # ==============================================================================
-#  Copyright (c) 2007-2018, Intel Corp.
+#  Copyright (c) 2007-2025, Intel Corp.
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without 
@@ -110,34 +110,32 @@ _CFLAGS_OS     := $(call HostOsTypeSelect, -DLINUX, -DWINDOWS)
 _CFLAGS_ARCH   := $(call HostArchTypeSelect,-Dia32,-DITANIUM -Dia64, -Defi2)
 _CFLAGS_CC     :=
 _CFLAGS_OPT    := 
-    
+
 ifeq ($(BID_BIG_ENDIAN),true)
     _CFLAGS_CONFIG += -DBID_BIG_ENDIAN=1
-endif
-
-ifeq ($(HPUX),1)
-    _CFLAGS_OPT += -DHPUX_OS=1 +Ofenvaccess
-ifeq ($(DD64),1)
-    _CFLAGS_OPT += +DD64 -DHPUX_OS_64
-else
-ifeq ($(DD32),1)
-    _CFLAGS_OPT += +DD32
-endif
-endif
 endif
 
 ifeq ($(IS_INTEL_CC),true)
     ifeq ($(CC_NAME),icl)
         _CFLAGS_CC += /Qlong-double /Qpc80 /Qstd=c99
     endif
+    ifeq ($(IML_HOST_OS_TYPE),WINNT)
+        ifeq ($(CC_NAME),icx)
+            _CFLAGS_CC += /Qlong-double /Qpc80 /Qstd=c99
+        endif
+        ifeq ($(IML_HOST_OS_TYPE),LINUX)
+            _CFLAGS_CC += -mlong-double-80 -pc80 -std=c99
+        endif
+    endif
 endif
 
 ifeq ($(IS_INTEL_CC),true)
     _USE_COMPILER_F128_TYPE := true
     _USE_COMPILER_F80_TYPE  := true
-else
-    _USE_COMPILER_F128_TYPE := false
+else 
     _USE_COMPILER_F80_TYPE  := false
+    _USE_COMPILER_F128_TYPE := false
+
 endif
 
 USE_COMPILER_F128_TYPE ?= $(_USE_COMPILER_F128_TYPE)
@@ -212,6 +210,10 @@ ifeq ($(DFP_WRAP),1)
 endif
 endif
 
+NO_BINARY80 := 0
+ifeq ($(NO_BINARY80),1)
+BID_BLD_FLAGS += -D__NO_BINARY80__
+endif
 
 # =============================================================================
 # Set up default target

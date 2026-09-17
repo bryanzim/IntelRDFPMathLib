@@ -1,5 +1,5 @@
 /******************************************************************************
-  Copyright (c) 2007-2018, Intel Corp.
+  Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without 
@@ -31,6 +31,7 @@
 #define BID_FUNCTION_SETS_BINARY_FLAGS
 #include "bid_internal.h"
 #include "bid_sqrt_macros.h"
+#include <fenv.h>
 
 BID128_FUNCTION_ARG1 (bid128_sqrt, x)
 
@@ -41,8 +42,15 @@ BID128_FUNCTION_ARG1 (bid128_sqrt, x)
      int_float fx, f64;
      int exponent_x, bin_expon_cx;
      int digits, scale, exponent_q;
+     int old_rm, rm_changed=0;
 
   BID_OPT_SAVE_BINARY_FLAGS()
+
+  // Set it to round-to-nearest (if different)
+  if ((old_rm=fegetround()) != FE_TONEAREST) {
+    rm_changed=1;
+    fesetround(FE_TONEAREST);
+  }
 
   // unpack arguments, check for NaN or Infinity
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
@@ -55,6 +63,8 @@ if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   res.w[1] = CX.w[1] & QUIET_MASK64;
+  // restore the rounding mode back if it has been changed
+  if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
     // x is Infinity?
@@ -67,6 +77,8 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   }
+  // restore the rounding mode back if it has been changed
+  if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
     // x is 0 otherwise
@@ -75,6 +87,8 @@ res.w[1] =
   sign_x |
   ((((BID_UINT64) (exponent_x + DECIMAL_EXPONENT_BIAS_128)) >> 1) << 49);
 res.w[0] = 0;
+// restore the rounding mode back if it has been changed
+if (rm_changed) fesetround(old_rm);
 BID_RETURN (res);
 }
 if (sign_x) {
@@ -83,6 +97,8 @@ if (sign_x) {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
+  // restore the rounding mode back if it has been changed
+  if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
@@ -113,11 +129,13 @@ if (CS.w[0] * CS.w[0] == A10.w[0]) {
   if (S2.w[1] == A10.w[1])	// && S2.w[0]==A10.w[0])
   {
     bid_get_BID128_very_fast (&res, 0,
-              (exponent_x +
-               DECIMAL_EXPONENT_BIAS_128) >> 1, CS);
+			  (exponent_x +
+			   DECIMAL_EXPONENT_BIAS_128) >> 1, CS);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
+    // restore the rounding mode back if it has been changed
+    if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
 }
@@ -167,11 +185,11 @@ if (!((rnd_mode) & 3)) {
 
   if (C4.w[3] > M256.w[3]
       || (C4.w[3] == M256.w[3]
-      && (C4.w[2] > M256.w[2]
-          || (C4.w[2] == M256.w[2]
-          && (C4.w[1] > M256.w[1]
-              || (C4.w[1] == M256.w[1]
-              && C4.w[0] > M256.w[0])))))) {
+	  && (C4.w[2] > M256.w[2]
+	      || (C4.w[2] == M256.w[2]
+		  && (C4.w[1] > M256.w[1]
+		      || (C4.w[1] == M256.w[1]
+			  && C4.w[0] > M256.w[0])))))) {
     // round up
     CS.w[0]++;
     if (!CS.w[0])
@@ -187,15 +205,15 @@ if (!((rnd_mode) & 3)) {
 
     // if CSM' > C256, round up
     if (M256.w[3] > C4.w[3]
-    || (M256.w[3] == C4.w[3]
-        && (M256.w[2] > C4.w[2]
-        || (M256.w[2] == C4.w[2]
-            && (M256.w[1] > C4.w[1]
-            || (M256.w[1] == C4.w[1]
-                && M256.w[0] > C4.w[0])))))) {
+	|| (M256.w[3] == C4.w[3]
+	    && (M256.w[2] > C4.w[2]
+		|| (M256.w[2] == C4.w[2]
+		    && (M256.w[1] > C4.w[1]
+			|| (M256.w[1] == C4.w[1]
+			    && M256.w[0] > C4.w[0])))))) {
       // round down
       if (!CS.w[0])
-    CS.w[1]--;
+	CS.w[1]--;
       CS.w[0]--;
     }
   }
@@ -207,11 +225,11 @@ if (!((rnd_mode) & 3)) {
   C8.w[0] = CS.w[0] << 1;
   if (M256.w[3] > C256.w[3]
       || (M256.w[3] == C256.w[3]
-      && (M256.w[2] > C256.w[2]
-          || (M256.w[2] == C256.w[2]
-          && (M256.w[1] > C256.w[1]
-              || (M256.w[1] == C256.w[1]
-              && M256.w[0] > C256.w[0])))))) {
+	  && (M256.w[2] > C256.w[2]
+	      || (M256.w[2] == C256.w[2]
+		  && (M256.w[1] > C256.w[1]
+		      || (M256.w[1] == C256.w[1]
+			  && M256.w[0] > C256.w[0])))))) {
     __sub_borrow_out (M256.w[0], Carry, M256.w[0], C8.w[0]);
     __sub_borrow_in_out (M256.w[1], Carry, M256.w[1], C8.w[1], Carry);
     __sub_borrow_in_out (M256.w[2], Carry, M256.w[2], 0, Carry);
@@ -220,9 +238,9 @@ if (!((rnd_mode) & 3)) {
     if (!M256.w[0]) {
       M256.w[1]++;
       if (!M256.w[1]) {
-    M256.w[2]++;
-    if (!M256.w[2])
-      M256.w[3]++;
+	M256.w[2]++;
+	if (!M256.w[2])
+	  M256.w[3]++;
       }
     }
 
@@ -231,15 +249,15 @@ if (!((rnd_mode) & 3)) {
     CS.w[0]--;
 
     if (M256.w[3] > C256.w[3]
-    || (M256.w[3] == C256.w[3]
-        && (M256.w[2] > C256.w[2]
-        || (M256.w[2] == C256.w[2]
-            && (M256.w[1] > C256.w[1]
-            || (M256.w[1] == C256.w[1]
-                && M256.w[0] > C256.w[0])))))) {
+	|| (M256.w[3] == C256.w[3]
+	    && (M256.w[2] > C256.w[2]
+		|| (M256.w[2] == C256.w[2]
+		    && (M256.w[1] > C256.w[1]
+			|| (M256.w[1] == C256.w[1]
+			    && M256.w[0] > C256.w[0])))))) {
 
       if (!CS.w[0])
-    CS.w[1]--;
+	CS.w[1]--;
       CS.w[0]--;
     }
   }
@@ -253,22 +271,22 @@ if (!((rnd_mode) & 3)) {
     if (!M256.w[0]) {
       M256.w[1]++;
       if (!M256.w[1]) {
-    M256.w[2]++;
-    if (!M256.w[2])
-      M256.w[3]++;
+	M256.w[2]++;
+	if (!M256.w[2])
+	  M256.w[3]++;
       }
     }
     if (M256.w[3] < C256.w[3]
-    || (M256.w[3] == C256.w[3]
-        && (M256.w[2] < C256.w[2]
-        || (M256.w[2] == C256.w[2]
-            && (M256.w[1] < C256.w[1]
-            || (M256.w[1] == C256.w[1]
-                && M256.w[0] <= C256.w[0])))))) {
+	|| (M256.w[3] == C256.w[3]
+	    && (M256.w[2] < C256.w[2]
+		|| (M256.w[2] == C256.w[2]
+		    && (M256.w[1] < C256.w[1]
+			|| (M256.w[1] == C256.w[1]
+			    && M256.w[0] <= C256.w[0])))))) {
 
       CS.w[0]++;
       if (!CS.w[0])
-    CS.w[1]++;
+	CS.w[1]++;
     }
   }
   // RU?
@@ -286,10 +304,12 @@ if (!((rnd_mode) & 3)) {
 __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
 #endif
 bid_get_BID128_fast (&res, 0,
-         (exponent_q + DECIMAL_EXPONENT_BIAS_128) >> 1, CS);
+		 (exponent_q + DECIMAL_EXPONENT_BIAS_128) >> 1, CS);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
 // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
+// restore the rounding mode back if it has been changed
+if (rm_changed) fesetround(old_rm);
 BID_RETURN (res);
 }
 
@@ -304,16 +324,23 @@ BID128_FUNCTION_ARGTYPE1 (bid128d_sqrt, BID_UINT64, x)
      int_float fx, f64;
      int exponent_x, bin_expon_cx;
      int digits, scale, exponent_q;
+     int old_rm, rm_changed=0;
 
   BID_OPT_SAVE_BINARY_FLAGS()
 
-    // unpack arguments, check for NaN or Infinity
+  // Set it to round-to-nearest (if different)
+  if ((old_rm=fegetround()) != FE_TONEAREST) {
+    rm_changed=1;
+    fesetround(FE_TONEAREST);
+  }
+
+	// unpack arguments, check for NaN or Infinity
    // unpack arguments, check for NaN or Infinity
 CX.w[1] = 0;
 if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], x)) {
 res.w[1] = CX.w[0];
 res.w[0] = 0;
-       // NaN ?
+	   // NaN ?
 if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
   if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN
@@ -322,9 +349,11 @@ if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
   res.w[0] = (CX.w[0] & 0x0003ffffffffffffull);
   __mul_64x64_to_128 (res, res.w[0], bid_power10_table_128[18].w[0]);
   res.w[1] |= ((CX.w[0]) & 0xfc00000000000000ull);
+  // restore the rounding mode back if it has been changed
+  if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
-       // x is Infinity?
+	   // x is Infinity?
 if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
   if (sign_x) {
     // -Inf, return NaN
@@ -333,16 +362,20 @@ if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   }
+  // restore the rounding mode back if it has been changed
+  if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
-       // x is 0 otherwise
+	   // x is 0 otherwise
 
 exponent_x =
   exponent_x - DECIMAL_EXPONENT_BIAS + DECIMAL_EXPONENT_BIAS_128;
 res.w[1] =
   sign_x | ((((BID_UINT64) (exponent_x + DECIMAL_EXPONENT_BIAS_128)) >> 1)
-        << 49);
+	    << 49);
 res.w[0] = 0;
+// restore the rounding mode back if it has been changed
+if (rm_changed) fesetround(old_rm);
 BID_RETURN (res);
 }
 if (sign_x) {
@@ -351,6 +384,8 @@ if (sign_x) {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
+  // restore the rounding mode back if it has been changed
+  if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
@@ -359,10 +394,10 @@ if (sign_x) {
 exponent_x =
   exponent_x - DECIMAL_EXPONENT_BIAS + DECIMAL_EXPONENT_BIAS_128;
 
-       // 2^64
+	   // 2^64
 f64.i = 0x5f800000;
 
-       // fx ~ CX
+	   // fx ~ CX
 fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
 bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
 digits = bid_estimate_decimal_digits[bin_expon_cx];
@@ -378,26 +413,28 @@ if (exponent_x & 1) {
 
 CS.w[0] = short_sqrt128 (A10);
 CS.w[1] = 0;
-       // check for exact result
+	   // check for exact result
 if (CS.w[0] * CS.w[0] == A10.w[0]) {
   __mul_64x64_to_128_fast (S2, CS.w[0], CS.w[0]);
   if (S2.w[1] == A10.w[1]) {
     bid_get_BID128_very_fast (&res, 0,
-              (exponent_x + DECIMAL_EXPONENT_BIAS_128) >> 1,
-              CS);
+			  (exponent_x + DECIMAL_EXPONENT_BIAS_128) >> 1,
+			  CS);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
+    // restore the rounding mode back if it has been changed
+    if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
 }
-       // get number of digits in CX
+	   // get number of digits in CX
 D = CX.w[1] - bid_power10_index_binexp_128[bin_expon_cx].w[1];
 if (D > 0
     || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0]))
   digits++;
 
-        // if exponent is odd, scale coefficient by 10
+		// if exponent is odd, scale coefficient by 10
 scale = 67 - digits;
 exponent_q = exponent_x - scale;
 scale += (exponent_q & 1);	// exp. bias is even
@@ -414,7 +451,7 @@ if (scale > 38) {
 }
 
 
-       // 4*C256
+	   // 4*C256
 C4.w[3] = (C256.w[3] << 2) | (C256.w[2] >> 62);
 C4.w[2] = (C256.w[2] << 2) | (C256.w[1] >> 62);
 C4.w[1] = (C256.w[1] << 2) | (C256.w[0] >> 62);
@@ -436,11 +473,11 @@ if (!((rnd_mode) & 3)) {
 
   if (C4.w[3] > M256.w[3]
       || (C4.w[3] == M256.w[3]
-      && (C4.w[2] > M256.w[2]
-          || (C4.w[2] == M256.w[2]
-          && (C4.w[1] > M256.w[1]
-              || (C4.w[1] == M256.w[1]
-              && C4.w[0] > M256.w[0])))))) {
+	  && (C4.w[2] > M256.w[2]
+	      || (C4.w[2] == M256.w[2]
+		  && (C4.w[1] > M256.w[1]
+		      || (C4.w[1] == M256.w[1]
+			  && C4.w[0] > M256.w[0])))))) {
     // round up
     CS.w[0]++;
     if (!CS.w[0])
@@ -456,15 +493,15 @@ if (!((rnd_mode) & 3)) {
 
     // if CSM' > C256, round up
     if (M256.w[3] > C4.w[3]
-    || (M256.w[3] == C4.w[3]
-        && (M256.w[2] > C4.w[2]
-        || (M256.w[2] == C4.w[2]
-            && (M256.w[1] > C4.w[1]
-            || (M256.w[1] == C4.w[1]
-                && M256.w[0] > C4.w[0])))))) {
+	|| (M256.w[3] == C4.w[3]
+	    && (M256.w[2] > C4.w[2]
+		|| (M256.w[2] == C4.w[2]
+		    && (M256.w[1] > C4.w[1]
+			|| (M256.w[1] == C4.w[1]
+			    && M256.w[0] > C4.w[0])))))) {
       // round down
       if (!CS.w[0])
-    CS.w[1]--;
+	CS.w[1]--;
       CS.w[0]--;
     }
   }
@@ -476,11 +513,11 @@ if (!((rnd_mode) & 3)) {
   C8.w[0] = CS.w[0] << 1;
   if (M256.w[3] > C256.w[3]
       || (M256.w[3] == C256.w[3]
-      && (M256.w[2] > C256.w[2]
-          || (M256.w[2] == C256.w[2]
-          && (M256.w[1] > C256.w[1]
-              || (M256.w[1] == C256.w[1]
-              && M256.w[0] > C256.w[0])))))) {
+	  && (M256.w[2] > C256.w[2]
+	      || (M256.w[2] == C256.w[2]
+		  && (M256.w[1] > C256.w[1]
+		      || (M256.w[1] == C256.w[1]
+			  && M256.w[0] > C256.w[0])))))) {
     __sub_borrow_out (M256.w[0], Carry, M256.w[0], C8.w[0]);
     __sub_borrow_in_out (M256.w[1], Carry, M256.w[1], C8.w[1], Carry);
     __sub_borrow_in_out (M256.w[2], Carry, M256.w[2], 0, Carry);
@@ -489,9 +526,9 @@ if (!((rnd_mode) & 3)) {
     if (!M256.w[0]) {
       M256.w[1]++;
       if (!M256.w[1]) {
-    M256.w[2]++;
-    if (!M256.w[2])
-      M256.w[3]++;
+	M256.w[2]++;
+	if (!M256.w[2])
+	  M256.w[3]++;
       }
     }
 
@@ -500,15 +537,15 @@ if (!((rnd_mode) & 3)) {
     CS.w[0]--;
 
     if (M256.w[3] > C256.w[3]
-    || (M256.w[3] == C256.w[3]
-        && (M256.w[2] > C256.w[2]
-        || (M256.w[2] == C256.w[2]
-            && (M256.w[1] > C256.w[1]
-            || (M256.w[1] == C256.w[1]
-                && M256.w[0] > C256.w[0])))))) {
+	|| (M256.w[3] == C256.w[3]
+	    && (M256.w[2] > C256.w[2]
+		|| (M256.w[2] == C256.w[2]
+		    && (M256.w[1] > C256.w[1]
+			|| (M256.w[1] == C256.w[1]
+			    && M256.w[0] > C256.w[0])))))) {
 
       if (!CS.w[0])
-    CS.w[1]--;
+	CS.w[1]--;
       CS.w[0]--;
     }
   }
@@ -522,22 +559,22 @@ if (!((rnd_mode) & 3)) {
     if (!M256.w[0]) {
       M256.w[1]++;
       if (!M256.w[1]) {
-    M256.w[2]++;
-    if (!M256.w[2])
-      M256.w[3]++;
+	M256.w[2]++;
+	if (!M256.w[2])
+	  M256.w[3]++;
       }
     }
     if (M256.w[3] < C256.w[3]
-    || (M256.w[3] == C256.w[3]
-        && (M256.w[2] < C256.w[2]
-        || (M256.w[2] == C256.w[2]
-            && (M256.w[1] < C256.w[1]
-            || (M256.w[1] == C256.w[1]
-                && M256.w[0] <= C256.w[0])))))) {
+	|| (M256.w[3] == C256.w[3]
+	    && (M256.w[2] < C256.w[2]
+		|| (M256.w[2] == C256.w[2]
+		    && (M256.w[1] < C256.w[1]
+			|| (M256.w[1] == C256.w[1]
+			    && M256.w[0] <= C256.w[0])))))) {
 
       CS.w[0]++;
       if (!CS.w[0])
-    CS.w[1]++;
+	CS.w[1]++;
     }
   }
   // RU?
@@ -555,10 +592,12 @@ if (!((rnd_mode) & 3)) {
 __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
 #endif
 bid_get_BID128_fast (&res, 0, (exponent_q + DECIMAL_EXPONENT_BIAS_128) >> 1,
-         CS);
+		 CS);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
 // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
+// restore the rounding mode back if it has been changed
+if (rm_changed) fesetround(old_rm);
 BID_RETURN (res);
 
 
