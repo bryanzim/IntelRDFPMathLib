@@ -204,7 +204,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
 X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x)
     {
     WORD    fp_class;
-    UX_FLOAT unpacked_x, unpacked_y, unpacked_result;
+    UX_FLOAT unpacked_x;
     EXCEPTION_INFO_DECL
     DECLARE_X_FLOAT(packed_result)
 
@@ -224,7 +224,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x)
 X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x)
     {
     WORD    fp_class;
-    UX_FLOAT unpacked_x, unpacked_y, unpacked_result;
+    UX_FLOAT unpacked_x;
     EXCEPTION_INFO_DECL
     DECLARE_X_FLOAT(packed_result)
 
@@ -261,7 +261,7 @@ X_I_PROTO(F_ENTRY_NAME, packed_result, i)
         exponent = 32;
         cnt      = 16;
         if ( (UX_SIGNED_FRACTION_DIGIT_TYPE) msd < 0 ) {
-            msd = -msd;
+            msd = -((UX_SIGNED_FRACTION_DIGIT_TYPE) msd);
             sign = 1;
         }
 
@@ -374,7 +374,7 @@ UX_CMP( WORD x_class, UX_FLOAT * unpacked_x,
 I_XXI_PROTO(F_ENTRY_NAME, packed_x, packed_y, predicate)
     {
     WORD    fp_class, x_class, y_class;
-    UX_FLOAT unpacked_x, unpacked_y, unpacked_result;
+    UX_FLOAT unpacked_x, unpacked_y;
     int order;
     EXCEPTION_INFO_DECL
     _X_FLOAT dummy;

@@ -8,31 +8,52 @@ else()
     add_compile_definitions("BID_BIG_ENDIAN=0")
 endif()
 
-# Add definitions based on options
+# Add definitions based on options (must match LIBRARY/TESTS ABI)
 if (IDFP_CALL_BY_REFERENCE)
-    set(BIT2 "1")    
+    set(BIT2 "1")
+    add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=1")
 else()
     set(BIT2 "0")
+    add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=0")
 endif()
 if (IDFP_GLOBAL_ROUNDING)
     set(BIT1 "1")
+    add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=1")
 else()
     set(BIT1 "0")
+    add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=0")
 endif()
 if (IDFP_GLOBAL_EXCEPTION_FLAGS)
     set(BIT0 "1")
+    add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=1")
 else()
     set(BIT0 "0")
+    add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=0")
 endif()
 
 # Set compiler specific defintions
 if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    # Using Clang
+    # Using Clang / ClangCL
     add_compile_options(#"-Wall"
                         "-Wextra"
                         #"-pedantic"
                         "-Wno-error=unused-command-line-argument"
+                        "-Wno-missing-braces"
+                        "-Wno-missing-field-initializers"
+                        "-Wno-unused-but-set-variable"
+                        "-Wno-sign-compare"
+                        "-Wno-sometimes-uninitialized"
+                        "-Wno-constant-conversion"
+                        "-Wno-unterminated-string-initialization"
+                        "-Wno-comment"
+                        "-Wno-misleading-indentation"
                        )
+    if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+        add_compile_options("/wd4242"
+                            "/wd4244"
+                            "/wd4267"
+                            "/wd4305")
+    endif()
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # Using GCC
     add_compile_options(#"-Wall"
@@ -43,6 +64,10 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     # Using MSVC
     add_compile_options("/W3"
                         "/WX"
+                        "/wd4242"
+                        "/wd4244"
+                        "/wd4267"
+                        "/wd4305"
                         "/Zc:__cplusplus"
                        )
 else()
@@ -98,7 +123,7 @@ if (NOT BUILD_SHARED_LIBS)
     endif()
 endif()
 
-# Add OS specific defintions
+# Add OS specific defintions (match LIBRARY/TESTS so headers agree with the lib)
 if (UNIX AND APPLE)
     add_compile_definitions("LINUX")
 elseif (CMAKE_SYSTEM_NAME MATCHES "(FreeBSD|OpenBSD|NetBSD)")
@@ -106,9 +131,15 @@ elseif (CMAKE_SYSTEM_NAME MATCHES "(FreeBSD|OpenBSD|NetBSD)")
 elseif (UNIX AND NOT APPLE)
     add_compile_definitions("LINUX")
 elseif (WIN32)
-    add_compile_definitions("WINDOWS")
+    add_compile_definitions("WINDOWS" "WINT" "winnt")
 else()
     message(FATAL_ERROR "Undefined OS")
+endif()
+
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    add_compile_definitions("efi2" "EFI2")
+else()
+    add_compile_definitions("ia32" "IA32")
 endif()
 
 set(EXAMPLE_VARIANT "${BIT2}${BIT1}${BIT0}")
@@ -120,9 +151,21 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/main.c_${EXAMPLE_VARIANT}"
 # Create Example Executable
 add_executable(IntelDFPExample
     "${CMAKE_CURRENT_BINARY_DIR}/main.c"
-    "${CMAKE_CURRENT_BINARY_DIR}/decimal.h")
-target_include_directories(IntelDFPExample PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+    "${CMAKE_CURRENT_BINARY_DIR}/decimal.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/example_shim.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/example_shim.h")
+target_include_directories(IntelDFPExample PRIVATE
+    "${CMAKE_CURRENT_BINARY_DIR}"
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CMAKE_SOURCE_DIR}/LIBRARY/src")
+target_compile_definitions(IntelDFPExample PRIVATE "INTEL_DFP_USE_EXAMPLE_SHIM=1")
 target_link_libraries(IntelDFPExample PRIVATE IntelDFP)
+
+# ClangCL /RTC checks in the example can fault when calling into the static library.
+if (CMAKE_C_COMPILER_ID STREQUAL "Clang" AND
+    CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+    target_compile_options(IntelDFPExample PRIVATE "$<$<CONFIG:Debug>:/RTC->")
+endif()
    
 # Set the output directory for build artifacts.
 set_target_properties(IntelDFPExample PROPERTIES
@@ -131,10 +174,11 @@ set_target_properties(IntelDFPExample PROPERTIES
                       ARCHIVE_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/lib"
                       PDB_OUTPUT_DIRECTORY         "${CMAKE_BINARY_DIR}/bin"
                       COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-                      DEBUG_POSTFIX                "d"
                      )
 
-# Add a test for the example
 add_test(NAME IntelDFPExample
-         COMMAND "$<TARGET_FILE:IntelDFPExample>"
+         COMMAND "${CMAKE_COMMAND}"
+                 -DEXAMPLE_PATH=$<TARGET_FILE_DIR:IntelDFPExample>
+                 -DEXAMPLE_EXE=$<TARGET_FILE:IntelDFPExample>
+                 -P "${CMAKE_CURRENT_SOURCE_DIR}/example_test.cmake"
         )

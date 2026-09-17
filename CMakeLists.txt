@@ -3,24 +3,22 @@ if (POLICY CMP0091)
     cmake_policy(SET CMP0091 NEW)  # Needed for CMAKE_MSVC_RUNTIME_LIBRARY 
 endif()
 
-# VS Open Folder inherits an x64 environment but the Visual Studio generator
-# defaults to Win32. inheritEnvironments cannot pass -A/-T (VS already injects
-# those). Force x64 unless the user already chose another non-x86 platform.
-if (CMAKE_GENERATOR MATCHES "Visual Studio" AND
-    (NOT CMAKE_GENERATOR_PLATFORM OR CMAKE_GENERATOR_PLATFORM MATCHES "^(Win32|x86)$"))
-    set(CMAKE_GENERATOR_PLATFORM "x64" CACHE STRING "Visual Studio target platform" FORCE)
-endif()
-
-project(Intel_Decimal_Floating_Point_Math LANGUAGES C)
+# VS always injects CMAKE_CXX_COMPILER even for C projects; accept CXX so
+# configure does not warn and the IDE can attach a startup target.
+project(Intel_Decimal_Floating_Point_Math LANGUAGES C CXX)
 
 # Set required C standard which will cause appropriate compile flags per generator
 if ((CMAKE_C_COMPILER_ID STREQUAL "MSVC") OR (CMAKE_C_COMPILER_ID STREQUAL "Clang"))
     set(CMAKE_C_STANDARD 17)
+    set(CMAKE_CXX_STANDARD 17)
 else()
     set(CMAKE_C_STANDARD 23)
+    set(CMAKE_CXX_STANDARD 23)
 endif()
 set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 if (MSVC)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON) # turn on folder hierarchies

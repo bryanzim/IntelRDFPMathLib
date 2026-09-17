@@ -40,13 +40,28 @@ if (IntelCompiler)
                         "-Qstd=c99"
                        )
 elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    # Using Clang
+    # Using Clang / ClangCL
     add_compile_definitions("_CRT_SECURE_NO_WARNINGS")
     add_compile_options(#"-Wall"
                         "-Wextra"
                         #"-pedantic"
                         "-Wno-error=unused-command-line-argument"
+                        "-Wno-missing-braces"
+                        "-Wno-missing-field-initializers"
+                        "-Wno-unused-but-set-variable"
+                        "-Wno-sign-compare"
+                        "-Wno-sometimes-uninitialized"
+                        "-Wno-constant-conversion"
+                        "-Wno-unterminated-string-initialization"
+                        "-Wno-comment"
+                        "-Wno-misleading-indentation"
                        )
+    if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+        add_compile_options("/wd4242"
+                            "/wd4244"
+                            "/wd4267"
+                            "/wd4305")
+    endif()
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # Using GCC
     add_compile_options(#"-Wall"
@@ -58,6 +73,10 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     add_compile_definitions("_CRT_SECURE_NO_WARNINGS")
     add_compile_options("/W3"
                         "/WX"
+                        "/wd4242"
+                        "/wd4244"
+                        "/wd4267"
+                        "/wd4305"
                         "/Zc:__cplusplus"
                        )
 else()
@@ -149,20 +168,23 @@ set_target_properties(IntelDFPTest PROPERTIES
                       ARCHIVE_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/lib"
                       PDB_OUTPUT_DIRECTORY         "${CMAKE_BINARY_DIR}/bin"
                       COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-                      DEBUG_POSTFIX                "d"
                      )
 
-# Copy the test file to the build directory
+# Copy test inputs next to the executable (VS multi-config safe).
 add_custom_command(TARGET IntelDFPTest POST_BUILD
+                   COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+                           "${CMAKE_CURRENT_SOURCE_DIR}/readtest_smoke.in"
+                           "$<TARGET_FILE_DIR:IntelDFPTest>/readtest_smoke.in"
                    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
                            "${CMAKE_CURRENT_SOURCE_DIR}/readtest.in"
                            "$<TARGET_FILE_DIR:IntelDFPTest>/readtest.in"
                   )
 
-# Add a test
-set(TEST_PATH "${CMAKE_BINARY_DIR}/bin")
+# CTest smoke suite: fast, stable checks used by CI and IDE test runs.
 add_test(NAME IntelDFPTest
-         COMMAND "${CMAKE_COMMAND}" ARGS "-DTEST_PATH=$<TARGET_FILE_DIR:IntelDFPTest>"
-                 "-DTEST_EXE=$<TARGET_FILE_NAME:IntelDFPTest>" 
-                 "-P" "${CMAKE_CURRENT_SOURCE_DIR}/test.cmake"
+         COMMAND "${CMAKE_COMMAND}"
+                 -DTEST_PATH=$<TARGET_FILE_DIR:IntelDFPTest>
+                 -DTEST_EXE=$<TARGET_FILE:IntelDFPTest>
+                 -DTEST_INPUT=$<TARGET_FILE_DIR:IntelDFPTest>/readtest_smoke.in
+                 -P "${CMAKE_CURRENT_SOURCE_DIR}/test.cmake"
         )

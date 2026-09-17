@@ -112,23 +112,22 @@ typedef struct {
 #define G_UX_FRACTION_DIGIT(x,n)   (((UX_FLOAT*)(x))->fraction[n])
 
 #define	P_UX_SIGN(x,v)		   ((((UX_FLOAT*)(x))->sign)=(v))
-#define	P_UX_EXPONENT(x,v)	   ((((UX_FLOAT*)(x))->exponent)=(v))
+#define	P_UX_EXPONENT(x,v)	   ((((UX_FLOAT*)(x))->exponent)=(UX_EXPONENT_TYPE) (v))
 #define	P_UX_MSD(x,v)		   ((((UX_FLOAT*)(x))->fraction[0])=(v))
 #define	P_UX_2nd_MSD(x,v)	   ((((UX_FLOAT*)(x))->fraction[1])=(v))
 #define	P_UX_LSD(x,v)		   ((((UX_FLOAT*)(x))->fraction[LSD_NUM])=(v))
 #define	P_UX_2nd_LSD(x,v)	   ((((UX_FLOAT*)(x))->fraction[LSD_NUM-1])=(v))
 #define P_UX_FRACTION_DIGIT(x,n,v) (((UX_FLOAT*)(x))->fraction[n] = (v))
 
-#define UX_INCR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) += (v))
-#define UX_DECR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) -= (v))
+#define UX_INCR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) += (UX_EXPONENT_TYPE) (v))
+#define UX_DECR_EXPONENT(x,v)	   ((((UX_FLOAT *)(x))->exponent) -= (UX_EXPONENT_TYPE) (v))
 #define UX_TOGGLE_SIGN(x,v)	   ((((UX_FLOAT *)(x))->sign) ^= (v))
 
-#define MINUS_ONE             0xFFFFFFFF
-#define UX_SIGN_BIT	      ((U_WORD) 1 << 31)
+#define UX_SIGN_BIT	      ((UX_SIGN_TYPE) (((UX_SIGN_TYPE ) 1) << 31))
 #define UX_MSB		      ((U_WORD)1 <<(BITS_PER_UX_FRACTION_DIGIT_TYPE-1))
 #define UX_OVERFLOW_EXPONENT  (1 << F_EXP_WIDTH)
 #define UX_UNDERFLOW_EXPONENT (- UX_OVERFLOW_EXPONENT)
-#define UX_ZERO_EXPONENT      (MINUS_ONE << (F_EXP_WIDTH + 2))
+#define UX_ZERO_EXPONENT      ((UX_EXPONENT_TYPE) (~((UX_UNSIGNED_EXPONENT_TYPE) 0) << (F_EXP_WIDTH + 2)))
 #define UX_INFINITY_EXPONENT  (-(UX_ZERO_EXPONENT + 1)) 
 
 

@@ -45,7 +45,7 @@ unsigned rnd_mode=0;
 
    ps0 = strtod_conversion(ps_in, endptr);
 
-   if(!ps0) return 0x32800000ull;   // 0.0
+   if(!ps0) return 0x32800000u;   // 0.0
 
    BIDECIMAL_CALL1_RESARG (bid32_from_string, DR, ps0);
 

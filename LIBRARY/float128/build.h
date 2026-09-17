@@ -132,7 +132,7 @@
 #define EXCEPTION_INTERFACE_SEND		send_exception_record
 #define __DPML_EXCPT_ENVIRONMENT		ENABLE_NO_ERROR
 #define DPML_GET_FPCSR(fpcsr)			fpcsr = 0
-#define DPML_SET_FPCSR(fpcsr)
+#define DPML_SET_FPCSR(fpcsr)			((void)(fpcsr))
 #define FPCSR_STICKY_BITS(x)			0
 
 // =============================================================================

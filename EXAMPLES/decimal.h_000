@@ -90,6 +90,7 @@ typedef enum _IDEC_flagbits {
 } _IDEC_flagbits;
 typedef unsigned int _IDEC_flags;  // could be a struct with diagnostic info
 
+#ifndef INTEL_DFP_USE_EXAMPLE_SHIM
 extern
 Decimal128 __bid128_mul (
     Decimal128,
@@ -97,6 +98,7 @@ Decimal128 __bid128_mul (
     _IDEC_round,
     _IDEC_flags *
 );
+#endif
 
 #if BID_BIG_ENDIAN
 #define HIGH_128W 0

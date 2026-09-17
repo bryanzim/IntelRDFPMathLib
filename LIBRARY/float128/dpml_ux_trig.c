@@ -251,7 +251,9 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
 #       define BIAS	(12*(((1 << F_EXP_WIDTH) + 11)/12))
 
         exponent += (BIAS - UX_PRECISION - 3);
-        UMULH((UX_FRACTION_DIGIT_TYPE) exponent, RECIP_TWELVE, k);
+        U_INT_64 kCom;
+        UMULH((UX_FRACTION_DIGIT_TYPE) exponent, RECIP_TWELVE, kCom);
+        k = (UX_EXPONENT_TYPE) kCom;
         exponent = (exponent + (UX_PRECISION + 3)) - 12*k;
         P_UX_EXPONENT(argument, exponent);
         }
@@ -343,7 +345,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         cnt = digit_with_binary_pt & (BITS_PER_UX_FRACTION_DIGIT_TYPE - 1);
         digit_with_binary_pt >>= __LOG2(BITS_PER_UX_FRACTION_DIGIT_TYPE);
         tmp_digit = 0;
-        exponent -= cnt;
+        exponent = exponent - ((UX_EXPONENT_TYPE) cnt);
 
         if (cnt)
             { /* shift digit right (in memory) */
@@ -444,7 +446,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         P_UX_FRACTION_DIGIT(argument, digit_with_binary_pt, current_digit);
         P_UX_EXPONENT(argument, exponent);
 
-        exponent -= NORMALIZE(argument);
+        exponent = exponent - ((UX_EXPONENT_TYPE) NORMALIZE(argument));
         }
 
 
@@ -511,7 +513,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         sign ^= UX_SIGN_BIT;
 
         sum_digit = G_UX_LSD(argument);
-        tmp_digit = -sum_digit;
+        tmp_digit = -((UX_SIGNED_FRACTION_DIGIT_TYPE) sum_digit);
         borrow = (sum_digit != 0);
         P_UX_LSD(argument, tmp_digit);
 
@@ -529,7 +531,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
 
 #       endif
 
-        current_digit = - (current_digit + borrow);
+        current_digit = -((UX_SIGNED_FRACTION_DIGIT_TYPE) (current_digit + borrow));
         }
     P_UX_MSD(argument, current_digit);
     NORMALIZE(argument);
@@ -732,7 +734,7 @@ C_UX_TRIG(
         if (SINCOS_FUNC == (function_code & ~DEGREE))
             {
             second_value =
-                ((1 << F_C_BASE_CLASS(fp_class)) & F_C_NAN_OR_INF_MASK) ?
+                ((((U_WORD) 1) << F_C_BASE_CLASS(fp_class)) & F_C_NAN_OR_INF_MASK) ?
                 &packed_result[0] : (_X_FLOAT *) _X_ONE;
             _X_COPY(second_value, &packed_result[1]);
             }

@@ -136,6 +136,8 @@ typedef BID_UINT128 _Quad;
        BID_UINT64 w[3];
        char pad[8];
      } BID_UINT196;
+     /* 192-bit tables/locals use this historical padded type. */
+     typedef BID_UINT196 BID_UINT192;
      typedef struct BID_ALIGN (16)
      {
        BID_UINT64 w[4];

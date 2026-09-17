@@ -33,6 +33,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #if defined(_MSC_VER) && !defined(__INTEL_COMPILER)
 #   pragma warning( disable: 4996 )
+#   pragma warning( disable: 4242 4244 4267 4305 )
 #endif
 
 #include "bid_conf.h"

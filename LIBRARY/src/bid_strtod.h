@@ -131,7 +131,7 @@ int i,k;
      return NULL;
    }
    while(iswspace(*ps_in)) ps_in++;
-   k = 1+wcslen(ps_in);
+   k = (int)(1 + wcslen(ps_in));
    ps = malloc((k+1)*sizeof(wchar_t));
    if(!ps)
    {

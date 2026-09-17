@@ -81,13 +81,29 @@ if (IntelCompiler)
         add_compile_definitions("__DFP_WRAPPERS_ON=1")
     endif()
 elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    # Using Clang
+    # Using Clang / ClangCL
     add_compile_options(#"-Wall"
                         "-Wno-reserved-identifier"
                         "-Wextra"
                         #"-pedantic"
                         "-Wno-error=unused-command-line-argument"
+                        # Legacy DATA_* table macros and BID narrowing casts.
+                        "-Wno-missing-braces"
+                        "-Wno-missing-field-initializers"
+                        "-Wno-unused-but-set-variable"
+                        "-Wno-sign-compare"
+                        "-Wno-sometimes-uninitialized"
+                        "-Wno-constant-conversion"
+                        "-Wno-unterminated-string-initialization"
+                        "-Wno-comment"
+                        "-Wno-misleading-indentation"
                        )
+    if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+        add_compile_options("/wd4242"
+                            "/wd4244"
+                            "/wd4267"
+                            "/wd4305")
+    endif()
 elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
     # Using GCC
     add_compile_options(#"-Wall"
@@ -96,8 +112,14 @@ elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
                        )
 elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     # Using MSVC
+    # C4244/C4242/C4305: BID uses 64-bit intermediates and ull suffixes
+    # that are narrowed after range checks. C4267: size_t lengths.
     add_compile_options("/W3"
                         "/WX"
+                        "/wd4242"
+                        "/wd4244"
+                        "/wd4267"
+                        "/wd4305"
                         "/Zc:__cplusplus"
                        )
 else()
