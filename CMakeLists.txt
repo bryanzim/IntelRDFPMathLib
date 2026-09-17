@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.25)
 if (POLICY CMP0091)
     cmake_policy(SET CMP0091 NEW)  # Needed for CMAKE_MSVC_RUNTIME_LIBRARY 
 endif()
-project(Intel_Decimal_Floating_Point_Math)
+project(Intel_Decimal_Floating_Point_Math LANGUAGES C)
 
-# Set required C++ standard which will cause appropriate compile flags per generator
+# Set required C standard which will cause appropriate compile flags per generator
 if ((CMAKE_C_COMPILER_ID STREQUAL "MSVC") OR (CMAKE_C_COMPILER_ID STREQUAL "Clang"))
     set(CMAKE_C_STANDARD 17)
 else()
@@ -34,7 +34,9 @@ if (IDFP_BUILD_TESTS)
     enable_testing()
 endif()
 
-if(NOT CMAKE_BUILD_TYPE)
+# Single-config generators (Ninja, Makefiles) need CMAKE_BUILD_TYPE.
+# Visual Studio is multi-config and ignores it; setting it confuses VS.
+if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
 endif()
 
@@ -45,5 +47,11 @@ if (IDFP_BUILD_TESTS)
 endif()
 if (IDFP_BUILD_EXAMPLES)
     add_subdirectory("EXAMPLES")
+endif()
+
+if (TARGET IntelDFPExample)
+    set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" PROPERTY VS_STARTUP_PROJECT IntelDFPExample)
+elseif (TARGET IntelDFPTest)
+    set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" PROPERTY VS_STARTUP_PROJECT IntelDFPTest)
 endif()
 

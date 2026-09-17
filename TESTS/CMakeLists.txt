@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(Intel_Decimal_Floating_Point_Math_Tests)
+project(Intel_Decimal_Floating_Point_Math_Tests LANGUAGES C)
 
 if (CMAKE_C_COMILER_ID MATCHES "^Intel")
     set(IntelCompiler ON)

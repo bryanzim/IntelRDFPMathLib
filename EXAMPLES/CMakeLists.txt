@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(Intel_Decimal_Floating_Point_Math_Example)
+project(Intel_Decimal_Floating_Point_Math_Example LANGUAGES C)
 
 # Set Endianess
 if (CMAKE_C_BYTE_ORDER STREQUAL "BIG_ENDIAN")
