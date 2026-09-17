@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 project(Intel_Decimal_Floating_Point_Math_Tests LANGUAGES C)
 
-if (CMAKE_C_COMILER_ID MATCHES "^Intel")
+if (CMAKE_C_COMPILER_ID MATCHES "^Intel")
     set(IntelCompiler ON)
 else()
     set(IntelCompiler OFF)
@@ -25,7 +25,7 @@ if (IDFP_GLOBAL_ROUNDING)
 else()
     add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=0")
 endif()
-if (IDFP_GLOBAL_EXCEPTIONS)
+if (IDFP_GLOBAL_EXCEPTION_FLAGS)
     add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=1")
 else()
     add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=0")
@@ -156,7 +156,7 @@ set_target_properties(IntelDFPTest PROPERTIES
 add_custom_command(TARGET IntelDFPTest POST_BUILD
                    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
                            "${CMAKE_CURRENT_SOURCE_DIR}/readtest.in"
-                           "${CMAKE_BINARY_DIR}/bin/readtest.in"
+                           "$<TARGET_FILE_DIR:IntelDFPTest>/readtest.in"
                   )
 
 # Add a test

@@ -9,17 +9,17 @@ else()
 endif()
 
 # Add definitions based on options
-if (CALL_BY_REFERENCE)
+if (IDFP_CALL_BY_REFERENCE)
     set(BIT2 "1")    
 else()
     set(BIT2 "0")
 endif()
-if (GLOBAL_ROUNDING)
+if (IDFP_GLOBAL_ROUNDING)
     set(BIT1 "1")
 else()
     set(BIT1 "0")
 endif()
-if (GLOBAL_EXCEPTIONS)
+if (IDFP_GLOBAL_EXCEPTION_FLAGS)
     set(BIT0 "1")
 else()
     set(BIT0 "0")
@@ -111,34 +111,17 @@ else()
     message(FATAL_ERROR "Undefined OS")
 endif()
 
-# Create Example Headers
-set(EXAMPLE_HEADERS
-    "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h"
-   )
-
-# Create Examnple Source
-set(EXAMPLE_SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.c"
-   )
-
-set(EXAMPLE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h_${BIT2}${BIT1}${BIT0}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/main.c_${BIT2}${BIT1}${BIT0}"
-   )
-
-# Create files if necessary
-add_custom_command(OUTPUT ${EXAMPLE_HEADERS} ${EXAMPLE_SOURCES}
-                   COMMAND "${CMAKE_COMMAND}" ARGS "-E" "copy_if_different"
-                           "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h_${BIT2}${BIT1}${BIT0}"
-                           "${CMAKE_CURRENT_SOURCE_DIR}/decimal.h"
-                   COMMAND "${CMAKE_COMMAND}" ARGS "-E" "copy_if_different"
-                           "${CMAKE_CURRENT_SOURCE_DIR}/main.c_${BIT2}${BIT1}${BIT0}"
-                           "${CMAKE_CURRENT_SOURCE_DIR}/main.c"
-                   DEPENDS ${EXAMPLE_DEPENDS}
-                  )     
+set(EXAMPLE_VARIANT "${BIT2}${BIT1}${BIT0}")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/decimal.h_${EXAMPLE_VARIANT}"
+               "${CMAKE_CURRENT_BINARY_DIR}/decimal.h" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/main.c_${EXAMPLE_VARIANT}"
+               "${CMAKE_CURRENT_BINARY_DIR}/main.c" COPYONLY)
 
 # Create Example Executable
-add_executable(IntelDFPExample ${EXAMPLE_HEADERS} ${EXAMPLE_SOURCES})
+add_executable(IntelDFPExample
+    "${CMAKE_CURRENT_BINARY_DIR}/main.c"
+    "${CMAKE_CURRENT_BINARY_DIR}/decimal.h")
+target_include_directories(IntelDFPExample PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
 target_link_libraries(IntelDFPExample PRIVATE IntelDFP)
    
 # Set the output directory for build artifacts.
