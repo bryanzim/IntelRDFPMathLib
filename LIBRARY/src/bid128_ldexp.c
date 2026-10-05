@@ -46,12 +46,12 @@ BID128_FUNCTION_ARG128_CUSTOMARGTYPE2 (bid128_ldexp, x, int, n)
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
     // x is Inf. or NaN or 0
 #ifdef BID_SET_STATUS_FLAGS
-if ((x.w[1] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
+if ((x.w[1U] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-res.w[1] = CX.w[1] & QUIET_MASK64;
-res.w[0] = CX.w[0];
-if (!CX.w[1]) {
+res.w[1U] = CX.w[1U] & QUIET_MASK64;
+res.w[0U] = CX.w[0U];
+if (!CX.w[1U]) {
        exp64 = (BID_SINT64) exponent_x + (BID_SINT64) n;
        if(exp64<0) exp64=0;
        if(exp64>MAX_DECIMAL_EXPONENT_128) exp64=MAX_DECIMAL_EXPONENT_128;
@@ -70,19 +70,19 @@ if ((BID_UINT32) exponent_x <= MAX_DECIMAL_EXPONENT_128) {
 }
   // check for overflow
 if (exp64 > MAX_DECIMAL_EXPONENT_128) {
-  if (CX.w[1] < 0x314dc6448d93ull) {
+  if (CX.w[1U] < 0x314dc6448d93ull) {
     // try to normalize coefficient
     do {
-      CBID_X8.w[1] = (CX.w[1] << 3) | (CX.w[0] >> 61);
-      CBID_X8.w[0] = CX.w[0] << 3;
-      CX2.w[1] = (CX.w[1] << 1) | (CX.w[0] >> 63);
-      CX2.w[0] = CX.w[0] << 1;
+      CBID_X8.w[1U] = (CX.w[1U] << 3) | (CX.w[0U] >> 61);
+      CBID_X8.w[0U] = CX.w[0U] << 3;
+      CX2.w[1U] = (CX.w[1U] << 1) | (CX.w[0U] >> 63);
+      CX2.w[0U] = CX.w[0U] << 1;
       __add_128_128 (CX, CX2, CBID_X8);
 
       exponent_x--;
       exp64--;
     }
-    while (CX.w[1] < 0x314dc6448d93ull
+    while (CX.w[1U] < 0x314dc6448d93ull
        && exp64 > MAX_DECIMAL_EXPONENT_128);
 
   }
@@ -94,7 +94,7 @@ if (exp64 > MAX_DECIMAL_EXPONENT_128) {
 }
   // exponent < 0
   // the BID pack routine will round the coefficient
-rmode = rnd_mode;
+rmode = (int)rnd_mode;
 bid_get_BID128 (&res, sign_x, exponent_x, CX, (unsigned int *) &rmode,
         pfpsf);
 BID_RETURN (res);

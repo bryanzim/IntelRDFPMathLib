@@ -961,9 +961,9 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
     int exact_y;
     int volatile exact_y_abs;
     int sign = 0;
-    int save_flags = *pfpsf;
+    _IDEC_flags save_flags = *pfpsf;
 
-    *pfpsf &= ~BID_INEXACT_EXCEPTION;
+    *pfpsf &= ~(_IDEC_flags)BID_INEXACT_EXCEPTION;
     BIDECIMAL_CALL1_NORND(bid128_to_int32_xrnint, exact_y, y);
     if ((*pfpsf & BID_INEXACT_EXCEPTION) == 0) {
       if (exact_y < 0) sign = 1;

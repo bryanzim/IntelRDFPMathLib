@@ -83,7 +83,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT64, bid64_ldexp, BID_UINT64, 
   }
   // exponent < 0
   // the BID pack routine will round the coefficient
-  rmode = rnd_mode;
+  rmode = (int)rnd_mode;
   res = get_BID64 (sign_x, exponent_x, coefficient_x, rmode, pfpsf);
   BID_RETURN (res);
 

@@ -74,7 +74,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     __bid_f128_cbrt(rq, xq);
     BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 
-    res.w[BID_HIGH_128W] += (((BID_SINT64)k)<<49);
+    res.w[BID_HIGH_128W] += (BID_UINT64)(((BID_SINT64) k) << 49);
 
     BID_RETURN (res);
 }

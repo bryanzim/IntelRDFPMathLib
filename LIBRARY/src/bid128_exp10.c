@@ -94,7 +94,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
         BIDECIMAL_CALL1_NORND (bid128_to_int32_rnint, k, xn);
         // tmp = -(int)(x)
         tmp.w[BID_HIGH_128W] = sign_x ^ 0xb040000000000000ull;
-        tmp.w[BID_LOW_128W] = k;
+        tmp.w[BID_LOW_128W] = (BID_UINT64)(unsigned int)k;
         // fd = x - (int)(x)
         BIDECIMAL_CALL2 (bid128_add, fd, x, tmp);
         // 10^fd
@@ -107,9 +107,9 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
         k2 = k>>1;  k -= k2;
         k2l = (BID_SINT64)k2;  kl = (BID_SINT64)k;
 
-        res.w[BID_HIGH_128W] += (k2l<<49);  // first scaling
+        res.w[BID_HIGH_128W] += ((BID_UINT64)k2l << 49U);  // first scaling
 
-        tmp.w[BID_HIGH_128W] = 0x3040000000000000ull + (kl<<49);
+        tmp.w[BID_HIGH_128W] = 0x3040000000000000ull + ((BID_UINT64)kl << 49U);
         tmp.w[BID_LOW_128W] = 1;
         // second scaling will set flags and result correctly
         BIDECIMAL_CALL2 (bid128_mul, res, res, tmp);
@@ -122,7 +122,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 
     // tmp = -(int)(x)
     tmp.w[BID_HIGH_128W] = sign_x ^ 0xb040000000000000ull;
-    tmp.w[BID_LOW_128W] = k;
+    tmp.w[BID_LOW_128W] = (BID_UINT64)(unsigned int)k;
 
    // fd = x - (int)(|x|)
    BIDECIMAL_CALL2 (bid128_add, fd, x, tmp);
@@ -136,7 +136,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
    // set correct sign of kl
    scorr = (BID_SINT64)sign_x;  scorr >>= 63;
    kl = scorr ^ (kl + scorr);
-   res.w[BID_HIGH_128W] += (kl<<49);
+   res.w[BID_HIGH_128W] += ((BID_UINT64)kl << 49U);
 
    BID_RETURN (res);
 }

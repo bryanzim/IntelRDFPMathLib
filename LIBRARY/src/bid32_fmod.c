@@ -104,10 +104,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_fmod, BID_UINT32, x
       if (exponent_y < exponent_x)
     exponent_x = exponent_y;
 
-      x = exponent_x;
-      x <<= 23;
-
-      res = x | sign_x;
+      res = sign_x | (((BID_UINT32)exponent_x) << 23U);
       BID_RETURN (res);
     }
 
@@ -149,7 +146,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_fmod, BID_UINT32, x
       BID_RETURN (res);
     }
     // set exponent of y to exponent_x, scale coefficient_y
-    T = (BID_UINT32) (bid_power10_table_128[diff_expon].w[0]);
+    T = (BID_UINT32) (bid_power10_table_128[diff_expon].w[0U]);
     CYL = ((BID_UINT64)coefficient_y) * T;
     if (CYL > (BID_UINT64)(coefficient_x)) {
       res = x;
@@ -183,7 +180,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_fmod, BID_UINT32, x
     }
 
     // scale dividend to 18 or 19 digits
-    CX *= bid_power10_table_128[e_scale].w[0];
+    CX *= bid_power10_table_128[e_scale].w[0U];
 
     // quotient
     Q64 = CX / coefficient_y;

@@ -120,7 +120,7 @@ bid64_to_string (char *ps, BID_UINT64 x
       while (exponent_x > 9) {
         D = (BID_UINT64) exponent_x *ER10;
         D >>= 32;
-        exponent_x = exponent_x - (D << 1) - (D << 3);
+        exponent_x = exponent_x - (int)((D << 1) + (D << 3));
 
         ps[j--] = '0' + (char) exponent_x;
         exponent_x = D;
@@ -226,7 +226,7 @@ bid64_to_string (char *ps, BID_UINT64 x
       while (exponent_x > 9) {
         D = (BID_UINT64) exponent_x *ER10;
         D >>= 32;
-        exponent_x = exponent_x - (D << 1) - (D << 3);
+        exponent_x = exponent_x - (int)((D << 1) + (D << 3));
 
         ps[j--] = '0' + (char) exponent_x;
         exponent_x = D;
@@ -531,10 +531,10 @@ bid64_from_string (char *ps
       coefficient_x--;
     rnd_mode = 0;
     res =
-      get_BID64_UF (sign_x, expon_x, coefficient_x, rounded, rnd_mode,
+      get_BID64_UF (sign_x, expon_x, coefficient_x, rounded, (int)rnd_mode,
 		    pfpsf);
     BID_RETURN (res);
   }
-  res = get_BID64 (sign_x, expon_x, coefficient_x, rnd_mode, pfpsf);
+  res = get_BID64 (sign_x, expon_x, coefficient_x, (int)rnd_mode, pfpsf);
   BID_RETURN (res);
 }

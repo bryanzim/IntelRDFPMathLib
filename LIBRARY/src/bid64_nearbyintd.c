@@ -40,7 +40,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
   int exp;			// unbiased exponent
   // Note: C1 represents the significand (BID_UINT64)
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT64 C1;
   // BID_UINT64 res is C* at first - represents up to 16 decimal digits <= 54 bits
@@ -141,10 +141,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
     q++;
     }
   }

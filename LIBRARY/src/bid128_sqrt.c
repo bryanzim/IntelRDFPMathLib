@@ -140,7 +140,7 @@ if (CS.w[0] * CS.w[0] == A10.w[0]) {
   }
 }
   // get number of digits in CX
-D = CX.w[1] - bid_power10_index_binexp_128[bin_expon_cx].w[1];
+D = (BID_SINT64)CX.w[1] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1];
 if (D > 0
     || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0]))
   digits++;
@@ -429,7 +429,7 @@ if (CS.w[0] * CS.w[0] == A10.w[0]) {
   }
 }
 	   // get number of digits in CX
-D = CX.w[1] - bid_power10_index_binexp_128[bin_expon_cx].w[1];
+D = (BID_SINT64)CX.w[1] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1];
 if (D > 0
     || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0]))
   digits++;

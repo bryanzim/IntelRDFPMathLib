@@ -59,10 +59,10 @@ bid32_to_string (char *ps, BID_UINT32 x
   (void)save_fpsf;
   // unpack arguments, check for NaN or Infinity
   if (!unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x)) {
-	      ps[0] = (sign_x) ? '-' : '+';
+	      ps[0U] = (sign_x) ? '-' : '+';
     // x is Inf. or NaN or 0
     if((x&NAN_MASK32)==NAN_MASK32)  {
-      ps[1] = 'S';
+      ps[1U] = 'S';
 		j = ((x & SNAN_MASK32) == SNAN_MASK32)? 2: 1;
 	  ps[j++] = 'N';
 	  ps[j++] = 'a';
@@ -71,10 +71,10 @@ bid32_to_string (char *ps, BID_UINT32 x
 	  return;
       }
 	if((x&INFINITY_MASK32)==INFINITY_MASK32) {
-      ps[1] = 'I';
-      ps[2] = 'n';
-      ps[3] = 'f';
-      ps[4] = 0;
+      ps[1U] = 'I';
+      ps[2U] = 'n';
+      ps[3U] = 'f';
+      ps[4U] = 0;
       return;
     }
     istart = 1;
@@ -83,7 +83,7 @@ bid32_to_string (char *ps, BID_UINT32 x
   }
   else // x is not special
   {
-  ps[0] = sign_x? '-': '+';
+  ps[0U] = sign_x? '-': '+';
   istart = 1;
   if(coefficient_x>=1000000)
   {
@@ -92,21 +92,21 @@ bid32_to_string (char *ps, BID_UINT32 x
 	  d = CT >> (50-32);
 	  ps[istart++] = (char)(d + '0');
 
-	  coefficient_x -= d*1000000;
+	  coefficient_x -= (BID_UINT32)d * 1000000U;
 
 	  // get lower 6 digits
 	  CT = (BID_UINT64)coefficient_x * 0x20C49BA6ull;
 	  CT >>= 32;
 	  d = CT >> (39-32);
-	  ps[istart++] = bid_midi_tbl[d][0];
-	  ps[istart++] = bid_midi_tbl[d][1];
-	  ps[istart++] = bid_midi_tbl[d][2];
+	  ps[istart++] = bid_midi_tbl[d][0U];
+	  ps[istart++] = bid_midi_tbl[d][1U];
+	  ps[istart++] = bid_midi_tbl[d][2U];
 
-	  d = coefficient_x - d*1000;
+	  d = (int)(coefficient_x - (BID_UINT32)d * 1000U);
 
-	  ps[istart++] = bid_midi_tbl[d][0];
-	  ps[istart++] = bid_midi_tbl[d][1];
-	  ps[istart++] = bid_midi_tbl[d][2];
+	  ps[istart++] = bid_midi_tbl[d][0U];
+	  ps[istart++] = bid_midi_tbl[d][1U];
+	  ps[istart++] = bid_midi_tbl[d][2U];
 	  //ps[istart] = 0;
   }
   else if(coefficient_x>=1000) {
@@ -115,25 +115,25 @@ bid32_to_string (char *ps, BID_UINT32 x
 	  d = CT >> (39-32);
 
 	  istart0=istart;
-	  ps[istart] = bid_midi_tbl[d][0];  if(ps[istart]!='0') istart++;
-	  ps[istart] = bid_midi_tbl[d][1];
+	  ps[istart] = bid_midi_tbl[d][0U];  if(ps[istart]!='0') istart++;
+	  ps[istart] = bid_midi_tbl[d][1U];
 	  if((ps[istart]!='0') || (istart!=istart0)) istart++;
-	  ps[istart++] = bid_midi_tbl[d][2];
+	  ps[istart++] = bid_midi_tbl[d][2U];
 
-	  d = coefficient_x - d*1000;
+	  d = (int)(coefficient_x - (BID_UINT32)d * 1000U);
 
-	  ps[istart++] = bid_midi_tbl[d][0];
-	  ps[istart++] = bid_midi_tbl[d][1];
-	  ps[istart++] = bid_midi_tbl[d][2];
+	  ps[istart++] = bid_midi_tbl[d][0U];
+	  ps[istart++] = bid_midi_tbl[d][1U];
+	  ps[istart++] = bid_midi_tbl[d][2U];
 	  //ps[istart] = 0;
   } else {
-	  d = coefficient_x;
+	  d = (int)coefficient_x;
 
   	  istart0=istart;
-	  ps[istart] = bid_midi_tbl[d][0];  if(ps[istart]!='0') istart++;
-	  ps[istart] = bid_midi_tbl[d][1];
+	  ps[istart] = bid_midi_tbl[d][0U];  if(ps[istart]!='0') istart++;
+	  ps[istart] = bid_midi_tbl[d][1U];
 	  if((ps[istart]!='0') || (istart!=istart0)) istart++;
-	  ps[istart++] = bid_midi_tbl[d][2];
+	  ps[istart++] = bid_midi_tbl[d][2U];
   }
   }
 
@@ -147,10 +147,10 @@ bid32_to_string (char *ps, BID_UINT32 x
       ps[istart++] = '+';
 
 	istart0 = istart;
-	ps[istart]=bid_midi_tbl[exponent_x][0];   if(ps[istart]!='0') istart++;
-	ps[istart]=bid_midi_tbl[exponent_x][1]; 
+	ps[istart]=bid_midi_tbl[exponent_x][0U];   if(ps[istart]!='0') istart++;
+	ps[istart]=bid_midi_tbl[exponent_x][1U]; 
 	if((ps[istart]!='0') || (istart!=istart0)) istart++;
-	ps[istart++]=bid_midi_tbl[exponent_x][2];
+	ps[istart++]=bid_midi_tbl[exponent_x][2U];
 	ps[istart]=0;
 	return;
 
@@ -195,18 +195,18 @@ bid32_from_string (char *ps
   // detect special cases (INF or NaN)
   if (!c || (c != '.' && c != '-' && c != '+' && (c < '0' || c > '9'))) {
     // Infinity?
-    if ((tolower_macro (ps[0]) == 'i' && tolower_macro (ps[1]) == 'n' && 
-        tolower_macro (ps[2]) == 'f') && (!ps[3] || 
-        (tolower_macro (ps[3]) == 'i' && 
-        tolower_macro (ps[4]) == 'n' && tolower_macro (ps[5]) == 'i' && 
-        tolower_macro (ps[6]) == 't' && tolower_macro (ps[7]) == 'y' && 
-        !ps[8]))) {
+    if ((tolower_macro (ps[0U]) == 'i' && tolower_macro (ps[1U]) == 'n' && 
+        tolower_macro (ps[2U]) == 'f') && (!ps[3U] || 
+        (tolower_macro (ps[3U]) == 'i' && 
+        tolower_macro (ps[4U]) == 'n' && tolower_macro (ps[5U]) == 'i' && 
+        tolower_macro (ps[6U]) == 't' && tolower_macro (ps[7U]) == 'y' && 
+        !ps[8U]))) {
       res = 0x78000000ull;
       BID_RETURN (res);
     }
     // return sNaN
-    if (tolower_macro (ps[0]) == 's' && tolower_macro (ps[1]) == 'n' && 
-        tolower_macro (ps[2]) == 'a' && tolower_macro (ps[3]) == 'n') { 
+    if (tolower_macro (ps[0U]) == 's' && tolower_macro (ps[1U]) == 'n' && 
+        tolower_macro (ps[2U]) == 'a' && tolower_macro (ps[3U]) == 'n') { 
         // case insensitive check for snan
       res = 0x7e000000ul;
       BID_RETURN (res);
@@ -217,11 +217,11 @@ bid32_from_string (char *ps
     }
   }
   // detect +INF or -INF
-  if ((tolower_macro (ps[1]) == 'i' && tolower_macro (ps[2]) == 'n' && 
-      tolower_macro (ps[3]) == 'f') && (!ps[4] || 
-      (tolower_macro (ps[4]) == 'i' && tolower_macro (ps[5]) == 'n' && 
-      tolower_macro (ps[6]) == 'i' && tolower_macro (ps[7]) == 't' && 
-      tolower_macro (ps[8]) == 'y' && !ps[9]))) {
+  if ((tolower_macro (ps[1U]) == 'i' && tolower_macro (ps[2U]) == 'n' && 
+      tolower_macro (ps[3U]) == 'f') && (!ps[4U] || 
+      (tolower_macro (ps[4U]) == 'i' && tolower_macro (ps[5U]) == 'n' && 
+      tolower_macro (ps[6U]) == 'i' && tolower_macro (ps[7U]) == 't' && 
+      tolower_macro (ps[8U]) == 'y' && !ps[9U]))) {
     if (c == '+')
       res = 0x78000000ul;
     else if (c == '-')
@@ -231,8 +231,8 @@ bid32_from_string (char *ps
     BID_RETURN (res);
   }
   // if +sNaN, +SNaN, -sNaN, or -SNaN
-  if (tolower_macro (ps[1]) == 's' && tolower_macro (ps[2]) == 'n'
-      && tolower_macro (ps[3]) == 'a' && tolower_macro (ps[4]) == 'n') {
+  if (tolower_macro (ps[1U]) == 's' && tolower_macro (ps[2U]) == 'n'
+      && tolower_macro (ps[3U]) == 'a' && tolower_macro (ps[4U]) == 'n') {
     if (c == '-')
       res = 0xfe000000ul;
     else
@@ -449,11 +449,11 @@ bid32_from_string (char *ps
       coefficient_x--;
     rnd_mode = 0; 
     res =
-      get_BID32_UF (sign_x, expon_x, coefficient_x, rounded, rnd_mode,
+      get_BID32_UF (sign_x, expon_x, coefficient_x, rounded, (int)rnd_mode,
 		    pfpsf);
     BID_RETURN (res);
   }
-  res = get_BID32 (sign_x, expon_x, coefficient_x, rnd_mode, pfpsf);
+  res = get_BID32 (sign_x, expon_x, coefficient_x, (int)rnd_mode, pfpsf);
   BID_RETURN (res);
 
 }

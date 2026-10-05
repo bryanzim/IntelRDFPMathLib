@@ -98,7 +98,7 @@ BID_UINT128 Q;
       exponent_x = 0;
     if (exponent_x > DECIMAL_MAX_EXPON_32)
       exponent_x = DECIMAL_MAX_EXPON_32;
-    res = (sign_x >> 32) | (exponent_x << 23);
+    res = (sign_x >> 32) | ((BID_UINT64)exponent_x << 23U);
     BID_RETURN (res);
   }
 
@@ -116,7 +116,7 @@ BID_UINT128 Q;
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     if (sign_x && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -132,7 +132,7 @@ BID_UINT128 Q;
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING  
       if (exponent_x == -1)
     if (coefficient_x + bid_round_const_table[rmode][extra_digits] >=
-        bid_power10_table_128[extra_digits + 7].w[0])
+        bid_power10_table_128[extra_digits + 7].w[0U])
       status = 0;
 #endif
       extra_digits -= exponent_x;
@@ -145,7 +145,7 @@ BID_UINT128 Q;
     // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
     amount = bid_short_recip_scale[extra_digits];
 
-    coefficient_x = Q.w[1] >> amount;
+    coefficient_x = Q.w[1U] >> amount;
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
@@ -156,9 +156,9 @@ BID_UINT128 Q;
     // is exactly .5
 
     // get remainder
-    remainder_h = Q.w[1] << (64 - amount);
+    remainder_h = Q.w[1U] << (64 - amount);
 
-    if (!remainder_h && (Q.w[0] < bid_reciprocals10_64[extra_digits]))
+    if (!remainder_h && (Q.w[0U] < bid_reciprocals10_64[extra_digits]))
       coefficient_x--;
       }
 #endif
@@ -168,24 +168,24 @@ BID_UINT128 Q;
     {
       status |= BID_INEXACT_EXCEPTION;
       // get remainder
-      remainder_h = Q.w[1] << (64 - amount);
+      remainder_h = Q.w[1U] << (64 - amount);
 
       switch (rmode) {
       case BID_ROUNDING_TO_NEAREST:
       case BID_ROUNDING_TIES_AWAY:
     // test whether fractional part is 0
     if (remainder_h == 0x8000000000000000ull
-        && (Q.w[0] < bid_reciprocals10_64[extra_digits]))
+        && (Q.w[0U] < bid_reciprocals10_64[extra_digits]))
       status = BID_EXACT_STATUS;
     break;
       case BID_ROUNDING_DOWN:
       case BID_ROUNDING_TO_ZERO:
-    if (!remainder_h && (Q.w[0] < bid_reciprocals10_64[extra_digits]))
+    if (!remainder_h && (Q.w[0U] < bid_reciprocals10_64[extra_digits]))
       status = BID_EXACT_STATUS;
     break;
       default:
     // round up
-    __add_carry_out (Stemp, carry, Q.w[0],
+    __add_carry_out (Stemp, carry, Q.w[0U],
              bid_reciprocals10_64[extra_digits]);
     if ((remainder_h >> (64 - amount)) + carry >=
         (((BID_UINT64) 1) << amount))
@@ -202,7 +202,7 @@ BID_UINT128 Q;
 
   res =
     get_BID32 ((BID_UINT32) (sign_x >> 32),
-           exponent_x, coefficient_x, rnd_mode, pfpsf);
+           exponent_x, coefficient_x, (int)rnd_mode, pfpsf);
   BID_RETURN (res);
 
 }

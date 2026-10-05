@@ -65,12 +65,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -78,12 +78,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -119,12 +119,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -132,7 +132,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -159,7 +159,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -183,7 +183,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -209,7 +209,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
       if ((C1.w[1] == 0) && (C1.w[0] <= bid_midpoint64[ind])) {
     res = 0x0000000000000000ull;	// return 0
       } else if (x_sign) {	// n < 0
-    res = 0xffffffffffffffffull;	// return -1
+    res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
       } else {	// n > 0
     res = 0x0000000000000001ull;	// return +1
       }
@@ -219,7 +219,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
           && (C1.w[0] <= bid_midpoint128[ind - 19].w[0]))) {
     res = 0x0000000000000000ull;	// return 0
       } else if (x_sign) {	// n < 0
-    res = 0xffffffffffffffffull;	// return -1
+    res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
       } else {	// n > 0
     res = 0x0000000000000001ull;	// return +1
       }
@@ -302,20 +302,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull) ||
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -358,12 +358,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -371,12 +371,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -412,12 +412,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -425,7 +425,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -452,7 +452,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -476,7 +476,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -504,7 +504,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if ((C1.w[1] == 0) && (C1.w[0] <= bid_midpoint64[ind])) {
     res = 0x0000000000000000ull;	// return 0
       } else if (x_sign) {	// n < 0
-    res = 0xffffffffffffffffull;	// return -1
+    res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
       } else {	// n > 0
     res = 0x0000000000000001ull;	// return +1
       }
@@ -514,7 +514,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
           && (C1.w[0] <= bid_midpoint128[ind - 19].w[0]))) {
     res = 0x0000000000000000ull;	// return 0
       } else if (x_sign) {	// n < 0
-    res = 0xffffffffffffffffull;	// return -1
+    res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
       } else {	// n > 0
     res = 0x0000000000000001ull;	// return +1
       }
@@ -662,20 +662,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -717,12 +717,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -730,12 +730,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -771,12 +771,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -785,7 +785,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -812,7 +812,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -836,7 +836,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -851,7 +851,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
   if ((q + exp) <= 0) {	// n = +/-0.[0...0]c(0)c(1)...c(q-1)
     // return -1 or 0
     if (x_sign)
-      res = 0xffffffffffffffffull;
+      res = (BID_SINT64)0xffffffffffffffffULL;
     else
       res = 0x0000000000000000ull;
     BID_RETURN_VAL (res);
@@ -944,20 +944,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -999,12 +999,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -1012,12 +1012,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -1053,12 +1053,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -1066,7 +1066,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1093,7 +1093,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1117,7 +1117,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1134,7 +1134,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     *pfpsf |= BID_INEXACT_EXCEPTION;
     // return -1 or 0
     if (x_sign)
-      res = 0xffffffffffffffffull;
+      res = (BID_SINT64)0xffffffffffffffffULL;
     else
       res = 0x0000000000000000ull;
     BID_RETURN_VAL (res);
@@ -1233,20 +1233,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0] * bid_ten2k64[exp]));
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -1288,12 +1288,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -1301,12 +1301,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -1342,12 +1342,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -1355,7 +1355,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1382,7 +1382,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1406,7 +1406,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1513,20 +1513,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -1568,12 +1568,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -1581,12 +1581,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -1622,12 +1622,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -1635,7 +1635,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1662,7 +1662,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1686,7 +1686,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1802,20 +1802,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -1856,12 +1856,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -1869,12 +1869,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -1910,12 +1910,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -1923,7 +1923,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1950,7 +1950,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1974,7 +1974,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2031,20 +2031,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -2086,12 +2086,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -2099,12 +2099,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -2140,12 +2140,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -2153,7 +2153,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -2180,7 +2180,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2204,7 +2204,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2300,20 +2300,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -2355,12 +2355,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -2368,12 +2368,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -2409,12 +2409,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -2422,7 +2422,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -2449,7 +2449,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2473,7 +2473,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2499,7 +2499,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if ((C1.w[1] == 0) && (C1.w[0] < bid_midpoint64[ind])) {
     res = 0x0000000000000000ull;	// return 0
       } else if (x_sign) {	// n < 0
-    res = 0xffffffffffffffffull;	// return -1
+    res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
       } else {	// n > 0
     res = 0x0000000000000001ull;	// return +1
       }
@@ -2509,7 +2509,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
           && (C1.w[0] < bid_midpoint128[ind - 19].w[0]))) {
     res = 0x0000000000000000ull;	// return 0
       } else if (x_sign) {	// n < 0
-    res = 0xffffffffffffffffull;	// return -1
+    res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
       } else {	// n > 0
     res = 0x0000000000000001ull;	// return +1
       }
@@ -2572,20 +2572,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }
@@ -2628,12 +2628,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is QNaN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 } else {	// x is not a NaN, so it must be infinity
@@ -2641,12 +2641,12 @@ if ((x.w[1] & MASK_NAN) == MASK_NAN) {	// x is NAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   } else {	// x is -inf
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
   }
   BID_RETURN_VAL (res);
 }
@@ -2682,12 +2682,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -2695,7 +2695,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -2722,7 +2722,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2746,7 +2746,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite 
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN_VAL (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2774,7 +2774,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if ((C1.w[1] == 0) && (C1.w[0] < bid_midpoint64[ind])) {
     res = 0x0000000000000000ull;	// return 0
       } else if (x_sign) {	// n < 0
-    res = 0xffffffffffffffffull;	// return -1
+    res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
       } else {	// n > 0
     res = 0x0000000000000001ull;	// return +1
       }
@@ -2784,7 +2784,7 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
           && (C1.w[0] < bid_midpoint128[ind - 19].w[0]))) {
     res = 0x0000000000000000ull;	// return 0
       } else if (x_sign) {	// n < 0
-    res = 0xffffffffffffffffull;	// return -1
+    res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
       } else {	// n > 0
     res = 0x0000000000000001ull;	// return +1
       }
@@ -2919,20 +2919,20 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       if (x_sign)
     res = -((BID_SINT64) (Cstar.w[0]));
       else
-    res = Cstar.w[0];
+    res = (BID_SINT64)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 19
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) (C1.w[0]));
       else
-    res = C1.w[0];
+    res = (BID_SINT64)C1.w[0];
     } else {	// if (exp>0) => 1 <= exp <= 18, 1 <= q < 18, 2 <= q + exp <= 19
       // res = +/-C * 10^exp (exact) where this fits in 64-bit integer
       if (x_sign)
-    res = -((BID_SINT64) (C1.w[0])) * bid_ten2k64[exp];
+    res = -((BID_SINT64)C1.w[0]) * (BID_SINT64)bid_ten2k64[exp];
       else
-    res = C1.w[0] * bid_ten2k64[exp];
+    res = (BID_SINT64)C1.w[0] * (BID_SINT64)bid_ten2k64[exp];
     }
   }
 }

@@ -195,11 +195,11 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
     x_nr_bits = 65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
 
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-        || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;

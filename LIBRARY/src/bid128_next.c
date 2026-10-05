@@ -41,7 +41,7 @@ BID128_FUNCTION_ARG1_NORND (bid128_nextup, x)
   BID_UINT64 x_exp;
   int exp;
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q1, ind;
   BID_UINT128 C1;			// C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (BID_UINT64)
 
@@ -149,12 +149,12 @@ BID128_FUNCTION_ARG1_NORND (bid128_nextup, x)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
       }
-      q1 = bid_nr_digits[x_nr_bits - 1].digits;
+      q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits;
       if (q1 == 0) {
-    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-        || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q1++;
       }
       // if q1 < P34 then pad the significand with zeros
@@ -236,7 +236,7 @@ BID128_FUNCTION_ARG1_NORND (bid128_nextdown, x)
   BID_UINT64 x_exp;
   int exp;
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q1, ind;
   BID_UINT128 C1;			// C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (BID_UINT64)
 
@@ -342,12 +342,12 @@ BID128_FUNCTION_ARG1_NORND (bid128_nextdown, x)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
       }
-      q1 = bid_nr_digits[x_nr_bits - 1].digits;
+      q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits;
       if (q1 == 0) {
-    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-        || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q1++;
       }
       // if q1 < P then pad the significand with zeros

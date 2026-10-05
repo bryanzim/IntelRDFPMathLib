@@ -118,12 +118,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -435,12 +435,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -838,12 +838,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -1155,12 +1155,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -1477,12 +1477,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -1838,12 +1838,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -2127,7 +2127,7 @@ BID_RETURN_VAL (res);
 BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE (unsigned int,
                       bid128_to_uint32_int, x)
 
-     int res;
+     unsigned int res;
      BID_UINT64 x_sign;
      BID_UINT64 x_exp;
      int exp;			// unbiased exponent
@@ -2210,12 +2210,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -2461,14 +2461,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       } else {
     ;	// exact, the result is already correct
       }
-      res = (int) (Cstar.w[0]);
+      res = (unsigned int)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = (int) (C1.w[0]);
+      res = (unsigned int)C1.w[0];
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = (int) (C1.w[0] * bid_ten2k64[exp]);
+      res = (unsigned int)(C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -2483,7 +2483,7 @@ BID_RETURN_VAL (res);
 BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE (unsigned int,
                       bid128_to_uint32_xint, x)
 
-     int res;
+     unsigned int res;
      BID_UINT64 x_sign;
      BID_UINT64 x_exp;
      int exp;			// unbiased exponent
@@ -2566,12 +2566,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -2831,14 +2831,14 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
       } else {
     ;	// exact, the result is already correct
       }
-      res = (int) (Cstar.w[0]);
+      res = (unsigned int)Cstar.w[0];
     } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +C (exact)
-      res = (int) (C1.w[0]);
+      res = (unsigned int)C1.w[0];
     } else {	// if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +C * 10^exp (exact)
-      res = (int) (C1.w[0] * bid_ten2k64[exp]);
+      res = (unsigned int)(C1.w[0] * bid_ten2k64[exp]);
     }
   }
 }
@@ -2933,12 +2933,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
@@ -3231,12 +3231,12 @@ if ((C1.w[1] > 0x0001ed09bead87c0ull)
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi
-        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+    || (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        && C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;

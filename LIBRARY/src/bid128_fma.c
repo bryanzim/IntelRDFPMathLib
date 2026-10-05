@@ -37,10 +37,10 @@
 
 static void
 bid_rounding_correction (unsigned int rnd_mode,
-                 unsigned int is_inexact_lt_midpoint,
-                 unsigned int is_inexact_gt_midpoint,
-                 unsigned int is_midpoint_lt_even,
-                 unsigned int is_midpoint_gt_even,
+                 int is_inexact_lt_midpoint,
+                 int is_inexact_gt_midpoint,
+                 int is_midpoint_lt_even,
+                 int is_midpoint_gt_even,
                  int unbexp,
                  BID_UINT128 * ptrres, _IDEC_flags * ptrfpsf) {
   // unbiased true exponent unbexp may be larger than emax
@@ -443,7 +443,7 @@ bid_add_and_round (int q3,
       // (-1)^p_sign * significand * 10^0
       P128.w[1] = p_sign | 0x3040000000000000ull | R128.w[1];
       P128.w[0] = R128.w[0];
-      bid_rounding_correction (rnd_mode,
+      bid_rounding_correction ((unsigned int)rnd_mode,
                    is_inexact_lt_midpoint,
                    is_inexact_gt_midpoint, is_midpoint_lt_even,
                    is_midpoint_gt_even, 0, &P128, ptrfpsf);
@@ -623,7 +623,7 @@ bid_add_and_round (int q3,
   // res contains the correct result
   // apply correction if not rounding to nearest
   if (rnd_mode != BID_ROUNDING_TO_NEAREST) {
-    bid_rounding_correction (rnd_mode,
+    bid_rounding_correction ((unsigned int)rnd_mode,
                  is_inexact_lt_midpoint, is_inexact_gt_midpoint,
                  is_midpoint_lt_even, is_midpoint_gt_even,
                  e4, &res, ptrfpsf);
@@ -680,7 +680,7 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
   int scale, ind, delta, x0;
   int p34 = P34; // used to modify the limit on the number of digits
   BID_UI64DOUBLE tmp;
-  int x_nr_bits, y_nr_bits, z_nr_bits;
+  unsigned int x_nr_bits, y_nr_bits, z_nr_bits;
   unsigned int save_fpsf;
   int is_midpoint_lt_even = 0, is_midpoint_gt_even = 0;
   int is_inexact_lt_midpoint = 0, is_inexact_gt_midpoint = 0;
@@ -1009,23 +1009,23 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
         // split the 64-bit value in two 32-bit halves to avoid rounding errors
         tmp.d = (double) (C1.w[0] >> 32); // exact conversion
         x_nr_bits =
-          33 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+          33 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
       } else { // if x < 2^53
         tmp.d = (double) C1.w[0]; // exact conversion
         x_nr_bits =
-          1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+          1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
       }
     } else { // C1.w[1] != 0 => nr. bits = 64 + nr_bits (C1.w[1])
       tmp.d = (double) C1.w[1]; // exact conversion
       x_nr_bits =
-        65 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        65 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     }
-    q1 = bid_nr_digits[x_nr_bits - 1].digits;
+    q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q1 == 0) {
-      q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi ||
-          (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi &&
-           C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+      q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1.w[1] > bid_nr_digits[x_nr_bits - 1U].threshold_hi ||
+          (C1.w[1] == bid_nr_digits[x_nr_bits - 1U].threshold_hi &&
+           C1.w[0] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
         q1++;
     }
   }
@@ -1038,20 +1038,20 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
         // split the 64-bit value in two 32-bit halves to avoid rounding errors
         tmp.d = (double) (C2.w[0] >> 32); // exact conversion
         y_nr_bits =
-          33 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+          33 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
       } else { // if y < 2^53
         tmp.d = (double) C2.w[0]; // exact conversion
         y_nr_bits =
-          1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+          1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
       }
     } else { // C2.w[1] != 0 => nr. bits = 64 + nr_bits (C2.w[1])
       tmp.d = (double) C2.w[1]; // exact conversion
       y_nr_bits =
-        65 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        65 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     }
-    q2 = bid_nr_digits[y_nr_bits - 1].digits;
+    q2 = (int)bid_nr_digits[y_nr_bits - 1U].digits;
     if (q2 == 0) {
-      q2 = bid_nr_digits[y_nr_bits - 1].digits1;
+      q2 = (int)bid_nr_digits[y_nr_bits - 1U].digits1;
       if (C2.w[1] > bid_nr_digits[y_nr_bits - 1].threshold_hi ||
           (C2.w[1] == bid_nr_digits[y_nr_bits - 1].threshold_hi &&
            C2.w[0] >= bid_nr_digits[y_nr_bits - 1].threshold_lo))
@@ -1067,20 +1067,20 @@ bid128_ext_fma (int *ptr_is_midpoint_lt_even,
         // split the 64-bit value in two 32-bit halves to avoid rounding errors
         tmp.d = (double) (C3.w[0] >> 32); // exact conversion
         z_nr_bits =
-          33 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+          33 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
       } else { // if z < 2^53
         tmp.d = (double) C3.w[0]; // exact conversion
         z_nr_bits =
-          1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+          1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
       }
     } else { // C3.w[1] != 0 => nr. bits = 64 + nr_bits (C3.w[1])
       tmp.d = (double) C3.w[1]; // exact conversion
       z_nr_bits =
-        65 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        65 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     }
-    q3 = bid_nr_digits[z_nr_bits - 1].digits;
+    q3 = (int)bid_nr_digits[z_nr_bits - 1U].digits;
     if (q3 == 0) {
-      q3 = bid_nr_digits[z_nr_bits - 1].digits1;
+      q3 = (int)bid_nr_digits[z_nr_bits - 1U].digits1;
       if (C3.w[1] > bid_nr_digits[z_nr_bits - 1].threshold_hi ||
           (C3.w[1] == bid_nr_digits[z_nr_bits - 1].threshold_hi &&
            C3.w[0] >= bid_nr_digits[z_nr_bits - 1].threshold_lo))
@@ -2952,7 +2952,7 @@ delta_ge_zero:
         delta = -delta;
       }
       bid_add_and_round (q3, q4, e4, delta, p34, z_sign, p_sign, C3, C4,
-                 rnd_mode, &is_midpoint_lt_even,
+                 (int)rnd_mode, &is_midpoint_lt_even,
                  &is_midpoint_gt_even, &is_inexact_lt_midpoint,
                  &is_inexact_gt_midpoint, pfpsf, &res);
       *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
@@ -3613,7 +3613,7 @@ delta_ge_zero:
       // unbounded exponent
 
       bid_add_and_round (q3, q4, e4, delta, p34, z_sign, p_sign, C3, C4,
-              rnd_mode, &is_midpoint_lt_even,
+              (int)rnd_mode, &is_midpoint_lt_even,
               &is_midpoint_gt_even, &is_inexact_lt_midpoint,
               &is_inexact_gt_midpoint, pfpsf, &res);
       *ptr_is_midpoint_lt_even = is_midpoint_lt_even;
@@ -4306,20 +4306,20 @@ bid64qqq_fma (BID_UINT128 x, BID_UINT128 y, BID_UINT128 z
       // split the 64-bit value in two 32-bit halves to avoid rounding errors
       tmp.d = (double) (C.w[0] >> 32); // exact conversion
       nr_bits =
-        33 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        33 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     } else { // if x < 2^53
       tmp.d = (double) C.w[0]; // exact conversion
       nr_bits =
-        1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     }
   } else { // C.w[1] != 0 => nr. bits = 64 + nr_bits (C.w[1])
     tmp.d = (double) C.w[1]; // exact conversion
     nr_bits =
-      65 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      65 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
   }
-  q = bid_nr_digits[nr_bits - 1].digits;
+  q = (int)bid_nr_digits[nr_bits - 1].digits;
   if (q == 0) {
-    q = bid_nr_digits[nr_bits - 1].digits1;
+    q = (int)bid_nr_digits[nr_bits - 1].digits1;
     if (C.w[1] > bid_nr_digits[nr_bits - 1].threshold_hi ||
         (C.w[1] == bid_nr_digits[nr_bits - 1].threshold_hi &&
          C.w[0] >= bid_nr_digits[nr_bits - 1].threshold_lo))

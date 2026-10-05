@@ -44,7 +44,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid64_ilogb, BID_UINT64, x)
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
- 	 res = ((x & 0x7c00000000000000ull) == 0x7800000000000000ull) ? 0x7fffffff : 0x80000000;
+ 	 res = ((x & 0x7c00000000000000ull) == 0x7800000000000000ull)
+       ? 0x7fffffff : (int)0x80000000U;
      BID_RETURN (res);
   }
   // find number of digits in coefficient

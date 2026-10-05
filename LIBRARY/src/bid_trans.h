@@ -308,7 +308,7 @@ __BID_F128_F_FF_DECL(nextafter);
 #   define __BID_F80_F_F_DECL(name)		extern BID_F80_TYPE __BID_F80_NAME(name) ( BID_F80_TYPE )
 #   define __BID_F80_F_FF_DECL(name)		extern BID_F80_TYPE __BID_F80_NAME(name) ( BID_F80_TYPE, BID_F80_TYPE )
 #   define BID_F80_ASSIGN(name,con)		name = con.v
-#   define BID_F80_PACK_TRIG(t,sf,ef,p)		t.w[HI] = (((BID_UINT64)(sf)) << 15) | (ef); t.w[LO] = (p)
+#   define BID_F80_PACK_TRIG(t,sf,ef,p)		t.w[HI] = (((BID_UINT64)(sf)) << 15) | (BID_UINT64)(ef); t.w[LO] = (p)
 
 #else
 
@@ -322,7 +322,7 @@ __BID_F128_F_FF_DECL(nextafter);
 #   define __BID_F80_F_F_DECL(name)		__BID_F128_F_F_DECL(name)
 #   define __BID_F80_F_FF_DECL(name)		__BID_F128_F_FF_DECL(name)
 #   define BID_F80_ASSIGN(name,con)		BID_F128_ASSIGN(name,con)
-#   define BID_F80_PACK_TRIG(t,sf,ef,p)		t.w[HI] = (((((BID_UINT64)(sf)) << 15) | (ef)) << 48) | (((p) << 1) >> 16); \
+#   define BID_F80_PACK_TRIG(t,sf,ef,p)		t.w[HI] = (((((BID_UINT64)(sf)) << 15) | (BID_UINT64)(ef)) << 48) | (((p) << 1) >> 16); \
                                                 t.w[LO]  = ((p) << 49)
 #   undef  binary80_to_bid64
 #   undef  bid64_to_binary80

@@ -52,11 +52,11 @@ function(idfp_apply_compiler_warning_flags target)
                     # Clang-specific diagnostics that we can fix incrementally instead.
                     target_compile_options(${target} PRIVATE
                         "-Wconversion"
-                        "-Wno-sign-conversion"
                         "-Wno-shorten-64-to-32"
                         "-Wno-implicit-int-float-conversion"
                         "-Wimplicit-fallthrough"
-                        "-Wformat=2")
+                        "-Wformat=2"
+                        "-ferror-limit=0")
                 endif()
             else()
                 target_compile_options(${target} PRIVATE
@@ -64,11 +64,11 @@ function(idfp_apply_compiler_warning_flags target)
                 if (IDFP_EXTRA_STRICT_CLANG_WARNINGS AND NOT _idfp_f128_target)
                     target_compile_options(${target} PRIVATE
                         "-Wconversion"
-                        "-Wno-sign-conversion"
                         "-Wno-shorten-64-to-32"
                         "-Wno-implicit-int-float-conversion"
                         "-Wimplicit-fallthrough"
-                        "-Wformat=2")
+                        "-Wformat=2"
+                        "-ferror-limit=0")
                 endif()
             endif()
         endif()

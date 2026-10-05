@@ -45,7 +45,8 @@ BID128_FUNCTION_ARG128_CUSTOMARGTYPE2_PLAIN(bid128_frexp, x, int*, exp)
   BID_UINT128 sig_x; 
   unsigned int exp_x;
   BID_UI64DOUBLE tmp;
-  int x_nr_bits, q;
+  unsigned int x_nr_bits;
+  int q;
 
   if ((x.w[1] & MASK_SPECIAL) == MASK_SPECIAL) {
     // if NaN or infinity
@@ -111,18 +112,18 @@ BID128_FUNCTION_ARG128_CUSTOMARGTYPE2_PLAIN(bid128_frexp, x, int*, exp)
       tmp.d = (double) sig_x.w[1]; // exact conversion
       x_nr_bits = 64 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
     }
-    q = bid_nr_digits[x_nr_bits].digits;
+    q = (int)bid_nr_digits[x_nr_bits].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits].digits1;
+      q = (int)bid_nr_digits[x_nr_bits].digits1;
       if (sig_x.w[1] > bid_nr_digits[x_nr_bits].threshold_hi ||
           (sig_x.w[1] == bid_nr_digits[x_nr_bits].threshold_hi &&
            sig_x.w[0] >= bid_nr_digits[x_nr_bits].threshold_lo))
         q++;
     }
     // Do not add trailing zeros if q < 34; leave sig_x with q digits
-    *exp = exp_x - 6176 + q;
+    *exp = (int)exp_x - 6176 + q;
     // assemble the result; sig_x < 2^113 so it fits in 113 bits
-    res.w[1] = (x.w[1] & 0x8001ffffffffffffull) | ((-q + 6176ull) << 49); 
+    res.w[1] = (x.w[1] & 0x8001ffffffffffffull) | ((BID_UINT64)(6176 - q) << 49); 
     res.w[0] = x.w[0]; 
       // replace exponent
     BID_RETURN (res);

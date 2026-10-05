@@ -169,8 +169,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
     res =
       get_BID64_small_mantissa (sign_x ^ sign_y,
                 exponent_x + exponent_y -
-                DECIMAL_EXPONENT_BIAS, C64, rnd_mode,
-                pfpsf);
+                DECIMAL_EXPONENT_BIAS, C64, (int)rnd_mode,
+           pfpsf);
     BID_RETURN (res);
   } else {
     uf_status = 0;
@@ -195,7 +195,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     if (sign_x ^ sign_y && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -231,9 +231,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
     final_exponent = 0;
 
     if (extra_digits > 17) {
-      __mul_128x128_full (Q_high, Q_low, P, bid_reciprocals10_128[16]);
+      __mul_128x128_full (Q_high, Q_low, P, bid_reciprocals10_128[16U]);
 
-      amount = bid_recip_scale[16];
+      amount = bid_recip_scale[16U];
       __shr_128 (P, Q_high, amount);
 
       // get sticky bits
@@ -241,28 +241,28 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
       remainder_h = 0;
       remainder_h--;
       remainder_h >>= amount2;
-      remainder_h = remainder_h & Q_high.w[0];
+      remainder_h = remainder_h & Q_high.w[0U];
 
       extra_digits -= 16;
-      if (remainder_h || (Q_low.w[1] > bid_reciprocals10_128[16].w[1]
-                  || (Q_low.w[1] ==
-                  bid_reciprocals10_128[16].w[1]
-                  && Q_low.w[0] >=
-                  bid_reciprocals10_128[16].w[0]))) {
+      if (remainder_h || (Q_low.w[1U] > bid_reciprocals10_128[16U].w[1U]
+                  || (Q_low.w[1U] ==
+                  bid_reciprocals10_128[16U].w[1U]
+                  && Q_low.w[0U] >=
+                  bid_reciprocals10_128[16U].w[0U]))) {
         round_up = 1;
         __set_status_flags (pfpsf,
                 BID_UNDERFLOW_EXCEPTION |
                 BID_INEXACT_EXCEPTION);
-        P.w[0] = (P.w[0] << 3) + (P.w[0] << 1);
-        P.w[0] |= 1;
+        P.w[0U] = (P.w[0U] << 3) + (P.w[0U] << 1);
+        P.w[0U] |= 1;
         extra_digits++;
       }
     }
       } else {
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, final_exponent,
-                   1000000000000000ull, rnd_mode,
-                   pfpsf);
+                   1000000000000000ull, (int)rnd_mode,
+           pfpsf);
     BID_RETURN (res);
       }
     }
@@ -296,14 +296,14 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
       // (initial_P + 0.5*10^extra_digits)/10^extra_digits is exactly zero
 
       // get remainder
-      remainder_h = Q_high.w[0] << (64 - amount);
+      remainder_h = Q_high.w[0U] << (64 - amount);
 
       // test whether fractional part is 0
       if (!remainder_h
-          && (Q_low.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-          || (Q_low.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-              && Q_low.w[0] <
-              bid_reciprocals10_128[extra_digits].w[0]))) {
+          && (Q_low.w[1U] < bid_reciprocals10_128[extra_digits].w[1U]
+          || (Q_low.w[1U] == bid_reciprocals10_128[extra_digits].w[1U]
+              && Q_low.w[0U] <
+              bid_reciprocals10_128[extra_digits].w[0U]))) {
         C64--;
       }
     }
@@ -313,34 +313,34 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
       status = BID_INEXACT_EXCEPTION | uf_status;
 
       // get remainder
-      remainder_h = Q_high.w[0] << (64 - amount);
+      remainder_h = Q_high.w[0U] << (64 - amount);
 
       switch (rmode) {
       case BID_ROUNDING_TO_NEAREST:
       case BID_ROUNDING_TIES_AWAY:
     // test whether fractional part is 0
     if (remainder_h == 0x8000000000000000ull
-        && (Q_low.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-        || (Q_low.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-            && Q_low.w[0] <
-            bid_reciprocals10_128[extra_digits].w[0])))
+        && (Q_low.w[1U] < bid_reciprocals10_128[extra_digits].w[1U]
+        || (Q_low.w[1U] == bid_reciprocals10_128[extra_digits].w[1U]
+            && Q_low.w[0U] <
+            bid_reciprocals10_128[extra_digits].w[0U])))
       status = BID_EXACT_STATUS;
     break;
       case BID_ROUNDING_DOWN:
       case BID_ROUNDING_TO_ZERO:
     if (!remainder_h
-        && (Q_low.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-        || (Q_low.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-            && Q_low.w[0] <
-            bid_reciprocals10_128[extra_digits].w[0])))
+        && (Q_low.w[1U] < bid_reciprocals10_128[extra_digits].w[1U]
+        || (Q_low.w[1U] == bid_reciprocals10_128[extra_digits].w[1U]
+            && Q_low.w[0U] <
+            bid_reciprocals10_128[extra_digits].w[0U])))
       status = BID_EXACT_STATUS;
     break;
       default:
     // round up
-    __add_carry_out (Stemp.w[0], CY, Q_low.w[0],
-             bid_reciprocals10_128[extra_digits].w[0]);
-    __add_carry_in_out (Stemp.w[1], carry, Q_low.w[1],
-                bid_reciprocals10_128[extra_digits].w[1], CY);
+    __add_carry_out (Stemp.w[0U], CY, Q_low.w[0U],
+             bid_reciprocals10_128[extra_digits].w[0U]);
+    __add_carry_in_out (Stemp.w[1U], carry, Q_low.w[1U],
+                bid_reciprocals10_128[extra_digits].w[1U], CY);
     if ((remainder_h >> (64 - amount)) + carry >=
         (((BID_UINT64) 1) << amount))
       status = BID_EXACT_STATUS;
@@ -352,7 +352,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
       // convert to BID and return
       res =
     fast_get_BID64_check_OF (sign_x ^ sign_y, final_exponent, C64,
-                 rnd_mode, pfpsf);
+                 (int)rnd_mode, pfpsf);
       BID_RETURN (res);
     }
     // go to convert_format and exit
@@ -360,7 +360,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
     res =
       get_BID64 (sign_x ^ sign_y,
          exponent_x + exponent_y - DECIMAL_EXPONENT_BIAS, C64,
-         rnd_mode, pfpsf);
+         (int)rnd_mode, pfpsf);
     BID_RETURN (res);
   }
 }

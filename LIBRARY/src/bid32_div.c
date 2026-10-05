@@ -187,7 +187,7 @@ BID_UINT64 CA, CT, PD;
     DU = (A - B) >> 31;
     ed1 = 6 + (int) DU;
     ed2 = bid_estimate_decimal_digits[bin_index] + ed1;
-    T = (BID_UINT32) (bid_power10_table_128[ed1].w[0]);
+    T = (BID_UINT32) (bid_power10_table_128[ed1].w[0U]);
     CA = ((BID_UINT64)A) * T;
 
     Q = 0;
@@ -207,7 +207,7 @@ BID_UINT64 CA, CT, PD;
     // exact result ?
     if (R == 0) {
       res =
-    get_BID32 (sign_x ^ sign_y, diff_expon, Q, rnd_mode,
+    get_BID32 (sign_x ^ sign_y, diff_expon, Q, (int)rnd_mode,
            pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
@@ -220,11 +220,11 @@ BID_UINT64 CA, CT, PD;
 
     ed2 = 7 - bid_estimate_decimal_digits[bin_expon_cx] - (int) DU;
 
-    T = (BID_UINT32) (bid_power10_table_128[ed2].w[0]);
+    T = (BID_UINT32) (bid_power10_table_128[ed2].w[0U]);
     CA = ((BID_UINT64)R) * T;
     B = coefficient_y;
 
-    Q *= (BID_UINT32)bid_power10_table_128[ed2].w[0];
+    Q *= (BID_UINT32)bid_power10_table_128[ed2].w[0U];
     diff_expon -= ed2;
 
   }
@@ -258,9 +258,9 @@ BID_UINT64 CA, CT, PD;
       i = (int) coefficient_y - 1;
       j = (int) coefficient_x - 1;
       // difference in powers of 2 bid_factors for Y and X
-      nzeros = ed2 - bid_factors[i][0] + bid_factors[j][0];
+      nzeros = ed2 - bid_factors[i][0U] + bid_factors[j][0U];
       // difference in powers of 5 bid_factors
-      d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
+      d5 = ed2 - bid_factors[i][1U] + bid_factors[j][1U];
       if (d5 < nzeros)
     nzeros = d5;
 
@@ -308,7 +308,7 @@ BID_UINT64 CA, CT, PD;
     if (diff_expon >= 0) {
       res =
     get_BID32 (sign_x ^ sign_y, diff_expon, Q,
-                 rnd_mode, pfpsf);
+                 (int)rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
       // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -331,7 +331,7 @@ BID_UINT64 CA, CT, PD;
     R -= (Q & 1);
     // R<0 ?
     D = ((BID_UINT32) R) >> 31;
-    Q += D;
+    Q += (BID_UINT32)D;
 #else
 #ifdef IEEE_ROUND_NEAREST_TIES_AWAY
     // round to nearest code
@@ -346,10 +346,10 @@ BID_UINT64 CA, CT, PD;
     R -= (Q & 1);
     // R<0 ?
     D = ((BID_UINT32) R) >> 31;
-    Q += D;
+    Q += (BID_UINT32)D;
 #else
-    rmode = rnd_mode;
-    if (sign_x ^ sign_y && (unsigned) (rmode - 1) < 2)
+    rmode = (int)rnd_mode;
+    if (sign_x ^ sign_y && (unsigned) (rmode - 1) < 2U)
       rmode = 3 - rmode;
     switch (rmode) {
     case 0:	// round to nearest code
@@ -361,10 +361,10 @@ BID_UINT64 CA, CT, PD;
       // compare 10*R to 5*B
       R = B5 - R;
       // correction for (R==0 && (Q&1))
-      R -= ((Q | (rmode >> 2)) & 1);
+      R -= (Q | (((unsigned)(rmode >> 2)) & 1U));
       // R<0 ?
-      D = ((BID_UINT32) R) >> 31;
-      Q += D;
+      D = (BID_SINT32)(((BID_UINT32) R) >> 31U);
+      Q += (BID_UINT32)D;
       break;
     case BID_ROUNDING_DOWN:
     case BID_ROUNDING_TO_ZERO:
@@ -377,7 +377,7 @@ BID_UINT64 CA, CT, PD;
 #endif
 
     res =
-      get_BID32 (sign_x ^ sign_y, diff_expon, Q, rnd_mode,
+      get_BID32 (sign_x ^ sign_y, diff_expon, Q, (int)rnd_mode,
                    pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
@@ -391,7 +391,7 @@ BID_UINT64 CA, CT, PD;
       __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
     }
 #endif
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     res =
       get_BID32_UF (sign_x ^ sign_y, diff_expon, Q, R, rmode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS

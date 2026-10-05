@@ -89,7 +89,8 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
   int_double tempx;
   int exponent_a, exponent_b, diff_dec_expon;
   int bin_expon_ca, extra_digits, amount, scale_k, scale_ca;
-  unsigned rmode, status;
+  int rmode;
+  unsigned status;
 
   // sort arguments by exponent
   if (exponent_x <= exponent_y) {
@@ -156,7 +157,7 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 	switch (rounding_mode) {
 	case BID_ROUNDING_DOWN:
 	  if (sign_b) {
-	    coefficient_a -= ((((BID_SINT64) sign_a) >> 63) | 1);
+	    coefficient_a -= (BID_UINT64)((((BID_SINT64) sign_a) >> 63) | 1);
 	    if (coefficient_a < 1000000000000000ull) {
 	      exponent_a--;
 	      coefficient_a = 9999999999999999ull;
@@ -168,7 +169,7 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 	  break;
 	case BID_ROUNDING_UP:
 	  if (!sign_b) {
-	    coefficient_a += ((((BID_SINT64) sign_a) >> 63) | 1);
+	    coefficient_a += (BID_UINT64)((((BID_SINT64) sign_a) >> 63) | 1);
 	    if (coefficient_a < 1000000000000000ull) {
 	      exponent_a--;
 	      coefficient_a = 9999999999999999ull;
@@ -212,17 +213,17 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
     coefficient_a *= bid_power10_table_128[diff_dec_expon].w[0];
 
     // sign mask
-    sign_b = ((BID_SINT64) sign_b) >> 63;
+    sign_b = (BID_UINT64)(((BID_SINT64) sign_b) >> 63);
     // apply sign to coeff. of b
     coefficient_b = (coefficient_b + sign_b) ^ sign_b;
 
     // apply sign to coefficient a
-    sign_a = ((BID_SINT64) sign_a) >> 63;
+    sign_a = (BID_UINT64)(((BID_SINT64) sign_a) >> 63);
     coefficient_a = (coefficient_a + sign_a) ^ sign_a;
 
     coefficient_a += coefficient_b;
     // get sign
-    sign_s = ((BID_SINT64) coefficient_a) >> 63;
+    sign_s = (BID_UINT64)(((BID_SINT64) coefficient_a) >> 63);
     coefficient_a = (coefficient_a + sign_s) ^ sign_s;
     sign_s &= 0x8000000000000000ull;
 
@@ -251,7 +252,7 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rounding_mode;
+    rmode = (int)rounding_mode;
     if (sign_s && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -276,7 +277,7 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rounding_mode;
+    rmode = (int)rounding_mode;
     if (sign_s && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -290,7 +291,7 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
     scale_ca = bid_estimate_decimal_digits[bin_expon_ca];
 
     sign_ab = sign_a ^ sign_b;
-    sign_ab = ((BID_SINT64) sign_ab) >> 63;
+    sign_ab = (BID_UINT64)(((BID_SINT64) sign_ab) >> 63);
 
     // T1 = 10^(16-diff_dec_expon)
     T1 = bid_power10_table_128[16 - diff_dec_expon].w[0];
@@ -314,8 +315,8 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 
     // addition
     saved_ca = coefficient_a - T1;
-    coefficient_a =
-      (BID_SINT64) saved_ca *(BID_SINT64) bid_power10_table_128[scale_k].w[0];
+    coefficient_a = (BID_UINT64)((BID_SINT64) saved_ca
+      * (BID_SINT64) bid_power10_table_128[scale_k].w[0]);
     extra_digits = diff_dec_expon - scale_k;
 
     // apply sign
@@ -359,10 +360,8 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 	    /*90000000000000000 */ +rem_a *
 	    bid_power10_table_128[diff_dec_expon].w[0];
 	} else
-	  coefficient_a =
-	    (BID_SINT64) (saved_ca - T1 -
-		      (T1 << 3)) * (BID_SINT64) bid_power10_table_128[scale_k -
-							      1].w[0];
+	  coefficient_a = (BID_UINT64)((BID_SINT64) (saved_ca - T1 - (T1 << 3))
+	    * (BID_SINT64) bid_power10_table_128[scale_k - 1].w[0]);
 
 	extra_digits++;
 	coefficient_b =
@@ -381,9 +380,8 @@ bid_get_add64 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 	C64 = C0_64 + coefficient_a;
       } else if (C64 <= 1000000000000000ull) {
 	// less than 16 digits in result
-	coefficient_a =
-	  (BID_SINT64) saved_ca *(BID_SINT64) bid_power10_table_128[scale_k +
-							1].w[0];
+	coefficient_a = (BID_UINT64)((BID_SINT64) saved_ca
+	  * (BID_SINT64) bid_power10_table_128[scale_k + 1].w[0]);
 	//extra_digits --;
 	exponent_b--;
 	coefficient_b =
@@ -550,7 +548,7 @@ __bid_full_round64 (BID_UINT64 sign, int exponent, BID_UINT128 P,
 
   if (extra_digits > 0) {
     exponent += extra_digits;
-    rmode = rounding_mode;
+    rmode = (int)rounding_mode;
     if (sign && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
     __add_128_128 (P, P, bid_round_const_table_128[rmode][extra_digits]);
@@ -652,9 +650,10 @@ __bid_full_round64_remainder (BID_UINT64 sign, int exponent, BID_UINT128 P,
 			      unsigned uf_status) {
   BID_UINT128 Q_high, Q_low, C128, Stemp;
   BID_UINT64 remainder_h, C64, carry, CY;
-  int amount, amount2, rmode, status = uf_status;
+  int amount, amount2, rmode;
+  unsigned status = uf_status;
 
-  rmode = rounding_mode;
+  rmode = (int)rounding_mode;
   if (sign && (unsigned) (rmode - 1) < 2)
     rmode = 3 - rmode;
   if (rmode == BID_ROUNDING_UP && remainder_P) {
@@ -918,28 +917,28 @@ bid_get_add128 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 	    if (!sign_y) {
 	      D = ((BID_SINT64) (sign_x ^ sign_y)) >> 63;
 	      D = D + D + 1;
-	      coefficient_x += D;
+	      coefficient_x += (BID_UINT64) D;
 	    }
 	    break;
 	  case BID_ROUNDING_DOWN:
 	    if (sign_y) {
 	      D = ((BID_SINT64) (sign_x ^ sign_y)) >> 63;
 	      D = D + D + 1;
-	      coefficient_x += D;
+	      coefficient_x += (BID_UINT64) D;
 	    }
 	    break;
 	  case BID_ROUNDING_TO_ZERO:
 	    if (sign_y != sign_x) {
 	      D = 0 - 1;
-	      coefficient_x += D;
+	      coefficient_x += (BID_UINT64) D;
 	    }
 	    break;
 	  default: break; // default added to avoid compiler warning
 	  }
 	  if (coefficient_x < 1000000000000000ull) {
-	    coefficient_x -= D;
+	    coefficient_x -= (BID_UINT64) D;
 	    coefficient_x =
-	      D + (coefficient_x << 1) + (coefficient_x << 3);
+	      (BID_UINT64) D + (coefficient_x << 1) + (coefficient_x << 3);
 	    exponent_x--;
 	  }
 	}
@@ -991,7 +990,7 @@ bid_get_add128 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
     diff_dec_expon = exponent_y - exponent_x;
 
     if (diff_dec_expon > MAX_FORMAT_DIGITS) {
-      rmode = rounding_mode;
+      rmode = (int)rounding_mode;
 
       if ((sign_x ^ sign_y)) {
 	if (!CY.w[0])
@@ -1018,7 +1017,7 @@ bid_get_add128 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
     }
     // apply sign to coeff_x
     sign_x ^= sign_y;
-    sign_x = ((BID_SINT64) sign_x) >> 63;
+    sign_x = (BID_UINT64)(((BID_SINT64) sign_x) >> 63);
     CX.w[0] = (coefficient_x + sign_x) ^ sign_x;
     CX.w[1] = sign_x;
 
@@ -1045,7 +1044,7 @@ bid_get_add128 (BID_UINT64 sign_x, int exponent_x, BID_UINT64 coefficient_x,
 
     coefficient_y = CY.w[0] - CY0L;
     // add rounding constant
-    rmode = rounding_mode;
+    rmode = (int)rounding_mode;
     if (sign_y && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
@@ -1176,7 +1175,7 @@ BID_normalize (BID_UINT64 sign_z, int exponent_z,
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-  rmode = rounding_mode;
+  rmode = (int)rounding_mode;
   if (sign_z && (unsigned) (rmode - 1) < 2)
     rmode = 3 - rmode;
 #else
@@ -1219,7 +1218,7 @@ BID_normalize (BID_UINT64 sign_z, int exponent_z,
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
   if (round_flag && (rmode & 3)) {
-    D = round_dir ^ sign_z;
+    D = (BID_SINT64)(round_dir ^ sign_z);
 
     if (rmode == BID_ROUNDING_UP) {
       if (D >= 0)
@@ -1269,6 +1268,6 @@ add_zero64 (int exponent_y, BID_UINT64 sign_z, int exponent_z,
   coefficient_z *= bid_power10_table_128[scale_k].w[0];
 
   return get_BID64 (sign_z, exponent_z - scale_k, coefficient_z,
-		    *prounding_mode, fpsc);
+		    (int)*prounding_mode, fpsc);
 }
 #endif

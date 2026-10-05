@@ -209,7 +209,7 @@ while (diff_expon > 0) {
   bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
   scale = scale0 - bid_estimate_decimal_digits[bin_expon_cx];
   // scale = 38-estimate_decimal_digits[bin_expon_cx];
-  D = CX.w[1] - bid_power10_index_binexp_128[bin_expon_cx].w[1];
+  D = (BID_SINT64)CX.w[1] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1];
   if (D > 0
       || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0]))
     scale--;

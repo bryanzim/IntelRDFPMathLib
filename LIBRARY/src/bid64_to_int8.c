@@ -29,8 +29,8 @@
 
 #include "bid_internal.h"
 
-#define SIZE_MASK      0xffffff80
-#define INVALID_RESULT 0x80
+#define SIZE_MASK      0xffffff80U
+#define INVALID_RESULT ((int)0x80)
 
 
 

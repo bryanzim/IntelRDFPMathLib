@@ -48,7 +48,7 @@ bid32_nextup (BID_UINT32 x
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
   BID_UI32FLOAT tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q1, ind;
   BID_UINT32 C1; // C1 represents x_signif (BID_UINT32)
 
@@ -108,11 +108,11 @@ bid32_nextup (BID_UINT32 x
       // q1 = nr. of decimal digits in x (1 <= q1 <= 7)
       //  determine first the nr. of bits in x
       tmp1.f = (float) C1; // exact conversion
-      x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-      q1 = bid_nr_digits[x_nr_bits - 1].digits;
+      x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+      q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits;
       if (q1 == 0) {
-    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q1++;
       }
       // if q1 < P7 then pad the significand with zeros
@@ -122,9 +122,9 @@ bid32_nextup (BID_UINT32 x
       // pad with P7 - q1 zeros, until exponent = emin
       // C1 = C1 * 10^ind
       C1 = C1 * ((BID_UINT32) bid_ten2k64[ind]);
-      x_exp = x_exp - ind;
+      x_exp = x_exp - (BID_UINT32)ind;
     } else { // pad with zeros until the exponent reaches emin
-      ind = x_exp;
+      ind = (int)x_exp;
       C1 = C1 * ((BID_UINT32) bid_ten2k64[ind]);
       x_exp = EXP_MIN32;
     }
@@ -177,7 +177,7 @@ bid32_nextdown (BID_UINT32 x
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
   BID_UI32FLOAT tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q1, ind;
   BID_UINT32 C1; // C1 represents x_signif (BID_UINT32)
 
@@ -237,11 +237,11 @@ bid32_nextdown (BID_UINT32 x
       // q1 = nr. of decimal digits in x (1 <= q1 <= 7)
       //  determine first the nr. of bits in x
       tmp1.f = (float) C1; // exact conversion
-      x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-      q1 = bid_nr_digits[x_nr_bits - 1].digits;
+      x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+      q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits;
       if (q1 == 0) {
-    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q1++;
       }
       // if q1 < P7 then pad the significand with zeros
@@ -251,9 +251,9 @@ bid32_nextdown (BID_UINT32 x
       // pad with P7 - q1 zeros, until exponent = emin
       // C1 = C1 * 10^ind
       C1 = C1 * ((BID_UINT32) bid_ten2k64[ind]);
-      x_exp = x_exp - ind;
+      x_exp = x_exp - (BID_UINT32)ind;
     } else {	// pad with zeros until the exponent reaches emin
-      ind = x_exp;
+      ind = (int)x_exp;
       C1 = C1 * ((BID_UINT32) bid_ten2k64[ind]);
       x_exp = EXP_MIN32;
     }

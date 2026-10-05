@@ -64,7 +64,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_quantum, BID_UINT32, x)
   }
 
   // Form 10^new_exponent*1  
-  res = (int_exp << 23) + 0x32800001ull;
+  res = ((BID_UINT32)int_exp << 23U) + 0x32800001U;
 
   BID_RETURN (res);
 

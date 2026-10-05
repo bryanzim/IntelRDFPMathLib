@@ -479,7 +479,7 @@ bid128_add (BID_UINT128 x, BID_UINT128 y
   // Note: C2.w[1], C2.w[0] represent C2_hi, C2_lo (all BID_UINT64)
   BID_UINT64 tmp64, tmp64A, tmp64B;
   BID_UI64DOUBLE tmp1, tmp2;
-  int x_nr_bits, y_nr_bits;
+  unsigned int x_nr_bits, y_nr_bits;
   int q1, q2, delta, scale, x1, ind, shift, tmp_inexact = 0;
   BID_UINT64 halfulp64;
   BID_UINT128 halfulp128;
@@ -673,9 +673,9 @@ bid128_add (BID_UINT128 x, BID_UINT128 y
       y_nr_bits =
         64 + ((((unsigned int) (tmp2.ui64 >> 52)) & 0x7ff) - 0x3ff);
     }
-    q2 = bid_nr_digits[y_nr_bits].digits;
+    q2 = (int)bid_nr_digits[y_nr_bits].digits;
     if (q2 == 0) {
-      q2 = bid_nr_digits[y_nr_bits].digits1;
+      q2 = (int)bid_nr_digits[y_nr_bits].digits1;
       if (C2_hi > bid_nr_digits[y_nr_bits].threshold_hi ||
           (C2_hi == bid_nr_digits[y_nr_bits].threshold_hi &&
            C2_lo >= bid_nr_digits[y_nr_bits].threshold_lo))
@@ -740,9 +740,9 @@ bid128_add (BID_UINT128 x, BID_UINT128 y
     x_nr_bits =
       64 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
       }
-      q1 = bid_nr_digits[x_nr_bits].digits;
+      q1 = (int)bid_nr_digits[x_nr_bits].digits;
       if (q1 == 0) {
-    q1 = bid_nr_digits[x_nr_bits].digits1;
+    q1 = (int)bid_nr_digits[x_nr_bits].digits1;
     if (C1_hi > bid_nr_digits[x_nr_bits].threshold_hi ||
         (C1_hi == bid_nr_digits[x_nr_bits].threshold_hi &&
          C1_lo >= bid_nr_digits[x_nr_bits].threshold_lo))
@@ -813,9 +813,9 @@ bid128_add (BID_UINT128 x, BID_UINT128 y
     64 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
     }
 
-    q1 = bid_nr_digits[x_nr_bits].digits;
+    q1 = (int)bid_nr_digits[x_nr_bits].digits;
     if (q1 == 0) {
-      q1 = bid_nr_digits[x_nr_bits].digits1;
+      q1 = (int)bid_nr_digits[x_nr_bits].digits1;
       if (C1_hi > bid_nr_digits[x_nr_bits].threshold_hi ||
       (C1_hi == bid_nr_digits[x_nr_bits].threshold_hi &&
        C1_lo >= bid_nr_digits[x_nr_bits].threshold_lo))
@@ -840,9 +840,9 @@ bid128_add (BID_UINT128 x, BID_UINT128 y
     64 + ((((unsigned int) (tmp2.ui64 >> 52)) & 0x7ff) - 0x3ff);
     }
 
-    q2 = bid_nr_digits[y_nr_bits].digits;
+    q2 = (int)bid_nr_digits[y_nr_bits].digits;
     if (q2 == 0) {
-      q2 = bid_nr_digits[y_nr_bits].digits1;
+      q2 = (int)bid_nr_digits[y_nr_bits].digits1;
       if (C2_hi > bid_nr_digits[y_nr_bits].threshold_hi ||
       (C2_hi == bid_nr_digits[y_nr_bits].threshold_hi &&
        C2_lo >= bid_nr_digits[y_nr_bits].threshold_lo))

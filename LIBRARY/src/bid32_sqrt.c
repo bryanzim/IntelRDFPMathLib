@@ -91,7 +91,7 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
     }
     // x is 0
     exponent_x = (exponent_x + DECIMAL_EXPONENT_BIAS_32) >> 1;
-    res = sign_x | (( exponent_x) << 23);
+    res = sign_x | ((BID_UINT32)exponent_x << 23U);
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
@@ -142,7 +142,7 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT32, bid32_sqrt, x)
   exponent_q = exponent_x + DECIMAL_EXPONENT_BIAS_32 - scale;
   scale += (exponent_q & 1);	// exp. bias is even
 
-  CT = bid_power10_table_128[scale].w[0];
+  CT = bid_power10_table_128[scale].w[0U];
   CA = coefficient_x * CT;
 
   dq = sqrt (((double)CA));

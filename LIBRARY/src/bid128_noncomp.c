@@ -82,7 +82,8 @@ bid128_isNormal (BID_UINT128 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   int res;
   BID_UINT64 x_exp, C1_hi, C1_lo;
   BID_UI64DOUBLE tmp1;
-  int exp, q, x_nr_bits;
+  int exp, q;
+  unsigned int x_nr_bits;
 
   BID_SWAP128 (x);
   // test for special values - infinity or NaN
@@ -129,12 +130,12 @@ bid128_isNormal (BID_UINT128 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1_hi > bid_nr_digits[x_nr_bits - 1].threshold_hi ||
-    (C1_hi == bid_nr_digits[x_nr_bits - 1].threshold_hi &&
-     C1_lo >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1_hi > bid_nr_digits[x_nr_bits - 1U].threshold_hi ||
+    (C1_hi == bid_nr_digits[x_nr_bits - 1U].threshold_hi &&
+     C1_lo >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (int) (x_exp >> 49) - 6176;
@@ -162,7 +163,8 @@ bid128_isSubnormal (BID_UINT128 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   int res;
   BID_UINT64 x_exp, C1_hi, C1_lo;
   BID_UI64DOUBLE tmp1;
-  int exp, q, x_nr_bits;
+  int exp, q;
+  unsigned int x_nr_bits;
 
   BID_SWAP128 (x);
   // test for special values - infinity or NaN
@@ -209,12 +211,12 @@ bid128_isSubnormal (BID_UINT128 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     x_nr_bits =
       65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1_hi > bid_nr_digits[x_nr_bits - 1].threshold_hi ||
-    (C1_hi == bid_nr_digits[x_nr_bits - 1].threshold_hi &&
-     C1_lo >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1_hi > bid_nr_digits[x_nr_bits - 1U].threshold_hi ||
+    (C1_hi == bid_nr_digits[x_nr_bits - 1U].threshold_hi &&
+     C1_lo >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (int) (x_exp >> 49) - 6176;

@@ -65,7 +65,7 @@ bid64_to_int64_rnint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -102,10 +102,10 @@ bid64_to_int64_rnint (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -114,7 +114,7 @@ bid64_to_int64_rnint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -135,7 +135,7 @@ bid64_to_int64_rnint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -155,7 +155,7 @@ bid64_to_int64_rnint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -178,7 +178,7 @@ bid64_to_int64_rnint (BID_UINT64 x
     if (C1 <= bid_midpoint64[ind]) {
       res = 0x0000000000000000ull;	// return 0
     } else if (x_sign) {	// n < 0
-      res = 0xffffffffffffffffull;	// return -1
+      res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
     } else {	// n > 0
       res = 0x0000000000000001ull;	// return +1
     }
@@ -232,24 +232,24 @@ bid64_to_int64_rnint (BID_UINT64 x
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -292,7 +292,7 @@ bid64_to_int64_xrnint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -329,10 +329,10 @@ bid64_to_int64_xrnint (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -341,7 +341,7 @@ bid64_to_int64_xrnint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -362,7 +362,7 @@ bid64_to_int64_xrnint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -382,7 +382,7 @@ bid64_to_int64_xrnint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -407,7 +407,7 @@ bid64_to_int64_xrnint (BID_UINT64 x
     if (C1 <= bid_midpoint64[ind]) {
       res = 0x0000000000000000ull;	// return 0
     } else if (x_sign) {	// n < 0
-      res = 0xffffffffffffffffull;	// return -1
+      res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
     } else {	// n > 0
       res = 0x0000000000000001ull;	// return +1
     }
@@ -499,24 +499,24 @@ bid64_to_int64_xrnint (BID_UINT64 x
     }	// else MP in [ODD, EVEN]
       }
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -558,7 +558,7 @@ bid64_to_int64_floor (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -595,10 +595,10 @@ bid64_to_int64_floor (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -607,7 +607,7 @@ bid64_to_int64_floor (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -628,7 +628,7 @@ bid64_to_int64_floor (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -648,7 +648,7 @@ bid64_to_int64_floor (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -661,7 +661,7 @@ bid64_to_int64_floor (BID_UINT64 x
   if ((q + exp) <= 0) {	// n = +/-0.0...c(0)c(1)...c(q-1)
     // return -1 or 0
     if (x_sign)
-      res = 0xffffffffffffffffull;
+      res = (BID_SINT64)0xffffffffffffffffULL;
     else
       res = 0x0000000000000000ull;
     BID_RETURN (res);
@@ -717,24 +717,24 @@ bid64_to_int64_floor (BID_UINT64 x
       }
 
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -776,7 +776,7 @@ bid64_to_int64_xfloor (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -813,10 +813,10 @@ bid64_to_int64_xfloor (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -825,7 +825,7 @@ bid64_to_int64_xfloor (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -846,7 +846,7 @@ bid64_to_int64_xfloor (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -866,7 +866,7 @@ bid64_to_int64_xfloor (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -881,7 +881,7 @@ bid64_to_int64_xfloor (BID_UINT64 x
     *pfpsf |= BID_INEXACT_EXCEPTION;
     // return -1 or 0
     if (x_sign)
-      res = 0xffffffffffffffffull;
+      res = (BID_SINT64)0xffffffffffffffffULL;
     else
       res = 0x0000000000000000ull;
     BID_RETURN (res);
@@ -941,24 +941,24 @@ bid64_to_int64_xfloor (BID_UINT64 x
       }
 
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1000,7 +1000,7 @@ bid64_to_int64_ceil (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -1037,10 +1037,10 @@ bid64_to_int64_ceil (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1049,7 +1049,7 @@ bid64_to_int64_ceil (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1070,7 +1070,7 @@ bid64_to_int64_ceil (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1090,7 +1090,7 @@ bid64_to_int64_ceil (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1159,24 +1159,24 @@ bid64_to_int64_ceil (BID_UINT64 x
       }
 
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1218,7 +1218,7 @@ bid64_to_int64_xceil (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -1255,10 +1255,10 @@ bid64_to_int64_xceil (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1267,7 +1267,7 @@ bid64_to_int64_xceil (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1288,7 +1288,7 @@ bid64_to_int64_xceil (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1308,7 +1308,7 @@ bid64_to_int64_xceil (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1383,24 +1383,24 @@ bid64_to_int64_xceil (BID_UINT64 x
       }
 
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1439,7 +1439,7 @@ bid64_to_int64_int (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -1476,10 +1476,10 @@ bid64_to_int64_int (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1488,7 +1488,7 @@ bid64_to_int64_int (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1509,7 +1509,7 @@ bid64_to_int64_int (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1529,7 +1529,7 @@ bid64_to_int64_int (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1571,24 +1571,24 @@ bid64_to_int64_int (BID_UINT64 x
       Cstar = Cstar >> shift;
 
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1630,7 +1630,7 @@ bid64_to_int64_xint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -1667,10 +1667,10 @@ bid64_to_int64_xint (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1679,7 +1679,7 @@ bid64_to_int64_xint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1700,7 +1700,7 @@ bid64_to_int64_xint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1720,7 +1720,7 @@ bid64_to_int64_xint (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1785,24 +1785,24 @@ bid64_to_int64_xint (BID_UINT64 x
     }	// else the result is exact
       }
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -1843,7 +1843,7 @@ bid64_to_int64_rninta (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -1880,10 +1880,10 @@ bid64_to_int64_rninta (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1892,7 +1892,7 @@ bid64_to_int64_rninta (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -1913,7 +1913,7 @@ bid64_to_int64_rninta (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1933,7 +1933,7 @@ bid64_to_int64_rninta (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -1956,7 +1956,7 @@ bid64_to_int64_rninta (BID_UINT64 x
     if (C1 < bid_midpoint64[ind]) {
       res = 0x0000000000000000ull;	// return 0
     } else if (x_sign) {	// n < 0
-      res = 0xffffffffffffffffull;	// return -1
+      res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
     } else {	// n > 0
       res = 0x0000000000000001ull;	// return +1
     }
@@ -1996,24 +1996,24 @@ bid64_to_int64_rninta (BID_UINT64 x
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);
@@ -2056,7 +2056,7 @@ bid64_to_int64_xrninta (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   }
   // unpack x
@@ -2093,10 +2093,10 @@ bid64_to_int64_xrninta (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -2105,7 +2105,7 @@ bid64_to_int64_xrninta (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
   } else if ((q + exp) == 19) {	// x = c(0)c(1)...c(18).c(19)...c(q-1)
     // in this case 2^63.11... ~= 10^19 <= x < 10^20 ~= 2^66.43...
@@ -2126,7 +2126,7 @@ bid64_to_int64_xrninta (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2146,7 +2146,7 @@ bid64_to_int64_xrninta (BID_UINT64 x
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
-    res = 0x8000000000000000ull;
+    res = (BID_SINT64)0x8000000000000000ULL;
     BID_RETURN (res);
       }
       // else cases that can be rounded to a 64-bit int fall through
@@ -2171,7 +2171,7 @@ bid64_to_int64_xrninta (BID_UINT64 x
     if (C1 < bid_midpoint64[ind]) {
       res = 0x0000000000000000ull;	// return 0
     } else if (x_sign) {	// n < 0
-      res = 0xffffffffffffffffull;	// return -1
+      res = (BID_SINT64)0xffffffffffffffffULL;	// return -1
     } else {	// n > 0
       res = 0x0000000000000001ull;	// return +1
     }
@@ -2251,24 +2251,24 @@ bid64_to_int64_xrninta (BID_UINT64 x
 
       // if the result was a midpoint it was rounded away from zero
       if (x_sign)
-    res = -((BID_SINT64) Cstar);
+    res = -((BID_SINT64)Cstar);
       else
-    res = Cstar;
+    res = (BID_SINT64)Cstar;
     } else if (exp == 0) {
       // 1 <= q <= 16
       // res = +/-C (exact)
       if (x_sign)
     res = -((BID_SINT64) C1);
       else
-    res = C1;
+    res = (BID_SINT64)C1;
     } else {	// if (exp > 0) => 1 <= exp <= 18, 1 <= q <= 16, 2 <= q + exp <= 20
       // (the upper limit of 20 on q + exp is due to the fact that 
       // +/-C * 10^exp is guaranteed to fit in 64 bits) 
       // res = +/-C * 10^exp (exact)
       if (x_sign)
-    res = -((BID_SINT64) C1) * bid_ten2k64[exp];
+    res = (BID_SINT64)(-((BID_SINT64)C1 * (BID_SINT64)bid_ten2k64[exp]));
       else
-    res = C1 * bid_ten2k64[exp];
+    res = (BID_SINT64)(C1 * bid_ten2k64[exp]);
     }
   }
   BID_RETURN (res);

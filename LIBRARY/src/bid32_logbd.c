@@ -66,10 +66,10 @@ if ((x & 0x7c000000) == 0x78000000)
 }
  
   BIDECIMAL_CALL1_NORND (bid32_ilogb, ires, x);
-  if (ires & 0x80000000)
-    res = 0xb2800000 | (-ires); 
+  if ((BID_UINT32)ires & 0x80000000U)
+    res = 0xb2800000U | (BID_UINT32)(-ires); 
   else
-    res = 0x32800000 | ires; 
+    res = 0x32800000U | (BID_UINT32)ires; 
   BID_RETURN (res);
 
 }

@@ -94,14 +94,14 @@ bid32_to_uint32_rnint (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -300,14 +300,14 @@ bid32_to_uint32_xrnint (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -552,14 +552,14 @@ bid32_to_uint32_floor (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -708,14 +708,14 @@ bid32_to_uint32_xfloor (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -881,14 +881,14 @@ bid32_to_uint32_ceil (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1069,14 +1069,14 @@ bid32_to_uint32_xceil (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1262,14 +1262,14 @@ bid32_to_uint32_int (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1427,14 +1427,14 @@ bid32_to_uint32_xint (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1615,14 +1615,14 @@ bid32_to_uint32_rninta (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
@@ -1801,14 +1801,14 @@ bid32_to_uint32_xrninta (BID_UINT32 x
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
   tmp1.f = (float) C1; // exact conversion
-  x_nr_bits = 1 + ((tmp1.ui32 >> 23) & 0xff) - 0x7f;
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
-  exp = x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101; // unbiased exponent
 
   if ((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag

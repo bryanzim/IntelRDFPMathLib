@@ -69,7 +69,7 @@ BID128_FUNCTION_ARG1_NORND(bid128_quantum, x)
   }
 
   // Form 10^new_exponent*1  
-  res.w[1] = (((long long int) int_exp) << 49 ) + 0x3040000000000000ull;
+  res.w[1] = (((BID_UINT64)(long long int) int_exp) << 49) + 0x3040000000000000ull;
   res.w[0] = 0x0000000000000001ull;
 
   BID_RETURN (res);

@@ -102,10 +102,10 @@ bid64_to_uint32_rnint (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -333,10 +333,10 @@ bid64_to_uint32_xrnint (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -610,10 +610,10 @@ bid64_to_uint32_floor (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -791,10 +791,10 @@ bid64_to_uint32_xfloor (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -989,10 +989,10 @@ bid64_to_uint32_ceil (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1202,10 +1202,10 @@ bid64_to_uint32_xceil (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1420,10 +1420,10 @@ bid64_to_uint32_int (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1610,10 +1610,10 @@ bid64_to_uint32_xint (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -1823,10 +1823,10 @@ bid64_to_uint32_rninta (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent
@@ -2034,10 +2034,10 @@ bid64_to_uint32_xrninta (BID_UINT64 x
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
   }
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q++;
   }
   exp = (int) (x_exp - 398);	// unbiased exponent

@@ -40,7 +40,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
   int exp;			// unbiased exponent
   // Note: C1 represents the significand (BID_UINT64)
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT64 C1;
   // BID_UINT64 res is C* at first - represents up to 16 decimal digits <= 54 bits
@@ -145,10 +145,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
     q++;
     }
   }
@@ -492,7 +492,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_e
   int exp;			// unbiased exponent
   // Note: C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (all are BID_UINT64)
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT64 C1;
   BID_UINT128 fstar= { {0x0ull, 0x0ull} };
@@ -555,10 +555,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_e
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
     q++;
     }
   }
@@ -631,7 +631,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_negative,
   int exp;			// unbiased exponent
   // Note: C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (all are BID_UINT64)
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT64 C1;
   // BID_UINT64 res is C* at first - represents up to 34 decimal digits ~ 113 bits
@@ -699,10 +699,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_negative,
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
     q++;
     }
   }
@@ -772,7 +772,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_positive,
   int exp;			// unbiased exponent
   // Note: C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (all are BID_UINT64)
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT64 C1;
   // BID_UINT64 res is C* at first - represents up to 34 decimal digits ~ 113 bits
@@ -840,10 +840,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_positive,
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
     q++;
     }
   }
@@ -913,7 +913,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_zero, BID
   int exp;			// unbiased exponent
   // Note: C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (all are BID_UINT64)
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT64 C1;
   // BID_UINT64 res is C* at first - represents up to 34 decimal digits ~ 113 bits
@@ -976,10 +976,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_zero, BID
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
     q++;
     }
   }
@@ -1043,7 +1043,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_a
   int exp;			// unbiased exponent
   // Note: C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (all are BID_UINT64)
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT64 C1;
   BID_UINT128 P128;
@@ -1105,10 +1105,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_a
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
       1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
     q++;
     }
   }

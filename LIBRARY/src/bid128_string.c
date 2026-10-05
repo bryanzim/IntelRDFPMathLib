@@ -61,7 +61,7 @@ bid128_to_string (char *str, BID_UINT128 x
   BID_UINT64 x_exp;
   int exp; 	// unbiased exponent
   // Note: C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (all are BID_UINT64)
-  int ind;
+  unsigned int ind;
   BID_UINT128 C1;
   unsigned int k = 0; // pointer in the string
   unsigned int d0, d123;
@@ -70,7 +70,7 @@ bid128_to_string (char *str, BID_UINT128 x
   BID_UINT32 MiDi[12], *ptr;
   char *c_ptr_start, *c_ptr;
   int midi_ind, k_lcv, len;
-  int save_fpsf;
+  unsigned int save_fpsf;
 
 #if DECIMAL_CALL_BY_REFERENCE
   x = *px;
@@ -241,27 +241,27 @@ bid128_to_string (char *str, BID_UINT128 x
     // determine exponent's representation as a decimal string
     // d0 = exp / 1000;
     // Use Property 1
-    d0 = (exp * 0x418a) >> 24;// 0x418a * 2^-24 = (10^(-3))RP,15
-    d123 = exp - 1000 * d0;
+    d0 = ((unsigned int)exp * 0x418aU) >> 24;// 0x418a * 2^-24 = (10^(-3))RP,15
+    d123 = (unsigned int)exp - 1000U * d0;
 
     if (d0) { // 1000 <= exp <= 6144 => 4 digits to return
       str[k++] = (char)(d0 + zero_digit); // ASCII for decimal digit d0
       ind = 3 * d123;
-      str[k++] = bid_char_table3[ind];
-      str[k++] = bid_char_table3[ind + 1];
-      str[k++] = bid_char_table3[ind + 2];
+      str[k++] = (char)bid_char_table3[ind];
+      str[k++] = (char)bid_char_table3[ind + 1U];
+      str[k++] = (char)bid_char_table3[ind + 2U];
     } else { // 0 <= exp <= 999 => d0 = 0
       if (d123 < 10) { // 0 <= exp <= 9 => 1 digit to return
 	str[k++] = (char)(d123 + zero_digit); // ASCII
       } else if (d123 < 100) { // 10 <= exp <= 99 => 2 digits to return
 	ind = 2 * (d123 - 10);
-	str[k++] = bid_char_table2[ind];
-	str[k++] = bid_char_table2[ind + 1];
+	str[k++] = (char)bid_char_table2[ind];
+	str[k++] = (char)bid_char_table2[ind + 1U];
       } else { // 100 <= exp <= 999 => 3 digits to return
 	ind = 3 * d123;
-	str[k++] = bid_char_table3[ind];
-	str[k++] = bid_char_table3[ind + 1];
-	str[k++] = bid_char_table3[ind + 2];
+	str[k++] = (char)bid_char_table3[ind];
+	str[k++] = (char)bid_char_table3[ind + 1U];
+	str[k++] = (char)bid_char_table3[ind + 2U];
       }
     }
     str[k] = '\0';
@@ -297,8 +297,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
   int ndigits_before, ndigits_after, ndigits_total, dec_expon, sgn_exp,
     i, d2, rdx_pt_enc, set_inexact=0;
   char c, buffer[MAX_STRING_DIGITS_128];
-  int save_rnd_mode;
-  int save_fpsf;
+  _IDEC_round save_rnd_mode;
+  unsigned int save_fpsf;
   int min_digits, sticky_bit=0;
   
 #if DECIMAL_CALL_BY_REFERENCE
@@ -565,8 +565,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
 
   if (ndigits_total <= MAX_FORMAT_DIGITS_128) {
     dec_expon +=
-      DECIMAL_EXPONENT_BIAS_128 - ndigits_after -
-      right_radix_leading_zeros;
+      (int)DECIMAL_EXPONENT_BIAS_128 - ndigits_after -
+      (int)right_radix_leading_zeros;
     if (dec_expon < 0) {
       res.w[1] = 0 | sign_x;
       res.w[0] = 0;
@@ -575,24 +575,24 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       CX.w[0] = 0;
       CX.w[1] = 0;
     } else if (ndigits_total <= 19) {
-      coeff_high = buffer[0] - '0';
+      coeff_high = (BID_UINT64)(buffer[0] - '0');
       for (i = 1; i < ndigits_total; i++) {
         coeff2 = coeff_high + coeff_high;
-        coeff_high = (coeff2 << 2) + coeff2 + buffer[i] - '0';
+        coeff_high = (coeff2 << 2) + coeff2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
       }
       CX.w[0] = coeff_high;
       CX.w[1] = 0;
     } else {
-      coeff_high = buffer[0] - '0';
+      coeff_high = (BID_UINT64)(buffer[0] - '0');
       for (i = 1; i < ndigits_total - 17; i++) {
         coeff2 = coeff_high + coeff_high;
-        coeff_high = (coeff2 << 2) + coeff2 + buffer[i] - '0';
+        coeff_high = (coeff2 << 2) + coeff2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
       }
-      coeff_low = buffer[i] - '0';
+      coeff_low = (BID_UINT64)(unsigned char)(buffer[i] - '0');
       i++;
       for (; i < ndigits_total; i++) {
         coeff_l2 = coeff_low + coeff_low;
-        coeff_low = (coeff_l2 << 2) + coeff_l2 + buffer[i] - '0';
+        coeff_low = (coeff_l2 << 2) + coeff_l2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
       }
       // now form the coefficient as coeff_high*10^19+coeff_low+carry
       scale_high = 100000000000000000ull;
@@ -608,24 +608,24 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     // simply round using the digits that were read
 
     dec_expon +=
-      ndigits_before + DECIMAL_EXPONENT_BIAS_128 -
-      MAX_FORMAT_DIGITS_128 - right_radix_leading_zeros;
+      ndigits_before + (int)DECIMAL_EXPONENT_BIAS_128 -
+      MAX_FORMAT_DIGITS_128 - (int)right_radix_leading_zeros;
 
     if (dec_expon < 0) {
       res.w[1] = 0 | sign_x;
       res.w[0] = 0;
     }
 
-    coeff_high = buffer[0] - '0';
+    coeff_high = (BID_UINT64)(buffer[0] - '0');
     for (i = 1; i < MAX_FORMAT_DIGITS_128 - 17; i++) {
       coeff2 = coeff_high + coeff_high;
-      coeff_high = (coeff2 << 2) + coeff2 + buffer[i] - '0';
+      coeff_high = (coeff2 << 2) + coeff2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
     }
-    coeff_low = buffer[i] - '0';
+    coeff_low = (BID_UINT64)(unsigned char)(buffer[i] - '0');
     i++;
     for (; i < MAX_FORMAT_DIGITS_128; i++) {
       coeff_l2 = coeff_low + coeff_low;
-      coeff_low = (coeff_l2 << 2) + coeff_l2 + buffer[i] - '0';
+      coeff_low = (coeff_l2 << 2) + coeff_l2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
     }
     switch(rnd_mode) {
     case BID_ROUNDING_TO_NEAREST:
@@ -636,7 +636,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
           i++;
         }
         min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
-	for (carry=sticky_bit; (!carry) && (i < min_digits); i++) {
+	for (carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits); i++) {
           if (buffer[i] > '0') {
             carry = 1;
             break;
@@ -648,7 +648,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     case BID_ROUNDING_DOWN:
       if(sign_x) {
         min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
-        for (carry=sticky_bit; (!carry) && (i < min_digits); i++) {
+        for (carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits); i++) {
 	  if (buffer[i] > '0') {
             carry = 1;
             break;
@@ -659,7 +659,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     case BID_ROUNDING_UP:
       if(!sign_x) { 
         min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
-	for (carry=sticky_bit; (!carry) && (i < min_digits); i++) {
+	for (carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits); i++) {
           if (buffer[i] > '0') {
             carry = 1;
             break;
@@ -674,7 +674,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       carry = ((unsigned) ('4' - buffer[i])) >> 31;
       if (dec_expon < 0) {
         min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
-        for (carry=sticky_bit; (!carry) && (i < min_digits); i++) {
+        for (carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits); i++) {
 	  if (buffer[i] > '0') {
             carry = 1;
             break;

@@ -45,7 +45,8 @@ BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(int, bid128_ilogb, x)
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-     res =  ((x.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull)? 0x7fffffff : 0x80000000;
+     res =  ((x.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull)
+       ? 0x7fffffff : (int)0x80000000U;
      BID_RETURN_VAL (res);
   }
   // find number of digits in coefficient
@@ -56,7 +57,7 @@ BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(int, bid128_ilogb, x)
   bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
   digits = bid_estimate_decimal_digits[bin_expon_cx];
   // scale = 38-estimate_decimal_digits[bin_expon_cx];
-  D = CX.w[1] - bid_power10_index_binexp_128[bin_expon_cx].w[1];
+  D = (BID_SINT64)CX.w[1] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1];
   if (D > 0 || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0])) {
     digits++;
   }

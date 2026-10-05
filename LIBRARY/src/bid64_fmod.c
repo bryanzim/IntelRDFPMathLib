@@ -110,7 +110,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_fmod, BID_UINT64, x
       if (exponent_y < exponent_x)
     exponent_x = exponent_y;
 
-      x = exponent_x;
+      x = (BID_UINT64) exponent_x;
       x <<= 53;
 
       res = x | sign_x;

@@ -130,7 +130,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
   tempx.d = (double) P;
   bin_expon_p = ((tempx.i & MASK_BINARY_EXPONENT) >> 52)-0x3ff;
   n_digits = bid_estimate_decimal_digits[bin_expon_p];
-  if(P >=bid_power10_table_128[n_digits].w[0])
+  if(P >=bid_power10_table_128[n_digits].w[0U])
       n_digits++;
 
   exponent_x += exponent_y - DECIMAL_EXPONENT_BIAS_32;
@@ -140,14 +140,14 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
   exponent_x += extra_digits;
 
   if(!extra_digits) {
-      res = 	get_BID32 (sign_x ^ sign_y, exponent_x, P, rnd_mode,
+      res = 	get_BID32 (sign_x ^ sign_y, exponent_x, P, (int)rnd_mode,
            pfpsf);
       BID_RETURN (res);
     }
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     if ((sign_x ^ sign_y) && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -166,10 +166,10 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
 
       // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-64
       amount = bid_short_recip_scale[extra_digits];
-      Q = Tmp.w[1] >> amount;
+      Q = Tmp.w[1U] >> amount;
 
       // remainder
-      R = P - Q * bid_power10_table_128[extra_digits].w[0];
+      R = P - Q * bid_power10_table_128[extra_digits].w[0U];
 
       if(R==bid_round_const_table[rmode][extra_digits])
           status = 0;
@@ -190,10 +190,10 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
       if((exponent_x==-1) && (Q==9999999) && (rnd_mode!=BID_ROUNDING_TO_ZERO))
       {
-         rmode = rnd_mode;
+         rmode = (int)rnd_mode;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     if ((sign_x^sign_y) && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -203,7 +203,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
     rmode = 0;
 #endif
             
-         if((R && (rmode==BID_ROUNDING_UP)) || ((!(rmode&3)) && (R+R>=bid_power10_table_128[extra_digits].w[0])))
+         if((R && (rmode==BID_ROUNDING_UP)) || ((!(rmode&3)) && (R+R>=bid_power10_table_128[extra_digits].w[0U])))
          {
              res = very_fast_get_BID32(sign_x^sign_y, 0, 1000000);
              BID_RETURN (res);
@@ -211,7 +211,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
       }
 #endif
 
-      res = get_BID32_UF (sign_x^sign_y, exponent_x, Q, (BID_UINT32)R, rnd_mode, pfpsf);
+      res = get_BID32_UF (sign_x^sign_y, exponent_x, Q, (BID_UINT32)R, (int)rnd_mode, pfpsf);
 
     BID_RETURN (res);
   

@@ -132,7 +132,7 @@ int i,k;
    }
    while(iswspace(*ps_in)) ps_in++;
    k = (int)(1 + wcslen(ps_in));
-   ps = malloc((k+1)*sizeof(wchar_t));
+   ps = malloc((size_t)(k + 1) * sizeof(wchar_t));
    if(!ps)
    {
      set_wcs_end(endptr,ps_in);
@@ -197,7 +197,7 @@ int i,k;
    }
 
    *ps = L'\0';
-   ps0_c = malloc(k*sizeof(char));
+   ps0_c = malloc((size_t)k * sizeof(char));
    if(!ps0_c)
    { free(ps0); return NULL;}
    for(i=0; i<k; i++)
