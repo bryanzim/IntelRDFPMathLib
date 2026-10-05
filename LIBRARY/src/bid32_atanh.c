@@ -27,19 +27,7 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-
 #include "bid_internal.h"
-
-#if defined(_MSC_VER)
-#    pragma warning( push )
-#    pragma warning( disable : 4273 )
-#endif
-
-BID_EXTERN_C double log1p(double);
-
-#if defined(_MSC_VER)
-#    pragma warning( pop )
-#endif
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_atanh, BID_UINT32, x)
 
@@ -47,7 +35,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_atanh, BID_UINT32, x)
   BID_UINT32 valid_x, res, one, one_m_x;
   double xq, rq;
   int exponent_x;
-
 
   valid_x = unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x);
 
@@ -123,7 +110,5 @@ if ((x & 0x78000000) == 0x78000000) {
 
     BID_RETURN (res);
 
-
 }
-
 

@@ -27,7 +27,6 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-
 #include "bid_internal.h"
 
 #define BID32_NAN 0x7c000000ul
@@ -36,9 +35,6 @@
 #define BID32_INF 0x78000000ul
 
 int    abs(int);
-double fabs(double);
-double pow(double, double);
-
 BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_pow, x, y)
 
   BID_UINT32 res, y_int;

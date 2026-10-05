@@ -27,17 +27,13 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-
 #include "bid_internal.h"
-
-BID_EXTERN_C double atan2(double, double);
 
 BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_atan2, x, y)
   BID_UINT32 sign_x, sign_y, coefficient_x, coefficient_y;
   BID_UINT32 valid_x, valid_y, res;
   double xd, yd, zd;
   int exponent_x, exponent_y;
-
 
   valid_x = unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x);
   valid_y = unpack_BID32 (&sign_y, &exponent_y, &coefficient_y, y);
@@ -95,5 +91,4 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_atan2, x, y)
   BID_RETURN (res);
 
 }
-
 

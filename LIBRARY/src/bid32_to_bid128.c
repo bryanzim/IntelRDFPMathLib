@@ -64,7 +64,6 @@ bid_get_BID128_very_fast (&res, ((BID_UINT64) sign_x) << 32,
 BID_RETURN_NOFLAGS (res);
 }	// convert_bid32_to_bid128
 
-
 /*
  * Takes a BID128 as input and converts it to a BID32 and returns it.
  */
@@ -194,7 +193,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
     }
       }
 #endif
-
 
     {
       status = BID_INEXACT_EXCEPTION;

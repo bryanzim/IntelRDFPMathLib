@@ -35,7 +35,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid32_ilogb, BID_UINT32, x)
   int_float dx;
   int exponent_x, bin_expon_cx, digits, res;
 
-
   // unpack arguments, check for NaN or Infinity
   if (!unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x)) {
     // x is Inf. or NaN

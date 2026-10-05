@@ -33,7 +33,6 @@ static const BID_UINT32 bid_mult_factor[7] = {
   1, 10, 100, 1000, 10000, 100000, 1000000
 };
 
-
 BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_equal, BID_UINT32, x, y)
 
   int res;
@@ -140,7 +139,6 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_equal, BID_UINT32, x,
   res = (sig_y == sig_x);
   BID_RETURN (res);
 }
-
 
 BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater, BID_UINT32, x, y)
 
@@ -294,7 +292,6 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater, BID_UINT32, 
   res = ((sig_x > sig_n_prime) ^ ((x & MASK_SIGN32) == MASK_SIGN32));
   BID_RETURN (res);
 }
-
 
 BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_quiet_greater_equal, BID_UINT32, x, y)
 
@@ -1666,7 +1663,6 @@ BID_TYPE_FUNCTION_ARG2_CUSTOMRESULT_NORND(int, bid32_signaling_greater, BID_UINT
 
     // otherwise adjust the x significand upwards
     sig_n_prime = (BID_UINT64)sig_x * (BID_UINT64)bid_mult_factor[exp_x - exp_y];
-
 
     // if postitive, return whichever significand is larger 
     //     (converse if negative)

@@ -51,8 +51,6 @@
 #include "bid_sqrt_macros.h"
 #include <fenv.h>
 
-BID_EXTERN_C double sqrt (double);
-
 BID_TYPE_FUNCTION_ARG1(BID_UINT64, bid64_sqrt, x)
   BID_UINT128 CA, CT;
   BID_UINT64 sign_x, coefficient_x;
@@ -210,7 +208,6 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT64, bid64_sqrt, x)
   if (rm_changed) fesetround(old_rm);
   BID_RETURN_VAL (res);
 }
-
 
 BID_TYPE0_FUNCTION_ARG1 (BID_UINT64, bid64q_sqrt, x)
 
@@ -399,7 +396,6 @@ if (!done) {
   T128 = bid_power10_table_128[scale];
   __mul_128x128_low (C256, CX, T128);
 
-
   CS.w[0] = short_sqrt128 (C256);
 }
    
@@ -550,6 +546,5 @@ res = get_BID64 (0, exponent_q, CS.w[0], rnd_mode, pfpsf);
 // restore the rounding mode back if it has been changed
 if (rm_changed) fesetround(old_rm);
 BID_RETURN_VAL (res);
-
 
 }

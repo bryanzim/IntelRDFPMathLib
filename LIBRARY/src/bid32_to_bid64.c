@@ -65,7 +65,6 @@ very_fast_get_BID64_small_mantissa (((BID_UINT64) sign_x) << 32,
 BID_RETURN_NOFLAGS (res);
 }	// convert_bid32_to_bid64
 
-
 /*
  * Takes a BID64 as input and converts it to a BID32 and returns it.
  */

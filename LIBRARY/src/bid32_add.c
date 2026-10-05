@@ -203,7 +203,6 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 
     extra_digits = n_digits - 7;
 
-
     #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
     rmode = rnd_mode;

@@ -59,6 +59,5 @@ bid32_sub (BID_UINT32 x,
 
     BIDECIMAL_CALL2 (bid32_add, r32, x, y);
 
-
     BID_RETURN(r32);
 }

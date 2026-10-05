@@ -50,7 +50,6 @@
 
 #include "bid_internal.h"
 
-
 BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_fmod, BID_UINT32, x, BID_UINT32, y)
 
   BID_UINT64 CX, Q64, CYL;
@@ -139,7 +138,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_fmod, BID_UINT32, x
       BID_RETURN (res);
     }
   }
-
 
   diff_expon = exponent_x - exponent_y;
   if (diff_expon <= 0) {

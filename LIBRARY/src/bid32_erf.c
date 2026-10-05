@@ -29,17 +29,6 @@
 
 #include "bid_internal.h"
 
-#if defined(_MSC_VER)
-#    pragma warning( push )
-#    pragma warning( disable : 4273 )
-#endif
-
-double erf(double);
-
-#if defined(_MSC_VER)
-#    pragma warning( pop )
-#endif
-
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_erf, BID_UINT32, x)
 
 // Declare local variables

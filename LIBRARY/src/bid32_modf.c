@@ -27,10 +27,7 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-
 #include "bid_internal.h"
-
-
 
 #if DECIMAL_CALL_BY_REFERENCE
 void bid32_modf (BID_UINT32 * pres, BID_UINT32 * px, BID_UINT32 * iptr

@@ -36,7 +36,6 @@
 
 BID_EXTERN_C BINARY80 SQRT80 (BINARY80);
 
-
 __BID_INLINE__ BID_UINT64
 short_sqrt128 (BID_UINT128 A10) {
   BINARY80 lx, ly, l64;
@@ -50,13 +49,11 @@ short_sqrt128 (BID_UINT128 A10) {
   return (BID_UINT64) ly;
 }
 
-
 typedef union BID_ALIGN (16)
      {
        BID_UINT64 w[2];
        long double d; 
      } int_dext;
-
 
 __BID_INLINE__ void
 bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
@@ -153,8 +150,6 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
 
 #else
 
-BID_EXTERN_C double sqrt (double);
-
 __BID_INLINE__ BID_UINT64
 short_sqrt128 (BID_UINT128 A10) {
   BID_UINT256 ARS, ARS0, AE0, AE, S;
@@ -241,12 +236,9 @@ short_sqrt128 (BID_UINT128 A10) {
     __shr_128 (S, S, k);
   }
 
-
   return (BID_UINT64) ((S.w[0] + 1) >> 1);
 
 }
-
-
 
 __BID_INLINE__ void
 bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {

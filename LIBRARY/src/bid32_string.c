@@ -454,5 +454,4 @@ bid32_from_string (char *ps
   res = get_BID32 (sign_x, expon_x, coefficient_x, rnd_mode, pfpsf);
   BID_RETURN (res);
 
-
 }

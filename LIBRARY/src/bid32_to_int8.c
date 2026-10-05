@@ -32,8 +32,6 @@
 #define SIZE_MASK      0xffffff80
 #define INVALID_RESULT 0x80
 
-
-
 BID_TO_SMALL_INT_CVT_FUNCTION (char, bid32_to_int8_rnint, BID_UINT32, x,
                    bid32_to_int32_rnint, int, SIZE_MASK,
                    INVALID_RESULT)

@@ -27,11 +27,7 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-
 #include "bid_internal.h"
-
-BID_EXTERN_C double pow(double, double);
-
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_exp10, BID_UINT32, x)
 
@@ -39,7 +35,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_exp10, BID_UINT32, x)
   BID_UINT32 valid_x, res;
   double xd, zd;
   int exponent_x;
-
 
   valid_x = unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x);
 
@@ -70,7 +65,6 @@ if ((x & 0x78000000) == 0x78000000) {
 
   BIDECIMAL_CALL1(binary64_to_bid32,res,zd);
   BID_RETURN (res);
-
 
 }
 

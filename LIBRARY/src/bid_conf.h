@@ -1452,8 +1452,8 @@ union {\
 #   define BID_MS_FLAGS
 #endif
 
-#if (defined(_MSC_VER) && !defined(__INTEL_COMPILER))
-#   include <math.h>    // needed for MS build of some BID32 transcendentals (hypot)
+#if !defined(__INTEL_COMPILER)
+#   include <math.h>    /* libm for BID32 transcendentals and sqrt macros (MSVC, ClangCL, GCC, ...) */
 #endif
 
 

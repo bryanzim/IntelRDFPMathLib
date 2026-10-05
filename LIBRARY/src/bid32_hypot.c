@@ -27,27 +27,13 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-
 #include "bid_internal.h"
-
-#if defined(_MSC_VER)
-#    pragma warning( push )
-#    pragma warning( disable : 4273 )
-#endif
-
-BID_EXTERN_C double hypot(double, double);
-
-#if defined(_MSC_VER)
-#    pragma warning( pop )
-#endif
-
 
 BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_hypot, x, y)
   BID_UINT32 sign_x, sign_y, coefficient_x, coefficient_y;
   BID_UINT32 valid_x, valid_y, res;
   double xd, yd, zd;
   int exponent_x, exponent_y;
-
 
   valid_x = unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x);
   valid_y = unpack_BID32 (&sign_y, &exponent_y, &coefficient_y, y);
@@ -89,7 +75,6 @@ if (((x & 0x78000000) == 0x78000000) && ((y & 0x7e000000) != 0x7e000000)) {
     res = coefficient_y & QUIET_MASK32;
     BID_RETURN (res);
   }
-
 
   if ((y & 0x78000000) == 0x78000000) {
       res = 0x78000000;

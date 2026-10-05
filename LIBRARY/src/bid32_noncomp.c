@@ -727,7 +727,6 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_RETURN (res);
 }
 
-
 // totalOrderMag is TotalOrder(abs(x), abs(y))
 #if DECIMAL_CALL_BY_REFERENCE
 void
@@ -927,7 +926,6 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
   BID_RETURN (res);
 }
 
-
 #if DECIMAL_CALL_BY_REFERENCE
 void
 bid32_radix (int *pres, BID_UINT32 * px _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
@@ -955,7 +953,6 @@ BID_UINT32 bid32_inf (void) {
   res = 0x78000000; // + inf
   BID_RETURN(res);
 }
-
 
 DFP_WRAPFN_OTHERTYPE(32, bid32_nan, const char *);
 
@@ -988,5 +985,4 @@ BID_UINT32 bid32_nan (const char *tagp) {
 
   BID_RETURN(res);
 }
-
 

@@ -40,12 +40,10 @@
  If x is infinite, the result is +Inf. If x is NaN, the result is NaN.
 */
 
-
 BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_quantum, BID_UINT32, x)
   (void) pfpsf;
   BID_UINT32 res;
   int int_exp;
-
 
   // If x is infinite, the result is +Inf. If x is NaN, the result is NaN
   if ((x & MASK_INF32) == MASK_INF32) {

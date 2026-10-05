@@ -45,7 +45,6 @@
 #define BID_FUNCTION_SETS_BINARY_FLAGS
 #include "bid_internal.h"
 
-
 //////////////////////////////////////////////////////////////////////////
 //
 //    0*10^ey + cz*10^ez,   ey<ez  
@@ -76,8 +75,6 @@ add_zero32 (int exponent_y, BID_UINT32 sign_z, int exponent_z,
   return get_BID32 (sign_z, exponent_z - scale_k, coefficient_z,
             *prounding_mode, fpsc);
 }
-
-
 
 #if DECIMAL_CALL_BY_REFERENCE
 BID_EXTERN_C void bid32_mul (BID_UINT32 * pres, BID_UINT32 * px,
@@ -112,7 +109,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
 
   // unpack arguments, check for NaN, Infinity, or 0
   if (!valid_x || !valid_y || !valid_z) {
-
 
       if ((y & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
@@ -264,8 +260,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
     }
   }
 
-
-
   P0 = (BID_UINT64)coefficient_x * (BID_UINT64)coefficient_y;
   exponent_x += exponent_y - DECIMAL_EXPONENT_BIAS_32;
   
@@ -347,7 +341,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
 
     extra_digits = n_digits - 7;
 
-
     #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
     rmode = rnd_mode;
@@ -383,7 +376,6 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
       __shr_128_long (C128, Q_high, amount);
 
       C64 = __low_64 (C128);
-
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST

@@ -28,11 +28,6 @@
 ******************************************************************************/
 
 #include "bid_internal.h"
-double acos(double);
-double asin(double);
-double fabs(double);
-double sqrt(double);
-
 #define BID32_1         0x32800001ul
 #define BID32_0         0x00000000ul
 
@@ -41,7 +36,6 @@ double sqrt(double);
 #define BID32_NAN 0x7c000000ul
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_acos, BID_UINT32, x)
-
 
 // Declare local variables
 

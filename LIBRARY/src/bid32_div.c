@@ -67,7 +67,6 @@ BID_EXTERN_C const BID_UINT32 bid_convert_table[5][128][2];
 BID_EXTERN_C const BID_SINT8 bid_factors[][2];
 BID_EXTERN_C const BID_UINT8 bid_packed_10000_zeros[];
 
-
 BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_div, x, y)
 
 BID_UINT64 CA, CT, PD;
