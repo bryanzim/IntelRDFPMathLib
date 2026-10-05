@@ -295,11 +295,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
     if ((final_exponent > 0) || (!coefficient_z)) {
       res =
     bid_get_add64 (sign_x ^ sign_y,
-           final_exponent, C64, sign_z, exponent_z, coefficient_z, rnd_mode, pfpsf);
+           final_exponent, C64, sign_z, exponent_z, coefficient_z, (int)rnd_mode, pfpsf);
       BID_RETURN (res);
     } else {
-      P.w[0] = C64;
-      P.w[1] = 0;
+      P.w[0U] = C64;
+      P.w[1U] = 0;
       extra_digits = 0;
     }
   } else {
@@ -339,17 +339,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
     if (final_exponent < 0) {
       //--- get number of bits in the coefficients of z  ---
       tempx.d = (double) coefficient_z;
-      bin_expon_cx = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+      bin_expon_cx = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
       // get number of decimal digits in the coeff_x
       digits_z = bid_estimate_decimal_digits[bin_expon_cx];
-      if (coefficient_z >= bid_power10_table_128[digits_z].w[0])
+      if (coefficient_z >= bid_power10_table_128[digits_z].w[0U])
     digits_z++;
       // underflow
       if ((final_exponent + 16 < 0)
       || (exponent_z + digits_z > 33 + final_exponent)) {
     res =
       BID_normalize (sign_z, exponent_z, coefficient_z,
-             sign_x ^ sign_y, 1, rnd_mode, pfpsf);
+             sign_x ^ sign_y, 1, (int)rnd_mode, pfpsf);
     BID_RETURN (res);
       }
 
@@ -357,26 +357,26 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
       if (ez < 0)
     ez = 0;
       scale_z = exponent_z - ez;
-      coefficient_z *= bid_power10_table_128[scale_z].w[0];
+      coefficient_z *= bid_power10_table_128[scale_z].w[0U];
       ey = final_exponent - extra_digits;
       extra_digits = ez - ey;
 
       if (extra_digits > 17) {
     CYh = __truncate (P, 16);
     // get remainder
-    T = bid_power10_table_128[16].w[0];
+    T = bid_power10_table_128[16U].w[0U];
     __mul_64x64_to_64 (CY0L, CYh, T);
-    remainder_y = P.w[0] - CY0L;
+    remainder_y = P.w[0U] - CY0L;
 
     extra_digits -= 16;
-    P.w[0] = CYh;
-    P.w[1] = 0;
+    P.w[0U] = CYh;
+    P.w[1U] = 0;
       } else
     remainder_y = 0;
 
       // align coeff_x, CYh
       __mul_64x64_to_128 (CZ, coefficient_z,
-              bid_power10_table_128[extra_digits].w[0]);
+              bid_power10_table_128[extra_digits].w[0U]);
 
       if (sign_z == (sign_y ^ sign_x)) {
     __add_128_128 (CT, CZ, P);
@@ -387,18 +387,18 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
     }
       } else {
     if (remainder_y && (__unsigned_compare_ge_128 (CZ, P))) {
-      P.w[0]++;
-      if (!P.w[0])
-        P.w[1]++;
+      P.w[0U]++;
+      if (!P.w[0U])
+        P.w[1U]++;
     }
     __sub_128_128 (CT, CZ, P);
-    if (((BID_SINT64) CT.w[1]) < 0) {
+    if (((BID_SINT64) CT.w[1U]) < 0) {
       sign_z = sign_y ^ sign_x;
-      CT.w[0] = 0 - CT.w[0];
-      CT.w[1] = 0 - CT.w[1];
-      if (CT.w[0])
-        CT.w[1]--;
-    } else if(!(CT.w[1]|CT.w[0]))
+      CT.w[0U] = 0 - CT.w[0U];
+      CT.w[1U] = 0 - CT.w[1U];
+      if (CT.w[0U])
+        CT.w[1U]--;
+    } else if(!(CT.w[1U]|CT.w[0U]))
         sign_z = (rnd_mode!=BID_ROUNDING_DOWN)? 0: 0x8000000000000000ull;
     if (ez
         &&
@@ -416,11 +416,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
       __unsigned_compare_gt_128 (bid_power10_table_128
                      [extra_digits + 15], CT)) {
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     if (sign_z && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
     PU = bid_power10_table_128[extra_digits + 15];
-    PU.w[0]--;
+    PU.w[0U]--;
     if (__unsigned_compare_gt_128 (PU, CT)
         || (rmode == BID_ROUNDING_DOWN)
         || (rmode == BID_ROUNDING_TO_ZERO))
@@ -431,22 +431,22 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
           uf_status = BID_UNDERFLOW_EXCEPTION;
         else {
           if (remainder_y && (sign_z != (sign_y ^ sign_x)))
-        remainder_y = bid_power10_table_128[16].w[0] - remainder_y;
+        remainder_y = bid_power10_table_128[16U].w[0U] - remainder_y;
 
-          if (bid_power10_table_128[15].w[0] > remainder_y)
+          if (bid_power10_table_128[15U].w[0U] > remainder_y)
         uf_status = BID_UNDERFLOW_EXCEPTION;
         }
       } else	// RN or RN_away
       {
         if (remainder_y && (sign_z != (sign_y ^ sign_x)))
-          remainder_y = bid_power10_table_128[16].w[0] - remainder_y;
+          remainder_y = bid_power10_table_128[16U].w[0U] - remainder_y;
 
         if (!extra_digits) {
-          remainder_y += bid_round_const_table[rmode][15];
-          if (remainder_y < bid_power10_table_128[16].w[0])
+          remainder_y += bid_round_const_table[rmode][15U];
+          if (remainder_y < bid_power10_table_128[16U].w[0U])
         uf_status = BID_UNDERFLOW_EXCEPTION;
         } else {
-          if (remainder_y < bid_round_const_table[rmode][16])
+          if (remainder_y < bid_round_const_table[rmode][16U])
         uf_status = BID_UNDERFLOW_EXCEPTION;
         }
       }
@@ -460,7 +460,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
       res =
     __bid_full_round64_remainder (sign_z, ez - extra_digits, CT,
                       extra_digits, remainder_y,
-                      rnd_mode, pfpsf, uf_status);
+                      (int)rnd_mode, pfpsf, (unsigned)uf_status);
       BID_RETURN (res);
 
     } else {
@@ -468,8 +468,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
       || (final_exponent > 3 * 256 + 15)) {
     res =
       fast_get_BID64_check_OF (sign_x ^ sign_y, final_exponent,
-                   1000000000000000ull, rnd_mode,
-                   pfpsf);
+                   1000000000000000ull, (int)rnd_mode,
+           pfpsf);
     BID_RETURN (res);
       }
     }
@@ -479,7 +479,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
   if (extra_digits > 0) {
     res =
       bid_get_add128 (sign_z, exponent_z, coefficient_z, sign_x ^ sign_y,
-          final_exponent, P, extra_digits, rnd_mode, pfpsf);
+          final_exponent, P, extra_digits, (int)rnd_mode, pfpsf);
     BID_RETURN (res);
   }
   // go to convert_format and exit
@@ -490,7 +490,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
       bid_get_add64 (sign_x ^ sign_y,
          exponent_x + exponent_y - DECIMAL_EXPONENT_BIAS, C64, 
          sign_z, exponent_z, coefficient_z, 
-         rnd_mode, pfpsf);
+         (int)rnd_mode, pfpsf);
     BID_RETURN (res);
   }
 } 

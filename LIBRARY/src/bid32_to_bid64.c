@@ -42,13 +42,13 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS (BID_UINT64, bid32_to_bid64, BID_UINT3
 
 if (!unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x)) {
     // Inf, NaN, 0
-if (((x) & 0x78000000) == 0x78000000) {
-  if (((x) & 0x7e000000) == 0x7e000000) {	// sNaN
+if (((x) & 0x78000000U) == 0x78000000U) {
+  if (((x) & 0x7e000000U) == 0x7e000000U) {	// sNaN
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   }
-  res = (coefficient_x & 0x000fffff);
+  res = (coefficient_x & 0x000fffffU);
   res *= 1000000000;
   res |= ((((BID_UINT64) coefficient_x) << 32) & 0xfc00000000000000ull);
 
@@ -85,7 +85,7 @@ BID_UINT128 Q;
     if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
       t64 = (coefficient_x & 0x0003ffffffffffffull);
       res = (BID_UINT32) (t64/1000000000ull);
-      res |= ((coefficient_x >> 32) & 0xfc000000);
+      res |= ((coefficient_x >> 32) & 0xfc000000U);
 #ifdef BID_SET_STATUS_FLAGS
       if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -98,7 +98,7 @@ BID_UINT128 Q;
       exponent_x = 0;
     if (exponent_x > DECIMAL_MAX_EXPON_32)
       exponent_x = DECIMAL_MAX_EXPON_32;
-    res = (sign_x >> 32) | (exponent_x << 23);
+    res = (sign_x >> 32) | ((BID_UINT64)exponent_x << 23U);
     BID_RETURN (res);
   }
 
@@ -108,7 +108,7 @@ BID_UINT128 Q;
   // check number of digits
   if (coefficient_x >= 10000000) {
     tempx.d = (float) coefficient_x;
-    bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+    bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
     extra_digits = bid_estimate_decimal_digits[bin_expon_cx] - 7;
     // add test for range
     if (coefficient_x >= bid_power10_index_binexp[bin_expon_cx])
@@ -116,7 +116,7 @@ BID_UINT128 Q;
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     if (sign_x && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -132,7 +132,7 @@ BID_UINT128 Q;
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING  
       if (exponent_x == -1)
     if (coefficient_x + bid_round_const_table[rmode][extra_digits] >=
-        bid_power10_table_128[extra_digits + 7].w[0])
+        bid_power10_table_128[extra_digits + 7].w[0U])
       status = 0;
 #endif
       extra_digits -= exponent_x;
@@ -145,7 +145,7 @@ BID_UINT128 Q;
     // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-128
     amount = bid_short_recip_scale[extra_digits];
 
-    coefficient_x = Q.w[1] >> amount;
+    coefficient_x = Q.w[1U] >> amount;
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
@@ -156,9 +156,9 @@ BID_UINT128 Q;
     // is exactly .5
 
     // get remainder
-    remainder_h = Q.w[1] << (64 - amount);
+    remainder_h = Q.w[1U] << (64 - amount);
 
-    if (!remainder_h && (Q.w[0] < bid_reciprocals10_64[extra_digits]))
+    if (!remainder_h && (Q.w[0U] < bid_reciprocals10_64[extra_digits]))
       coefficient_x--;
       }
 #endif
@@ -168,24 +168,24 @@ BID_UINT128 Q;
     {
       status |= BID_INEXACT_EXCEPTION;
       // get remainder
-      remainder_h = Q.w[1] << (64 - amount);
+      remainder_h = Q.w[1U] << (64 - amount);
 
       switch (rmode) {
       case BID_ROUNDING_TO_NEAREST:
       case BID_ROUNDING_TIES_AWAY:
     // test whether fractional part is 0
     if (remainder_h == 0x8000000000000000ull
-        && (Q.w[0] < bid_reciprocals10_64[extra_digits]))
+        && (Q.w[0U] < bid_reciprocals10_64[extra_digits]))
       status = BID_EXACT_STATUS;
     break;
       case BID_ROUNDING_DOWN:
       case BID_ROUNDING_TO_ZERO:
-    if (!remainder_h && (Q.w[0] < bid_reciprocals10_64[extra_digits]))
+    if (!remainder_h && (Q.w[0U] < bid_reciprocals10_64[extra_digits]))
       status = BID_EXACT_STATUS;
     break;
       default:
     // round up
-    __add_carry_out (Stemp, carry, Q.w[0],
+    __add_carry_out (Stemp, carry, Q.w[0U],
              bid_reciprocals10_64[extra_digits]);
     if ((remainder_h >> (64 - amount)) + carry >=
         (((BID_UINT64) 1) << amount))
@@ -202,7 +202,7 @@ BID_UINT128 Q;
 
   res =
     get_BID32 ((BID_UINT32) (sign_x >> 32),
-           exponent_x, coefficient_x, rnd_mode, pfpsf);
+           exponent_x, coefficient_x, (int)rnd_mode, pfpsf);
   BID_RETURN (res);
 
 }

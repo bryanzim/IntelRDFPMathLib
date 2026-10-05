@@ -1502,8 +1502,8 @@
     /* 19632 */ DATA_1x2( 0x000049b8, 0x00000000 ),
 
     /* 1/pi, 2/pi, 2*ln2/pi */
-    /* 19640 */ POS, 0000, DATA_2x2( 0x4e441529, 0xa2f9836e, 0xf534ddc0, 0xfc2757d1 ),
-    /* 19664 */ POS, 00-1, DATA_2x2( 0xf4b4ddd9, 0xe1ee4c7b, 0xabfde7bb, 0x6c10b05c ),
+    /* 19640 */ POS, TW(0000), DATA_2x2( 0x4e441529, 0xa2f9836e, 0xf534ddc0, 0xfc2757d1 ),
+    /* 19664 */ POS, TW(00-1), DATA_2x2( 0xf4b4ddd9, 0xe1ee4c7b, 0xabfde7bb, 0x6c10b05c ),
     };
 
 #define	J0_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 0))

@@ -41,7 +41,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid32_ilogb, BID_UINT32, x)
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-      res = ((x & 0x7c000000) == 0x78000000) ? 0x7fffffff : 0x80000000;
+      res = ((x & 0x7c000000U) == 0x78000000U) ? 0x7fffffffU : (int)0x80000000U;
 
       BID_RETURN (res);
   }
@@ -52,7 +52,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid32_ilogb, BID_UINT32, x)
     dx.d = (float)coefficient_x;   // exact conversion;
     bin_expon_cx = (int)(dx.i >> 23) - 127;
     digits = bid_estimate_decimal_digits[bin_expon_cx];
-    if (coefficient_x >= bid_power10_table_128[digits].w[0])
+    if (coefficient_x >= bid_power10_table_128[digits].w[0U])
       digits++;
   }
   exponent_x = exponent_x - DECIMAL_EXPONENT_BIAS_32 + digits - 1;

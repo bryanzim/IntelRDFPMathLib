@@ -384,11 +384,11 @@ int_float tmp;
           if(crt_flags & _SW_OVERFLOW)
           {
 #if !defined(_MSC_VER)
-              // Intentional overflow
+              // Intentional overflow. MSVC skips this; tmp would be uninitialized.
               tmp.i = 0x7f000001;
-#endif
               tmp.d *= tmp.d;
               n |= tmp.i;
+#endif
           }
           if(crt_flags & _SW_ZERODIVIDE)
           {

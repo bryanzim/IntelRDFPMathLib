@@ -26,20 +26,30 @@
     {
       "name": "x64-Debug",
       "displayName": "x64-Debug",
-      "description": "MSVC x64 Debug (Visual Studio generator — buildable in VS2026)",
-      "inherits": "vs-base"
+      "description": "MSVC x64 Debug (strict /W4 /WX)",
+      "inherits": "vs-base",
+      "cacheVariables": {
+        "IDFP_STRICT_MSVC_WARNINGS": "ON"
+      }
     },
     {
       "name": "x64-Release",
       "displayName": "x64-RelWithDebInfo",
-      "description": "MSVC x64 RelWithDebInfo (optimized with debug info)",
-      "inherits": "vs-base"
+      "description": "MSVC x64 RelWithDebInfo (strict /W4 /WX)",
+      "inherits": "vs-base",
+      "cacheVariables": {
+        "IDFP_STRICT_MSVC_WARNINGS": "ON"
+      }
     },
     {
       "name": "x64-Clang-Debug",
       "displayName": "x64-Clang-Debug",
-      "description": "ClangCL x64 Debug",
+      "description": "ClangCL x64 Debug (strict warnings)",
       "inherits": "vs-base",
+      "cacheVariables": {
+        "IDFP_STRICT_CLANG_WARNINGS": "ON",
+        "IDFP_EXTRA_STRICT_CLANG_WARNINGS": "ON"
+      },
       "toolset": {
         "value": "ClangCL",
         "strategy": "set"

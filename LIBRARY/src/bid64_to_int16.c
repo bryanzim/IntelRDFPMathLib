@@ -29,8 +29,8 @@
 
 #include "bid_internal.h"
 
-#define SIZE_MASK      0xffff8000
-#define INVALID_RESULT 0x8000
+#define SIZE_MASK      0xffff8000U
+#define INVALID_RESULT ((int)0x8000)
 
 BID_TO_SMALL_INT_CVT_FUNCTION (short, bid64_to_int16_rnint, BID_UINT64, x,
                    bid64_to_int32_rnint, int, SIZE_MASK,

@@ -40,17 +40,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_cbrt, BID_UINT32, x)
 
   if (!valid_x) {
     // test if x is NaN
-if ((x & 0x7c000000) == 0x7c000000) {
+if ((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x & 0x7e000000) == 0x7e000000)	// sNaN
+  if ((x & 0x7e000000U) == 0x7e000000U)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
     res = (coefficient_x) & QUIET_MASK32;
     BID_RETURN (res);
 }
     // x is Infinity?
-if ((x & 0x78000000) == 0x78000000) {
-      res = sign_x | 0x78000000;
+if ((x & 0x78000000U) == 0x78000000U) {
+      res = sign_x | 0x78000000U;
     BID_RETURN (res);
   }
     // x is 0

@@ -239,7 +239,8 @@ UX_ATAN2(
         aux_x = unpacked_x;
         sign = G_UX_SIGN(unpacked_x);
         P_UX_SIGN(unpacked_x, 0);
-        diff = G_UX_MSD(unpacked_y) - G_UX_MSD(unpacked_x);
+        diff = UX_TO_SDIGIT(G_UX_MSD(unpacked_y))
+            - UX_TO_SDIGIT(G_UX_MSD(unpacked_x));
         if ( quotient_exp >= 0 )
         quotient_exp -= (diff == 0 && quotient_exp > 0 );
         quotient_exp += (diff >= 0);

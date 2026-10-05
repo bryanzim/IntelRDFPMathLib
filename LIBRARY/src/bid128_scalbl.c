@@ -34,7 +34,7 @@ BID128_FUNCTION_ARG128_CUSTOMARGTYPE2 (bid128_scalbln, x, long int, n)
 
   int n1;
   n1 = (int)n;
-  n1 = n1 < n ? (int)0x7fffffff : n1 > n ? (int)0x80000000 : n1; /* treat overflow/underflow */
+  n1 = n1 < n ? (int)0x7fffffffU : n1 > n ? (int)0x80000000U : n1; /* treat overflow/underflow */
 
 #if DECIMAL_CALL_BY_REFERENCE
   bid128_scalbn (&res, &x, &n1

@@ -50,7 +50,7 @@ bid64_nextup (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   BID_UINT64 x_sign;
   BID_UINT64 x_exp;
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q1, ind;
   BID_UINT64 C1;			// C1 represents x_signif (BID_UINT64)
 
@@ -114,21 +114,21 @@ bid64_nextup (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= 0x0000000100000000ull) {	// x >= 2^32
       tmp1.d = (double) (C1 >> 32);	// exact conversion
       x_nr_bits =
-        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     } else {	// x < 2^32
       tmp1.d = (double) C1;	// exact conversion
       x_nr_bits =
-        1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        1U + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     }
       } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      1U + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
       }
-      q1 = bid_nr_digits[x_nr_bits - 1].digits;
+      q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits;
       if (q1 == 0) {
-    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q1++;
       }
       // if q1 < P16 then pad the significand with zeros
@@ -138,7 +138,7 @@ bid64_nextup (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // pad with P16 - q1 zeros, until exponent = emin
       // C1 = C1 * 10^ind
       C1 = C1 * bid_ten2k64[ind];
-      x_exp = x_exp - ind;
+      x_exp = x_exp - (BID_UINT64) ind;
     } else {	// pad with zeros until the exponent reaches emin
       ind = (int) x_exp;
       C1 = C1 * bid_ten2k64[ind];
@@ -196,7 +196,7 @@ bid64_nextdown (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   BID_UINT64 x_sign;
   BID_UINT64 x_exp;
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q1, ind;
   BID_UINT64 C1;			// C1 represents x_signif (BID_UINT64)
 
@@ -261,21 +261,21 @@ bid64_nextdown (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= 0x0000000100000000ull) {	// x >= 2^32
       tmp1.d = (double) (C1 >> 32);	// exact conversion
       x_nr_bits =
-        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     } else {	// x < 2^32
       tmp1.d = (double) C1;	// exact conversion
       x_nr_bits =
-        1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        1U + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     }
       } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      1U + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
       }
-      q1 = bid_nr_digits[x_nr_bits - 1].digits;
+      q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits;
       if (q1 == 0) {
-    q1 = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+    q1 = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
       q1++;
       }
       // if q1 < P16 then pad the significand with zeros
@@ -285,7 +285,7 @@ bid64_nextdown (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // pad with P16 - q1 zeros, until exponent = emin
       // C1 = C1 * 10^ind
       C1 = C1 * bid_ten2k64[ind];
-      x_exp = x_exp - ind;
+      x_exp = x_exp - (BID_UINT64) ind;
     } else {	// pad with zeros until the exponent reaches emin
       ind = (int) x_exp;
       C1 = C1 * bid_ten2k64[ind];

@@ -601,9 +601,13 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
         {
         // If input is a negative integer, return NaN and signal an error via
         // an underflow condition
-        i   = exponent >> LOG2_BITS_PER_DIGIT;
-        mask = (((UX_FRACTION_DIGIT_TYPE) -1) >> (exponent & DIGIT_MOD_MASK));
-        msd  = G_UX_FRACTION_DIGIT( &unpacked_argument, i);
+        i   = (unsigned)(exponent >> LOG2_BITS_PER_DIGIT);
+        mask = UX_TO_DIGIT(-1);
+        {
+        unsigned sh = (unsigned)((U_WORD)exponent & (U_WORD)DIGIT_MOD_MASK);
+        mask >>= sh;
+        }
+        msd  = G_UX_FRACTION_DIGIT( &unpacked_argument, (unsigned)i);
         msd &= mask;
         while ( ++i < NUM_UX_FRACTION_DIGITS ) 
             msd |= G_UX_FRACTION_DIGIT( &unpacked_argument, i);

@@ -44,8 +44,8 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[BID_HIGH_128W] = (CX.w[1]) & QUIET_MASK64;
-    res.w[BID_LOW_128W] = CX.w[0];
+    res.w[BID_HIGH_128W] = (CX.w[1U]) & QUIET_MASK64;
+    res.w[BID_LOW_128W] = CX.w[0U];
     if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull)
         res.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
     BID_RETURN (res);
@@ -63,7 +63,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 
   BID_SWAP128 (x);
   BIDECIMAL_CALL1_NORND (bid128_ilogb, ires, x);
-  if (ires & 0x80000000) {
+  if ((BID_UINT32)ires & 0x80000000U) {
     res.w[BID_HIGH_128W] = 0xb040000000000000ull;
     res.w[BID_LOW_128W] = (BID_UINT64)(-ires);
   } else {

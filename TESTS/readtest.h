@@ -6265,7 +6265,7 @@ if (strcmp(func, "bid_feclearexcept") == 0) {
         GETTEST2(OP_BID_UINT32, OP_BID_UINT32, OP_BID_UINT32);
         {
         *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status(); i1 = i2 = 0; 
-                bid_feclearexcept(AUI32 _EXC_FLAGS_ARG);
+                bid_feclearexcept((int)AUI32 _EXC_FLAGS_ARG);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6275,7 +6275,7 @@ if (strcmp(func, "bid_fegetexceptflag") == 0) {
         {
         *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status();  
         fp_fl = (fexcept_t)i2;
-                bid_fegetexceptflag(&fp_fl, AUI32 _EXC_FLAGS_ARG);
+                bid_fegetexceptflag(&fp_fl, (int)AUI32 _EXC_FLAGS_ARG);
         i2 = (int)fp_fl;
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
@@ -6285,7 +6285,7 @@ if (strcmp(func, "bid_feraiseexcept") == 0) {
         GETTEST2(OP_BID_UINT32, OP_BID_UINT32, OP_BID_UINT32);
         {
         *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status(); i1 = i2 = 0; 
-            bid_feraiseexcept(AUI32 _EXC_FLAGS_ARG);
+            bid_feraiseexcept((int)AUI32 _EXC_FLAGS_ARG);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6295,7 +6295,7 @@ if (strcmp(func, "bid_fesetexceptflag") == 0) {
         {
         *pfpsf = BUI32&BID_FLAG_MASK;  save_binary_status(); i2 = i1;
         fp_fl = (fexcept_t)i1;
-                bid_fesetexceptflag(&fp_fl, AUI32 _EXC_FLAGS_ARG);
+                bid_fesetexceptflag(&fp_fl, (int)AUI32 _EXC_FLAGS_ARG);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }
@@ -6304,7 +6304,7 @@ if (strcmp(func, "bid_fetestexcept") == 0) {
         GETTEST2(OP_BID_UINT32, OP_BID_UINT32, OP_BID_UINT32);
         {
         *pfpsf = BUI32&BID_FLAG_MASK; save_binary_status();
-                i2 = bid_fetestexcept(AUI32 _EXC_FLAGS_ARG);
+                i2 = bid_fetestexcept((int)AUI32 _EXC_FLAGS_ARG);
         fpsf_0 = 0;
         check_results(CMP_FUZZYSTATUS);
     }

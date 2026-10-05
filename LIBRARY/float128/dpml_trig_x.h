@@ -86,7 +86,7 @@
     /* 208 */ DATA_1x2( 0x0000001f, 0x00000000 ),
 
     /* Unpacked constants pi/180 */
-    /* 216 */ POS, 00-5, DATA_2x2( 0x94e9c8ae, 0x8efa3512, 0x9485c4d9, 0x0ec5f66e ),
+    /* 216 */ POS, TW(00-5), DATA_2x2( 0x94e9c8ae, 0x8efa3512, 0x9485c4d9, 0x0ec5f66e ),
 
     /* Packed constants 1 */
     /* 240 */ DATA_4( 0x00000000, 0x00000000, 0x00000000, 0x3fff0000 ),
@@ -146,7 +146,7 @@
     /* 1000 */ DATA_1x2( 0x00000001, 0x00000000 ),
 
     /* Unpacked value of pi/4 */
-    /* 1008 */ POS, 0000, DATA_2x2( 0x2168c234, 0xc90fdaa2, 0x80dc1cd1, 0xc4c6628b ),
+    /* 1008 */ POS, TW(0000), DATA_2x2( 0x2168c234, 0xc90fdaa2, 0x80dc1cd1, 0xc4c6628b ),
     };
 
 #define	SIN_CLASS_TO_ACTION_MAP		((U_WORD const *) ((char *) TABLE_NAME + 0))

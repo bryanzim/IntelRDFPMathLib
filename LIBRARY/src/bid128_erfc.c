@@ -128,7 +128,7 @@ BID128_FUNCTION_ARG1 (bid128_erfc, x)
 
   
   if (__bid_f128_lt(xd, c_105.v))
-   { BID_F128_TYPE rt, rd;
+   { BID_F128_TYPE rd;
      bid128_to_binary128_2part(&xd,&ed,x);
      __bid_f128_mul(rt, xd, xd);
      __bid_f128_neg(rt, rt);

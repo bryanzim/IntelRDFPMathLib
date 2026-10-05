@@ -43,11 +43,11 @@ _IDEC_flags new_sw;
     if( excepts ) {     /* Do we have anything to do? */
 
         /* Erase the old state of specified exception flags */
-        *flagp &= ~excepts;
+        *flagp &= ~(fexcept_t)(unsigned)excepts;
         /* Read status word */
         new_sw = get_bid_sw();
         /* Store the current state of specified exception flags */
-        *flagp |= new_sw & excepts;
+        *flagp |= new_sw & (_IDEC_flags)(unsigned)excepts;
     }
 
 }

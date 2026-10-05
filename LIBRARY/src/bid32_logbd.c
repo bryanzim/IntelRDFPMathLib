@@ -47,29 +47,29 @@ bid32_logb (BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 
   if (!valid_x) {
     // test if x is NaN/Inf
-if ((x & 0x78000000) == 0x78000000) {
+if ((x & 0x78000000U) == 0x78000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x & 0x7e000000) == 0x7e000000)	// sNaN
+  if ((x & 0x7e000000U) == 0x7e000000U)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
     res = (coefficient_x) & QUIET_MASK32;
-if ((x & 0x7c000000) == 0x78000000) 
-    res &= 0x7fffffff;
+if ((x & 0x7c000000U) == 0x78000000U) 
+    res &= 0x7fffffffU;
     BID_RETURN (res);
 }
   // x is 0
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-    res = 0xf8000000;
+    res = 0xf8000000U;
     BID_RETURN (res);
 }
  
   BIDECIMAL_CALL1_NORND (bid32_ilogb, ires, x);
-  if (ires & 0x80000000)
-    res = 0xb2800000 | (-ires); 
+  if ((BID_UINT32)ires & 0x80000000U)
+    res = 0xb2800000U | (BID_UINT32)(-ires); 
   else
-    res = 0x32800000 | ires; 
+    res = 0x32800000U | (BID_UINT32)ires; 
   BID_RETURN (res);
 
 }

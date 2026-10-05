@@ -129,45 +129,45 @@ bid64qq_mul (BID_UINT128 x, BID_UINT128 y
     // for non-canonical values
 
     x_sign = x.w[BID_HIGH_128W] & MASK_SIGN;	// 0 for positive, MASK_SIGN for negative
-    C1.w[1] = x.w[BID_HIGH_128W] & MASK_COEFF;
-    C1.w[0] = x.w[BID_LOW_128W];
+    C1.w[1U] = x.w[BID_HIGH_128W] & MASK_COEFF;
+    C1.w[0U] = x.w[BID_LOW_128W];
     // check for non-canonical values - treated as zero
     if ((x.w[BID_HIGH_128W] & 0x6000000000000000ull) ==
     0x6000000000000000ull) {
       // G0_G1=11 => non-canonical
       x_exp = (x.w[BID_HIGH_128W] << 2) & MASK_EXP;	// biased and shifted left 49 bits
-      C1.w[1] = 0;	// significand high
-      C1.w[0] = 0;	// significand low
+      C1.w[1U] = 0;	// significand high
+      C1.w[0U] = 0;	// significand low
     } else {	// G0_G1 != 11
       x_exp = x.w[BID_HIGH_128W] & MASK_EXP;	// biased and shifted left 49 bits
-      if (C1.w[1] > 0x0001ed09bead87c0ull ||
-      (C1.w[1] == 0x0001ed09bead87c0ull &&
-       C1.w[0] > 0x378d8e63ffffffffull)) {
+      if (C1.w[1U] > 0x0001ed09bead87c0ull ||
+      (C1.w[1U] == 0x0001ed09bead87c0ull &&
+       C1.w[0U] > 0x378d8e63ffffffffull)) {
     // x is non-canonical if coefficient is larger than 10^34 -1
-    C1.w[1] = 0;
-    C1.w[0] = 0;
+    C1.w[1U] = 0;
+    C1.w[0U] = 0;
       } else {	// canonical          
     ;
       }
     }
     y_sign = y.w[BID_HIGH_128W] & MASK_SIGN;	// 0 for positive, MASK_SIGN for negative
-    C2.w[1] = y.w[BID_HIGH_128W] & MASK_COEFF;
-    C2.w[0] = y.w[BID_LOW_128W];
+    C2.w[1U] = y.w[BID_HIGH_128W] & MASK_COEFF;
+    C2.w[0U] = y.w[BID_LOW_128W];
     // check for non-canonical values - treated as zero
     if ((y.w[BID_HIGH_128W] & 0x6000000000000000ull) ==
     0x6000000000000000ull) {
       // G0_G1=11 => non-canonical
       y_exp = (y.w[BID_HIGH_128W] << 2) & MASK_EXP;	// biased and shifted left 49 bits
-      C2.w[1] = 0;	// significand high
-      C2.w[0] = 0;	// significand low 
+      C2.w[1U] = 0;	// significand high
+      C2.w[0U] = 0;	// significand low 
     } else {	// G0_G1 != 11
       y_exp = y.w[BID_HIGH_128W] & MASK_EXP;	// biased and shifted left 49 bits
-      if (C2.w[1] > 0x0001ed09bead87c0ull ||
-      (C2.w[1] == 0x0001ed09bead87c0ull &&
-       C2.w[0] > 0x378d8e63ffffffffull)) {
+      if (C2.w[1U] > 0x0001ed09bead87c0ull ||
+      (C2.w[1U] == 0x0001ed09bead87c0ull &&
+       C2.w[0U] > 0x378d8e63ffffffffull)) {
     // y is non-canonical if coefficient is larger than 10^34 -1
-    C2.w[1] = 0;
-    C2.w[0] = 0;
+    C2.w[1U] = 0;
+    C2.w[0U] = 0;
       } else {	// canonical
     ;
       }
@@ -183,8 +183,8 @@ bid64qq_mul (BID_UINT128 x, BID_UINT128 y
     else
       p_exp = (BID_UINT64) (true_p_exp + 398) << 53;
 
-    if ((C1.w[1] == 0x0 && C1.w[0] == 0x0) ||
-    (C2.w[1] == 0x0 && C2.w[0] == 0x0)) {
+    if ((C1.w[1U] == 0x0U && C1.w[0U] == 0x0U) ||
+    (C2.w[1U] == 0x0U && C2.w[0U] == 0x0U)) {
       // x = 0 or y = 0
       // the result is 0
       res = p_sign | p_exp;	// preferred exponent in [EXP_MIN, EXP_MAX]
@@ -342,51 +342,51 @@ bid128_mul (BID_UINT128 x,
   BID_SWAP128 (x);
   BID_SWAP128 (y);
   // skip cases where at least one operand is NaN or infinity
-  if (!(((x.w[1] & MASK_NAN) == MASK_NAN) ||
-    ((y.w[1] & MASK_NAN) == MASK_NAN) ||
-    ((x.w[1] & MASK_ANY_INF) == MASK_INF) ||
-    ((y.w[1] & MASK_ANY_INF) == MASK_INF))) {
+  if (!(((x.w[1U] & MASK_NAN) == MASK_NAN) ||
+    ((y.w[1U] & MASK_NAN) == MASK_NAN) ||
+    ((x.w[1U] & MASK_ANY_INF) == MASK_INF) ||
+    ((y.w[1U] & MASK_ANY_INF) == MASK_INF))) {
     // x, y are 0 or f but not inf or NaN => unpack the arguments and check
     // for non-canonical values
 
-    x_sign = x.w[1] & MASK_SIGN;	// 0 for positive, MASK_SIGN for negative
-    C1.w[1] = x.w[1] & MASK_COEFF;
-    C1.w[0] = x.w[0];
+    x_sign = x.w[1U] & MASK_SIGN;	// 0 for positive, MASK_SIGN for negative
+    C1.w[1U] = x.w[1U] & MASK_COEFF;
+    C1.w[0U] = x.w[0U];
     // check for non-canonical values - treated as zero
-    if ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull) {
+    if ((x.w[1U] & 0x6000000000000000ull) == 0x6000000000000000ull) {
       // G0_G1=11 => non-canonical
-      x_exp = (x.w[1] << 2) & MASK_EXP;	// biased and shifted left 49 bits
-      C1.w[1] = 0;	// significand high
-      C1.w[0] = 0;	// significand low
+      x_exp = (x.w[1U] << 2) & MASK_EXP;	// biased and shifted left 49 bits
+      C1.w[1U] = 0;	// significand high
+      C1.w[0U] = 0;	// significand low
     } else {	// G0_G1 != 11
-      x_exp = x.w[1] & MASK_EXP;	// biased and shifted left 49 bits
-      if (C1.w[1] > 0x0001ed09bead87c0ull ||
-      (C1.w[1] == 0x0001ed09bead87c0ull &&
-       C1.w[0] > 0x378d8e63ffffffffull)) {
+      x_exp = x.w[1U] & MASK_EXP;	// biased and shifted left 49 bits
+      if (C1.w[1U] > 0x0001ed09bead87c0ull ||
+      (C1.w[1U] == 0x0001ed09bead87c0ull &&
+       C1.w[0U] > 0x378d8e63ffffffffull)) {
     // x is non-canonical if coefficient is larger than 10^34 -1
-    C1.w[1] = 0;
-    C1.w[0] = 0;
+    C1.w[1U] = 0;
+    C1.w[0U] = 0;
       } else {	// canonical          
     ;
       }
     }
-    y_sign = y.w[1] & MASK_SIGN;	// 0 for positive, MASK_SIGN for negative
-    C2.w[1] = y.w[1] & MASK_COEFF;
-    C2.w[0] = y.w[0];
+    y_sign = y.w[1U] & MASK_SIGN;	// 0 for positive, MASK_SIGN for negative
+    C2.w[1U] = y.w[1U] & MASK_COEFF;
+    C2.w[0U] = y.w[0U];
     // check for non-canonical values - treated as zero
-    if ((y.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull) {
+    if ((y.w[1U] & 0x6000000000000000ull) == 0x6000000000000000ull) {
       // G0_G1=11 => non-canonical
-      y_exp = (y.w[1] << 2) & MASK_EXP;	// biased and shifted left 49 bits
-      C2.w[1] = 0;	// significand high
-      C2.w[0] = 0;	// significand low 
+      y_exp = (y.w[1U] << 2) & MASK_EXP;	// biased and shifted left 49 bits
+      C2.w[1U] = 0;	// significand high
+      C2.w[0U] = 0;	// significand low 
     } else {	// G0_G1 != 11
-      y_exp = y.w[1] & MASK_EXP;	// biased and shifted left 49 bits
-      if (C2.w[1] > 0x0001ed09bead87c0ull ||
-      (C2.w[1] == 0x0001ed09bead87c0ull &&
-       C2.w[0] > 0x378d8e63ffffffffull)) {
+      y_exp = y.w[1U] & MASK_EXP;	// biased and shifted left 49 bits
+      if (C2.w[1U] > 0x0001ed09bead87c0ull ||
+      (C2.w[1U] == 0x0001ed09bead87c0ull &&
+       C2.w[0U] > 0x378d8e63ffffffffull)) {
     // y is non-canonical if coefficient is larger than 10^34 -1
-    C2.w[1] = 0;
-    C2.w[0] = 0;
+    C2.w[1U] = 0;
+    C2.w[0U] = 0;
       } else {	// canonical
     ;
       }
@@ -402,12 +402,12 @@ bid128_mul (BID_UINT128 x,
     else
       p_exp = (BID_UINT64) (true_p_exp + 6176) << 49;
 
-    if ((C1.w[1] == 0x0 && C1.w[0] == 0x0) ||
-    (C2.w[1] == 0x0 && C2.w[0] == 0x0)) {
+    if ((C1.w[1U] == 0x0U && C1.w[0U] == 0x0U) ||
+    (C2.w[1U] == 0x0U && C2.w[0U] == 0x0U)) {
       // x = 0 or y = 0
       // the result is 0
-      res.w[1] = p_sign | p_exp;	// preferred exponent in [EXP_MIN, EXP_MAX]
-      res.w[0] = 0x0;
+      res.w[1U] = p_sign | p_exp;	// preferred exponent in [EXP_MIN, EXP_MAX]
+      res.w[0U] = 0x0U;
       BID_SWAP128 (res);
       BID_RETURN (res)
     }	// else continue

@@ -219,7 +219,7 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     */
 
 #   define TO_DOUBLE(a) ((double) ((UX_SIGNED_FRACTION_DIGIT_TYPE) (a)))
-#   define TO_DIGIT(a)  ((UX_SIGNED_FRACTION_DIGIT_TYPE) (a))
+#   define TO_DIGIT(a)  ((UX_FRACTION_DIGIT_TYPE)(UX_SIGNED_FRACTION_DIGIT_TYPE)(a))
 
     r = TWO_POW_124 / TO_DOUBLE( B1 >> 1 );
 
@@ -332,7 +332,7 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     */
 
     R = (R << 2) + TO_DIGIT( TWO_POW_62*r_lo );
-    R = ( R == 0 ) ? ( (UX_SIGNED_FRACTION_DIGIT_TYPE) -1 ) : R;
+    R = ( R == 0 ) ? UX_TO_DIGIT( (UX_SIGNED_FRACTION_DIGIT_TYPE) -1 ) : R;
 
     /*
     ** Using S and Q1 as the current guess for the high 65 bits of the result
@@ -360,7 +360,7 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     **		compute N3'
     */
 
-    mask = -((UX_SIGNED_FRACTION_DIGIT_TYPE) S);
+    mask = UX_TO_DIGIT( -UX_TO_SDIGIT( S ) );
 
     UMULH( Q1, B2, P11 );
     P01 = Q1 * B1;
@@ -381,7 +381,7 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
 
     /* Subtract the sum from A1:A2 */
 
-    N0 = -((UX_SIGNED_FRACTION_DIGIT_TYPE) N0);
+    N0 = UX_TO_DIGIT( -UX_TO_SDIGIT( N0 ) );
     C1 = (A2 < N2);
     N2 = A2 - N2;
     N0 -= (A1 < N1);
@@ -415,7 +415,8 @@ DIVIDE( UX_FLOAT * aPtr, UX_FLOAT * bPtr, U_WORD flags, UX_FLOAT * cPtr)
     /* Adjust S and Q1 using the final value of E */
 
     Q1 += E;
-    S  =  S + (((UX_SIGNED_FRACTION_DIGIT_TYPE) E) >> 63) + (Q1 < E);
+    S  =  UX_TO_DIGIT( UX_TO_SDIGIT( S )
+        + (((UX_SIGNED_FRACTION_DIGIT_TYPE) E) >> 63) + (Q1 < E) );
 
     /* Last but not least, pack it */
 
@@ -423,7 +424,7 @@ pack_it:
 
     P_UX_MSD(     cPtr,        (S << 63) | (Q1 >> S) );
     P_UX_LSD(     cPtr, ((Q1 & S) << 63) | (Q2 >> S) );
-    P_UX_EXPONENT(cPtr, exponent + S);
+    P_UX_EXPONENT(cPtr, exponent + (UX_EXPONENT_TYPE) UX_TO_SDIGIT( S ));
 
     return;
     }
@@ -855,8 +856,10 @@ __eval_neg_poly(UX_FLOAT * x, WORD shift, FIXED_128 * coef, WORD cnt,
 #define G_EXPONENT(c)		((UX_EXPONENT_TYPE) ((WORD *) (c))[-1])
 
 
+#undef EVALUATE_RATIONAL
+
 void
-EVALUATE_RATIONAL(
+EVALUATE_RATIONAL_FUNC(
   UX_FLOAT  * argument,
   FIXED_128 * coefficients,
   U_WORD      degree,
@@ -871,7 +874,7 @@ EVALUATE_RATIONAL(
 
     /* Scale argument and squared it if its needed */
 
-    sign = flags;
+    sign = UX_TO_WORD(flags);
     UX_INCR_EXPONENT(argument, G_SCALE(flags));
     if (flags & EITHER(SQUARE_TERM))
         {
@@ -881,8 +884,8 @@ EVALUATE_RATIONAL(
     else
         {
         poly_arg = argument;
-        tmp = G_UX_SIGN(argument) ? EITHER(ALTERNATE_SIGN) : 0;
-        sign = flags ^ tmp;
+        tmp = UX_TO_WORD(G_UX_SIGN(argument) ? EITHER(ALTERNATE_SIGN) : 0);
+        sign = UX_TO_WORD(UX_TO_UWORD(flags) ^ UX_TO_UWORD(tmp));
         }
 
     /* Start calculation of shift parameter. */
@@ -890,12 +893,12 @@ EVALUATE_RATIONAL(
     NORMALIZE(poly_arg);
     exponent = G_UX_EXPONENT(poly_arg);
     P_UX_EXPONENT(poly_arg, exponent);
-    shift = -((WORD) (degree*exponent));
-    byte_length = (degree + 1)*sizeof(FIXED_128) + sizeof(WORD);
+    shift = (WORD)(-(WORD)((U_WORD)degree * (U_WORD)exponent));
+    byte_length = (WORD)((degree + 1)*sizeof(FIXED_128) + sizeof(WORD));
 
     /* allocate locations for 1st and 2nd result */
 
-    tmp = (((flags & SWAP) == 0) || (flags & SKIP)) ? 0 : 1;
+    tmp = UX_TO_WORD((((flags & SWAP) == 0) || (flags & SKIP)) ? 0 : 1);
     first_result  = result + tmp;
     second_result = result + 1 - tmp;
 
@@ -911,7 +914,7 @@ EVALUATE_RATIONAL(
             poly_arg,
             shift,
         coefficients,
-        degree,
+        UX_TO_WORD(degree),
         first_result);
         //printf("f_result= (%x %x) %llx %llx\n",first_result->sign,first_result->exponent,first_result->fraction[0],first_result->fraction[1]);
 
@@ -942,7 +945,7 @@ EVALUATE_RATIONAL(
             poly_arg,
             shift,
         coefficients,
-        degree,
+        UX_TO_WORD(degree),
         second_result);
 
         if (flags & DENOMINATOR_FLAGS(POST_MULTIPLY))

@@ -340,6 +340,7 @@ LIST(APPEND F128_HEADERS
 add_library(IntelDFPF128 OBJECT ${F128_SOURCES} ${F128_HEADERS})
 target_compile_definitions(IntelDFPF128 PRIVATE "USE_NATIVE_QUAD_TYPE=0")
 idfp_apply_library_target_settings(IntelDFPF128)
+idfp_apply_float128_clang_relaxations(IntelDFPF128)
 if (IntelCompiler AND FLOATING_POINT_WRAPPERS)
     target_compile_definitions(IntelDFPF128 PRIVATE "__DFP_WRAPPERS_ON=1")
 endif()

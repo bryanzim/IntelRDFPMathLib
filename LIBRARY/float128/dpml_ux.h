@@ -150,6 +150,15 @@ typedef struct {
 
 typedef U_WORD	ERROR_CODE;
 
+/* Explicit casts for -Wsign-conversion (extra-strict Clang). */
+#define UX_TO_DIGIT(v)       ((UX_FRACTION_DIGIT_TYPE)(UX_SIGNED_FRACTION_DIGIT_TYPE)(v))
+#define UX_TO_SDIGIT(v)      ((UX_SIGNED_FRACTION_DIGIT_TYPE)(UX_FRACTION_DIGIT_TYPE)(v))
+#define UX_TO_UWORD(v)       ((U_WORD)(WORD)(v))
+#define UX_TO_WORD(v)        ((WORD)(U_WORD)(v))
+#define UX_TO_ERROR_CODE(v)  ((ERROR_CODE)(U_WORD)(WORD)(v))
+#define UX_TO_UEXP(v)        ((UX_UNSIGNED_EXPONENT_TYPE)(UX_EXPONENT_TYPE)(v))
+#define UX_TO_SIGN_AS_DIGIT(v) ((UX_FRACTION_DIGIT_TYPE)(UX_SIGN_TYPE)(v))
+
 /******************************************************************************/
 /******************************************************************************/
 /**                                                                          **/
@@ -369,8 +378,8 @@ extern WORD UNPACK2 (
 extern void PACK (
 	UX_FLOAT  *,		/* unpacked result */
 	_X_FLOAT  *,		/* packed   result */
-	ERROR_CODE,		/* underflow code  */
-	ERROR_CODE		/* overflow  code  */
+	WORD,			/* underflow code  */
+	WORD			/* overflow  code  */
         OPT_EXCEPTION_INFO_DECLARATION
 	);
 
@@ -415,10 +424,13 @@ extern void PACK (
 /******************************************************************************/
 
 #if !defined( EVALUATE_RATIONAL )
-#   define EVALUATE_RATIONAL	__INTERNAL_NAME( evaluate_rational__ )
+#   define EVALUATE_RATIONAL_FUNC	__INTERNAL_NAME( evaluate_rational__ )
+#   define EVALUATE_RATIONAL(u, c, deg, fl, res) \
+        EVALUATE_RATIONAL_FUNC( \
+            (u), (c), UX_TO_UWORD(deg), UX_TO_UWORD(fl), (res))
 #endif
 
-extern void EVALUATE_RATIONAL(
+extern void EVALUATE_RATIONAL_FUNC(
 	UX_FLOAT  *,		/* Argument				*/
 	FIXED_128 *,		/* Coefficient array			*/
 	U_WORD,			/* Number of coefficients		*/
@@ -719,8 +731,10 @@ extern void HYPOT(
 /******************************************************************************/
 /******************************************************************************/
 
-#define	POS	0
-#define NEG	UX_SIGN_BIT
+/* TABLE_WORD initializers in generated *_x.h tables */
+#define TW(v)	((TABLE_WORD)(U_INT_32)(v))
+#define	POS	TW(0)
+#define NEG	TW(UX_SIGN_BIT)
 
 #if defined(MAKE_INCLUDE)
 

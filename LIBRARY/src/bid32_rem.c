@@ -52,7 +52,8 @@
 
 BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x, BID_UINT32, y)
 
-  BID_UINT64 CX, Q64, CYL;
+  BID_UINT64 CX, CYL;
+  BID_UINT64 Q64 = 0;
   BID_UINT32 CY, sign_x, sign_y, coefficient_x, coefficient_y, res;
   BID_UINT32 Q, R, R2, T, valid_y, valid_x;
   int_float tempx;
@@ -73,7 +74,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
 #endif
 
     // test if x is NaN
-    if ((x & 0x7c000000) == 0x7c000000) {
+    if ((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
       if (((x & SNAN_MASK32) == SNAN_MASK32))
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -82,30 +83,30 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
       BID_RETURN (res);
     }
     // x is Infinity?
-    if ((x & 0x78000000) == 0x78000000) {
+    if ((x & 0x78000000U) == 0x78000000U) {
       if (((y & NAN_MASK32) != NAN_MASK32)) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
     // return NaN
-    res = 0x7c000000;
+    res = 0x7c000000U;
     BID_RETURN (res);
       }
     }
     // x is 0
     // return x if y != 0
-    if (((y & 0x78000000) < 0x78000000) &&
+    if (((y & 0x78000000U) < 0x78000000U) &&
     coefficient_y) {
-      if ((y & 0x60000000) == 0x60000000)
-    exponent_y = (y >> 21) & 0xff;
+      if ((y & 0x60000000U) == 0x60000000U)
+    exponent_y = (y >> 21) & 0xffU;
       else
-    exponent_y = (y >> 23) & 0xff;
+    exponent_y = (y >> 23) & 0xffU;
 
       if (exponent_y < exponent_x)
     exponent_x = exponent_y;
 
-      x = exponent_x;
-      x <<= 23;
+      x = (BID_UINT32)exponent_x;
+      x <<= 23U;
 
       res = x | sign_x;
       BID_RETURN (res);
@@ -116,7 +117,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
     // y is Inf. or NaN
 
     // test if y is NaN
-    if ((y & 0x7c000000) == 0x7c000000) {
+    if ((y & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
       if (((y & SNAN_MASK32) == SNAN_MASK32))
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -125,7 +126,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
       BID_RETURN (res);
     }
     // y is Infinity?
-    if ((y & 0x78000000) == 0x78000000) {
+    if ((y & 0x78000000U) == 0x78000000U) {
       res = very_fast_get_BID32 (sign_x, exponent_x, coefficient_x);
       BID_RETURN (res);
     }
@@ -134,7 +135,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-      res = 0x7c000000;
+      res = 0x7c000000U;
       BID_RETURN (res);
     }
   }
@@ -149,7 +150,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
       BID_RETURN (res);
     }
     // set exponent of y to exponent_x, scale coefficient_y
-    T = (BID_UINT32) (bid_power10_table_128[diff_expon].w[0]);
+    T = (BID_UINT32) (bid_power10_table_128[diff_expon].w[0U]);
     CYL = ((BID_UINT64)coefficient_y) * T;
     if (CYL > (BID_UINT64)(coefficient_x << 1)) {
       res = x;
@@ -163,7 +164,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
     R2 = R + R;
     if (R2 > CY || (R2 == CY && (Q & 1))) {
       R = CY - R;
-      sign_x ^= 0x80000000;
+      sign_x ^= 0x80000000U;
     }
 
     res = very_fast_get_BID32 (sign_x, exponent_x, R);
@@ -174,7 +175,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
   while (diff_expon > 0) {
     // get number of digits in coeff_x
     tempx.d = (float) CX;
-    bin_expon = ((tempx.i >> 23) & 0xff) - 0x7f;
+    bin_expon = ((tempx.i >> 23) & 0xffU) - 0x7fU;
     digits_x = bid_estimate_decimal_digits[bin_expon];
     // will not use this test, dividend will have 18 or 19 digits
     //if(CX >= bid_power10_table_128[digits_x].w[0])
@@ -189,7 +190,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
     }
 
     // scale dividend to 18 or 19 digits
-    CX *= bid_power10_table_128[e_scale].w[0];
+    CX *= bid_power10_table_128[e_scale].w[0U];
 
     // quotient
     Q64 = CX / coefficient_y;

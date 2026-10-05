@@ -52,13 +52,13 @@ BID_UINT32 xi, res;
     BIDECIMAL_CALL1_NORND(bid32_round_integral_zero, xi, x);
 
     // check for Infinity
-    if((x & 0x7c000000) == 0x78000000)
-        res = (x & 0x80000000) | 0x5f800000;
+    if((x & 0x7c000000U) == 0x78000000U)
+        res = (x & 0x80000000U) | 0x5f800000U;
     else
         BIDECIMAL_CALL2 (bid32_sub, res, x, xi);
 
-    *iptr = (xi) | (x & 0x80000000);
-    res |= (x & 0x80000000);
+    *iptr = (xi) | (x & 0x80000000U);
+    res |= (x & 0x80000000U);
 
     BID_RETURN (res);
 

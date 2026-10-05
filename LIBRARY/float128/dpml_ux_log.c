@@ -123,7 +123,7 @@ UX_LOG( UX_FLOAT * unpacked_argument, UX_FLOAT * scale,
           tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1],
           tmp[0].sign,tmp[0].exponent,tmp[0].fraction[0],tmp[0].fraction[1],
           unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);*/
-    WORD_TO_UX(m, unpacked_result);
+    WORD_TO_UX(UX_TO_DIGIT(m), unpacked_result);
     //printf("m=%llx\n",(long long)m);
     ADDSUB(unpacked_result, &tmp[0], ADD | NO_NORMALIZATION,
       unpacked_result);
@@ -330,7 +330,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result,packed_argument)
     */
 
     f_hi = f_hi >> 2;
-    f_hi = (sign) ? -((UX_SIGNED_FRACTION_DIGIT_TYPE) f_hi) : f_hi;
+    f_hi = (sign) ? UX_TO_DIGIT(-UX_TO_SDIGIT(f_hi)) : f_hi;
     f_hi += UX_MSB;
 
     if ( (UX_FRACTION_DIGIT_TYPE) (f_hi - I_RECIP_SQRT_2) >=

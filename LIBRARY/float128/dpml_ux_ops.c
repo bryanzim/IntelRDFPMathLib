@@ -101,7 +101,7 @@ FFS_AND_SHIFT ( UX_FLOAT * argument, U_WORD flags)
           ((UX_SIGNED_FRACTION_DIGIT_TYPE) msd < 0))
             {
             sign = UX_SIGN_BIT;
-            msd = -((UX_SIGNED_FRACTION_DIGIT_TYPE) msd);
+            msd = UX_TO_DIGIT(-((UX_SIGNED_FRACTION_DIGIT_TYPE) msd));
             }
         P_UX_MSD(argument, msd);
         CLR_UX_LOW_FRACTION(argument);
@@ -159,7 +159,7 @@ find_shift:
                 {
                 UX_FRACTION_DIGIT_TYPE itmp;
 
-                itmp = msd & ~0xff;
+                itmp = msd & ~(UX_FRACTION_DIGIT_TYPE)0xff;
                 itmp = itmp ? itmp : msd;
                 u.f = (double) itmp;
                 }
@@ -207,7 +207,7 @@ ADDSUB ( UX_FLOAT * x, UX_FLOAT *y, U_WORD flags, UX_FLOAT * result)
 #   endif
 
     sign = G_UX_SIGN(x);
-    op = flags << (BITS_PER_UX_SIGN_TYPE - 1);
+    op = UX_TO_WORD(flags << (BITS_PER_UX_SIGN_TYPE - 1));
     tmp1 = (op^sign)^G_UX_SIGN(y);
     tmp2 = flags & MAGNITUDE_ONLY;
     sign = tmp2 ? 0 : sign;
@@ -377,8 +377,12 @@ bit_shift:
                 {
                 sign ^= UX_SIGN_BIT;
                 P_UX_SIGN(&ux_save, UX_SIGN_BIT);
-                lsd = -((UX_SIGNED_FRACTION_DIGIT_TYPE) lsd);
-                carry = (lsd == 0) ? 0 : -1;
+                lsd = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)
+                    (0 - (UX_SIGNED_FRACTION_DIGIT_TYPE)lsd));
+                if (lsd == 0)
+                    carry = UX_TO_DIGIT(0);
+                else
+                    carry = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)-1);
 
 #           if NUM_UX_FRACTION_DIGITS == 4
 
@@ -390,7 +394,7 @@ bit_shift:
 
 #           endif
                     
-                msd = carry - msd;
+                msd = UX_TO_DIGIT(UX_TO_SDIGIT(carry) - UX_TO_SDIGIT(msd));
                 }
 
             }
@@ -448,8 +452,8 @@ bit_shift:
 
 #define TYPE_MASK		MAKE_MASK(TYPE_WIDTH-1, TYPE_POS)
 #undef  ADD_ERR_CODE_TYPE
-#define ADD_ERR_CODE_TYPE(e)	(((F_TYPE_ENUM << TYPE_POS) & TYPE_MASK) \
-                  | ((e) & (~TYPE_MASK)))
+#define ADD_ERR_CODE_TYPE(e)	((WORD)(((F_TYPE_ENUM << TYPE_POS) & TYPE_MASK) \
+                  | ((U_WORD)(e) & (~TYPE_MASK))))
 
 WORD
 UNPACK_X_OR_Y(
@@ -482,8 +486,8 @@ UNPACK_X_OR_Y(
     exponent_digit = G_X_DIGIT( packed_argument, 0);
     cur_digit = UX_MSB;
 
-    P_UX_SIGN(unpacked_argument, (exponent_digit & cur_digit) >>
-      (BITS_PER_UX_FRACTION_DIGIT_TYPE - BITS_PER_UX_SIGN_TYPE));
+    P_UX_SIGN(unpacked_argument, (UX_SIGN_TYPE)((exponent_digit & cur_digit) >>
+      (BITS_PER_UX_FRACTION_DIGIT_TYPE - BITS_PER_UX_SIGN_TYPE)));
 
     P_UX_EXPONENT(unpacked_argument,
       ((exponent_digit >> F_EXP_POS) & MAKE_MASK( F_EXP_WIDTH, 0))
@@ -568,9 +572,9 @@ UNPACK_X_OR_Y(
 
 #   if (BITS_PER_WORD == 64)
 
-        map_element = class_to_action_map[0];
-        action_index = map_element >> shift;
-        disp = map_element >> 60;
+        map_element = UX_TO_SDIGIT(class_to_action_map[0]);
+        action_index = UX_TO_SDIGIT(map_element >> shift);
+        disp = UX_TO_SDIGIT(map_element >> 60);
 
 #   else
 
@@ -609,7 +613,7 @@ UNPACK_X_OR_Y(
     else
     {
         index = WORDS_PER_CLASS_TO_ACTION_MAP*(disp & 0xf) + index - 1;
-        index = class_to_action_map[ index ];
+        index = UX_TO_SDIGIT(class_to_action_map[ index ]);
         digit_ptr = (UX_FRACTION_DIGIT_TYPE *)
                         & ((_X_FLOAT *) PACKED_CONSTANT_TABLE)[index];
  //printf("UNPACK 3 %llx, %llx d= %llx, %llx\n", (long long)fp_class, index, digit_ptr[0],digit_ptr[1]);
@@ -623,8 +627,7 @@ UNPACK_X_OR_Y(
 
     if (action == RETURN_ERROR)
         {
-        index = ADD_ERR_CODE_TYPE(index);
-        GET_EXCEPTION_RESULT_2(index, packed_x, packed_y, *packed_result);
+        GET_EXCEPTION_RESULT_2((WORD)index, packed_x, packed_y, *packed_result);
         }
     else
         {
@@ -713,7 +716,7 @@ UNPACK2(
 
 #   if (BITS_PER_WORD == 64)
 
-        disp = (U_WORD) class_to_action_map[1];
+        disp = UX_TO_SDIGIT(class_to_action_map[1]);
 
 #   else 
 
@@ -726,7 +729,8 @@ UNPACK2(
             }
 #   endif
 
-    disp = (disp >> (shift - 3)) & MAKE_MASK(F_C_CLASS_BIT_WIDTH, 3);
+    disp = (UX_TO_UWORD(disp) >> (shift - 3))
+        & MAKE_MASK(F_C_CLASS_BIT_WIDTH, 3);
     IF_OPTNL_ERROR_INFO( arg_classes = EXCPTN_INFO->arg_classes );
 
     fp_class_y = UNPACK_X_OR_Y(
@@ -750,8 +754,8 @@ void
 PACK (
   UX_FLOAT * unpacked_result,
   _X_FLOAT * packed_result,
-  U_WORD     underflow_error,
-  U_WORD     overflow_error
+  WORD       underflow_error,
+  WORD       overflow_error
   OPT_EXCEPTION_INFO_DECLARATION )
     {
     WORD shift, error_code;
@@ -770,7 +774,7 @@ PACK (
 
     if (exponent == UX_ZERO_EXPONENT)
         {
-        next_digit = G_UX_SIGN(unpacked_result);
+        next_digit = UX_TO_SIGN_AS_DIGIT(G_UX_SIGN(unpacked_result));
 
 #       if (NUM_UX_DIGITS == 4)
 
@@ -866,10 +870,10 @@ PACK (
     ** first.  Adjust exponent to reflect hidden bit in fraction field
     */
 
-    tmp_digit = exponent + ((F_EXP_BIAS - 1) - 1);
-    current_digit += (tmp_digit << (CSHIFT - 1));
-    next_digit = G_UX_SIGN(unpacked_result);
-    current_digit |= (next_digit << UX_SIGN_SHIFT);
+    tmp_digit = UX_TO_DIGIT(exponent + ((F_EXP_BIAS - 1) - 1));
+    current_digit += UX_TO_DIGIT(tmp_digit << (CSHIFT - 1));
+    next_digit = UX_TO_DIGIT(G_UX_SIGN(unpacked_result));
+    current_digit |= UX_TO_DIGIT(next_digit << UX_SIGN_SHIFT);
     P_X_DIGIT(packed_result, 0, current_digit);
 
     /* If no overflow or underflow, we're done */
@@ -899,8 +903,7 @@ PACK (
              return;
         }
 
-    error_code = (exponent < 0) ? underflow_error : overflow_error;
-    error_code = ADD_ERR_CODE_TYPE(error_code);
+    error_code = (WORD)((exponent < 0) ? underflow_error : overflow_error);
     GET_EXCEPTION_RESULT_2(error_code, packed_x, packed_y, *packed_result);
     }
 
@@ -964,7 +967,7 @@ PACK (
         lsd = coef->digits[0];					\
         P_UX_FRACTION_DIGIT(ux, LSD_NUM, lsd & ~mask);		\
         op = lsd & 1;						\
-        scale = (UX_EXPONENT_TYPE) (((lsd >> 1) & mask) - bias);			\
+        scale = (UX_EXPONENT_TYPE)((((lsd >> 1) & mask) - (U_WORD)bias));	\
         }
 
 
@@ -979,7 +982,7 @@ EVALUATE_PACKED_POLY( UX_FLOAT * argument, WORD degree, FIXED_128 * coefs,
     P_UX_SIGN(&tmp, 0);
     P_UX_EXPONENT(&tmp, 0);
     UNPACK_COEF_TO_UX(coefs, result, mask, bias, scale, op);
-    P_UX_SIGN(result, (op == ADD) ? 0 : UX_SIGN_BIT );
+    P_UX_SIGN(result, (UX_SIGN_TYPE)((op == ADD) ? 0 : UX_SIGN_BIT) );
     P_UX_EXPONENT(result, scale);
 
     while (--degree >= 0)
@@ -987,8 +990,8 @@ EVALUATE_PACKED_POLY( UX_FLOAT * argument, WORD degree, FIXED_128 * coefs,
         MULTIPLY(argument, result, result);
         NORMALIZE(result);
         coefs++;
-        UNPACK_COEF_TO_UX(coefs, &tmp, mask, bias, scale, op);
-        ADDSUB(result, &tmp, op, result);
+        UNPACK_COEF_TO_UX(coefs, &tmp, mask, UX_TO_WORD(bias), scale, op);
+        ADDSUB(result, &tmp, UX_TO_UWORD(op), result);
         UX_INCR_EXPONENT(result, scale);
         }
     }

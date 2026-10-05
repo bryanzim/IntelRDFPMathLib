@@ -101,9 +101,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
   }
   // get number of decimal digits in coefficient_x
   tempx.d = (float) coefficient_x;
-  bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+  bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
   digits_x = bid_estimate_decimal_digits[bin_expon_cx];
-  if (coefficient_x >= bid_power10_table_128[digits_x].w[0])
+  if (coefficient_x >= bid_power10_table_128[digits_x].w[0U])
     digits_x++;
 
   expon_diff = exponent_x - exponent_y;
@@ -112,7 +112,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
   // check range of scaled coefficient
   if ((BID_UINT32) (total_digits + 1) <= 17) {
     if (expon_diff >= 0) {
-      coefficient_x *= bid_power10_table_128[expon_diff].w[0];
+      coefficient_x *= bid_power10_table_128[expon_diff].w[0U];
       res = very_fast_get_BID64 (sign_x, exponent_y, coefficient_x);
       BID_RETURN (res);
     }
@@ -120,7 +120,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
     extra_digits = -expon_diff;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (unsigned int)rnd_mode;
     if (sign_x && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -137,7 +137,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
 
     // now get P/10^extra_digits: shift C64 right by M[extra_digits]-128
     amount = bid_short_recip_scale[extra_digits];
-    C64 = CT.w[1] >> amount;
+    C64 = CT.w[1U] >> amount;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
     if (rnd_mode == 0)
@@ -153,10 +153,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
     remainder_h = 0;
     remainder_h--;
     remainder_h >>= amount2;
-    remainder_h = remainder_h & CT.w[1];
+    remainder_h = remainder_h & CT.w[1U];
 
     // test whether fractional part is 0
-    if (!remainder_h && (CT.w[0] < bid_reciprocals10_64[extra_digits])) {
+    if (!remainder_h && (CT.w[0U] < bid_reciprocals10_64[extra_digits])) {
       C64--;
     }
       }
@@ -165,24 +165,24 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
 #ifdef BID_SET_STATUS_FLAGS
     status = BID_INEXACT_EXCEPTION;
     // get remainder
-    remainder_h = CT.w[1] << (64 - amount);
+    remainder_h = CT.w[1U] << (64 - amount);
     switch (rmode) {
     case BID_ROUNDING_TO_NEAREST:
     case BID_ROUNDING_TIES_AWAY:
       // test whether fractional part is 0
       if ((remainder_h == 0x8000000000000000ull)
-      && (CT.w[0] < bid_reciprocals10_64[extra_digits]))
+      && (CT.w[0U] < bid_reciprocals10_64[extra_digits]))
     status = BID_EXACT_STATUS;
       break;
     case BID_ROUNDING_DOWN:
     case BID_ROUNDING_TO_ZERO:
-      if (!remainder_h && (CT.w[0] < bid_reciprocals10_64[extra_digits]))
+      if (!remainder_h && (CT.w[0U] < bid_reciprocals10_64[extra_digits]))
     status = BID_EXACT_STATUS;
       //if(!C64 && rmode==BID_ROUNDING_DOWN) sign_s=sign_y;
       break;
     default:
       // round up
-      __add_carry_out (tmp, carry, CT.w[0],
+      __add_carry_out (tmp, carry, CT.w[0U],
                bid_reciprocals10_64[extra_digits]);
       if ((remainder_h >> (64 - amount)) + carry >=
       (((BID_UINT64) 1) << amount))
@@ -203,7 +203,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
     C64 = 0;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (unsigned int)rnd_mode;
     if (sign_x && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
     if (rmode == BID_ROUNDING_UP)

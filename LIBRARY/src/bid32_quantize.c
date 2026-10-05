@@ -97,9 +97,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
   }
   // get number of decimal digits in coefficient_x
   tempx.d = (float) coefficient_x;
-  bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+  bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
   digits_x = bid_estimate_decimal_digits[bin_expon_cx];
-  if (coefficient_x >= bid_power10_table_128[digits_x].w[0])
+  if (coefficient_x >= bid_power10_table_128[digits_x].w[0U])
     digits_x++;
 
   expon_diff = exponent_x - exponent_y;
@@ -108,7 +108,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
   // check range of scaled coefficient
   if ((BID_UINT32) (total_digits + 1) <= 8) {
     if (expon_diff >= 0) {
-      coefficient_x *= (BID_UINT32)bid_power10_table_128[expon_diff].w[0];
+      coefficient_x *= (BID_UINT32)bid_power10_table_128[expon_diff].w[0U];
       res = very_fast_get_BID32 (sign_x, exponent_y, coefficient_x);
       BID_RETURN (res);
     }
@@ -116,7 +116,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
     extra_digits = -expon_diff;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (unsigned int)rnd_mode;
     if (sign_x && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -197,7 +197,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT32, bid32_quantize, BID_UINT32, x, 
     C64 = 0;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (unsigned int)rnd_mode;
     if (sign_x && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
     if (rmode == BID_ROUNDING_UP)

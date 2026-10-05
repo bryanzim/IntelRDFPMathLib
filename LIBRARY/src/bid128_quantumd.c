@@ -50,27 +50,27 @@ BID128_FUNCTION_ARG1_NORND(bid128_quantum, x)
 
 
   // If x is infinite, the result is +Inf. If x is NaN, the result is NaN
-  if ((x.w[1] & MASK_ANY_INF) == MASK_INF) {
-    res.w[1] = 0x7800000000000000ull;
-    res.w[0] = 0x0000000000000000ull;
+  if ((x.w[1U] & MASK_ANY_INF) == MASK_INF) {
+    res.w[1U] = 0x7800000000000000ull;
+    res.w[0U] = 0x0000000000000000ull;
     BID_RETURN (res);
   }
-  else if ((x.w[1] & NAN_MASK64) == NAN_MASK64) {
-    res.w[1] = x.w[1] & QUIET_MASK64;
+  else if ((x.w[1U] & NAN_MASK64) == NAN_MASK64) {
+    res.w[1U] = x.w[1U] & QUIET_MASK64;
     BID_RETURN (res);
   }
 
   // Extract exponent
-  if ((x.w[1] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
-    int_exp = (int)((x.w[1] >> 47) & 0x3fff) - 6176;
+  if ((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
+    int_exp = (int)((x.w[1U] >> 47) & 0x3fffU) - 6176;
   }
   else {
-    int_exp = ((int)(x.w[1] >> 49) & 0x3fff) - 6176;
+    int_exp = ((int)((x.w[1U] >> 49) & 0x3fffU)) - 6176;
   }
 
   // Form 10^new_exponent*1  
-  res.w[1] = (((long long int) int_exp) << 49 ) + 0x3040000000000000ull;
-  res.w[0] = 0x0000000000000001ull;
+  res.w[1U] = (((BID_UINT64)(long long int) int_exp) << 49) + 0x3040000000000000ull;
+  res.w[0U] = 0x0000000000000001ull;
 
   BID_RETURN (res);
 

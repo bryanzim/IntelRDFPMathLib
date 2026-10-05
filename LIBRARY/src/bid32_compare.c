@@ -29,7 +29,7 @@
 
 #include "bid_internal.h"
 
-static const BID_UINT32 bid_mult_factor[7] = {
+static const BID_UINT32 bid_mult_factor[7U] = {
   1, 10, 100, 1000, 10000, 100000, 1000000
 };
 

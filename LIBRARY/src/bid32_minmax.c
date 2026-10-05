@@ -33,7 +33,7 @@
  *  BID32 minimum function - returns greater of two numbers
  *****************************************************************************/
 
-static const BID_UINT32 bid_mult_factor[7] = {
+static const BID_UINT32 bid_mult_factor[7U] = {
   1, 10, 100, 1000, 10000, 100000, 1000000
 };
 
@@ -47,9 +47,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_minnum, BID_UINT32,
 
   // check for non-canonical x
   if ((x & MASK_NAN32) == MASK_NAN32) {	// x is NaN
-    x = x & 0xfe0fffff;	// clear G6-G10
-    if ((x & 0x000fffff) > 999999) {
-      x = x & 0xfe000000;	// clear G6-G10 and the payload bits
+    x = x & 0xfe0fffffU;	// clear G6-G10
+    if ((x & 0x000fffffU) > 999999) {
+      x = x & 0xfe000000U;	// clear G6-G10 and the payload bits
     }
   } else if ((x & MASK_INF32) == MASK_INF32) {	// check for Infinity
     x = x & (MASK_SIGN32 | MASK_INF32);
@@ -66,9 +66,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_minnum, BID_UINT32,
 
   // check for non-canonical y
   if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NaN
-    y = y & 0xfe0fffff;	// clear G6-G10
-    if ((y & 0x000fffff) > 999999) {
-      y = y & 0xfe000000;	// clear G6-G10 and the payload bits
+    y = y & 0xfe0fffffU;	// clear G6-G10
+    if ((y & 0x000fffffU) > 999999) {
+      y = y & 0xfe000000U;	// clear G6-G10 and the payload bits
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {	// check for Infinity
     y = y & (MASK_SIGN32 | MASK_INF32);
@@ -88,7 +88,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_minnum, BID_UINT32,
     if ((x & MASK_SNAN32) == MASK_SNAN32) {	// x is SNaN
       // if x is SNAN, then return quiet (x)
       *pfpsf |= BID_INVALID_EXCEPTION;	// set exception if SNaN
-      x = x & 0xfdffffff;	// quietize x
+      x = x & 0xfdffffffU;	// quietize x
       res = x;
     } else {	// x is QNaN
       if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NAN
@@ -104,7 +104,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_minnum, BID_UINT32,
   } else if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NaN, but x is not
     if ((y & MASK_SNAN32) == MASK_SNAN32) {
       *pfpsf |= BID_INVALID_EXCEPTION;	// set exception if SNaN
-      y = y & 0xfdffffff;	// quietize y
+      y = y & 0xfdffffffU;	// quietize y
       res = y;
     } else {
       // will return x (which is not NaN)
@@ -249,9 +249,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_minnum_mag, BID_UIN
 
   // check for non-canonical x
   if ((x & MASK_NAN32) == MASK_NAN32) {	// x is NaN
-    x = x & 0xfe0fffff;	// clear G6-G10
-    if ((x & 0x000fffff) > 999999) {
-      x = x & 0xfe000000;	// clear G6-G10 and the payload bits
+    x = x & 0xfe0fffffU;	// clear G6-G10
+    if ((x & 0x000fffffU) > 999999) {
+      x = x & 0xfe000000U;	// clear G6-G10 and the payload bits
     }
   } else if ((x & MASK_INF32) == MASK_INF32) {	// check for Infinity
     x = x & (MASK_SIGN32 | MASK_INF32);
@@ -268,9 +268,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_minnum_mag, BID_UIN
 
   // check for non-canonical y
   if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NaN
-    y = y & 0xfe0fffff;	// clear G6-G10
-    if ((y & 0x000fffff) > 999999) {
-      y = y & 0xfe000000;	// clear G6-G10 and the payload bits
+    y = y & 0xfe0fffffU;	// clear G6-G10
+    if ((y & 0x000fffffU) > 999999) {
+      y = y & 0xfe000000U;	// clear G6-G10 and the payload bits
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {	// check for Infinity
     y = y & (MASK_SIGN32 | MASK_INF32);
@@ -290,7 +290,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_minnum_mag, BID_UIN
     if ((x & MASK_SNAN32) == MASK_SNAN32) {	// x is SNaN
       // if x is SNAN, then return quiet (x)
       *pfpsf |= BID_INVALID_EXCEPTION;	// set exception if SNaN
-      x = x & 0xfdffffff;	// quietize x
+      x = x & 0xfdffffffU;	// quietize x
       res = x;
     } else {	// x is QNaN
       if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NAN
@@ -306,7 +306,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_minnum_mag, BID_UIN
   } else if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NaN, but x is not
     if ((y & MASK_SNAN32) == MASK_SNAN32) {
       *pfpsf |= BID_INVALID_EXCEPTION;	// set exception if SNaN
-      y = y & 0xfdffffff;	// quietize y
+      y = y & 0xfdffffffU;	// quietize y
       res = y;
     } else {
       // will return x (which is not NaN)
@@ -429,9 +429,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_maxnum, BID_UINT32,
 
   // check for non-canonical x
   if ((x & MASK_NAN32) == MASK_NAN32) {	// x is NaN
-    x = x & 0xfe0fffff;	// clear G6-G10
-    if ((x & 0x000fffff) > 999999) {
-      x = x & 0xfe000000;	// clear G6-G10 and the payload bits
+    x = x & 0xfe0fffffU;	// clear G6-G10
+    if ((x & 0x000fffffU) > 999999) {
+      x = x & 0xfe000000U;	// clear G6-G10 and the payload bits
     }
   } else if ((x & MASK_INF32) == MASK_INF32) {	// check for Infinity
     x = x & (MASK_SIGN32 | MASK_INF32);
@@ -448,9 +448,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_maxnum, BID_UINT32,
 
   // check for non-canonical y
   if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NaN
-    y = y & 0xfe0fffff;	// clear G6-G10
-    if ((y & 0x000fffff) > 999999) {
-      y = y & 0xfe000000;	// clear G6-G10 and the payload bits
+    y = y & 0xfe0fffffU;	// clear G6-G10
+    if ((y & 0x000fffffU) > 999999) {
+      y = y & 0xfe000000U;	// clear G6-G10 and the payload bits
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {	// check for Infinity
     y = y & (MASK_SIGN32 | MASK_INF32);
@@ -470,7 +470,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_maxnum, BID_UINT32,
     if ((x & MASK_SNAN32) == MASK_SNAN32) {	// x is SNaN
       // if x is SNAN, then return quiet (x)
       *pfpsf |= BID_INVALID_EXCEPTION;	// set exception if SNaN
-      x = x & 0xfdffffff;	// quietize x
+      x = x & 0xfdffffffU;	// quietize x
       res = x;
     } else {	// x is QNaN
       if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NAN
@@ -486,7 +486,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_maxnum, BID_UINT32,
   } else if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NaN, but x is not
     if ((y & MASK_SNAN32) == MASK_SNAN32) {
       *pfpsf |= BID_INVALID_EXCEPTION;	// set exception if SNaN
-      y = y & 0xfdffffff;	// quietize y
+      y = y & 0xfdffffffU;	// quietize y
       res = y;
     } else {
       // will return x (which is not NaN)
@@ -629,9 +629,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_maxnum_mag, BID_UIN
 
   // check for non-canonical x
   if ((x & MASK_NAN32) == MASK_NAN32) {	// x is NaN
-    x = x & 0xfe0fffff;	// clear G6-G10
-    if ((x & 0x000fffff) > 999999) {
-      x = x & 0xfe000000;	// clear G6-G10 and the payload bits
+    x = x & 0xfe0fffffU;	// clear G6-G10
+    if ((x & 0x000fffffU) > 999999) {
+      x = x & 0xfe000000U;	// clear G6-G10 and the payload bits
     }
   } else if ((x & MASK_INF32) == MASK_INF32) {	// check for Infinity
     x = x & (MASK_SIGN32 | MASK_INF32);
@@ -648,9 +648,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_maxnum_mag, BID_UIN
 
   // check for non-canonical y
   if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NaN
-    y = y & 0xfe0fffff;	// clear G6-G10
-    if ((y & 0x000fffff) > 999999) {
-      y = y & 0xfe000000;	// clear G6-G10 and the payload bits
+    y = y & 0xfe0fffffU;	// clear G6-G10
+    if ((y & 0x000fffffU) > 999999) {
+      y = y & 0xfe000000U;	// clear G6-G10 and the payload bits
     }
   } else if ((y & MASK_INF32) == MASK_INF32) {	// check for Infinity
     y = y & (MASK_SIGN32 | MASK_INF32);
@@ -670,7 +670,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_maxnum_mag, BID_UIN
     if ((x & MASK_SNAN32) == MASK_SNAN32) {	// x is SNaN
       // if x is SNAN, then return quiet (x)
       *pfpsf |= BID_INVALID_EXCEPTION;	// set exception if SNaN
-      x = x & 0xfdffffff;	// quietize x
+      x = x & 0xfdffffffU;	// quietize x
       res = x;
     } else {	// x is QNaN
       if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NAN
@@ -686,7 +686,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_maxnum_mag, BID_UIN
   } else if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NaN, but x is not
     if ((y & MASK_SNAN32) == MASK_SNAN32) {
       *pfpsf |= BID_INVALID_EXCEPTION;	// set exception if SNaN
-      y = y & 0xfdffffff;	// quietize y
+      y = y & 0xfdffffffU;	// quietize y
       res = y;
     } else {
       // will return x (which is not NaN)

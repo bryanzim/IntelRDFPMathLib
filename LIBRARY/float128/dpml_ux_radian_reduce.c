@@ -949,7 +949,7 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
         */
 
         j = j + (j & 1);
-        quadrant = j >> 1;
+        quadrant = UX_TO_DIGIT(j >> 1);
         j = octant - j;
 
         if ( j )
@@ -1013,7 +1013,8 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
 
     TMP_DIGIT = ( SECOND_MSD_OF_W >> (BITS_PER_DIGIT - NUM_EXTRA_BITS - 3))
            | (MSD_OF_W << (NUM_EXTRA_BITS + 3));
-        TMP_DIGIT ^= ((SIGNED_DIGIT_TYPE) TMP_DIGIT >> (BITS_PER_DIGIT - 1));
+        TMP_DIGIT ^= UX_TO_DIGIT((SIGNED_DIGIT_TYPE) TMP_DIGIT
+            >> (BITS_PER_DIGIT - 1));
     if ( TMP_DIGIT )
             break;
 
@@ -1040,7 +1041,7 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
 
     quadrant = MSD_OF_W;
     MSD_OF_W = MSD_OF_W << 2;
-    MSD_OF_W = ((SIGNED_DIGIT_TYPE) MSD_OF_W) >> 2;
+    MSD_OF_W = UX_TO_DIGIT(((SIGNED_DIGIT_TYPE) MSD_OF_W) >> 2);
     TMP_DIGIT = MSD_OF_W;
     quadrant -= MSD_OF_W;
 
@@ -1067,8 +1068,9 @@ UX_RADIAN_REDUCE( UX_FLOAT * x, WORD octant, UX_FLOAT * reduced_argument )
     ** than the digit size.
     */
 
-    quadrant = G_UX_SIGN(x) ? -((SIGNED_DIGIT_TYPE) quadrant) : quadrant;
-    P_UX_SIGN(reduced_argument, sign ^ sign_x);
+    if (G_UX_SIGN(x))
+        quadrant = UX_TO_DIGIT(-((SIGNED_DIGIT_TYPE) quadrant));
+    P_UX_SIGN(reduced_argument, (UX_SIGN_TYPE)(sign ^ sign_x));
     P_UX_EXPONENT(reduced_argument, 3);
     PUT_W_DIGITS(reduced_argument);
     NORMALIZE(reduced_argument);

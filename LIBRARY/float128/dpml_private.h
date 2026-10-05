@@ -47,6 +47,12 @@
 #include "i_format.h"
 #include "f_format.h"
 
+#if defined(__clang__)
+#   define DPML_FALLTHROUGH __attribute__((fallthrough))
+#else
+#   define DPML_FALLTHROUGH ((void)0)
+#endif
+
 #if (defined(NEW_DPML_MACROS) && (NEW_DPML_MACROS == 1))
 
 #   if (defined(MULTIPLE_ISSUE) && MULTIPLE_ISSUE)
