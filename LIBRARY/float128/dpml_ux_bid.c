@@ -256,14 +256,14 @@ X_I_PROTO(F_ENTRY_NAME, packed_result, i)
     #define ITOF_SHIFT	(BITS_PER_UX_FRACTION_DIGIT_TYPE - 32)
 
     sign  = 0;
-    msd   = i;
+    msd   = UX_TO_DIGIT(i);
     if ( i == 0 ) {
         exponent = 0;
     } else {
         exponent = 32;
         cnt      = 16;
         if ( (UX_SIGNED_FRACTION_DIGIT_TYPE) msd < 0 ) {
-            msd = -((UX_SIGNED_FRACTION_DIGIT_TYPE) msd);
+            msd = UX_TO_DIGIT(-UX_TO_SDIGIT(msd));
             sign = 1;
         }
 
@@ -352,8 +352,8 @@ UX_CMP( WORD x_class, UX_FLOAT * unpacked_x,
                          ((WORD) G_UX_EXPONENT(unpacked_y));
         if (diff == 0) {
             for (i = 0; i < NUM_UX_FRACTION_DIGITS; i++) {
-               diff = G_UX_FRACTION_DIGIT(unpacked_x, i) - 
-                        G_UX_FRACTION_DIGIT(unpacked_y, i);
+               diff = UX_TO_WORD(G_UX_FRACTION_DIGIT(unpacked_x, i) - 
+                        G_UX_FRACTION_DIGIT(unpacked_y, i));
                if ( diff != 0 ) 
                    break;
              }
@@ -390,10 +390,10 @@ I_XXI_PROTO(F_ENTRY_NAME, packed_x, packed_y, predicate)
         &dummy
         OPT_EXCEPTION_INFO );
 
-    #define CLASS_MASK		MAKE_MASK(F_C_CLASS_BIT_WIDTH,0);
+    #define CLASS_MASK		MAKE_MASK(F_C_CLASS_BIT_WIDTH,0)
 
-    x_class = (fp_class >> F_C_CLASS_BIT_WIDTH) & CLASS_MASK;
-    y_class = fp_class & CLASS_MASK;
+    x_class = (WORD)(((U_WORD)fp_class >> F_C_CLASS_BIT_WIDTH) & CLASS_MASK);
+    y_class = (WORD)((U_WORD)fp_class & CLASS_MASK);
     
     order =  UX_CMP(x_class, &unpacked_x, y_class, &unpacked_y);
     return (predicate >> order) & 1;
@@ -423,8 +423,8 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     if (0 > fp_class)
        RETURN_X_FLOAT(packed_result);
 
-    x_class = (fp_class >> F_C_CLASS_BIT_WIDTH);
-    y_class = fp_class & MAKE_MASK(F_C_CLASS_BIT_WIDTH,0);
+    x_class = (WORD)((U_WORD)fp_class >> F_C_CLASS_BIT_WIDTH);
+    y_class = (WORD)((U_WORD)fp_class & MAKE_MASK(F_C_CLASS_BIT_WIDTH,0));
     
     order =  UX_CMP(x_class, &unpacked_x, y_class, &unpacked_y);
 

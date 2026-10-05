@@ -180,7 +180,7 @@ get_LR:
     SKLR = (flags >> SKLR) & 1;
     incr = SKLR ? incr : 0;
     current_digit &= ~mask;
-    lsd += SKLR;
+    lsd += UX_TO_DIGIT(SKLR);
 
     while (num_digits-- > 0)
         {
@@ -209,7 +209,7 @@ get_LR:
         /* subtract int_func(x) from x */
         ADDSUB(unpacked_argument, unpacked_result, SUB, unpacked_fraction);
 
-    return lsd;
+    return UX_TO_WORD(lsd);
     }
 
 /*

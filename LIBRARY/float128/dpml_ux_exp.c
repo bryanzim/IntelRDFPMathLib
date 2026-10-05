@@ -65,7 +65,8 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
     sign = G_UX_SIGN(orig_argument);
 
     reduce_constant_exp = constants[2];
-    if ( (UX_UNSIGNED_EXPONENT_TYPE) (exponent + 1 - reduce_constant_exp) > 18)
+    if ( UX_TO_UEXP(exponent + 1 - (UX_EXPONENT_TYPE) UX_TO_SDIGIT(
+            reduce_constant_exp)) > 18)
         { /* Either no reduction is necessary, or exponent > 17 */
 
         scale = 0;
@@ -73,9 +74,10 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
         if (exponent > 0)
             { /* exponent > 17, force underflow or overflow */
             P_UX_EXPONENT(reduced_argument, -128);
-            scale = sign ? UX_UNDERFLOW_EXPONENT : UX_OVERFLOW_EXPONENT;
+            scale = UX_TO_DIGIT(sign ? UX_UNDERFLOW_EXPONENT
+                : UX_OVERFLOW_EXPONENT);
             }
-        return scale;
+        return UX_TO_WORD(scale);
         }
                 
     /*
@@ -102,9 +104,9 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
 
     msd = G_UX_MSD(orig_argument) >> 1;
     UMULH( msd, constants[0], scale);
-    shift = (BITS_PER_UX_FRACTION_DIGIT_TYPE - 3) - exponent;
-    scale += SET_BIT(shift - 1);
-    scale &= -((UX_SIGNED_FRACTION_DIGIT_TYPE) SET_BIT(shift));
+    shift = UX_TO_UWORD((BITS_PER_UX_FRACTION_DIGIT_TYPE - 3) - exponent);
+    scale += UX_TO_DIGIT(SET_BIT(UX_TO_WORD(shift - 1)));
+    scale &= UX_TO_DIGIT(-UX_TO_SDIGIT(SET_BIT(shift)));
 
     /*
     ** Now compute (x - scale*high_bits_of_ln2) - scale*low_bits_of_ln2
@@ -141,7 +143,8 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
         }
 
     /* adjust the product exponent by the exponent of the constant */
-    UX_SET_SIGN_EXP_MSD(&tmp, sign, exponent + reduce_constant_exp, msd);
+    UX_SET_SIGN_EXP_MSD(&tmp, sign,
+        exponent + (UX_EXPONENT_TYPE) UX_TO_SDIGIT(reduce_constant_exp), msd);
     P_UX_FRACTION_DIGIT(&tmp, 1, lsd);
     ADDSUB(orig_argument, &tmp, SUB, &tmp);
 
@@ -152,8 +155,8 @@ UX_EXP_REDUCE(UX_FLOAT * orig_argument, UX_FLOAT * reduced_argument,
     ADDSUB(&tmp, reduced_argument, SUB | NO_NORMALIZATION, reduced_argument);
 
     scale >>= shift;
-    scale = (sign) ? -((UX_SIGNED_FRACTION_DIGIT_TYPE) scale) : scale;
-    return scale;
+    scale = (sign) ? UX_TO_DIGIT(-UX_TO_SDIGIT(scale)) : scale;
+    return UX_TO_WORD(scale);
     }
 
 /*
@@ -438,8 +441,9 @@ UX_HYPERBOLIC( UX_FLOAT * unpacked_argument, WORD evaluation_flags,
         &reduced_argument,
         SINHCOSH_COEF_ARRAY,
         SINHCOSH_COEF_ARRAY_DEGREE,
-        (scale == 0) ? EVAL_RATIONAL_FLAGS(evaluation_flags) :
-                       SINHCOSH_EVAL,
+        (scale == 0) ? UX_TO_UWORD(EVAL_RATIONAL_FLAGS(
+                           (U_WORD)evaluation_flags)) :
+                       UX_TO_UWORD(SINHCOSH_EVAL),
         unpacked_result );
 
     if (scale)
@@ -467,7 +471,8 @@ UX_HYPERBOLIC( UX_FLOAT * unpacked_argument, WORD evaluation_flags,
         ADDSUB(
             &tmp[0],			/* exp(x)/2	*/
             &tmp[1],			/* exp(-x)/2	*/
-            ADDSUB_FLAGS(evaluation_flags) | MAGNITUDE_ONLY | NO_NORMALIZATION,
+            UX_TO_UWORD(ADDSUB_FLAGS((U_WORD)evaluation_flags))
+                | MAGNITUDE_ONLY | NO_NORMALIZATION,
             &unpacked_result[0]		/* sinh(x)/cosh(x)	*/
             );
 

@@ -41,13 +41,9 @@ endfunction()
 function(idfp_apply_compiler_warning_flags target)
     if (IDFP_STRICT_CLANG_WARNINGS)
         if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-            set(_idfp_f128_target FALSE)
-            if (${target} STREQUAL "IntelDFPF128")
-                set(_idfp_f128_target TRUE)
-            endif()
             if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
                 target_compile_options(${target} PRIVATE "/W4" "/WX")
-                if (IDFP_EXTRA_STRICT_CLANG_WARNINGS AND NOT _idfp_f128_target)
+                if (IDFP_EXTRA_STRICT_CLANG_WARNINGS)
                     # /Wall flags thousands of reserved-identifier hits in legacy headers; use
                     # Clang-specific diagnostics that we can fix incrementally instead.
                     target_compile_options(${target} PRIVATE
@@ -55,20 +51,18 @@ function(idfp_apply_compiler_warning_flags target)
                         "-Wno-shorten-64-to-32"
                         "-Wno-implicit-int-float-conversion"
                         "-Wimplicit-fallthrough"
-                        "-Wformat=2"
-                        "-ferror-limit=0")
+                        "-Wformat=2")
                 endif()
             else()
                 target_compile_options(${target} PRIVATE
                     "-Wall" "-Wextra" "-Wpedantic" "-Werror")
-                if (IDFP_EXTRA_STRICT_CLANG_WARNINGS AND NOT _idfp_f128_target)
+                if (IDFP_EXTRA_STRICT_CLANG_WARNINGS)
                     target_compile_options(${target} PRIVATE
                         "-Wconversion"
                         "-Wno-shorten-64-to-32"
                         "-Wno-implicit-int-float-conversion"
                         "-Wimplicit-fallthrough"
-                        "-Wformat=2"
-                        "-ferror-limit=0")
+                        "-Wformat=2")
                 endif()
             endif()
         endif()

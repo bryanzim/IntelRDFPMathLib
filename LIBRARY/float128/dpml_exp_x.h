@@ -64,7 +64,7 @@
     /* 080 */ DATA_1x2( 0x00000000, 0x00000000 ),
 
     /* ln2_lo = ln2 - ln2_hi in unpacked form */
-    /* 088 */ NEG, 0-66, DATA_2x2( 0xf0342542, 0xd871319f, 0x359d2749, 0xfc32f366 ),
+    /* 088 */ NEG, TW(0-66), DATA_2x2( 0xf0342542, 0xd871319f, 0x359d2749, 0xfc32f366 ),
 
     /* Polynomial degree */
     /* 112 */ DATA_1x2( 0x00000016, 0x00000000 ),
@@ -96,7 +96,7 @@
     /* 488 */ DATA_1x2( 0x00000001, 0x00000000 ),
 
     /* 1 in unpacked format */
-    /* 496 */ POS, 0001, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
+    /* 496 */ POS, TW(0001), DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
 
     /* Constant structure for exp10 based evaluations */
 
@@ -106,7 +106,7 @@
     /* 536 */ DATA_1x2( 0x000000-1, 0x00000000 ),
 
     /* ln2_ov_ln10_lo = ln2 - ln2_ov_ln10__hi in unpacked form */
-    /* 544 */ NEG, 0-66, DATA_2x2( 0xe906dd0f, 0xe0ed4ca7, 0x785c196c, 0xb2a59e75 ),
+    /* 544 */ NEG, TW(0-66), DATA_2x2( 0xe906dd0f, 0xe0ed4ca7, 0x785c196c, 0xb2a59e75 ),
 
     /* Polynomial degree */
     /* 568 */ DATA_1x2( 0x00000016, 0x00000000 ),

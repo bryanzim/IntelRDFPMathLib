@@ -491,13 +491,14 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
     /* I ~ x/90, "add in octant" and round to nearest integer */
 
     cnt = BITS_PER_UX_FRACTION_DIGIT_TYPE - w_tmp;
-    tmp_digit = (tmp_digit + ((octant & 1) << (cnt - 1)) +
-                        SET_BIT(cnt - 1)) & ~MAKE_MASK(cnt, 0);
+    tmp_digit = UX_TO_DIGIT((tmp_digit + UX_TO_DIGIT((octant & 1) << (cnt - 1))
+                        + UX_TO_DIGIT(SET_BIT(cnt - 1)))
+                        & ~MAKE_MASK(cnt, 0));
 
     /* Get quadrant bits and adjust for sign of the argument */
 
-    quadrant = (tmp_digit >> cnt);
-    quadrant = (sign) ? -quadrant : quadrant;
+    quadrant = UX_TO_WORD(tmp_digit >> cnt);
+    quadrant = UX_TO_WORD((sign) ? -quadrant : quadrant);
     quadrant += (octant >> 1);
 
     /* now subtract I*90 from x */
@@ -513,7 +514,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
         sign ^= UX_SIGN_BIT;
 
         sum_digit = G_UX_LSD(argument);
-        tmp_digit = -((UX_SIGNED_FRACTION_DIGIT_TYPE) sum_digit);
+        tmp_digit = UX_TO_DIGIT(-UX_TO_SDIGIT(sum_digit));
         borrow = (sum_digit != 0);
         P_UX_LSD(argument, tmp_digit);
 
@@ -531,7 +532,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
 
 #       endif
 
-        current_digit = -((UX_SIGNED_FRACTION_DIGIT_TYPE) (current_digit + borrow));
+        current_digit = UX_TO_DIGIT(-UX_TO_SDIGIT(current_digit + borrow));
         }
     P_UX_MSD(argument, current_digit);
     NORMALIZE(argument);
@@ -541,7 +542,7 @@ UX_DEGREE_REDUCE( UX_FLOAT * argument, WORD octant, UX_FLOAT * reduced_argument)
     MULTIPLY(argument, UX_PI_OVER_180, reduced_argument);
     UX_TOGGLE_SIGN(reduced_argument, sign);
 
-    return quadrant;
+    return UX_TO_UWORD(quadrant);
     }
 
 /*
@@ -572,7 +573,8 @@ UX_SINCOS(
     /* Get the quadrant bits and the reduced argument */
 
     reduce = (function_code & DEGREE) ? UX_DEGREE_REDUCE : UX_RADIAN_REDUCE;
-    quadrant = reduce( unpacked_argument, octant, &reduced_argument );
+    quadrant = UX_TO_WORD(reduce( unpacked_argument, octant,
+        &reduced_argument ));
     function_code &= ~DEGREE;
 
     /*
@@ -656,7 +658,8 @@ UX_TANCOT(
     */
 
     reduce = (function_code & DEGREE) ? UX_DEGREE_REDUCE : UX_RADIAN_REDUCE;
-    quadrant = reduce( unpacked_argument, octant, &reduced_argument );
+    quadrant = UX_TO_WORD(reduce( unpacked_argument, octant,
+        &reduced_argument ));
     div_flag = ((quadrant + (function_code >> 3)) & 1) ? SWAP : 0;
 
     if (0 == G_UX_MSD(&reduced_argument))

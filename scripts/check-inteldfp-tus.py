@@ -102,28 +102,45 @@ def load_clang_template(tlog: Path) -> list[str]:
     raise SystemExit(f"Could not parse clang-cl flags from {tlog}")
 
 
+def apply_extra_strict_flags(flag_prefix: list[str]) -> list[str]:
+    """Match IDFP_EXTRA_STRICT_CLANG_WARNINGS on IntelDFP (not F128-only relaxations)."""
+    out = [f for f in flag_prefix if f not in ("-Wno-shorten-64-to-32", "-Wno-implicit-int-float-conversion", "-ferror-limit=0")]
+    for flag in (
+        "-Wconversion",
+        "-Wno-shorten-64-to-32",
+        "-Wno-implicit-int-float-conversion",
+        "-Wimplicit-fallthrough",
+        "-Wformat=2",
+    ):
+        if flag not in out:
+            out.append(flag)
+    return out
+
+
 def compile_clang(
     clang: Path,
     flag_prefix: list[str],
     int_dir: Path,
     obj_dir: Path,
     src: Path,
+    *,
+    compile_cwd: Path | None = None,
 ) -> tuple[Path, int, str]:
     obj = obj_dir / (src.stem + ".obj")
     # flag_prefix is MSBuild-style (/c /I...); clang-cl wants source last.
     cmd = [str(clang), *flag_prefix, f'/Fo{obj}', str(src)]
-    proc = subprocess.run(cmd, cwd=int_dir, capture_output=True, text=True)
+    proc = subprocess.run(cmd, cwd=compile_cwd or int_dir, capture_output=True, text=True)
     out = (proc.stdout or "") + (proc.stderr or "")
     return src, proc.returncode, out
 
 
-def compile_msbuild(build_dir: Path, config: str, src: Path) -> tuple[Path, int, str]:
+def compile_msbuild(build_dir: Path, config: str, src: Path, *, msbuild_target: str) -> tuple[Path, int, str]:
     cmd = [
         "cmake",
         "--build",
         str(build_dir),
         "--target",
-        "IntelDFP",
+        msbuild_target,
         "--config",
         config,
         "--",
@@ -157,13 +174,24 @@ def main() -> int:
         default="clang",
         help="msbuild only supports -j 1",
     )
+    ap.add_argument(
+        "--target",
+        choices=("IntelDFP", "IntelDFPF128"),
+        default="IntelDFP",
+        help="CMake/MSBuild library target (separate vcxproj + tlog)",
+    )
+    ap.add_argument(
+        "--extra-strict",
+        action="store_true",
+        help="Add IDFP extra-strict Clang flags (-Wconversion, -Wformat=2, fallthrough)",
+    )
     args = ap.parse_args()
 
     if args.engine == "msbuild" and args.jobs > 1:
         print("Note: msbuild engine forces -j 1 (shared IntelDFP.tlog).", file=sys.stderr)
         args.jobs = 1
 
-    vcxproj = args.build_dir / "LIBRARY" / "IntelDFP.vcxproj"
+    vcxproj = args.build_dir / "LIBRARY" / f"{args.target}.vcxproj"
     if not vcxproj.is_file():
         print(f"Missing {vcxproj}; run: cmake --preset x64-Clang-Debug", file=sys.stderr)
         return 2
@@ -173,27 +201,45 @@ def main() -> int:
         print(f"No sources for filter {args.filter!r}", file=sys.stderr)
         return 2
 
-    print(f"Checking {len(all_src)} file(s) engine={args.engine} jobs={args.jobs} ...")
+    print(
+        f"Checking {len(all_src)} file(s) target={args.target} "
+        f"extra_strict={args.extra_strict} engine={args.engine} jobs={args.jobs} ..."
+    )
 
-    clang = flag_prefix = int_dir = obj_dir = None
+    clang = flag_prefix = int_dir = obj_dir = compile_cwd = None
     if args.engine == "clang":
         clang = find_clang_cl()
-        tlog = args.build_dir / "LIBRARY" / "IntelDFP.dir" / "Debug" / "IntelDFP.tlog" / "clang-cl.command.1.tlog"
+        tlog = (
+            args.build_dir
+            / "LIBRARY"
+            / f"{args.target}.dir"
+            / "Debug"
+            / f"{args.target}.tlog"
+            / "clang-cl.command.1.tlog"
+        )
         if not tlog.is_file():
-            print(f"Missing {tlog}; compile IntelDFP once to generate tlogs.", file=sys.stderr)
+            print(f"Missing {tlog}; build {args.target} once to generate tlogs.", file=sys.stderr)
             return 2
         flag_prefix = load_clang_template(tlog)
-        int_dir = args.build_dir / "LIBRARY" / "IntelDFP.dir" / "Debug"
-        obj_dir = args.build_dir / "tu-check-obj"
+        if args.extra_strict:
+            flag_prefix = apply_extra_strict_flags(flag_prefix)
+        int_dir = args.build_dir / "LIBRARY" / f"{args.target}.dir" / "Debug"
+        obj_dir = args.build_dir / ("f128-tu-check-obj" if args.target == "IntelDFPF128" else "tu-check-obj")
         obj_dir.mkdir(parents=True, exist_ok=True)
+        if args.target == "IntelDFPF128":
+            compile_cwd = repo_root() / "LIBRARY" / "float128"
 
     failed: list[tuple[Path, str]] = []
 
     def work(src: Path) -> tuple[Path, int, str]:
         if args.engine == "clang":
             assert clang and flag_prefix and int_dir and obj_dir
-            return compile_clang(clang, flag_prefix, int_dir, obj_dir, src)
-        return compile_msbuild(args.build_dir, args.config, src)
+            return compile_clang(
+                clang, flag_prefix, int_dir, obj_dir, src, compile_cwd=compile_cwd
+            )
+        return compile_msbuild(
+            args.build_dir, args.config, src, msbuild_target=args.target
+        )
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as ex:
         futs = [ex.submit(work, s) for s in all_src]

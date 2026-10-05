@@ -97,10 +97,11 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
           ((WORD) (D_EXP_BIAS - D_NORM - 2) << D_EXP_POS);
 
     exponent = G_UX_EXPONENT(x);
-    exponent_parity = exponent & 1;
+    exponent_parity = (UX_EXPONENT_TYPE)(exponent & 1);
     exponent = (exponent + exponent_parity) >> 1;
 
-    shift = (BITS_PER_UX_FRACTION_DIGIT_TYPE + exponent_parity - S_PRECISION);
+    shift = (U_WORD)(BITS_PER_UX_FRACTION_DIGIT_TYPE
+        + (int)exponent_parity - S_PRECISION);
 
 #   if (NUM_UX_FRACTION_DIGITS == 2)
 
@@ -159,7 +160,7 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
 
     index = msd >> (BITS_PER_UX_FRACTION_DIGIT_TYPE - NUM_FRAC_BITS - 1);
     index = (index & MAKE_MASK(NUM_FRAC_BITS + 1, 0)) ^
-                      (exponent_parity << NUM_FRAC_BITS);
+                      (UX_TO_UWORD(exponent_parity) << NUM_FRAC_BITS);
 
     p = &D_SQRT_TABLE_NAME[ index ];
     g = ( (p->a)*(f*f) + ((p->b)*f + p->c) );
@@ -224,10 +225,12 @@ UX_SQRT_EVALUATION( UX_FLOAT * x, WORD evaluation_type, UX_FLOAT * y)
 #   if NUM_UX_FRACTION_DIGITS == 2
 
         signed_digit = (UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_75*g_lo);
-        msd = (msd << 39) + (signed_digit >> 12) + ((signed_digit >> 11) & 1);
+        msd = UX_TO_DIGIT((msd << 39) + (UX_FRACTION_DIGIT_TYPE)(signed_digit >> 12)
+            + UX_TO_DIGIT((signed_digit >> 11) & 1));
         tmp_digit = (msd & SET_BIT(62)) ?
            (UX_MSB - 1) : ((UX_FRACTION_DIGIT_TYPE) -1);
-        msd = ((UX_SIGNED_FRACTION_DIGIT_TYPE) msd < 0) ? msd : tmp_digit;
+        msd = ((UX_SIGNED_FRACTION_DIGIT_TYPE) msd < 0) ? msd
+            : UX_TO_DIGIT(tmp_digit);
 
 #   else
 

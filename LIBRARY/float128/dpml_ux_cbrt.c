@@ -143,7 +143,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument)
 
     /* Get m and i */
 
-    j = G_UX_EXPONENT(&unpacked_argument) + (ADD_ADJUST - 1);
+    j = UX_TO_UEXP(G_UX_EXPONENT(&unpacked_argument) + (ADD_ADJUST - 1));
     m = DIV_BY_3(j);
     i = j - 3*m;
 

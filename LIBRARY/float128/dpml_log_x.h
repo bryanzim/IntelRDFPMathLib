@@ -81,10 +81,10 @@
     /* 392 */ DATA_1x2( 0x00000002, 0x00000000 ),
 
     /* Unpacked constants 1, 2, log(2) and log(10) */
-    /* 400 */ POS, 0001, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
-    /* 424 */ POS, 0002, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
-    /* 448 */ POS, 0000, DATA_2x2( 0xd1cf79ab, 0xb17217f7, 0x03f2f6af, 0xc9e3b398 ),
-    /* 472 */ POS, 00-1, DATA_2x2( 0xfbcff798, 0x9a209a84, 0x0b7c9178, 0x8f8959ac ),
+    /* 400 */ POS, TW(0001), DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
+    /* 424 */ POS, TW(0002), DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
+    /* 448 */ POS, TW(0000), DATA_2x2( 0xd1cf79ab, 0xb17217f7, 0x03f2f6af, 0xc9e3b398 ),
+    /* 472 */ POS, TW(00-1), DATA_2x2( 0xfbcff798, 0x9a209a84, 0x0b7c9178, 0x8f8959ac ),
     };
 
 #define	LOG_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 0))
