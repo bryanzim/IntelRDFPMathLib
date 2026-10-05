@@ -103,11 +103,23 @@ function(idfp_apply_compiler_warning_flags target)
     elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
         target_compile_options(${target} PRIVATE "-Wextra")
     elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-        target_compile_options(${target} PRIVATE
-            "/W3" "/WX"
-            "/wd4242" "/wd4244" "/wd4267" "/wd4305"
-            "/Zc:__cplusplus"
-        )
+        if (IDFP_STRICT_MSVC_WARNINGS)
+            # /W4 promotes conversion warnings (C4242, C4244, C4267, C4305, C4365).
+            # C4324 is the intended pad from BID_ALIGN(16) on smaller ABI types.
+            # Angle-bracket includes stay quiet so the Windows SDK does not fail /WX.
+            target_compile_options(${target} PRIVATE
+                "/W4" "/WX"
+                "/wd4324"
+                "/external:anglebrackets" "/external:W0"
+                "/Zc:__cplusplus"
+            )
+        else()
+            target_compile_options(${target} PRIVATE
+                "/W3" "/WX"
+                "/wd4242" "/wd4244" "/wd4267" "/wd4305"
+                "/Zc:__cplusplus"
+            )
+        endif()
     else()
         message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
     endif()

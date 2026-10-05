@@ -637,13 +637,14 @@ BID_UINT64 R64H;                             \
     (R128).w[1] = R64H;                  \
 }
 
+#undef __mul_64x64_to_128
 #define __mul_64x64_to_128(P, CX, CY)   \
 {                                       \
 BID_UINT64 CXH, CXL, CYH,CYL,PL,PH,PM,PM2;\
         CXH = (CX) >> 32;                     \
-        CXL = (BID_UINT32)(CX);                   \
+        CXL = (BID_UINT32)((CX) & 0xffffffffULL); \
         CYH = (CY) >> 32;                     \
-        CYL = (BID_UINT32)(CY);                   \
+        CYL = (BID_UINT32)((CY) & 0xffffffffULL); \
         PM = CXH*CYL;                         \
         PH = CXH*CYH;                         \
         PL = CXL*CYL;                         \
@@ -658,9 +659,9 @@ BID_UINT64 CXH, CXL, CYH,CYL,PL,PH,PM,PM2;\
 {                                            \
 BID_UINT64 CXH, CXL, CYH,CYL,PL,PH,PM,PM2;        \
         CXH = (CX) >> 32;                     \
-        CXL = (BID_UINT32)(CX);                   \
+        CXL = (BID_UINT32)((CX) & 0xffffffffULL); \
         CYH = (CY) >> 32;                     \
-        CYL = (BID_UINT32)(CY);                   \
+        CYL = (BID_UINT32)((CY) & 0xffffffffULL); \
         PM = CXH*CYL;                         \
         PH = CXH*CYH;                         \
         PL = CXL*CYL;                         \

@@ -81,7 +81,6 @@ BID128_FUNCTION_ARG1 (bid128_expm1, x)
      else                       
       { BIDECIMAL_CALL3(bid128_fma,res,x,x,x);
       }                                               
-     BID_RETURN(res);                              
      BID_RETURN(res);
    }
 
