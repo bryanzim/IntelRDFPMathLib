@@ -37,231 +37,231 @@
 // concatenated, then the number of decimal digits k is the fourth entry, else
 // the number of decimal digits is the fourth entry plus 1
 DEC_DIGITS bid_nr_digits[] = {	// only the first entry is used if it is not 0
-  {1, 1, 0x0000000000000000ULL, (unsigned int)0x000000000000000aULL}
+  {1, 1, 0x0000000000000000ULL, (unsigned int)((0x000000000000000aULL) & 0xffffffffULL)}
   ,	//   1-bit n < 10^1
-  {1, 1, 0x0000000000000000ULL, (unsigned int)0x000000000000000aULL}
+  {1, 1, 0x0000000000000000ULL, (unsigned int)((0x000000000000000aULL) & 0xffffffffULL)}
   ,	//   2-bit n < 10^1
-  {1, 1, 0x0000000000000000ULL, (unsigned int)0x000000000000000aULL}
+  {1, 1, 0x0000000000000000ULL, (unsigned int)((0x000000000000000aULL) & 0xffffffffULL)}
   ,	//   3-bit n < 10^1
-  {0, 1, 0x0000000000000000ULL, (unsigned int)0x000000000000000aULL}
+  {0, 1, 0x0000000000000000ULL, (unsigned int)((0x000000000000000aULL) & 0xffffffffULL)}
   ,	//   4-bit n ? 10^1
-  {2, 2, 0x0000000000000000ULL, (unsigned int)0x0000000000000064ULL}
+  {2, 2, 0x0000000000000000ULL, (unsigned int)((0x0000000000000064ULL) & 0xffffffffULL)}
   ,	//   5-bit n < 10^2
-  {2, 2, 0x0000000000000000ULL, (unsigned int)0x0000000000000064ULL}
+  {2, 2, 0x0000000000000000ULL, (unsigned int)((0x0000000000000064ULL) & 0xffffffffULL)}
   ,	//   6-bit n < 10^2
-  {0, 2, 0x0000000000000000ULL, (unsigned int)0x0000000000000064ULL}
+  {0, 2, 0x0000000000000000ULL, (unsigned int)((0x0000000000000064ULL) & 0xffffffffULL)}
   ,	//   7-bit n ? 10^2
-  {3, 3, 0x0000000000000000ULL, (unsigned int)0x00000000000003e8ULL}
+  {3, 3, 0x0000000000000000ULL, (unsigned int)((0x00000000000003e8ULL) & 0xffffffffULL)}
   ,	//   8-bit n < 10^3
-  {3, 3, 0x0000000000000000ULL, (unsigned int)0x00000000000003e8ULL}
+  {3, 3, 0x0000000000000000ULL, (unsigned int)((0x00000000000003e8ULL) & 0xffffffffULL)}
   ,	//   9-bit n < 10^3
-  {0, 3, 0x0000000000000000ULL, (unsigned int)0x00000000000003e8ULL}
+  {0, 3, 0x0000000000000000ULL, (unsigned int)((0x00000000000003e8ULL) & 0xffffffffULL)}
   ,	//  10-bit n ? 10^3
-  {4, 4, 0x0000000000000000ULL, (unsigned int)0x0000000000002710ULL}
+  {4, 4, 0x0000000000000000ULL, (unsigned int)((0x0000000000002710ULL) & 0xffffffffULL)}
   ,	//  11-bit n < 10^4
-  {4, 4, 0x0000000000000000ULL, (unsigned int)0x0000000000002710ULL}
+  {4, 4, 0x0000000000000000ULL, (unsigned int)((0x0000000000002710ULL) & 0xffffffffULL)}
   ,	//  12-bit n < 10^4
-  {4, 4, 0x0000000000000000ULL, (unsigned int)0x0000000000002710ULL}
+  {4, 4, 0x0000000000000000ULL, (unsigned int)((0x0000000000002710ULL) & 0xffffffffULL)}
   ,	//  13-bit n < 10^4
-  {0, 4, 0x0000000000000000ULL, (unsigned int)0x0000000000002710ULL}
+  {0, 4, 0x0000000000000000ULL, (unsigned int)((0x0000000000002710ULL) & 0xffffffffULL)}
   ,	//  14-bit n ? 10^4
-  {5, 5, 0x0000000000000000ULL, (unsigned int)0x00000000000186a0ULL}
+  {5, 5, 0x0000000000000000ULL, (unsigned int)((0x00000000000186a0ULL) & 0xffffffffULL)}
   ,	//  15-bit n < 10^5
-  {5, 5, 0x0000000000000000ULL, (unsigned int)0x00000000000186a0ULL}
+  {5, 5, 0x0000000000000000ULL, (unsigned int)((0x00000000000186a0ULL) & 0xffffffffULL)}
   ,	//  16-bit n < 10^5
-  {0, 5, 0x0000000000000000ULL, (unsigned int)0x00000000000186a0ULL}
+  {0, 5, 0x0000000000000000ULL, (unsigned int)((0x00000000000186a0ULL) & 0xffffffffULL)}
   ,	//  17-bit n ? 10^5
-  {6, 6, 0x0000000000000000ULL, (unsigned int)0x00000000000f4240ULL}
+  {6, 6, 0x0000000000000000ULL, (unsigned int)((0x00000000000f4240ULL) & 0xffffffffULL)}
   ,	//  18-bit n < 10^6
-  {6, 6, 0x0000000000000000ULL, (unsigned int)0x00000000000f4240ULL}
+  {6, 6, 0x0000000000000000ULL, (unsigned int)((0x00000000000f4240ULL) & 0xffffffffULL)}
   ,	//  19-bit n < 10^6
-  {0, 6, 0x0000000000000000ULL, (unsigned int)0x00000000000f4240ULL}
+  {0, 6, 0x0000000000000000ULL, (unsigned int)((0x00000000000f4240ULL) & 0xffffffffULL)}
   ,	//  20-bit n ? 10^6
-  {7, 7, 0x0000000000000000ULL, (unsigned int)0x0000000000989680ULL}
+  {7, 7, 0x0000000000000000ULL, (unsigned int)((0x0000000000989680ULL) & 0xffffffffULL)}
   ,	//  21-bit n < 10^7
-  {7, 7, 0x0000000000000000ULL, (unsigned int)0x0000000000989680ULL}
+  {7, 7, 0x0000000000000000ULL, (unsigned int)((0x0000000000989680ULL) & 0xffffffffULL)}
   ,	//  22-bit n < 10^7
-  {7, 7, 0x0000000000000000ULL, (unsigned int)0x0000000000989680ULL}
+  {7, 7, 0x0000000000000000ULL, (unsigned int)((0x0000000000989680ULL) & 0xffffffffULL)}
   ,	//  23-bit n < 10^7
-  {0, 7, 0x0000000000000000ULL, (unsigned int)0x0000000000989680ULL}
+  {0, 7, 0x0000000000000000ULL, (unsigned int)((0x0000000000989680ULL) & 0xffffffffULL)}
   ,	//  24-bit n ? 10^7
-  {8, 8, 0x0000000000000000ULL, (unsigned int)0x0000000005f5e100ULL}
+  {8, 8, 0x0000000000000000ULL, (unsigned int)((0x0000000005f5e100ULL) & 0xffffffffULL)}
   ,	//  25-bit n < 10^8
-  {8, 8, 0x0000000000000000ULL, (unsigned int)0x0000000005f5e100ULL}
+  {8, 8, 0x0000000000000000ULL, (unsigned int)((0x0000000005f5e100ULL) & 0xffffffffULL)}
   ,	//  26-bit n < 10^8
-  {0, 8, 0x0000000000000000ULL, (unsigned int)0x0000000005f5e100ULL}
+  {0, 8, 0x0000000000000000ULL, (unsigned int)((0x0000000005f5e100ULL) & 0xffffffffULL)}
   ,	//  27-bit n ? 10^8
-  {9, 9, 0x0000000000000000ULL, (unsigned int)0x000000003b9aca00ULL}
+  {9, 9, 0x0000000000000000ULL, (unsigned int)((0x000000003b9aca00ULL) & 0xffffffffULL)}
   ,	//  28-bit n < 10^9
-  {9, 9, 0x0000000000000000ULL, (unsigned int)0x000000003b9aca00ULL}
+  {9, 9, 0x0000000000000000ULL, (unsigned int)((0x000000003b9aca00ULL) & 0xffffffffULL)}
   ,	//  29-bit n < 10^9
-  {0, 9, 0x0000000000000000ULL, (unsigned int)0x000000003b9aca00ULL}
+  {0, 9, 0x0000000000000000ULL, (unsigned int)((0x000000003b9aca00ULL) & 0xffffffffULL)}
   ,	//  30-bit n ? 10^9
-  {10, 10, 0x0000000000000000ULL, (unsigned int)0x00000002540be400ULL}
+  {10, 10, 0x0000000000000000ULL, (unsigned int)((0x00000002540be400ULL) & 0xffffffffULL)}
   ,	//  31-bit n < 10^10
-  {10, 10, 0x0000000000000000ULL, (unsigned int)0x00000002540be400ULL}
+  {10, 10, 0x0000000000000000ULL, (unsigned int)((0x00000002540be400ULL) & 0xffffffffULL)}
   ,	//  32-bit n < 10^10
-  {10, 10, 0x0000000000000000ULL, (unsigned int)0x00000002540be400ULL}
+  {10, 10, 0x0000000000000000ULL, (unsigned int)((0x00000002540be400ULL) & 0xffffffffULL)}
   ,	//  33-bit n < 10^10
-  {0, 10, 0x0000000000000000ULL, (unsigned int)0x00000002540be400ULL}
+  {0, 10, 0x0000000000000000ULL, (unsigned int)((0x00000002540be400ULL) & 0xffffffffULL)}
   ,	//  34-bit n ? 10^10
-  {11, 11, 0x0000000000000000ULL, (unsigned int)0x000000174876e800ULL}
+  {11, 11, 0x0000000000000000ULL, (unsigned int)((0x000000174876e800ULL) & 0xffffffffULL)}
   ,	//  35-bit n < 10^11
-  {11, 11, 0x0000000000000000ULL, (unsigned int)0x000000174876e800ULL}
+  {11, 11, 0x0000000000000000ULL, (unsigned int)((0x000000174876e800ULL) & 0xffffffffULL)}
   ,	//  36-bit n < 10^11
-  {0, 11, 0x0000000000000000ULL, (unsigned int)0x000000174876e800ULL}
+  {0, 11, 0x0000000000000000ULL, (unsigned int)((0x000000174876e800ULL) & 0xffffffffULL)}
   ,	//  37-bit n ? 10^11
-  {12, 12, 0x0000000000000000ULL, (unsigned int)0x000000e8d4a51000ULL}
+  {12, 12, 0x0000000000000000ULL, (unsigned int)((0x000000e8d4a51000ULL) & 0xffffffffULL)}
   ,	//  38-bit n < 10^12
-  {12, 12, 0x0000000000000000ULL, (unsigned int)0x000000e8d4a51000ULL}
+  {12, 12, 0x0000000000000000ULL, (unsigned int)((0x000000e8d4a51000ULL) & 0xffffffffULL)}
   ,	//  39-bit n < 10^12
-  {0, 12, 0x0000000000000000ULL, (unsigned int)0x000000e8d4a51000ULL}
+  {0, 12, 0x0000000000000000ULL, (unsigned int)((0x000000e8d4a51000ULL) & 0xffffffffULL)}
   ,	//  40-bit n ? 10^12
-  {13, 13, 0x0000000000000000ULL, (unsigned int)0x000009184e72a000ULL}
+  {13, 13, 0x0000000000000000ULL, (unsigned int)((0x000009184e72a000ULL) & 0xffffffffULL)}
   ,	//  41-bit n < 10^13
-  {13, 13, 0x0000000000000000ULL, (unsigned int)0x000009184e72a000ULL}
+  {13, 13, 0x0000000000000000ULL, (unsigned int)((0x000009184e72a000ULL) & 0xffffffffULL)}
   ,	//  42-bit n < 10^13
-  {13, 13, 0x0000000000000000ULL, (unsigned int)0x000009184e72a000ULL}
+  {13, 13, 0x0000000000000000ULL, (unsigned int)((0x000009184e72a000ULL) & 0xffffffffULL)}
   ,	//  43-bit n < 10^13
-  {0, 13, 0x0000000000000000ULL, (unsigned int)0x000009184e72a000ULL}
+  {0, 13, 0x0000000000000000ULL, (unsigned int)((0x000009184e72a000ULL) & 0xffffffffULL)}
   ,	//  44-bit n ? 10^13
-  {14, 14, 0x0000000000000000ULL, (unsigned int)0x00005af3107a4000ULL}
+  {14, 14, 0x0000000000000000ULL, (unsigned int)((0x00005af3107a4000ULL) & 0xffffffffULL)}
   ,	//  45-bit n < 10^14
-  {14, 14, 0x0000000000000000ULL, (unsigned int)0x00005af3107a4000ULL}
+  {14, 14, 0x0000000000000000ULL, (unsigned int)((0x00005af3107a4000ULL) & 0xffffffffULL)}
   ,	//  46-bit n < 10^14
-  {0, 14, 0x0000000000000000ULL, (unsigned int)0x00005af3107a4000ULL}
+  {0, 14, 0x0000000000000000ULL, (unsigned int)((0x00005af3107a4000ULL) & 0xffffffffULL)}
   ,	//  47-bit n ? 10^14
-  {15, 15, 0x0000000000000000ULL, (unsigned int)0x00038d7ea4c68000ULL}
+  {15, 15, 0x0000000000000000ULL, (unsigned int)((0x00038d7ea4c68000ULL) & 0xffffffffULL)}
   ,	//  48-bit n < 10^15
-  {15, 15, 0x0000000000000000ULL, (unsigned int)0x00038d7ea4c68000ULL}
+  {15, 15, 0x0000000000000000ULL, (unsigned int)((0x00038d7ea4c68000ULL) & 0xffffffffULL)}
   ,	//  49-bit n < 10^15
-  {0, 15, 0x0000000000000000ULL, (unsigned int)0x00038d7ea4c68000ULL}
+  {0, 15, 0x0000000000000000ULL, (unsigned int)((0x00038d7ea4c68000ULL) & 0xffffffffULL)}
   ,	//  50-bit n ? 10^15
-  {16, 16, 0x0000000000000000ULL, (unsigned int)0x002386f26fc10000ULL}
+  {16, 16, 0x0000000000000000ULL, (unsigned int)((0x002386f26fc10000ULL) & 0xffffffffULL)}
   ,	//  51-bit n < 10^16
-  {16, 16, 0x0000000000000000ULL, (unsigned int)0x002386f26fc10000ULL}
+  {16, 16, 0x0000000000000000ULL, (unsigned int)((0x002386f26fc10000ULL) & 0xffffffffULL)}
   ,	//  52-bit n < 10^16
-  {16, 16, 0x0000000000000000ULL, (unsigned int)0x002386f26fc10000ULL}
+  {16, 16, 0x0000000000000000ULL, (unsigned int)((0x002386f26fc10000ULL) & 0xffffffffULL)}
   ,	//  53-bit n < 10^16
-  {0, 16, 0x0000000000000000ULL, (unsigned int)0x002386f26fc10000ULL}
+  {0, 16, 0x0000000000000000ULL, (unsigned int)((0x002386f26fc10000ULL) & 0xffffffffULL)}
   ,	//  54-bit n ? 10^16
-  {17, 17, 0x0000000000000000ULL, (unsigned int)0x016345785d8a0000ULL}
+  {17, 17, 0x0000000000000000ULL, (unsigned int)((0x016345785d8a0000ULL) & 0xffffffffULL)}
   ,	//  55-bit n < 10^17
-  {17, 17, 0x0000000000000000ULL, (unsigned int)0x016345785d8a0000ULL}
+  {17, 17, 0x0000000000000000ULL, (unsigned int)((0x016345785d8a0000ULL) & 0xffffffffULL)}
   ,	//  56-bit n < 10^17
-  {0, 17, 0x0000000000000000ULL, (unsigned int)0x016345785d8a0000ULL}
+  {0, 17, 0x0000000000000000ULL, (unsigned int)((0x016345785d8a0000ULL) & 0xffffffffULL)}
   ,	//  57-bit n ? 10^17
-  {18, 18, 0x0000000000000000ULL, (unsigned int)0x0de0b6b3a7640000ULL}
+  {18, 18, 0x0000000000000000ULL, (unsigned int)((0x0de0b6b3a7640000ULL) & 0xffffffffULL)}
   ,	//  58-bit n < 10^18
-  {18, 18, 0x0000000000000000ULL, (unsigned int)0x0de0b6b3a7640000ULL}
+  {18, 18, 0x0000000000000000ULL, (unsigned int)((0x0de0b6b3a7640000ULL) & 0xffffffffULL)}
   ,	//  59-bit n < 10^18
-  {0, 18, 0x0000000000000000ULL, (unsigned int)0x0de0b6b3a7640000ULL}
+  {0, 18, 0x0000000000000000ULL, (unsigned int)((0x0de0b6b3a7640000ULL) & 0xffffffffULL)}
   ,	//  60-bit n ? 10^18
-  {19, 19, 0x0000000000000000ULL, (unsigned int)0x8ac7230489e80000ULL}
+  {19, 19, 0x0000000000000000ULL, (unsigned int)((0x8ac7230489e80000ULL) & 0xffffffffULL)}
   ,	//  61-bit n < 10^19
-  {19, 19, 0x0000000000000000ULL, (unsigned int)0x8ac7230489e80000ULL}
+  {19, 19, 0x0000000000000000ULL, (unsigned int)((0x8ac7230489e80000ULL) & 0xffffffffULL)}
   ,	//  62-bit n < 10^19
-  {19, 19, 0x0000000000000000ULL, (unsigned int)0x8ac7230489e80000ULL}
+  {19, 19, 0x0000000000000000ULL, (unsigned int)((0x8ac7230489e80000ULL) & 0xffffffffULL)}
   ,	//  63-bit n < 10^19
-  {0, 19, 0x0000000000000000ULL, (unsigned int)0x8ac7230489e80000ULL}
+  {0, 19, 0x0000000000000000ULL, (unsigned int)((0x8ac7230489e80000ULL) & 0xffffffffULL)}
   ,	//  64-bit n ? 10^19
-  {20, 20, 0x0000000000000005ULL, (unsigned int)0x6bc75e2d63100000ULL}
+  {20, 20, 0x0000000000000005ULL, (unsigned int)((0x6bc75e2d63100000ULL) & 0xffffffffULL)}
   ,	//  65-bit n < 10^20
-  {20, 20, 0x0000000000000005ULL, (unsigned int)0x6bc75e2d63100000ULL}
+  {20, 20, 0x0000000000000005ULL, (unsigned int)((0x6bc75e2d63100000ULL) & 0xffffffffULL)}
   ,	//  66-bit n < 10^20
-  {0, 20, 0x0000000000000005ULL, (unsigned int)0x6bc75e2d63100000ULL}
+  {0, 20, 0x0000000000000005ULL, (unsigned int)((0x6bc75e2d63100000ULL) & 0xffffffffULL)}
   ,	//  67-bit n ? 10^20
-  {21, 21, 0x0000000000000036ULL, (unsigned int)0x35c9adc5dea00000ULL}
+  {21, 21, 0x0000000000000036ULL, (unsigned int)((0x35c9adc5dea00000ULL) & 0xffffffffULL)}
   ,	//  68-bit n < 10^21
-  {21, 21, 0x0000000000000036ULL, (unsigned int)0x35c9adc5dea00000ULL}
+  {21, 21, 0x0000000000000036ULL, (unsigned int)((0x35c9adc5dea00000ULL) & 0xffffffffULL)}
   ,	//  69-bit n < 10^21
-  {0, 21, 0x0000000000000036ULL, (unsigned int)0x35c9adc5dea00000ULL}
+  {0, 21, 0x0000000000000036ULL, (unsigned int)((0x35c9adc5dea00000ULL) & 0xffffffffULL)}
   ,	//  70-bit n ? 10^21
-  {22, 22, 0x000000000000021eULL, (unsigned int)0x19e0c9bab2400000ULL}
+  {22, 22, 0x000000000000021eULL, (unsigned int)((0x19e0c9bab2400000ULL) & 0xffffffffULL)}
   ,	//  71-bit n < 10^22
-  {22, 22, 0x000000000000021eULL, (unsigned int)0x19e0c9bab2400000ULL}
+  {22, 22, 0x000000000000021eULL, (unsigned int)((0x19e0c9bab2400000ULL) & 0xffffffffULL)}
   ,	//  72-bit n < 10^22
-  {22, 22, 0x000000000000021eULL, (unsigned int)0x19e0c9bab2400000ULL}
+  {22, 22, 0x000000000000021eULL, (unsigned int)((0x19e0c9bab2400000ULL) & 0xffffffffULL)}
   ,	//  73-bit n < 10^22
-  {0, 22, 0x000000000000021eULL, (unsigned int)0x19e0c9bab2400000ULL}
+  {0, 22, 0x000000000000021eULL, (unsigned int)((0x19e0c9bab2400000ULL) & 0xffffffffULL)}
   ,	//  74-bit n ? 10^22
-  {23, 23, 0x000000000000152dULL, (unsigned int)0x02c7e14af6800000ULL}
+  {23, 23, 0x000000000000152dULL, (unsigned int)((0x02c7e14af6800000ULL) & 0xffffffffULL)}
   ,	//  75-bit n < 10^23
-  {23, 23, 0x000000000000152dULL, (unsigned int)0x02c7e14af6800000ULL}
+  {23, 23, 0x000000000000152dULL, (unsigned int)((0x02c7e14af6800000ULL) & 0xffffffffULL)}
   ,	//  76-bit n < 10^23
-  {0, 23, 0x000000000000152dULL, (unsigned int)0x02c7e14af6800000ULL}
+  {0, 23, 0x000000000000152dULL, (unsigned int)((0x02c7e14af6800000ULL) & 0xffffffffULL)}
   ,	//  77-bit n ? 10^23
-  {24, 24, 0x000000000000d3c2ULL, (unsigned int)0x1bcecceda1000000ULL}
+  {24, 24, 0x000000000000d3c2ULL, (unsigned int)((0x1bcecceda1000000ULL) & 0xffffffffULL)}
   ,	//  78-bit n < 10^24
-  {24, 24, 0x000000000000d3c2ULL, (unsigned int)0x1bcecceda1000000ULL}
+  {24, 24, 0x000000000000d3c2ULL, (unsigned int)((0x1bcecceda1000000ULL) & 0xffffffffULL)}
   ,	//  79-bit n < 10^24
-  {0, 24, 0x000000000000d3c2ULL, (unsigned int)0x1bcecceda1000000ULL}
+  {0, 24, 0x000000000000d3c2ULL, (unsigned int)((0x1bcecceda1000000ULL) & 0xffffffffULL)}
   ,	//  80-bit n ? 10^24
-  {25, 25, 0x0000000000084595ULL, (unsigned int)0x161401484a000000ULL}
+  {25, 25, 0x0000000000084595ULL, (unsigned int)((0x161401484a000000ULL) & 0xffffffffULL)}
   ,	//  81-bit n < 10^25
-  {25, 25, 0x0000000000084595ULL, (unsigned int)0x161401484a000000ULL}
+  {25, 25, 0x0000000000084595ULL, (unsigned int)((0x161401484a000000ULL) & 0xffffffffULL)}
   ,	//  82-bit n < 10^25
-  {25, 25, 0x0000000000084595ULL, (unsigned int)0x161401484a000000ULL}
+  {25, 25, 0x0000000000084595ULL, (unsigned int)((0x161401484a000000ULL) & 0xffffffffULL)}
   ,	//  83-bit n < 10^25
-  {0, 25, 0x0000000000084595ULL, (unsigned int)0x161401484a000000ULL}
+  {0, 25, 0x0000000000084595ULL, (unsigned int)((0x161401484a000000ULL) & 0xffffffffULL)}
   ,	//  84-bit n ? 10^25
-  {26, 26, 0x000000000052b7d2ULL, (unsigned int)0xdcc80cd2e4000000ULL}
+  {26, 26, 0x000000000052b7d2ULL, (unsigned int)((0xdcc80cd2e4000000ULL) & 0xffffffffULL)}
   ,	//  85-bit n < 10^26
-  {26, 26, 0x000000000052b7d2ULL, (unsigned int)0xdcc80cd2e4000000ULL}
+  {26, 26, 0x000000000052b7d2ULL, (unsigned int)((0xdcc80cd2e4000000ULL) & 0xffffffffULL)}
   ,	//  86-bit n < 10^26
-  {0, 26, 0x000000000052b7d2ULL, (unsigned int)0xdcc80cd2e4000000ULL}
+  {0, 26, 0x000000000052b7d2ULL, (unsigned int)((0xdcc80cd2e4000000ULL) & 0xffffffffULL)}
   ,	//  87-bit n ? 10^26
-  {27, 27, 0x00000000033b2e3cULL, (unsigned int)0x9fd0803ce8000000ULL}
+  {27, 27, 0x00000000033b2e3cULL, (unsigned int)((0x9fd0803ce8000000ULL) & 0xffffffffULL)}
   ,	//  88-bit n < 10^27
-  {27, 27, 0x00000000033b2e3cULL, (unsigned int)0x9fd0803ce8000000ULL}
+  {27, 27, 0x00000000033b2e3cULL, (unsigned int)((0x9fd0803ce8000000ULL) & 0xffffffffULL)}
   ,	//  89-bit n < 10^27
-  {0, 27, 0x00000000033b2e3cULL, (unsigned int)0x9fd0803ce8000000ULL}
+  {0, 27, 0x00000000033b2e3cULL, (unsigned int)((0x9fd0803ce8000000ULL) & 0xffffffffULL)}
   ,	//  90-bit n ? 10^27
-  {28, 28, 0x00000000204fce5eULL, (unsigned int)0x3e25026110000000ULL}
+  {28, 28, 0x00000000204fce5eULL, (unsigned int)((0x3e25026110000000ULL) & 0xffffffffULL)}
   ,	//  91-bit n < 10^28
-  {28, 28, 0x00000000204fce5eULL, (unsigned int)0x3e25026110000000ULL}
+  {28, 28, 0x00000000204fce5eULL, (unsigned int)((0x3e25026110000000ULL) & 0xffffffffULL)}
   ,	//  92-bit n < 10^28
-  {28, 28, 0x00000000204fce5eULL, (unsigned int)0x3e25026110000000ULL}
+  {28, 28, 0x00000000204fce5eULL, (unsigned int)((0x3e25026110000000ULL) & 0xffffffffULL)}
   ,	//  93-bit n < 10^28
-  {0, 28, 0x00000000204fce5eULL, (unsigned int)0x3e25026110000000ULL}
+  {0, 28, 0x00000000204fce5eULL, (unsigned int)((0x3e25026110000000ULL) & 0xffffffffULL)}
   ,	//  94-bit n ? 10^28
-  {29, 29, 0x00000001431e0faeULL, (unsigned int)0x6d7217caa0000000ULL}
+  {29, 29, 0x00000001431e0faeULL, (unsigned int)((0x6d7217caa0000000ULL) & 0xffffffffULL)}
   ,	//  95-bit n < 10^29
-  {29, 29, 0x00000001431e0faeULL, (unsigned int)0x6d7217caa0000000ULL}
+  {29, 29, 0x00000001431e0faeULL, (unsigned int)((0x6d7217caa0000000ULL) & 0xffffffffULL)}
   ,	//  96-bit n < 10^29
-  {0, 29, 0x00000001431e0faeULL, (unsigned int)0x6d7217caa0000000ULL}
+  {0, 29, 0x00000001431e0faeULL, (unsigned int)((0x6d7217caa0000000ULL) & 0xffffffffULL)}
   ,	//  97-bit n ? 10^29
-  {30, 30, 0x0000000c9f2c9cd0ULL, (unsigned int)0x4674edea40000000ULL}
+  {30, 30, 0x0000000c9f2c9cd0ULL, (unsigned int)((0x4674edea40000000ULL) & 0xffffffffULL)}
   ,	//  98-bit n < 10^30
-  {30, 30, 0x0000000c9f2c9cd0ULL, (unsigned int)0x4674edea40000000ULL}
+  {30, 30, 0x0000000c9f2c9cd0ULL, (unsigned int)((0x4674edea40000000ULL) & 0xffffffffULL)}
   ,	//  99-bit n < 10^30
-  {0, 30, 0x0000000c9f2c9cd0ULL, (unsigned int)0x4674edea40000000ULL}
+  {0, 30, 0x0000000c9f2c9cd0ULL, (unsigned int)((0x4674edea40000000ULL) & 0xffffffffULL)}
   ,	// 100-bit n ? 10^30
-  {31, 31, 0x0000007e37be2022ULL, (unsigned int)0xc0914b2680000000ULL}
+  {31, 31, 0x0000007e37be2022ULL, (unsigned int)((0xc0914b2680000000ULL) & 0xffffffffULL)}
   ,	// 101-bit n < 10^31
-  {31, 31, 0x0000007e37be2022ULL, (unsigned int)0xc0914b2680000000ULL}
+  {31, 31, 0x0000007e37be2022ULL, (unsigned int)((0xc0914b2680000000ULL) & 0xffffffffULL)}
   ,	// 102-bit n < 10^31
-  {0, 31, 0x0000007e37be2022ULL, (unsigned int)0xc0914b2680000000ULL}
+  {0, 31, 0x0000007e37be2022ULL, (unsigned int)((0xc0914b2680000000ULL) & 0xffffffffULL)}
   ,	// 103-bit n ? 10^31
-  {32, 32, 0x000004ee2d6d415bULL, (unsigned int)0x85acef8100000000ULL}
+  {32, 32, 0x000004ee2d6d415bULL, (unsigned int)((0x85acef8100000000ULL) & 0xffffffffULL)}
   ,	// 104-bit n < 10^32
-  {32, 32, 0x000004ee2d6d415bULL, (unsigned int)0x85acef8100000000ULL}
+  {32, 32, 0x000004ee2d6d415bULL, (unsigned int)((0x85acef8100000000ULL) & 0xffffffffULL)}
   ,	// 105-bit n < 10^32
-  {32, 32, 0x000004ee2d6d415bULL, (unsigned int)0x85acef8100000000ULL}
+  {32, 32, 0x000004ee2d6d415bULL, (unsigned int)((0x85acef8100000000ULL) & 0xffffffffULL)}
   ,	// 106-bit n < 10^32
-  {0, 32, 0x000004ee2d6d415bULL, (unsigned int)0x85acef8100000000ULL}
+  {0, 32, 0x000004ee2d6d415bULL, (unsigned int)((0x85acef8100000000ULL) & 0xffffffffULL)}
   ,	// 107-bit n ? 10^32
-  {33, 33, 0x0000314dc6448d93ULL, (unsigned int)0x38c15b0a00000000ULL}
+  {33, 33, 0x0000314dc6448d93ULL, (unsigned int)((0x38c15b0a00000000ULL) & 0xffffffffULL)}
   ,	// 108-bit n < 10^33
-  {33, 33, 0x0000314dc6448d93ULL, (unsigned int)0x38c15b0a00000000ULL}
+  {33, 33, 0x0000314dc6448d93ULL, (unsigned int)((0x38c15b0a00000000ULL) & 0xffffffffULL)}
   ,	// 109-bit n < 10^33
-  {0, 33, 0x0000314dc6448d93ULL, (unsigned int)0x38c15b0a00000000ULL}
+  {0, 33, 0x0000314dc6448d93ULL, (unsigned int)((0x38c15b0a00000000ULL) & 0xffffffffULL)}
   ,	// 100-bit n ? 10^33
-  {34, 34, 0x0001ed09bead87c0ULL, (unsigned int)0x378d8e6400000000ULL}
+  {34, 34, 0x0001ed09bead87c0ULL, (unsigned int)((0x378d8e6400000000ULL) & 0xffffffffULL)}
   ,	// 111-bit n < 10^34
-  {34, 34, 0x0001ed09bead87c0ULL, (unsigned int)0x378d8e6400000000ULL}
+  {34, 34, 0x0001ed09bead87c0ULL, (unsigned int)((0x378d8e6400000000ULL) & 0xffffffffULL)}
   ,	// 112-bit n < 10^34
-  {0, 34, 0x0001ed09bead87c0ULL, (unsigned int)0x378d8e6400000000ULL}	// 113-bit n ? 10^34
+  {0, 34, 0x0001ed09bead87c0ULL, (unsigned int)((0x378d8e6400000000ULL) & 0xffffffffULL)}	// 113-bit n ? 10^34
 //{ 35, 0x0013426172c74d82ULL, 0x2b878fe800000000ULL, 35 }  // 114-bit n < 10^35
 };
 

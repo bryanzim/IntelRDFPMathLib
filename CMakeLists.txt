@@ -47,6 +47,8 @@ option(IDFP_ENABLE_INSTALL "Install IntelDFP targets and headers" ON)
 option(IDFP_STRICT_CLANG_WARNINGS "Use strict Clang/ClangCL warning flags (no suppressions)" OFF)
 option(IDFP_EXTRA_STRICT_CLANG_WARNINGS
        "Stricter Clang/ClangCL diagnostics (/Wall or -Weverything subset); requires IDFP_STRICT_CLANG_WARNINGS" OFF)
+option(IDFP_STRICT_MSVC_WARNINGS
+       "Use MSVC /W4 /WX and treat conversion warnings as errors" OFF)
 
 # Drive CMake's standard shared-library switch from the project option.
 set(BUILD_SHARED_LIBS ${IDFP_BUILD_SHARED_LIBS})

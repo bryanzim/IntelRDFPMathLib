@@ -61,7 +61,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_rem, BID_UINT64, x,
 
   BID_UINT128 CY;
   BID_UINT64 sign_x, sign_y, coefficient_x, coefficient_y, res;
-  BID_UINT64 Q, R, R2, T, valid_y, valid_x;
+  BID_UINT64 Q = 0, R, R2, T, valid_y, valid_x;
   int_float tempx;
   int exponent_x, exponent_y, bin_expon, e_scale;
   int digits_x, diff_expon;

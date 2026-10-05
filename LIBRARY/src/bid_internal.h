@@ -271,9 +271,9 @@ BID_UINT128 ALBL, ALBH, QM2, QM;                      \
 {                                       \
 BID_UINT64 CXH, CXL, CYH,CYL,PL,PH,PM,PM2;\
 	CXH = (CX) >> 32;                     \
-	CXL = (BID_UINT32)(CX);                   \
+	CXL = (BID_UINT32)((CX) & 0xffffffffULL);                   \
 	CYH = (CY) >> 32;                     \
-	CYL = (BID_UINT32)(CY);                   \
+	CYL = (BID_UINT32)((CY) & 0xffffffffULL);                   \
 	                                      \
     PM = CXH*CYL;                         \
 	PH = CXH*CYH;                         \
@@ -293,9 +293,9 @@ BID_UINT64 CXH, CXL, CYH,CYL,PL,PH,PM,PM2;\
 {                                       \
 BID_UINT64 CXH, CXL, CYH, CYL, PL, PH, PM;  \
 	CXH = (CX) >> 32;                   \
-	CXL = (BID_UINT32)(CX);                 \
+	CXL = (BID_UINT32)((CX) & 0xffffffffULL);                 \
 	CYH = (CY) >> 32;                   \
-	CYL = (BID_UINT32)(CY);                 \
+	CYL = (BID_UINT32)((CY) & 0xffffffffULL);                 \
 	                                    \
     PM = CXH*CYL;                       \
 	PL = CXL*CYL;                       \
@@ -311,7 +311,7 @@ BID_UINT64 CXH, CXL, CYH, CYL, PL, PH, PM;  \
 {                                       \
 BID_UINT64 CXH, CXL, PL, PH, PM;            \
 	CXH = (CX) >> 32;                   \
-	CXL = (BID_UINT32)(CX);                 \
+	CXL = (BID_UINT32)((CX) & 0xffffffffULL);                 \
 	                                    \
     PM = CXH*CXL;                       \
 	PL = CXL*CXL;                       \
@@ -330,9 +330,9 @@ BID_UINT64 CXH, CXL, PL, PH, PM;            \
 {                                       \
 BID_UINT64 CXH, CXL, CYH, CYL, PL, PH, PM;  \
 	CXH = (CX) >> 32;                   \
-	CXL = (BID_UINT32)(CX);                 \
+	CXL = (BID_UINT32)((CX) & 0xffffffffULL);                 \
 	CYH = (CY) >> 32;                   \
-	CYL = (BID_UINT32)(CY);                 \
+	CYL = (BID_UINT32)((CY) & 0xffffffffULL);                 \
 	                                    \
     PM = CXH*CYL;                       \
 	PL = CXL*CYL;                       \
@@ -348,9 +348,9 @@ BID_UINT64 CXH, CXL, CYH, CYL, PL, PH, PM;  \
 {                                         \
 BID_UINT64 CXH, CXL, CYH,CYL,PL,PH,PM,PM2;\
 	CXH = (CX) >> 32;                     \
-	CXL = (BID_UINT32)(CX);                   \
+	CXL = (BID_UINT32)((CX) & 0xffffffffULL);                   \
 	CYH = (CY) >> 32;                     \
-	CYL = (BID_UINT32)(CY);                   \
+	CYL = (BID_UINT32)((CY) & 0xffffffffULL);                   \
 	                                      \
     PM = CXH*CYL;                         \
 	PH = CXH*CYH;                         \
