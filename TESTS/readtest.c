@@ -685,7 +685,7 @@ check128_rel(BID_UINT128 aIn, BID_UINT128 bIn)
 {
     BID_UINT128 r1, r2, m1, m2;
     BID_UINT64 e1, e2;
-    int sign, less;
+    int less;
     int t1, t2, t3, t4;
 
     BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isNaN, t1, aIn);
@@ -711,8 +711,6 @@ check128_rel(BID_UINT128 aIn, BID_UINT128 bIn)
     if ((aIn.w[BID_HIGH_128W] & 0x8000000000000000ull) != (bIn.w[BID_HIGH_128W] & 0x8000000000000000ull)) {
         return 1;
     }
-
-    if (aIn.w[BID_HIGH_128W] & 0x8000000000000000ull) sign = 1;
 
     GET_EXP_128(e1, aIn.w[BID_HIGH_128W])
     GET_EXP_128(e2, bIn.w[BID_HIGH_128W])
@@ -762,7 +760,7 @@ check64_rel(BID_UINT64 aIn, BID_UINT64 bIn)
 {
     BID_UINT64 r1, r2;
     BID_UINT64 e1, e2, m1, m2;
-    int sign, less;
+    int less;
     int t1, t2, t3, t4;
  
     BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isNaN, t1, aIn);
@@ -779,8 +777,6 @@ check64_rel(BID_UINT64 aIn, BID_UINT64 bIn)
     if ((aIn & 0x8000000000000000ull) != (bIn & 0x8000000000000000ull)) {
         return 1;
     }
-    if (aIn & 0x8000000000000000ull) sign = 1;
-
     GET_EXP_64(e1, aIn)
     GET_EXP_64(e2, bIn)
     GET_MANT_64(m1, aIn)
@@ -827,7 +823,7 @@ check32_rel(BID_UINT32 a32In, BID_UINT32 b32In)
 {
     BID_UINT32 r1, r2;
     BID_UINT32 e1, e2, m1, m2;
-    int sign, less;
+    int less;
     int t1, t2, t3, t4;
  
     BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isNaN, t1, a32In);
@@ -846,8 +842,6 @@ check32_rel(BID_UINT32 a32In, BID_UINT32 b32In)
     if ((a32In & 0x80000000) != (b32In & 0x80000000)) {
         return 1;
     }
-    if (a32In & 0x80000000) sign = 1;
-
     GET_EXP_32(e1, a32In)
     GET_EXP_32(e2, b32In)
     GET_MANT_32(m1, a32In)
@@ -1395,8 +1389,8 @@ printf("STRING result is not implemented\n");
   case OP_LINT:
     break;
   case OP_BIN128:
-//        sprintf(str1, "%.17le", Rquad); \
-//        sprintf(str2, "%.17le", Rtquad); \
+    /* sprintf(str1, "%.17le", Rquad); */
+    /* sprintf(str2, "%.17le", Rtquad); */
 
     strcpy (str1, "unavailable");
     strcpy (str2, "unavailable");

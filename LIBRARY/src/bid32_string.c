@@ -56,6 +56,7 @@ bid32_to_string (char *ps, BID_UINT32 x
 #endif
 
   save_fpsf = *pfpsf; // place holder only
+  (void)save_fpsf;
   // unpack arguments, check for NaN or Infinity
   if (!unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x)) {
 	      ps[0] = (sign_x) ? '-' : '+';
@@ -183,6 +184,7 @@ bid32_from_string (char *ps
 #endif
 
   save_fpsf = *pfpsf; // place holder only
+  (void)save_fpsf;
   // eliminate leading whitespace
   while (((*ps == ' ') || (*ps == '\t')) && (*ps))
     ps++;

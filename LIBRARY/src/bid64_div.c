@@ -710,22 +710,22 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 
 // Code redundant as agreed Jul 25 2008. To be removed after verification
 //  if (digits_q <= 16) {
-    if (!CR.w[1] && !CR.w[0]) {
-      res = get_BID64 (sign_x ^ sign_y, diff_expon,
-		       CQ.w[0], rnd_mode, pfpsf);
+  if (!CR.w[1] && !CR.w[0]) {
+    res = get_BID64 (sign_x ^ sign_y, diff_expon,
+                     CQ.w[0], rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
-      // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
+    // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
-      // restore the rounding mode back if it has been changed
-      if (rm_changed) fesetround(old_rm);
-      BID_RETURN_VAL (res);
-    }
+    // restore the rounding mode back if it has been changed
+    if (rm_changed) fesetround(old_rm);
+    BID_RETURN_VAL (res);
+  }
 
-    ed2 = 16 - digits_q;
-    T128.w[0] = bid_power10_table_128[ed2].w[0];
-    __mul_64x128_to_192 (CA4, (T128.w[0]), CR);
-    diff_expon = diff_expon - ed2;
-    CQ.w[0] *= T128.w[0];
+  ed2 = 16 - digits_q;
+  T128.w[0] = bid_power10_table_128[ed2].w[0];
+  __mul_64x128_to_192 (CA4, (T128.w[0]), CR);
+  diff_expon = diff_expon - ed2;
+  CQ.w[0] *= T128.w[0];
 }
 if (!done) {
   bid___div_256_by_128 (&CQ, &CA4, CY);

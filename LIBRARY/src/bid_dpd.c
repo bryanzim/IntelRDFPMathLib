@@ -408,6 +408,7 @@ bid_to_dpd128 (BID_UINT128 ba) {
     __mul_64x128_full (t2, t, 1000ull, b1);
     __sub_128_128 (d1, b2, t);
     d0 = b1;
+    (void)t2;
 
   }
 

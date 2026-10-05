@@ -44,6 +44,7 @@ option(IDFP_BUILD_EXAMPLES "Whether to build the examples or not" ON)
 option(IDFP_BUILD_SHARED_LIBS "Whether to build libs as shared" OFF)
 option(IDFP_LINK_STATIC_RUNTIME "Whether to use the C/C++ static linked runtime libraries" ON)
 option(IDFP_ENABLE_INSTALL "Install IntelDFP targets and headers" ON)
+option(IDFP_STRICT_CLANG_WARNINGS "Use strict Clang/ClangCL warning flags (no suppressions)" OFF)
 
 # Drive CMake's standard shared-library switch from the project option.
 set(BUILD_SHARED_LIBS ${IDFP_BUILD_SHARED_LIBS})

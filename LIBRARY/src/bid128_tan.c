@@ -12430,7 +12430,7 @@ BID128_FUNCTION_ARG1 (bid128_tan, x)
   BID_UINT128 res;
   int s, e;
   BID_UINT128 c;
-  BID_F128_TYPE xd, yd;
+  BID_F128_TYPE xd, yd = {0};
   BID_UINT384 m;
   BID_UINT512 p;
   int sf, k, ef, el;

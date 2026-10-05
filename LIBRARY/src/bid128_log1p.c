@@ -51,7 +51,7 @@ BID128_FUNCTION_ARG1 (bid128_log1p, x)
 
   BID_UINT128 res, y, x_abs;
   int sm;
-  BID_F128_TYPE xd, yd;
+  BID_F128_TYPE xd, yd = {0};
 
 // Check for NaN and just return the same NaN, quieted and canonized
 

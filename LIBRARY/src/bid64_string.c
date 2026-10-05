@@ -64,6 +64,7 @@ bid64_to_string (char *ps, BID_UINT64 x
 #endif
 
   save_fpsf = *pfpsf; // place holder only
+  (void)save_fpsf;
   // unpack arguments, check for NaN or Infinity
   if (!unpack_BID64 (&sign_x, &exponent_x, &coefficient_x, x)) {
     // x is Inf. or NaN or 0
@@ -269,6 +270,7 @@ bid64_from_string (char *ps
 #endif
 
   save_fpsf = *pfpsf; // place holder only
+  (void)save_fpsf;
   // eliminate leading whitespace
   while (((*ps == ' ') || (*ps == '\t')) && (*ps))
     ps++;

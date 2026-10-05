@@ -38,8 +38,11 @@
     {
       "name": "x64-Clang-Debug",
       "displayName": "x64-Clang-Debug",
-      "description": "ClangCL x64 Debug",
+      "description": "ClangCL x64 Debug (strict warnings)",
       "inherits": "vs-base",
+      "cacheVariables": {
+        "IDFP_STRICT_CLANG_WARNINGS": "ON"
+      },
       "toolset": {
         "value": "ClangCL",
         "strategy": "set"

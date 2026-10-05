@@ -77,6 +77,7 @@ bid128_to_string (char *str, BID_UINT128 x
 #endif
 
   save_fpsf = *pfpsf; // dummy
+  (void)save_fpsf;
 
   BID_SWAP128(x);
   // check for NaN or Infinity
@@ -308,6 +309,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
 
   save_rnd_mode = rnd_mode; // dummy
   save_fpsf = *pfpsf; // dummy
+  (void)save_rnd_mode;
+  (void)save_fpsf;
 
   right_radix_leading_zeros = rdx_pt_enc = 0;
 

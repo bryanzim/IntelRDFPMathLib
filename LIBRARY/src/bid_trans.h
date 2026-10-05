@@ -150,9 +150,9 @@ typedef union BID_ALIGN (16)
 #define _F128_TO_F80_HI(hi,lo)	(hi >> 48)
 #define _F128_TO_F80_LO(hi,lo)	(((hi << 15) | HEX64(8000000000000000) | (lo >> 49)) + ((lo >> 48) & 1))
 
-#define BID_INIT_F128(hi,lo)	{ ENDIAN128( HEX64(hi), HEX64(lo)) }
+#define BID_INIT_F128(hi,lo)	{ { ENDIAN128( HEX64(hi), HEX64(lo)) } }
 #if USE_COMPILER_F80_TYPE
-#    define BID_INIT_F80(hi,lo)	{ ENDIAN128( F128_TO_F80_HI(hi,lo), F128_TO_F80_LO(hi,lo)) } 
+#    define BID_INIT_F80(hi,lo)	{ { ENDIAN128( F128_TO_F80_HI(hi,lo), F128_TO_F80_LO(hi,lo)) } }
 #else
 #    define BID_INIT_F80(hi,lo)	BID_INIT_F128(hi, lo)
 #endif

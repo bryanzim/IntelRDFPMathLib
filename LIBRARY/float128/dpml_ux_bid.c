@@ -214,6 +214,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x)
         NEGATE_CLASS_TO_ACTION_MAP,
         PASS_RET_X_FLOAT(packed_result)
         OPT_EXCEPTION_INFO );
+    (void)fp_class;
 
     RETURN_X_FLOAT(packed_result);
     }
@@ -234,6 +235,7 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x)
         FABS_CLASS_TO_ACTION_MAP,
         PASS_RET_X_FLOAT(packed_result)
         OPT_EXCEPTION_INFO );
+    (void)fp_class;
 
     RETURN_X_FLOAT(packed_result);
     }
