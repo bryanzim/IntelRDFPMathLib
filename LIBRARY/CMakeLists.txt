@@ -1,198 +1,17 @@
-cmake_minimum_required(VERSION 3.25)
-project(Intel_Decimal_Floating_Point_Math_Library LANGUAGES C)
-
-if (CMAKE_C_COMPILER_ID MATCHES "^Intel")
-    set(IntelCompiler ON)
-else()
-    set(IntelCompiler OFF)
-endif()
-
 # Use special types only under Intel Compiler
 if (IntelCompiler)
-    SET(USE_COMPILER_F128_TYPE ON)
-    SET(USE_COMPILER_F80_TYPE ON)
+    set(USE_COMPILER_F128_TYPE ON)
+    set(USE_COMPILER_F80_TYPE ON)
+    set(IDFP_LIBRARY_INTEL_EXTENDED_FLOAT ON)
 else()
-    SET(USE_COMPILER_F128_TYPE OFF)
-    SET(USE_COMPILER_F80_TYPE OFF)
+    set(USE_COMPILER_F128_TYPE OFF)
+    set(USE_COMPILER_F80_TYPE OFF)
+    set(IDFP_LIBRARY_INTEL_EXTENDED_FLOAT OFF)
 endif()
 
-# Intel 2.0 Update 3: disable 80-bit binary paths on ARM, where long double
-# is not Intel 80-bit extended precision.
-if (CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm|ARM|aarch64|AARCH64)")
-    add_compile_definitions("__NO_BINARY80__")
-endif()
-
-# Set floating point 80 bit definitions
-if (USE_COMPILER_F80_TYPE)
-    add_compile_definitions("USE_COMPILER_F80_TYPE=1")
-else()
-    add_compile_definitions("USE_COMPILER_F80_TYPE=0")
-endif()
-
-# Set floating point 128 bit definitions
-if (USE_COMPILER_F128_TYPE)
-    add_compile_definitions("USE_COMPILER_F128_TYPE=1")
-    if (IntelCompiler)
-        add_compile_options("-Qoption,cpp,--extended_float_types")
-    endif()
-else()
-    add_compile_definitions("USE_COMPILER_F128_TYPE=0")
-endif()
-
-# Set Endianess
-if (CMAKE_C_BYTE_ORDER STREQUAL "BIG_ENDIAN")
-    add_compile_definitions("BID_BIG_ENDIAN=1")
-else()
-    add_compile_definitions("BID_BIG_ENDIAN=0")
-endif()
-
-# set Floating Point Wrappers  
 set(FLOATING_POINT_WRAPPERS OFF)
-
-
-# Add definitions based on options
-if (IDFP_CALL_BY_REFERENCE)
-    add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=1")    
-else()
-    add_compile_definitions("DECIMAL_CALL_BY_REFERENCE=0")
+if (IDFP_CALL_BY_REFERENCE OR IDFP_GLOBAL_ROUNDING OR IDFP_GLOBAL_EXCEPTION_FLAGS)
     set(FLOATING_POINT_WRAPPERS OFF)
-endif()
-if (IDFP_GLOBAL_ROUNDING)
-    add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=1")
-    set(FLOATING_POINT_WRAPPERS OFF)
-else()
-    add_compile_definitions("DECIMAL_GLOBAL_ROUNDING=0")
-endif()
-if (IDFP_GLOBAL_EXCEPTION_FLAGS)
-    add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=1")
-    set(FLOATING_POINT_WRAPPERS OFF)
-else()
-    add_compile_definitions("DECIMAL_GLOBAL_EXCEPTION_FLAGS=0")
-endif()
-
-# Set compiler specific defintions
-if (IntelCompiler)
-    # Using Intel compiler
-    add_compile_options("-Qlong-double"
-                        "-Qpc80"
-                        "-Qstd=c99"
-                       )
-    if (FLOATING_POINT_WRAPPERS)
-        add_compile_definitions("__DFP_WRAPPERS_ON=1")
-    endif()
-elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    # Using Clang / ClangCL
-    add_compile_options(#"-Wall"
-                        "-Wno-reserved-identifier"
-                        "-Wextra"
-                        #"-pedantic"
-                        "-Wno-error=unused-command-line-argument"
-                        # Legacy DATA_* table macros and BID narrowing casts.
-                        "-Wno-missing-braces"
-                        "-Wno-missing-field-initializers"
-                        "-Wno-unused-but-set-variable"
-                        "-Wno-sign-compare"
-                        "-Wno-sometimes-uninitialized"
-                        "-Wno-constant-conversion"
-                        "-Wno-unterminated-string-initialization"
-                        "-Wno-comment"
-                        "-Wno-misleading-indentation"
-                       )
-    if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-        add_compile_options("/wd4242"
-                            "/wd4244"
-                            "/wd4267"
-                            "/wd4305")
-    endif()
-elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    # Using GCC
-    add_compile_options(#"-Wall"
-                        "-Wextra"
-                        #"-pendantic"
-                       )
-elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    # Using MSVC
-    # C4244/C4242/C4305: BID uses 64-bit intermediates and ull suffixes
-    # that are narrowed after range checks. C4267: size_t lengths.
-    add_compile_options("/W3"
-                        "/WX"
-                        "/wd4242"
-                        "/wd4244"
-                        "/wd4267"
-                        "/wd4305"
-                        "/Zc:__cplusplus"
-                       )
-else()
-    message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
-endif()
-
-# Add debugging info
-if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:/Zi>")
-elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-        add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:/Zi>")
-    else()
-        add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:-g>")
-    endif()
-elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    add_compile_options("$<$<CONFIG:Debug,RelWithDebInfo>:-g>")
-else()
-    message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
-endif()
-
-# Link with static C/C++ libraries
-if (IDFP_LINK_STATIC_RUNTIME)
-    if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-        if (WIN32)
-            set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-        else()
-            add_compile_options("-static-libstdc++")
-            #add_compile_options("-lstdc++")
-        endif()
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-        add_compile_options("-static-libstdc++" "-static-libgcc")
-        # add_compile_options("-lstdc++" "-lgcc")
-    else()
-        message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
-    endif()
-endif()
-
-# Enable static flag
-if (NOT BUILD_SHARED_LIBS)
-    if (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "Clang")
-    	if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
-        else()
-            add_compile_options("-static")
-        endif()
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-        add_compile_options("-static")
-    else()
-        message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
-    endif()
-endif()
-
-# Add OS specific defintions
-if (UNIX AND APPLE)
-    add_compile_definitions("LINUX" "darwin" "mach")
-elseif (CMAKE_SYSTEM_NAME MATCHES "(FreeBSD|OpenBSD|NetBSD)")
-    add_compile_definitions("LINUX" "freebsd")
-elseif (UNIX AND NOT APPLE)
-    add_compile_definitions("LINUX" "linux")
-elseif (WIN32)
-    add_compile_definitions("WINDOWS" "WINT" "winnt")
-else()
-    message(FATAL_ERROR "Undefined OS")
-endif()
-
-# Add Architecture specific definitions
-if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-    add_compile_definitions("efi2" "EFI2")
-else()
-    add_compile_definitions("ia32" "IA32")
 endif()
 
 # Create BID Functions
@@ -520,6 +339,10 @@ LIST(APPEND F128_HEADERS
 # Create F128 Object Library
 add_library(IntelDFPF128 OBJECT ${F128_SOURCES} ${F128_HEADERS})
 target_compile_definitions(IntelDFPF128 PRIVATE "USE_NATIVE_QUAD_TYPE=0")
+idfp_apply_library_target_settings(IntelDFPF128)
+if (IntelCompiler AND FLOATING_POINT_WRAPPERS)
+    target_compile_definitions(IntelDFPF128 PRIVATE "__DFP_WRAPPERS_ON=1")
+endif()
 
 # Create the library
 if (BUILD_SHARED_LIBS)
@@ -528,18 +351,20 @@ else()
     add_library(IntelDFP STATIC ${BID_SOURCES} ${BID_HEADERS})
 endif()
 target_link_libraries(IntelDFP PRIVATE IntelDFPF128)
+idfp_apply_library_target_settings(IntelDFP)
+if (IntelCompiler AND FLOATING_POINT_WRAPPERS)
+    target_compile_definitions(IntelDFP PRIVATE "__DFP_WRAPPERS_ON=1")
+endif()
 
-# Add public headers
 target_include_directories(IntelDFP PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
-   
-# Set the output directory for build artifacts.
-set_target_properties(IntelDFP PROPERTIES
-                      RUNTIME_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/bin"
-                      LIBRARY_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/lib"
-                      ARCHIVE_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/lib"
-                      PDB_OUTPUT_DIRECTORY         "${CMAKE_BINARY_DIR}/bin"
-                      COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-                      DEBUG_POSTFIX                "d"
-                     )
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>"
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/IntelDFP>"
+)
+
+idfp_apply_standard_output_dirs(IntelDFP)
+set_target_properties(IntelDFP PROPERTIES DEBUG_POSTFIX "d")
+
+if (IDFP_ENABLE_INSTALL)
+    include(IntelDFPInstall)
+endif()
 

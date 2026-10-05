@@ -7,14 +7,14 @@
       "project": "CMakeLists.txt",
       "projectTarget": "IntelDFPExample.exe",
       "name": "IntelDFPExample (Debug)",
-      "currentDir": "${workspaceRoot}"
+      "currentDir": "${debuggerArgs.nativeDir}"
     },
     {
       "type": "default",
       "project": "CMakeLists.txt",
       "projectTarget": "IntelDFPTest.exe",
       "name": "IntelDFPTest (Debug)",
-      "currentDir": "${workspaceRoot}"
+      "currentDir": "${debuggerArgs.nativeDir}"
     }
   ]
 }

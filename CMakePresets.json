@@ -24,19 +24,19 @@
       }
     },
     {
-      "name": "x64-debug",
+      "name": "x64-Debug",
       "displayName": "x64-Debug",
       "description": "MSVC x64 Debug (Visual Studio generator — buildable in VS2026)",
       "inherits": "vs-base"
     },
     {
-      "name": "x64-release",
-      "displayName": "x64-Release",
-      "description": "MSVC x64 RelWithDebInfo",
+      "name": "x64-Release",
+      "displayName": "x64-RelWithDebInfo",
+      "description": "MSVC x64 RelWithDebInfo (optimized with debug info)",
       "inherits": "vs-base"
     },
     {
-      "name": "x64-clang-debug",
+      "name": "x64-Clang-Debug",
       "displayName": "x64-Clang-Debug",
       "description": "ClangCL x64 Debug",
       "inherits": "vs-base",
@@ -52,9 +52,9 @@
       }
     },
     {
-      "name": "x64-clang-release",
-      "displayName": "x64-Clang-Release",
-      "description": "ClangCL x64 RelWithDebInfo",
+      "name": "x64-Clang-Release",
+      "displayName": "x64-Clang-RelWithDebInfo",
+      "description": "ClangCL x64 RelWithDebInfo (optimized with debug info)",
       "inherits": "vs-base",
       "toolset": {
         "value": "ClangCL",
@@ -68,9 +68,31 @@
       }
     },
     {
+      "name": "ninja-linux-debug",
+      "displayName": "Ninja Linux x64-Debug",
+      "description": "GCC or Clang on Linux x64 (single-config Ninja)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/ninja-linux-debug",
+      "installDir": "${sourceDir}/out/install/ninja-linux-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ninja-macos-debug",
+      "displayName": "Ninja macOS x64-Debug",
+      "description": "Apple Clang on macOS (single-config Ninja)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/ninja-macos-debug",
+      "installDir": "${sourceDir}/out/install/ninja-macos-debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
       "name": "ninja-x64-debug",
-      "displayName": "Ninja x64-Debug (CLI only)",
-      "hidden": true,
+      "displayName": "Ninja Windows x64-Debug",
+      "description": "Ninja on Windows x64 (CLI)",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/out/build/ninja-x64-debug",
       "installDir": "${sourceDir}/out/install/ninja-x64-debug",
@@ -85,28 +107,97 @@
   ],
   "buildPresets": [
     {
-      "name": "build-x64-debug",
-      "displayName": "x64-Debug",
-      "configurePreset": "x64-debug",
+      "name": "build-x64-Debug",
+      "displayName": "Build x64-Debug",
+      "configurePreset": "x64-Debug",
       "configuration": "Debug"
     },
     {
-      "name": "build-x64-release",
-      "displayName": "x64-Release",
-      "configurePreset": "x64-release",
+      "name": "build-x64-Release",
+      "displayName": "Build x64-RelWithDebInfo",
+      "configurePreset": "x64-Release",
       "configuration": "RelWithDebInfo"
     },
     {
-      "name": "build-x64-clang-debug",
-      "displayName": "x64-Clang-Debug",
-      "configurePreset": "x64-clang-debug",
+      "name": "build-x64-Clang-Debug",
+      "displayName": "Build x64-Clang-Debug",
+      "configurePreset": "x64-Clang-Debug",
       "configuration": "Debug"
     },
     {
-      "name": "build-x64-clang-release",
-      "displayName": "x64-Clang-Release",
-      "configurePreset": "x64-clang-release",
+      "name": "build-x64-Clang-Release",
+      "displayName": "Build x64-Clang-RelWithDebInfo",
+      "configurePreset": "x64-Clang-Release",
       "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "build-ninja-linux-debug",
+      "displayName": "Build Ninja Linux Debug",
+      "configurePreset": "ninja-linux-debug"
+    },
+    {
+      "name": "build-ninja-macos-debug",
+      "displayName": "Build Ninja macOS Debug",
+      "configurePreset": "ninja-macos-debug"
+    },
+    {
+      "name": "build-ninja-x64-debug",
+      "displayName": "Build Ninja Windows Debug",
+      "configurePreset": "ninja-x64-debug"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "test-x64-Debug",
+      "displayName": "Test x64-Debug",
+      "configurePreset": "x64-Debug",
+      "configuration": "Debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "test-x64-Clang-Debug",
+      "displayName": "Test x64-Clang-Debug",
+      "configurePreset": "x64-Clang-Debug",
+      "configuration": "Debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "test-ninja-linux-debug",
+      "displayName": "Test Ninja Linux Debug",
+      "configurePreset": "ninja-linux-debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "test-ninja-macos-debug",
+      "displayName": "Test Ninja macOS Debug",
+      "configurePreset": "ninja-macos-debug",
+      "output": { "outputOnFailure": true }
+    },
+    {
+      "name": "test-ninja-x64-debug",
+      "displayName": "Test Ninja Windows Debug",
+      "configurePreset": "ninja-x64-debug",
+      "output": { "outputOnFailure": true }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "ci-msvc-debug",
+      "displayName": "CI MSVC Debug (configure, build, test)",
+      "steps": [
+        { "type": "configure", "name": "x64-Debug" },
+        { "type": "build", "name": "build-x64-Debug" },
+        { "type": "test", "name": "test-x64-Debug" }
+      ]
+    },
+    {
+      "name": "ci-clang-debug",
+      "displayName": "CI ClangCL Debug (configure, build, test)",
+      "steps": [
+        { "type": "configure", "name": "x64-Clang-Debug" },
+        { "type": "build", "name": "build-x64-Clang-Debug" },
+        { "type": "test", "name": "test-x64-Clang-Debug" }
+      ]
     }
   ]
 }
