@@ -651,7 +651,7 @@ backward_recurrence:
 
         /* if N == n, C2 = K*J(n,x).  Save it for later */
 
-        if (N == order)
+        if (N == (UX_FRACTION_DIGIT_TYPE)order)
             UX_COPY(C2, unpacked_result);
 
         /* Add to sum if N is even */

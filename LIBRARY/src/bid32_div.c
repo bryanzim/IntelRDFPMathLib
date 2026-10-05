@@ -140,7 +140,7 @@ BID_UINT64 CA, CT, PD;
     exponent_x = DECIMAL_MAX_EXPON_32;
       else if (exponent_x < 0)
     exponent_x = 0;
-      BID_RETURN ((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 23));
+      BID_RETURN ((BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 23)));
     }
 
   }

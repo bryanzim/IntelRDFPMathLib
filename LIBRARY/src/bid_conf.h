@@ -36,6 +36,12 @@
 #ifndef _BID_CONF_H
 #define _BID_CONF_H
 
+#if defined(__clang__) || defined(__GNUC__)
+#   define BID_FALLTHROUGH __attribute__((fallthrough))
+#else
+#   define BID_FALLTHROUGH ((void)0)
+#endif
+
 // Name Changes
 
 #define _IDEC_glbflags __bid_IDEC_glbflags

@@ -184,9 +184,9 @@ BID_UINT64 CY;                                                      \
 
 #define __mul_10x64(sum,carryout,input,carryin)                         \
 { unsigned long long s3 = (input) + ((input) >> 2);                     \
-  (carryout) = ((s3 < (unsigned long long)(input))<<3) + (s3>>61);      \
+  (carryout) = (((unsigned long long)(s3 < (unsigned long long)(input))) << 3) + (s3>>61); \
   s3 = (s3<<3) + ((input&3)<<1);                                        \
-  (sum) = s3 + (carryin);                                               \
+  (sum) = s3 + (unsigned long long)(carryin);                           \
   if ((unsigned long long)(sum) < s3) ++(carryout);                     \
 }
 
@@ -144039,9 +144039,9 @@ bid32_to_binary32 (BID_UINT32 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == (1ull << 24)) {
@@ -144177,9 +144177,9 @@ bid64_to_binary32 (BID_UINT64 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == (1ull << 24)) {
@@ -144309,9 +144309,9 @@ bid128_to_binary32 (BID_UINT128 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == (1ull << 24)) {
@@ -144426,9 +144426,9 @@ bid32_to_binary64 (BID_UINT32 x
 // If we spill into the next binade, correct
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
   }
@@ -144541,9 +144541,9 @@ bid64_to_binary64 (BID_UINT64 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == (1ull << 53)) {
@@ -144674,9 +144674,9 @@ bid128_to_binary64 (BID_UINT128 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == (1ull << 53)) {
@@ -144795,9 +144795,9 @@ bid32_to_binary80 (BID_UINT32 x
 // If we spill into the next binade, correct
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[3], z.w[2])) {
     c_prov = c_prov + 1;
   }
@@ -144891,9 +144891,9 @@ bid64_to_binary80 (BID_UINT64 x
 // If we spill into the next binade, correct
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[3], z.w[2])) {
     c_prov = c_prov + 1;
   }
@@ -145011,9 +145011,9 @@ bid128_to_binary80 (BID_UINT128 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[3], z.w[2])) {
     c_prov = c_prov + 1;
     if (c_prov == 0) {
@@ -145135,8 +145135,8 @@ bid32_to_binary128 (BID_UINT32 x
 
   if (lt128
       (bid_roundbound_128
-       [(rnd_mode << 2) + ((s & 1) << 1) + (c_prov_lo & 1)].w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       [(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov_lo & 1)].w[1],
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov_lo & 1)].w[0], z.w[3], z.w[2])) {
     c_prov_lo = c_prov_lo + 1;
 // codecov:
@@ -145242,8 +145242,8 @@ bid64_to_binary128 (BID_UINT64 x
 
   if (lt128
       (bid_roundbound_128
-       [(rnd_mode << 2) + ((s & 1) << 1) + (c_prov_lo & 1)].w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       [(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov_lo & 1)].w[1],
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov_lo & 1)].w[0], z.w[3], z.w[2])) {
     c_prov_lo = c_prov_lo + 1;
 // codecov:
@@ -145370,8 +145370,8 @@ bid128_to_binary128 (BID_UINT128 x
 
   if (lt128
       (bid_roundbound_128
-       [(rnd_mode << 2) + ((s & 1) << 1) + (c_prov_lo & 1)].w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       [(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov_lo & 1)].w[1],
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov_lo & 1)].w[0], z.w[3], z.w[2])) {
     c_prov_lo = c_prov_lo + 1;
     if (c_prov_lo == 0) {
@@ -145534,9 +145534,9 @@ binary32_to_bid32 (float x
 // If we spill over into the next decade, correct
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == 10000000ull) {
@@ -145695,9 +145695,9 @@ binary64_to_bid32 (double x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == 10000000ull) {
@@ -145877,9 +145877,9 @@ binary80_to_bid32 (BINARY80 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == 10000000ull) {
@@ -146051,9 +146051,9 @@ binary128_to_bid32 (BINARY128 x
 // and the fact that the breakpoint isn't an exact binary number.
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == 10000000ull) {
@@ -146222,9 +146222,9 @@ binary32_to_bid64 (float x
 // If we spill over into the next decade, correct
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == 10000000000000000ull) {
@@ -146371,9 +146371,9 @@ binary64_to_bid64 (double x
 // If we spill over into the next decade, correct
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == 10000000000000000ull) {
@@ -146538,9 +146538,9 @@ binary80_to_bid64 (BINARY80 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == 10000000000000000ull) {
@@ -146717,9 +146717,9 @@ binary128_to_bid64 (BINARY128 x
 // Flag underflow where it may be needed even for |result| = SNN
 
   if (lt128
-      (bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) + (c_prov & 1)].
+      (bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov & 1)].
        w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov & 1)].w[0], z.w[4], z.w[3])) {
     c_prov = c_prov + 1;
     if (c_prov == 10000000000000000ull) {
@@ -146906,8 +146906,8 @@ binary32_to_bid128 (float x
 
   if (lt128
       (bid_roundbound_128
-       [(rnd_mode << 2) + ((s & 1) << 1) + (c_prov_lo & 1)].w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       [(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov_lo & 1)].w[1],
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov_lo & 1)].w[0], z.w[3], z.w[2])) {
     c_prov_lo = c_prov_lo + 1;
     if (c_prov_lo == 0)
@@ -147077,8 +147077,8 @@ binary64_to_bid128 (double x
 
   if (lt128
       (bid_roundbound_128
-       [(rnd_mode << 2) + ((s & 1) << 1) + (c_prov_lo & 1)].w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       [(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov_lo & 1)].w[1],
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov_lo & 1)].w[0], z.w[3], z.w[2])) {
     c_prov_lo = c_prov_lo + 1;
     if (c_prov_lo == 0)
@@ -147247,8 +147247,8 @@ binary80_to_bid128 (BINARY80 x
 
   if (lt128
       (bid_roundbound_128
-       [(rnd_mode << 2) + ((s & 1) << 1) + (c_prov_lo & 1)].w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       [(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov_lo & 1)].w[1],
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov_lo & 1)].w[0], z.w[3], z.w[2])) {
     c_prov_lo = c_prov_lo + 1;
     if (c_prov_lo == 0)
@@ -147415,8 +147415,8 @@ binary128_to_bid128 (BINARY128 x
 
   if (lt128
       (bid_roundbound_128
-       [(rnd_mode << 2) + ((s & 1) << 1) + (c_prov_lo & 1)].w[1],
-       bid_roundbound_128[(rnd_mode << 2) + ((s & 1) << 1) +
+       [(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) + (c_prov_lo & 1)].w[1],
+       bid_roundbound_128[(((unsigned)rnd_mode << 2)) + (((unsigned)(s & 1) << 1)) +
                       (c_prov_lo & 1)].w[0], z.w[3], z.w[2])) {
     c_prov_lo = c_prov_lo + 1;
     if (c_prov_lo == 0)

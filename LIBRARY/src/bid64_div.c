@@ -290,8 +290,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     // 2^64
     t_scale.i = 0x43f0000000000000ull;
     // convert CA to DP
-    da_h = CA.w[1];
-    da_l = CA.w[0];
+    da_h = (double)CA.w[1];
+    da_l = (double)CA.w[0];
     da = da_h * t_scale.d + da_l;
 
     // quotient

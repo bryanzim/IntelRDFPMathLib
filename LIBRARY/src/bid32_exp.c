@@ -44,7 +44,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_exp, BID_UINT32, x)
 #endif
                 res = x & 0xfc0fffff; //quiet and make combination 0 (canonize)
                 if ((res & 0x000fffff) > 999999) { // payload
-                        res &= ~0x000fffff;
+                        res &= ~(BID_UINT32)0x000fffff;
                 }
       BID_RETURN (res);
     }

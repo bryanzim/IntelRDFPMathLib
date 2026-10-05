@@ -41,7 +41,8 @@
       "description": "ClangCL x64 Debug (strict warnings)",
       "inherits": "vs-base",
       "cacheVariables": {
-        "IDFP_STRICT_CLANG_WARNINGS": "ON"
+        "IDFP_STRICT_CLANG_WARNINGS": "ON",
+        "IDFP_EXTRA_STRICT_CLANG_WARNINGS": "ON"
       },
       "toolset": {
         "value": "ClangCL",

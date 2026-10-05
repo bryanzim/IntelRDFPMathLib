@@ -155,9 +155,9 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_pow, x, y)
   {
     int exact_y;
     int inexact = 0;
-    int save_flags = *pfpsf;
+    _IDEC_flags save_flags = *pfpsf;
 
-    *pfpsf &= ~(BID_INEXACT_EXCEPTION | BID_INVALID_EXCEPTION);
+    *pfpsf &= ~(_IDEC_flags)(BID_INEXACT_EXCEPTION | BID_INVALID_EXCEPTION);
     BIDECIMAL_CALL1_NORND(bid32_to_int32_xrnint, exact_y, y);
     if ((*pfpsf & (BID_INEXACT_EXCEPTION | BID_INVALID_EXCEPTION)) == 0) {
       BID_UINT32 p;

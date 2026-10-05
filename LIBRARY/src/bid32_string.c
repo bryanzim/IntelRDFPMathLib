@@ -90,7 +90,7 @@ bid32_to_string (char *ps, BID_UINT32 x
 	  CT = (BID_UINT64)coefficient_x * 0x431BDE83ull;
 	  CT >>= 32;
 	  d = CT >> (50-32);
-	  ps[istart++] = d + '0';
+	  ps[istart++] = (char)(d + '0');
 
 	  coefficient_x -= d*1000000;
 

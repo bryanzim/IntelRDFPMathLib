@@ -89,7 +89,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
     exponent_x = DECIMAL_MAX_EXPON_32;
       else if (exponent_x < 0)
     exponent_x = 0;
-      BID_RETURN ((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 23));
+      BID_RETURN ((BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 23)));
     }
   }
   if (!valid_y) {
@@ -120,7 +120,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
       exponent_x = DECIMAL_MAX_EXPON_32;
     else if (exponent_x < 0)
       exponent_x = 0;
-    BID_RETURN ((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 23));
+    BID_RETURN ((BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64) exponent_x) << 23)));
   }
  
   P = (BID_UINT64)coefficient_x * (BID_UINT64)coefficient_y;

@@ -245,14 +245,14 @@ bid128_to_string (char *str, BID_UINT128 x
     d123 = exp - 1000 * d0;
 
     if (d0) { // 1000 <= exp <= 6144 => 4 digits to return
-      str[k++] = d0 + zero_digit; // ASCII for decimal digit d0
+      str[k++] = (char)(d0 + zero_digit); // ASCII for decimal digit d0
       ind = 3 * d123;
       str[k++] = bid_char_table3[ind];
       str[k++] = bid_char_table3[ind + 1];
       str[k++] = bid_char_table3[ind + 2];
     } else { // 0 <= exp <= 999 => d0 = 0
       if (d123 < 10) { // 0 <= exp <= 9 => 1 digit to return
-	str[k++] = d123 + zero_digit; // ASCII
+	str[k++] = (char)(d123 + zero_digit); // ASCII
       } else if (d123 < 100) { // 10 <= exp <= 99 => 2 digits to return
 	ind = 2 * (d123 - 10);
 	str[k++] = bid_char_table2[ind];

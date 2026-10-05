@@ -805,7 +805,7 @@ BID_EXTERN_C BID_UINT128 bid_round_const_table_128[][36];
 //////////////////////////////////////////////
 //  Status Flag Handling
 /////////////////////////////////////////////
-#define __set_status_flags(fpsc, status)  *(fpsc) |= status
+#define __set_status_flags(fpsc, status)  *(fpsc) |= (_IDEC_flags)(status)
 #define is_inexact(fpsc)  ((*(fpsc))&BID_INEXACT_EXCEPTION)
 
 __BID_INLINE__ BID_UINT64
@@ -996,6 +996,7 @@ get_BID64 (BID_UINT64 sgn, int expon, BID_UINT64 coeff, int rmode,
 	// round up
 	if (sgn)
 	  r = SMALLEST_BID64;
+	BID_FALLTHROUGH;
       default:
 	break;
       }
@@ -1008,7 +1009,7 @@ get_BID64 (BID_UINT64 sgn, int expon, BID_UINT64 coeff, int rmode,
 
   // check whether coefficient fits in 10*5+3 bits
   if (coeff < mask) {
-    r = expon;
+    r = (BID_UINT64)expon;
     r <<= EXPONENT_SHIFT_SMALL64;
     r |= (coeff | sgn);
     return r;
@@ -1017,13 +1018,13 @@ get_BID64 (BID_UINT64 sgn, int expon, BID_UINT64 coeff, int rmode,
 
   // eliminate the case coeff==10^16 after rounding
   if (coeff == 10000000000000000ull) {
-    r = expon + 1;
+    r = (BID_UINT64)(expon + 1);
     r <<= EXPONENT_SHIFT_SMALL64;
     r |= (1000000000000000ull | sgn);
     return r;
   }
 
-  r = expon;
+  r = (BID_UINT64)expon;
   r <<= EXPONENT_SHIFT_LARGE64;
   r |= (sgn | SPECIAL_ENCODING_MASK64);
   // add coeff, without leading bits
@@ -1049,7 +1050,7 @@ fast_get_BID64 (BID_UINT64 sgn, int expon, BID_UINT64 coeff) {
 
   // check whether coefficient fits in 10*5+3 bits
   if (coeff < mask) {
-    r = expon;
+    r = (BID_UINT64)expon;
     r <<= EXPONENT_SHIFT_SMALL64;
     r |= (coeff | sgn);
     return r;
@@ -1058,13 +1059,13 @@ fast_get_BID64 (BID_UINT64 sgn, int expon, BID_UINT64 coeff) {
 
   // eliminate the case coeff==10^16 after rounding
   if (coeff == 10000000000000000ull) {
-    r = expon + 1;
+    r = (BID_UINT64)(expon + 1);
     r <<= EXPONENT_SHIFT_SMALL64;
     r |= (1000000000000000ull | sgn);
     return r;
   }
 
-  r = expon;
+  r = (BID_UINT64)expon;
   r <<= EXPONENT_SHIFT_LARGE64;
   r |= (sgn | SPECIAL_ENCODING_MASK64);
   // add coeff, without leading bits
@@ -1114,6 +1115,7 @@ fast_get_BID64_check_OF (BID_UINT64 sgn, int expon, BID_UINT64 coeff, int rmode,
 	  // round up
 	  if (sgn)
 	    r = SMALLEST_BID64;
+	  BID_FALLTHROUGH;
 	default:
 	  break;
 	}
@@ -1127,7 +1129,7 @@ fast_get_BID64_check_OF (BID_UINT64 sgn, int expon, BID_UINT64 coeff, int rmode,
 
   // check whether coefficient fits in 10*5+3 bits
   if (coeff < mask) {
-    r = expon;
+    r = (BID_UINT64)expon;
     r <<= EXPONENT_SHIFT_SMALL64;
     r |= (coeff | sgn);
     return r;
@@ -1136,13 +1138,13 @@ fast_get_BID64_check_OF (BID_UINT64 sgn, int expon, BID_UINT64 coeff, int rmode,
 
   // eliminate the case coeff==10^16 after rounding
   if (coeff == 10000000000000000ull) {
-    r = expon + 1;
+    r = (BID_UINT64)(expon + 1);
     r <<= EXPONENT_SHIFT_SMALL64;
     r |= (1000000000000000ull | sgn);
     return r;
   }
 
-  r = expon;
+  r = (BID_UINT64)expon;
   r <<= EXPONENT_SHIFT_LARGE64;
   r |= (sgn | SPECIAL_ENCODING_MASK64);
   // add coeff, without leading bits
@@ -1167,13 +1169,13 @@ very_fast_get_BID64 (BID_UINT64 sgn, int expon, BID_UINT64 coeff) {
 
   // check whether coefficient fits in 10*5+3 bits
   if (coeff < mask) {
-    r = expon;
+    r = (BID_UINT64)expon;
     r <<= EXPONENT_SHIFT_SMALL64;
     r |= (coeff | sgn);
     return r;
   }
   // special format
-  r = expon;
+  r = (BID_UINT64)expon;
   r <<= EXPONENT_SHIFT_LARGE64;
   r |= (sgn | SPECIAL_ENCODING_MASK64);
   // add coeff, without leading bits
@@ -1192,7 +1194,7 @@ very_fast_get_BID64_small_mantissa (BID_UINT64 sgn, int expon, BID_UINT64 coeff)
   // no UF/OF
   BID_UINT64 r;
 
-  r = expon;
+  r = (BID_UINT64)expon;
   r <<= EXPONENT_SHIFT_SMALL64;
   r |= (coeff | sgn);
   return r;
@@ -1477,7 +1479,7 @@ get_BID64_small_mantissa (BID_UINT64 sgn, int expon, BID_UINT64 coeff,
       mask = 1;
       mask <<= EXPONENT_SHIFT_SMALL64;
       if (coeff >= mask) {
-	r = expon;
+	r = (BID_UINT64)expon;
 	r <<= EXPONENT_SHIFT_LARGE64;
 	r |= (sgn | SPECIAL_ENCODING_MASK64);
 	// add coeff, without leading bits
@@ -1489,7 +1491,7 @@ get_BID64_small_mantissa (BID_UINT64 sgn, int expon, BID_UINT64 coeff,
     }
   }
 
-  r = expon;
+  r = (BID_UINT64)expon;
   r <<= EXPONENT_SHIFT_SMALL64;
   r |= (coeff | sgn);
 
@@ -2035,7 +2037,7 @@ bid_get_BID128_very_fast_OF (BID_UINT128 * pres, BID_UINT64 sgn, int expon,
   }
 
   pres->w[0] = coeff.w[0];
-  tmp = expon;
+  tmp = (BID_UINT64)expon;
   tmp <<= 49;
   pres->w[1] = sgn | tmp | coeff.w[1];
 
@@ -2053,7 +2055,7 @@ bid_get_BID128_very_fast (BID_UINT128 * pres, BID_UINT64 sgn, int expon,
   BID_UINT64 tmp;
 
   pres->w[0] = coeff.w[0];
-  tmp = expon;
+  tmp = (BID_UINT64)expon;
   tmp <<= 49;
   pres->w[1] = sgn | tmp | coeff.w[1];
 
@@ -2067,7 +2069,7 @@ bid_get_BID128_very_fast_BLE (BID_UINT128 * pres, BID_UINT64 sgn, int expon,
   BID_UINT64 tmp;
 
   pres->w[BID_LOW_128W] = coeff.w[BID_LOW_128W];
-  tmp = expon;
+  tmp = (BID_UINT64)expon;
   tmp <<= 49;
   pres->w[BID_HIGH_128W] = sgn | tmp | coeff.w[BID_HIGH_128W];
 
@@ -2091,7 +2093,7 @@ bid_get_BID128_fast (BID_UINT128 * pres, BID_UINT64 sgn, int expon, BID_UINT128 
   }
 
   pres->w[0] = coeff.w[0];
-  tmp = expon;
+  tmp = (BID_UINT64)expon;
   tmp <<= 49;
   pres->w[1] = sgn | tmp | coeff.w[1];
 
@@ -2171,7 +2173,7 @@ bid_get_BID128 (BID_UINT128 * pres, BID_UINT64 sgn, int expon, BID_UINT128 coeff
   }
 
   pres->w[0] = coeff.w[0];
-  tmp = expon;
+  tmp = (BID_UINT64)expon;
   tmp <<= 49;
   pres->w[1] = sgn | tmp | coeff.w[1];
 
@@ -2249,7 +2251,7 @@ bid_get_BID128_string (BID_UINT128 * pres, BID_UINT64 sgn, int expon, BID_UINT12
   }
 
   pres->w[0] = coeff.w[0];
-  tmp = expon;
+  tmp = (BID_UINT64)expon;
   tmp <<= 49;
   pres->w[1] = sgn | tmp | coeff.w[1];
 
@@ -2453,14 +2455,14 @@ get_BID32 (BID_UINT32 sgn, int expon, BID_UINT64 coeff, int rmode,
 
   // check whether coefficient fits in DECIMAL_COEFF_FIT bits
   if (coeff < mask) {
-    r = expon;
+    r = (BID_UINT32)expon;
     r <<= 23;
     r |= ((BID_UINT32) coeff | sgn);
     return r;
   }
   // special format
 
-  r = expon;
+  r = (BID_UINT32)expon;
   r <<= 21;
   r |= (sgn | SPECIAL_ENCODING_MASK32);
   // add coeff, without leading bits
@@ -2628,14 +2630,14 @@ get_BID32_UF (BID_UINT32 sgn, int expon, BID_UINT64 coeff, BID_UINT32 R, int rmo
 
   // check whether coefficient fits in DECIMAL_COEFF_FIT bits
   if (coeff < mask) {
-    r = expon;
+    r = (BID_UINT32)expon;
     r <<= 23;
     r |= ((BID_UINT32) coeff | sgn);
     return r;
   }
   // special format
 
-  r = expon;
+  r = (BID_UINT32)expon;
   r <<= 21;
   r |= (sgn | SPECIAL_ENCODING_MASK32);
   // add coeff, without leading bits
@@ -2661,13 +2663,13 @@ very_fast_get_BID32 (BID_UINT32 sgn, int expon, BID_UINT32 coeff) {
 
   // check whether coefficient fits in 10*2+3 bits
   if (coeff < mask) {
-    r = expon;
+    r = (BID_UINT32)expon;
     r <<= 23;
     r |= (coeff | sgn);
     return r;
   }
   // special format
-  r = expon;
+  r = (BID_UINT32)expon;
   r <<= 21;
   r |= (sgn | SPECIAL_ENCODING_MASK32);
   // add coeff, without leading bits
@@ -2690,13 +2692,13 @@ fast_get_BID32 (BID_UINT32 sgn, int expon, BID_UINT32 coeff) {
   }
   // check whether coefficient fits in 10*2+3 bits
   if (coeff < mask) {
-    r = expon;
+    r = (BID_UINT32)expon;
     r <<= 23;
     r |= (coeff | sgn);
     return r;
   }
   // special format
-  r = expon;
+  r = (BID_UINT32)expon;
   r <<= 21;
   r |= (sgn | SPECIAL_ENCODING_MASK32);
   // add coeff, without leading bits

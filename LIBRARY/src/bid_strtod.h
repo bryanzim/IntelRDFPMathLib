@@ -201,7 +201,7 @@ int i,k;
    if(!ps0_c)
    { free(ps0); return NULL;}
    for(i=0; i<k; i++)
-     ps0_c[i] = (ps0[i] - L'0') + '0';
+     ps0_c[i] = (char)((ps0[i] - L'0') + '0');
    free(ps0);
 
    return ps0_c;

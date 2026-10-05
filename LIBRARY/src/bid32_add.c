@@ -170,16 +170,16 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 
     sign_ab = ((BID_SINT64)(sign_a ^ sign_b))<<32;
     sign_ab = ((BID_SINT64) sign_ab) >> 63;
-    CB = ((BID_UINT64)coefficient_b + sign_ab) ^ sign_ab;
+    CB = (BID_UINT64)(((BID_SINT64)coefficient_b + sign_ab) ^ sign_ab);
 
     SU = (BID_UINT64)coefficient_a * bid_power10_table_128[diff_dec_expon].w[0];
-    S = SU + CB;
+    S = (BID_SINT64)(SU + CB);
 
-    if(S<0) {
+    if (S < 0) {
         sign_a ^= 0x80000000;
         S = -S;
     }
-    P = S;
+    P = (BID_UINT64)S;
 
     if(!P) {
         sign_a = 0;
@@ -196,7 +196,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
     }
 
     if(n_digits <= MAX_FORMAT_DIGITS_32) {
-      res = 	get_BID32 (sign_a, exponent_b, (BID_UINT32)P, rnd_mode,
+      res = 	get_BID32 (sign_a, exponent_b, (BID_UINT32)P, (int)rnd_mode,
            pfpsf);
       BID_RETURN (res);
     }
@@ -205,7 +205,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 
     #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     if (sign_a && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -242,7 +242,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
            Q &= 0xfffffffe;
 #endif
 
-      res = get_BID32 (sign_a, exponent_b+extra_digits, Q, rnd_mode, pfpsf);
+      res = get_BID32 (sign_a, exponent_b+extra_digits, Q, (int)rnd_mode, pfpsf);
 
     BID_RETURN (res);
   
