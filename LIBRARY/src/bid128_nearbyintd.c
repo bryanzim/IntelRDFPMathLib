@@ -52,74 +52,74 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
   BID_UINT256 P256;
 
   // check for NaN or Infinity
-  if ((x.w[1] & MASK_SPECIAL) == MASK_SPECIAL) {
+  if ((x.w[1U] & MASK_SPECIAL) == MASK_SPECIAL) {
     // x is special
-    if ((x.w[1] & MASK_NAN) == MASK_NAN) {      // x is NAN
+    if ((x.w[1U] & MASK_NAN) == MASK_NAN) {      // x is NAN
       // if x = NaN, then res = Q (x)
       // check first for non-canonical NaN payload
-      if (((x.w[1] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull)
-          || (((x.w[1] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) && (x.w[0] > 0x38c15b09ffffffffull))) {
-        x.w[1] = x.w[1] & 0xffffc00000000000ull;
-        x.w[0] = 0x0ull;
+      if (((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull)
+          || (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) && (x.w[0U] > 0x38c15b09ffffffffull))) {
+        x.w[1U] = x.w[1U] & 0xffffc00000000000ull;
+        x.w[0U] = 0x0ull;
       }
-      if ((x.w[1] & MASK_SNAN) == MASK_SNAN) {  // x is SNAN
+      if ((x.w[1U] & MASK_SNAN) == MASK_SNAN) {  // x is SNAN
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return quiet (x)
-        res.w[1] = x.w[1] & 0xfc003fffffffffffull;      // clear out also G[6]-G[16]
-        res.w[0] = x.w[0];
+        res.w[1U] = x.w[1U] & 0xfc003fffffffffffull;      // clear out also G[6]-G[16]
+        res.w[0U] = x.w[0U];
       } else {                  // x is QNaN
         // return x
-        res.w[1] = x.w[1] & 0xfc003fffffffffffull;      // clear out G[6]-G[16]
-        res.w[0] = x.w[0];
+        res.w[1U] = x.w[1U] & 0xfc003fffffffffffull;      // clear out G[6]-G[16]
+        res.w[0U] = x.w[0U];
       }
       BID_RETURN(res)
     } else {                    // x is not a NaN, so it must be infinity
-      if ((x.w[1] & MASK_SIGN) == 0x0ull) {     // x is +inf
+      if ((x.w[1U] & MASK_SIGN) == 0x0ull) {     // x is +inf
         // return +inf
-        res.w[1] = 0x7800000000000000ull;
-        res.w[0] = 0x0000000000000000ull;
+        res.w[1U] = 0x7800000000000000ull;
+        res.w[0U] = 0x0000000000000000ull;
       } else {                  // x is -inf 
         // return -inf
-        res.w[1] = 0xf800000000000000ull;
-        res.w[0] = 0x0000000000000000ull;
+        res.w[1U] = 0xf800000000000000ull;
+        res.w[0U] = 0x0000000000000000ull;
       }
       BID_RETURN(res);
     }
   }
   // unpack x
-  x_sign = x.w[1] & MASK_SIGN;  // 0 for positive, MASK_SIGN for negative
-  C1.w[1] = x.w[1] & MASK_COEFF;
-  C1.w[0] = x.w[0];
+  x_sign = x.w[1U] & MASK_SIGN;  // 0 for positive, MASK_SIGN for negative
+  C1.w[1U] = x.w[1U] & MASK_COEFF;
+  C1.w[0U] = x.w[0U];
 
   // check for non-canonical values (treated as zero)
-  if ((x.w[1] & 0x6000000000000000ull) == 0x6000000000000000ull) {      // G0_G1=11
+  if ((x.w[1U] & 0x6000000000000000ull) == 0x6000000000000000ull) {      // G0_G1=11
     // non-canonical
-    x_exp = (x.w[1] << 2) & MASK_EXP;   // biased and shifted left 49 bits
-    C1.w[1] = 0;                // significand high
-    C1.w[0] = 0;                // significand low
+    x_exp = (x.w[1U] << 2) & MASK_EXP;   // biased and shifted left 49 bits
+    C1.w[1U] = 0;                // significand high
+    C1.w[0U] = 0;                // significand low
   } else {                      // G0_G1 != 11
-    x_exp = x.w[1] & MASK_EXP;  // biased and shifted left 49 bits
-    if (C1.w[1] > 0x0001ed09bead87c0ull || (C1.w[1] == 0x0001ed09bead87c0ull && C1.w[0] > 0x378d8e63ffffffffull)) {
+    x_exp = x.w[1U] & MASK_EXP;  // biased and shifted left 49 bits
+    if (C1.w[1U] > 0x0001ed09bead87c0ull || (C1.w[1U] == 0x0001ed09bead87c0ull && C1.w[0U] > 0x378d8e63ffffffffull)) {
       // x is non-canonical if coefficient is larger than 10^34 -1
-      C1.w[1] = 0;
-      C1.w[0] = 0;
+      C1.w[1U] = 0;
+      C1.w[0U] = 0;
     } else {                    // canonical
       ;
     }
   }
 
   // test for input equal to zero
-  if ((C1.w[1] == 0x0ull) && (C1.w[0] == 0x0ull)) {
+  if ((C1.w[1U] == 0x0ull) && (C1.w[0U] == 0x0ull)) {
     // x is 0
     // return 0 preserving the sign bit and the preferred exponent
     // of MAX(Q(x), 0)
     if (x_exp <= (0x1820ull << 49)) {
-      res.w[1] = (x.w[1] & 0x8000000000000000ull) | 0x3040000000000000ull;
+      res.w[1U] = (x.w[1U] & 0x8000000000000000ull) | 0x3040000000000000ull;
     } else {
-      res.w[1] = x_sign | x_exp;
+      res.w[1U] = x_sign | x_exp;
     }
-    res.w[0] = 0x0000000000000000ull;
+    res.w[0U] = 0x0000000000000000ull;
     BID_RETURN(res);
   }
   // x is not special and is not zero
@@ -129,8 +129,8 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
   case BID_ROUNDING_TIES_AWAY:
     // if (exp <= -(p+1)) return 0.0
     if (x_exp <= 0x2ffa000000000000ull) {       // 0x2ffa000000000000ull == -35
-      res.w[1] = x_sign | 0x3040000000000000ull;
-      res.w[0] = 0x0000000000000000ull;
+      res.w[1U] = x_sign | 0x3040000000000000ull;
+      res.w[0U] = 0x0000000000000000ull;
       BID_RETURN(res);
     }
     break;
@@ -140,13 +140,13 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       if (x_sign) {
         // if negative, return negative 1, because we know coefficient
         // is non-zero (would have been caught above)
-        res.w[1] = 0xb040000000000000ull;
-        res.w[0] = 0x0000000000000001ull;
+        res.w[1U] = 0xb040000000000000ull;
+        res.w[0U] = 0x0000000000000001ull;
       } else {
         // if positive, return positive 0, because we know coefficient is
         // non-zero (would have been caught above)
-        res.w[1] = 0x3040000000000000ull;
-        res.w[0] = 0x0000000000000000ull;
+        res.w[1U] = 0x3040000000000000ull;
+        res.w[0U] = 0x0000000000000000ull;
       }
       BID_RETURN(res);
     }
@@ -157,13 +157,13 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       if (x_sign) {
         // if negative, return negative 0, because we know the coefficient
         // is non-zero (would have been caught above)
-        res.w[1] = 0xb040000000000000ull;
-        res.w[0] = 0x0000000000000000ull;
+        res.w[1U] = 0xb040000000000000ull;
+        res.w[0U] = 0x0000000000000000ull;
       } else {
         // if positive, return positive 1, because we know coefficient is
         // non-zero (would have been caught above)
-        res.w[1] = 0x3040000000000000ull;
-        res.w[0] = 0x0000000000000001ull;
+        res.w[1U] = 0x3040000000000000ull;
+        res.w[0U] = 0x0000000000000001ull;
       }
       BID_RETURN(res);
     }
@@ -171,8 +171,8 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
   case BID_ROUNDING_TO_ZERO:
     // if (exp <= -p) return -0.0 or +0.0
     if (x_exp <= 0x2ffc000000000000ull) {       // 0x2ffc000000000000ull == -34
-      res.w[1] = x_sign | 0x3040000000000000ull;
-      res.w[0] = 0x0000000000000000ull;
+      res.w[1U] = x_sign | 0x3040000000000000ull;
+      res.w[0U] = 0x0000000000000000ull;
       BID_RETURN(res);
     }
     break;
@@ -181,32 +181,32 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
 
   // q = nr. of decimal digits in x
   //  determine first the nr. of bits in x
-  if (C1.w[1] == 0) {
-    if (C1.w[0] >= 0x0020000000000000ull) {     // x >= 2^53
+  if (C1.w[1U] == 0) {
+    if (C1.w[0U] >= 0x0020000000000000ull) {     // x >= 2^53
       // split the 64-bit value in two 32-bit halves to avoid rounding errors
-      tmp1.d = (double) (C1.w[0] >> 32);      // exact conversion
-      x_nr_bits = 33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      tmp1.d = (double) (C1.w[0U] >> 32);      // exact conversion
+      x_nr_bits = 33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     } else {                    // if x < 2^53
-      tmp1.d = (double) C1.w[0];        // exact conversion
-      x_nr_bits = 1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      tmp1.d = (double) C1.w[0U];        // exact conversion
+      x_nr_bits = 1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     }
   } else {                      // C1.w[1] != 0 => nr. bits = 64 + nr_bits (C1.w[1])
-    tmp1.d = (double) C1.w[1];  // exact conversion
-    x_nr_bits = 65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+    tmp1.d = (double) C1.w[1U];  // exact conversion
+    x_nr_bits = 65 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
   }
 
-  q = bid_nr_digits[x_nr_bits - 1].digits;
+  q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
   if (q == 0) {
-    q = bid_nr_digits[x_nr_bits - 1].digits1;
-    if (C1.w[1] > bid_nr_digits[x_nr_bits - 1].threshold_hi
-        || (C1.w[1] == bid_nr_digits[x_nr_bits - 1].threshold_hi && C1.w[0] >= bid_nr_digits[x_nr_bits - 1].threshold_lo))
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+    if (C1.w[1U] > bid_nr_digits[x_nr_bits - 1U].threshold_hi
+        || (C1.w[1U] == bid_nr_digits[x_nr_bits - 1U].threshold_hi && C1.w[0U] >= bid_nr_digits[x_nr_bits - 1U].threshold_lo))
       q++;
   }
   exp = (x_exp >> 49) - 6176;
   if (exp >= 0) {               // -exp <= 0
     // the argument is an integer already
-    res.w[1] = x.w[1];
-    res.w[0] = x.w[0];
+    res.w[1U] = x.w[1U];
+    res.w[0U] = x.w[0U];
     BID_RETURN(res);
   }
   // exp < 0
@@ -217,15 +217,15 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1 
       // C1 = C1 + 1/2 * 10^x where the result C1 fits in 127 bits
-      tmp64 = C1.w[0];
+      tmp64 = C1.w[0U];
       if (ind <= 19) {
-        C1.w[0] = C1.w[0] + bid_midpoint64[ind - 1];
+        C1.w[0U] = C1.w[0U] + bid_midpoint64[ind - 1];
       } else {
-        C1.w[0] = C1.w[0] + bid_midpoint128[ind - 20].w[0];
-        C1.w[1] = C1.w[1] + bid_midpoint128[ind - 20].w[1];
+        C1.w[0U] = C1.w[0U] + bid_midpoint128[ind - 20].w[0U];
+        C1.w[1U] = C1.w[1U] + bid_midpoint128[ind - 20].w[1U];
       }
-      if (C1.w[0] < tmp64)
-        C1.w[1]++;
+      if (C1.w[0U] < tmp64)
+        C1.w[1U]++;
       // calculate C* and f*
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
@@ -239,65 +239,65 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
 
       if (ind - 1 <= 2) {       // 0 <= ind - 1 <= 2 => shift = 0
         // redundant shift = bid_shiftright128[ind - 1]; // shift = 0
-        res.w[1] = P256.w[3];
-        res.w[0] = P256.w[2];
+        res.w[1U] = P256.w[3U];
+        res.w[0U] = P256.w[2U];
         // redundant fstar.w[3] = 0;
         // redundant fstar.w[2] = 0;
-        fstar.w[1] = P256.w[1];
-        fstar.w[0] = P256.w[0];
+        fstar.w[1U] = P256.w[1U];
+        fstar.w[0U] = P256.w[0U];
         // fraction f* < 10^(-x) <=> midpoint
         // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
         // if 0 < fstar < 10^(-x), subtract 1 if odd (for rounding to even)
-        if ((res.w[0] & 0x0000000000000001ull) &&       // is result odd and from a midpoint?
-            ((fstar.w[1] < (bid_ten2mk128[ind - 1].w[1]))
-             || ((fstar.w[1] == bid_ten2mk128[ind - 1].w[1])
-                 && (fstar.w[0] < bid_ten2mk128[ind - 1].w[0])))) {
+        if ((res.w[0U] & 0x0000000000000001ull) &&       // is result odd and from a midpoint?
+            ((fstar.w[1U] < (bid_ten2mk128[ind - 1].w[1U]))
+             || ((fstar.w[1U] == bid_ten2mk128[ind - 1].w[1U])
+                 && (fstar.w[0U] < bid_ten2mk128[ind - 1].w[0U])))) {
           // subtract 1 to make even
-          res.w[0]--;
+          res.w[0U]--;
         }
       } else if (ind - 1 <= 21) {       // 3 <= ind - 1 <= 21 => 3 <= shift <= 63
         shift = bid_shiftright128[ind - 1]; // 3 <= shift <= 63
-        res.w[1] = (P256.w[3] >> shift);
-        res.w[0] = (P256.w[3] << (64 - shift)) | (P256.w[2] >> shift);
+        res.w[1U] = (P256.w[3U] >> shift);
+        res.w[0U] = (P256.w[3U] << (64 - shift)) | (P256.w[2U] >> shift);
         // redundant fstar.w[3] = 0;
-        fstar.w[2] = P256.w[2] & bid_maskhigh128[ind - 1];
-        fstar.w[1] = P256.w[1];
-        fstar.w[0] = P256.w[0];
+        fstar.w[2U] = P256.w[2U] & bid_maskhigh128[ind - 1];
+        fstar.w[1U] = P256.w[1U];
+        fstar.w[0U] = P256.w[0U];
         // fraction f* < 10^(-x) <=> midpoint
         // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
-        if ((res.w[0] & 0x0000000000000001ull) &&       // is result odd and from a midpoint?
-            fstar.w[2] == 0 && (fstar.w[1] < bid_ten2mk128[ind - 1].w[1]
-                                || (fstar.w[1] == bid_ten2mk128[ind - 1].w[1] && fstar.w[0] < bid_ten2mk128[ind - 1].w[0]))) {
+        if ((res.w[0U] & 0x0000000000000001ull) &&       // is result odd and from a midpoint?
+            fstar.w[2U] == 0 && (fstar.w[1U] < bid_ten2mk128[ind - 1].w[1U]
+                                || (fstar.w[1U] == bid_ten2mk128[ind - 1].w[1U] && fstar.w[0U] < bid_ten2mk128[ind - 1].w[0U]))) {
           // subtract 1 to make even
-          res.w[0]--;
+          res.w[0U]--;
         }
       } else {                  // 22 <= ind - 1 <= 33
         shift = bid_shiftright128[ind - 1] - 64;    // 2 <= shift <= 38
-        res.w[1] = 0;
-        res.w[0] = P256.w[3] >> shift;
-        fstar.w[3] = P256.w[3] & bid_maskhigh128[ind - 1];
-        fstar.w[2] = P256.w[2];
-        fstar.w[1] = P256.w[1];
-        fstar.w[0] = P256.w[0];
+        res.w[1U] = 0;
+        res.w[0U] = P256.w[3U] >> shift;
+        fstar.w[3U] = P256.w[3U] & bid_maskhigh128[ind - 1];
+        fstar.w[2U] = P256.w[2U];
+        fstar.w[1U] = P256.w[1U];
+        fstar.w[0U] = P256.w[0U];
         // fraction f* < 10^(-x) <=> midpoint
         // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
-        if ((res.w[0] & 0x0000000000000001ull) &&       // is result odd and from a midpoint?
-            fstar.w[3] == 0 && fstar.w[2] == 0 && (fstar.w[1] < bid_ten2mk128[ind - 1].w[1]
-                                                   || (fstar.w[1] == bid_ten2mk128[ind - 1].w[1]
-                                                       && fstar.w[0] < bid_ten2mk128[ind - 1].w[0]))) {
+        if ((res.w[0U] & 0x0000000000000001ull) &&       // is result odd and from a midpoint?
+            fstar.w[3U] == 0 && fstar.w[2U] == 0 && (fstar.w[1U] < bid_ten2mk128[ind - 1].w[1U]
+                                                   || (fstar.w[1U] == bid_ten2mk128[ind - 1].w[1U]
+                                                       && fstar.w[0U] < bid_ten2mk128[ind - 1].w[0U]))) {
           // subtract 1 to make even
-          res.w[0]--;
+          res.w[0U]--;
         }
       }
-      res.w[1] = x_sign | 0x3040000000000000ull | res.w[1];
+      res.w[1U] = x_sign | 0x3040000000000000ull | res.w[1U];
       BID_RETURN(res);
     } else {                    // if ((q + exp) < 0) <=> q < -exp
       // the result is +0 or -0
-      res.w[1] = x_sign | 0x3040000000000000ull;
-      res.w[0] = 0x0000000000000000ull;
+      res.w[1U] = x_sign | 0x3040000000000000ull;
+      res.w[0U] = 0x0000000000000000ull;
       BID_RETURN(res);
     }
     break;
@@ -307,15 +307,15 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       ind = -exp;               // 1 <= ind <= 34; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1 
       // C1 = C1 + 1/2 * 10^x where the result C1 fits in 127 bits
-      tmp64 = C1.w[0];
+      tmp64 = C1.w[0U];
       if (ind <= 19) {
-        C1.w[0] = C1.w[0] + bid_midpoint64[ind - 1];
+        C1.w[0U] = C1.w[0U] + bid_midpoint64[ind - 1];
       } else {
-        C1.w[0] = C1.w[0] + bid_midpoint128[ind - 20].w[0];
-        C1.w[1] = C1.w[1] + bid_midpoint128[ind - 20].w[1];
+        C1.w[0U] = C1.w[0U] + bid_midpoint128[ind - 20].w[0U];
+        C1.w[1U] = C1.w[1U] + bid_midpoint128[ind - 20].w[1U];
       }
-      if (C1.w[0] < tmp64)
-        C1.w[1]++;
+      if (C1.w[0U] < tmp64)
+        C1.w[1U]++;
       // calculate C* and f*
       // C* is actually floor(C*) in this case
       // C* and f* need shifting and masking, as shown by
@@ -339,27 +339,27 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
 
       if (ind - 1 <= 2) {       // 0 <= ind - 1 <= 2 => shift = 0
         // redundant shift = bid_shiftright128[ind - 1]; // shift = 0
-        res.w[1] = P256.w[3];
-        res.w[0] = P256.w[2];
+        res.w[1U] = P256.w[3U];
+        res.w[0U] = P256.w[2U];
         // redundant fstar.w[3] = 0;
         // redundant fstar.w[2] = 0;
       } else if (ind - 1 <= 21) {       // 3 <= ind - 1 <= 21 => 3 <= shift <= 63
         shift = bid_shiftright128[ind - 1]; // 3 <= shift <= 63
-        res.w[1] = (P256.w[3] >> shift);
-        res.w[0] = (P256.w[3] << (64 - shift)) | (P256.w[2] >> shift);
+        res.w[1U] = (P256.w[3U] >> shift);
+        res.w[0U] = (P256.w[3U] << (64 - shift)) | (P256.w[2U] >> shift);
         // redundant fstar.w[3] = 0;
       } else {                  // 22 <= ind - 1 <= 33
         shift = bid_shiftright128[ind - 1] - 64;    // 2 <= shift <= 38
-        res.w[1] = 0;
-        res.w[0] = P256.w[3] >> shift;
+        res.w[1U] = 0;
+        res.w[0U] = P256.w[3U] >> shift;
       }
       // if the result was a midpoint, it was already rounded away from zero
-      res.w[1] |= x_sign | 0x3040000000000000ull;
+      res.w[1U] |= x_sign | 0x3040000000000000ull;
       BID_RETURN(res);
     } else {                    // if ((q + exp) < 0) <=> q < -exp
       // the result is +0 or -0
-      res.w[1] = x_sign | 0x3040000000000000ull;
-      res.w[0] = 0x0000000000000000ull;
+      res.w[1U] = x_sign | 0x3040000000000000ull;
+      res.w[0U] = 0x0000000000000000ull;
       BID_RETURN(res);
     }
     break;
@@ -392,74 +392,74 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       // the approximation of 10^(-x) was rounded up to 118 bits
       __mul_128x128_to_256(P256, C1, bid_ten2mk128[ind - 1]);
       if (ind - 1 <= 2) {       // 0 <= ind - 1 <= 2 => shift = 0
-        res.w[1] = P256.w[3];
-        res.w[0] = P256.w[2];
+        res.w[1U] = P256.w[3U];
+        res.w[0U] = P256.w[2U];
         // redundant fstar.w[3] = 0;
         // redundant fstar.w[2] = 0;
         // redundant fstar.w[1] = P256.w[1];
         // redundant fstar.w[0] = P256.w[0];
         // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
-        if ((P256.w[1] > bid_ten2mk128[ind - 1].w[1])
-            || (P256.w[1] == bid_ten2mk128[ind - 1].w[1]
-                && (P256.w[0] >= bid_ten2mk128[ind - 1].w[0]))) {
+        if ((P256.w[1U] > bid_ten2mk128[ind - 1].w[1U])
+            || (P256.w[1U] == bid_ten2mk128[ind - 1].w[1U]
+                && (P256.w[0U] >= bid_ten2mk128[ind - 1].w[0U]))) {
           // if positive, the truncated value is already the correct result
           if (x_sign) {         // if negative
-            if (++res.w[0] == 0) {
-              res.w[1]++;
+            if (++res.w[0U] == 0) {
+              res.w[1U]++;
             }
           }
         }
       } else if (ind - 1 <= 21) {       // 3 <= ind - 1 <= 21 => 3 <= shift <= 63
         shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 102
-        res.w[1] = (P256.w[3] >> shift);
-        res.w[0] = (P256.w[3] << (64 - shift)) | (P256.w[2] >> shift);
+        res.w[1U] = (P256.w[3U] >> shift);
+        res.w[0U] = (P256.w[3U] << (64 - shift)) | (P256.w[2U] >> shift);
         // redundant fstar.w[3] = 0;
-        fstar.w[2] = P256.w[2] & bid_maskhigh128[ind - 1];
-        fstar.w[1] = P256.w[1];
-        fstar.w[0] = P256.w[0];
+        fstar.w[2U] = P256.w[2U] & bid_maskhigh128[ind - 1];
+        fstar.w[1U] = P256.w[1U];
+        fstar.w[0U] = P256.w[0U];
         // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
-        if (fstar.w[2] || fstar.w[1] > bid_ten2mk128[ind - 1].w[1]
-            || (fstar.w[1] == bid_ten2mk128[ind - 1].w[1] && fstar.w[0] >= bid_ten2mk128[ind - 1].w[0])) {
+        if (fstar.w[2U] || fstar.w[1U] > bid_ten2mk128[ind - 1].w[1U]
+            || (fstar.w[1U] == bid_ten2mk128[ind - 1].w[1U] && fstar.w[0U] >= bid_ten2mk128[ind - 1].w[0U])) {
           // if positive, the truncated value is already the correct result
           if (x_sign) {         // if negative
-            if (++res.w[0] == 0) {
-              res.w[1]++;
+            if (++res.w[0U] == 0) {
+              res.w[1U]++;
             }
           }
         }
       } else {                  // 22 <= ind - 1 <= 33
         shift = bid_shiftright128[ind - 1] - 64;    // 2 <= shift <= 38
-        res.w[1] = 0;
-        res.w[0] = P256.w[3] >> shift;
-        fstar.w[3] = P256.w[3] & bid_maskhigh128[ind - 1];
-        fstar.w[2] = P256.w[2];
-        fstar.w[1] = P256.w[1];
-        fstar.w[0] = P256.w[0];
+        res.w[1U] = 0;
+        res.w[0U] = P256.w[3U] >> shift;
+        fstar.w[3U] = P256.w[3U] & bid_maskhigh128[ind - 1];
+        fstar.w[2U] = P256.w[2U];
+        fstar.w[1U] = P256.w[1U];
+        fstar.w[0U] = P256.w[0U];
         // f* is in the right position to be compared with
         // 10^(-x) from bid_ten2mk128[]
-        if (fstar.w[3] || fstar.w[2]
-            || fstar.w[1] > bid_ten2mk128[ind - 1].w[1]
-            || (fstar.w[1] == bid_ten2mk128[ind - 1].w[1]
-                && fstar.w[0] >= bid_ten2mk128[ind - 1].w[0])) {
+        if (fstar.w[3U] || fstar.w[2U]
+            || fstar.w[1U] > bid_ten2mk128[ind - 1].w[1U]
+            || (fstar.w[1U] == bid_ten2mk128[ind - 1].w[1U]
+                && fstar.w[0U] >= bid_ten2mk128[ind - 1].w[0U])) {
           // if positive, the truncated value is already the correct result
           if (x_sign) {         // if negative
-            if (++res.w[0] == 0) {
-              res.w[1]++;
+            if (++res.w[0U] == 0) {
+              res.w[1U]++;
             }
           }
         }
       }
-      res.w[1] = x_sign | 0x3040000000000000ull | res.w[1];
+      res.w[1U] = x_sign | 0x3040000000000000ull | res.w[1U];
       BID_RETURN(res);
     } else {                    // if exp < 0 and q + exp <= 0
       if (x_sign) {             // negative rounds down to -1.0
-        res.w[1] = 0xb040000000000000ull;
-        res.w[0] = 0x0000000000000001ull;
+        res.w[1U] = 0xb040000000000000ull;
+        res.w[0U] = 0x0000000000000001ull;
       } else {                  // positive rpunds down to +0.0
-        res.w[1] = 0x3040000000000000ull;
-        res.w[0] = 0x0000000000000000ull;
+        res.w[1U] = 0x3040000000000000ull;
+        res.w[0U] = 0x0000000000000000ull;
       }
       BID_RETURN(res);
     }
@@ -493,74 +493,74 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       // the approximation of 10^(-x) was rounded up to 118 bits
       __mul_128x128_to_256(P256, C1, bid_ten2mk128[ind - 1]);
       if (ind - 1 <= 2) {       // 0 <= ind - 1 <= 2 => shift = 0
-        res.w[1] = P256.w[3];
-        res.w[0] = P256.w[2];
+        res.w[1U] = P256.w[3U];
+        res.w[0U] = P256.w[2U];
         // redundant fstar.w[3] = 0;
         // redundant fstar.w[2] = 0;
         // redundant fstar.w[1] = P256.w[1]; 
         // redundant fstar.w[0] = P256.w[0];
         // f* is in the right position to be compared with 
         // 10^(-x) from bid_ten2mk128[]
-        if ((P256.w[1] > bid_ten2mk128[ind - 1].w[1])
-            || (P256.w[1] == bid_ten2mk128[ind - 1].w[1]
-                && (P256.w[0] >= bid_ten2mk128[ind - 1].w[0]))) {
+        if ((P256.w[1U] > bid_ten2mk128[ind - 1].w[1U])
+            || (P256.w[1U] == bid_ten2mk128[ind - 1].w[1U]
+                && (P256.w[0U] >= bid_ten2mk128[ind - 1].w[0U]))) {
           // if negative, the truncated value is already the correct result
           if (!x_sign) {        // if positive
-            if (++res.w[0] == 0) {
-              res.w[1]++;
+            if (++res.w[0U] == 0) {
+              res.w[1U]++;
             }
           }
         }
       } else if (ind - 1 <= 21) {       // 3 <= ind - 1 <= 21 => 3 <= shift <= 63
         shift = bid_shiftright128[ind - 1]; // 3 <= shift <= 63
-        res.w[1] = (P256.w[3] >> shift);
-        res.w[0] = (P256.w[3] << (64 - shift)) | (P256.w[2] >> shift);
+        res.w[1U] = (P256.w[3U] >> shift);
+        res.w[0U] = (P256.w[3U] << (64 - shift)) | (P256.w[2U] >> shift);
         // redundant fstar.w[3] = 0;
-        fstar.w[2] = P256.w[2] & bid_maskhigh128[ind - 1];
-        fstar.w[1] = P256.w[1];
-        fstar.w[0] = P256.w[0];
+        fstar.w[2U] = P256.w[2U] & bid_maskhigh128[ind - 1];
+        fstar.w[1U] = P256.w[1U];
+        fstar.w[0U] = P256.w[0U];
         // f* is in the right position to be compared with 
         // 10^(-x) from bid_ten2mk128[]
-        if (fstar.w[2] || fstar.w[1] > bid_ten2mk128[ind - 1].w[1]
-            || (fstar.w[1] == bid_ten2mk128[ind - 1].w[1] && fstar.w[0] >= bid_ten2mk128[ind - 1].w[0])) {
+        if (fstar.w[2U] || fstar.w[1U] > bid_ten2mk128[ind - 1].w[1U]
+            || (fstar.w[1U] == bid_ten2mk128[ind - 1].w[1U] && fstar.w[0U] >= bid_ten2mk128[ind - 1].w[0U])) {
           // if negative, the truncated value is already the correct result
           if (!x_sign) {        // if positive
-            if (++res.w[0] == 0) {
-              res.w[1]++;
+            if (++res.w[0U] == 0) {
+              res.w[1U]++;
             }
           }
         }
       } else {                  // 22 <= ind - 1 <= 33
         shift = bid_shiftright128[ind - 1] - 64;    // 2 <= shift <= 38
-        res.w[1] = 0;
-        res.w[0] = P256.w[3] >> shift;
-        fstar.w[3] = P256.w[3] & bid_maskhigh128[ind - 1];
-        fstar.w[2] = P256.w[2];
-        fstar.w[1] = P256.w[1];
-        fstar.w[0] = P256.w[0];
+        res.w[1U] = 0;
+        res.w[0U] = P256.w[3U] >> shift;
+        fstar.w[3U] = P256.w[3U] & bid_maskhigh128[ind - 1];
+        fstar.w[2U] = P256.w[2U];
+        fstar.w[1U] = P256.w[1U];
+        fstar.w[0U] = P256.w[0U];
         // f* is in the right position to be compared with 
         // 10^(-x) from bid_ten2mk128[]
-        if (fstar.w[3] || fstar.w[2]
-            || fstar.w[1] > bid_ten2mk128[ind - 1].w[1]
-            || (fstar.w[1] == bid_ten2mk128[ind - 1].w[1]
-                && fstar.w[0] >= bid_ten2mk128[ind - 1].w[0])) {
+        if (fstar.w[3U] || fstar.w[2U]
+            || fstar.w[1U] > bid_ten2mk128[ind - 1].w[1U]
+            || (fstar.w[1U] == bid_ten2mk128[ind - 1].w[1U]
+                && fstar.w[0U] >= bid_ten2mk128[ind - 1].w[0U])) {
           // if negative, the truncated value is already the correct result
           if (!x_sign) {        // if positive
-            if (++res.w[0] == 0) {
-              res.w[1]++;
+            if (++res.w[0U] == 0) {
+              res.w[1U]++;
             }
           }
         }
       }
-      res.w[1] = x_sign | 0x3040000000000000ull | res.w[1];
+      res.w[1U] = x_sign | 0x3040000000000000ull | res.w[1U];
       BID_RETURN(res);
     } else {                    // if exp < 0 and q + exp <= 0
       if (x_sign) {             // negative rounds up to -0.0
-        res.w[1] = 0xb040000000000000ull;
-        res.w[0] = 0x0000000000000000ull;
+        res.w[1U] = 0xb040000000000000ull;
+        res.w[0U] = 0x0000000000000000ull;
       } else {                  // positive rpunds up to +1.0
-        res.w[1] = 0x3040000000000000ull;
-        res.w[0] = 0x0000000000000001ull;
+        res.w[1U] = 0x3040000000000000ull;
+        res.w[0U] = 0x0000000000000001ull;
       }
       BID_RETURN(res);
     }
@@ -594,27 +594,27 @@ BID128_FUNCTION_ARG1(bid128_nearbyint, x)
       // the approximation of 10^(-x) was rounded up to 118 bits
       __mul_128x128_to_256(P256, C1, bid_ten2mk128[ind - 1]);
       if (ind - 1 <= 2) {       // 0 <= ind - 1 <= 2 => shift = 0
-        res.w[1] = P256.w[3];
-        res.w[0] = P256.w[2];
+        res.w[1U] = P256.w[3U];
+        res.w[0U] = P256.w[2U];
         // redundant fstar.w[3] = 0;
         // redundant fstar.w[2] = 0;
         // redundant fstar.w[1] = P256.w[1]; 
         // redundant fstar.w[0] = P256.w[0];
       } else if (ind - 1 <= 21) {       // 3 <= ind - 1 <= 21 => 3 <= shift <= 63
         shift = bid_shiftright128[ind - 1]; // 3 <= shift <= 63
-        res.w[1] = (P256.w[3] >> shift);
-        res.w[0] = (P256.w[3] << (64 - shift)) | (P256.w[2] >> shift);
+        res.w[1U] = (P256.w[3U] >> shift);
+        res.w[0U] = (P256.w[3U] << (64 - shift)) | (P256.w[2U] >> shift);
         // redundant fstar.w[3] = 0;
       } else {                  // 22 <= ind - 1 <= 33
         shift = bid_shiftright128[ind - 1] - 64;    // 2 <= shift <= 38
-        res.w[1] = 0;
-        res.w[0] = P256.w[3] >> shift;
+        res.w[1U] = 0;
+        res.w[0U] = P256.w[3U] >> shift;
       }
-      res.w[1] = x_sign | 0x3040000000000000ull | res.w[1];
+      res.w[1U] = x_sign | 0x3040000000000000ull | res.w[1U];
       BID_RETURN(res);
     } else {                    // if exp < 0 and q + exp <= 0 the result is +0 or -0
-      res.w[1] = x_sign | 0x3040000000000000ull;
-      res.w[0] = 0x0000000000000000ull;
+      res.w[1U] = x_sign | 0x3040000000000000ull;
+      res.w[0U] = 0x0000000000000000ull;
       BID_RETURN(res);
     }
     break;

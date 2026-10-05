@@ -51,7 +51,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_log10, BID_UINT32, x)
   BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isZero, z, x);
   if (z)
    { // -Infinite and Divide by Zero according C99
-     res = 0xf8000000;
+     res = 0xf8000000U;
      #ifdef BID_SET_STATUS_FLAGS
      __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
      #endif
@@ -60,7 +60,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_log10, BID_UINT32, x)
 
   if (x & MASK_SIGN32)
    { // QNaN Indefinite
-     res = 0x7c000000;
+     res = 0x7c000000U;
      #ifdef BID_SET_STATUS_FLAGS
      __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
      #endif

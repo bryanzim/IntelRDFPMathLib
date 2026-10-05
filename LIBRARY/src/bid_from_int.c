@@ -47,13 +47,13 @@ bid64_from_int32 (int x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 
   // if integer is negative, put the absolute value
   // in the lowest 32bits of the result
-  if ((x & SIGNMASK32) == SIGNMASK32) {
+  if (((unsigned int)x & SIGNMASK32) == SIGNMASK32) {
     // negative int32
-    x = ~x + 1;	// 2's complement of x
+    x = (int)(~((unsigned int)x) + 1);	// 2's complement of x
     res = (unsigned int) x | 0xb1c0000000000000ull;
     // (exp << 53)) = biased exp. is 0
   } else {	// positive int32
-    res = x | 0x31c0000000000000ull;	// (exp << 53)) = biased exp. is 0
+    res = (BID_UINT64)(unsigned int)x | 0x31c0000000000000ull;	// (exp << 53)) = biased exp. is 0
   }
   BID_RETURN (res);
 }
@@ -98,12 +98,12 @@ bid64_from_int64 (BID_SINT64 x
   int is_midpoint_lt_even = 0, is_midpoint_gt_even = 0;
   int is_inexact_lt_midpoint = 0, is_inexact_gt_midpoint = 0;
 
-  x_sign = x & 0x8000000000000000ull;
+  x_sign = (BID_UINT64)x & 0x8000000000000000ull;
   // if the integer is negative, use the absolute value
   if (x_sign)
     C = ~((BID_UINT64) x) + 1;
   else
-    C = x;
+    C = (BID_UINT64)x;
   if (C <= BID64_SIG_MAX) {	// |C| <= 10^16-1 and the result is exact
     if (C < 0x0020000000000000ull) {	// C < 2^53
       res = x_sign | 0x31c0000000000000ull | C;
@@ -127,7 +127,7 @@ bid64_from_int64 (BID_SINT64 x
     // overflow and underflow are not possible
     // Note: performance can be improved by inlining this call
     bid_round64_2_18 (	// will work for 19 digits too if C fits in 64 bits
-           q, ind, C, &res, &incr_exp,
+           (int)q, (int)ind, C, &res, &incr_exp,
            &is_midpoint_lt_even, &is_midpoint_gt_even,
            &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     if (incr_exp)
@@ -230,13 +230,13 @@ bid64_from_uint64 (BID_UINT64 x
     // Note: performance can be improved by inlining this call
     if (q <= 19) {
       bid_round64_2_18 (	// will work for 20 digits too if x fits in 64 bits
-             q, ind, x, &res, &incr_exp,
+             (int)q, (int)ind, x, &res, &incr_exp,
              &is_midpoint_lt_even, &is_midpoint_gt_even,
              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     } else {	// q = 20
       x128.w[1] = 0x0;
       x128.w[0] = x;
-      bid_round128_19_38 (q, ind, x128, &res128, &incr_exp,
+      bid_round128_19_38 ((int)q, (int)ind, x128, &res128, &incr_exp,
               &is_midpoint_lt_even, &is_midpoint_gt_even,
               &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       res = res128.w[0];	// res.w[1] is 0
@@ -293,7 +293,7 @@ bid128_from_int32 (int x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT128 res;
 
   // if integer is negative, use the absolute value
-  if ((x & SIGNMASK32) == SIGNMASK32) {
+  if (((unsigned int)x & SIGNMASK32) == SIGNMASK32) {
     res.w[BID_HIGH_128W] = 0xb040000000000000ull;
     res.w[BID_LOW_128W] = ~((unsigned int) x) + 1;	// 2's complement of x
   } else {
@@ -334,12 +334,12 @@ bid128_from_int64 (BID_SINT64 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT128 res;
 
   // if integer is negative, use the absolute value
-  if ((x & SIGNMASK64) == SIGNMASK64) {
+  if (((BID_UINT64)x & SIGNMASK64) == SIGNMASK64) {
     res.w[BID_HIGH_128W] = 0xb040000000000000ull;
-    res.w[BID_LOW_128W] = ~x + 1;	// 2's complement of x
+    res.w[BID_LOW_128W] = ~((BID_UINT64)x) + 1;	// 2's complement of x
   } else {
     res.w[BID_HIGH_128W] = 0x3040000000000000ull;
-    res.w[BID_LOW_128W] = x;
+    res.w[BID_LOW_128W] = (BID_UINT64)x;
   }
   BID_RETURN (res);
 }
@@ -387,12 +387,12 @@ bid32_from_int32 (BID_SINT32 x
   int is_midpoint_lt_even = 0, is_midpoint_gt_even = 0;
   int is_inexact_lt_midpoint = 0, is_inexact_gt_midpoint = 0;
 
-  x_sign = x & MASK_SIGN32;
+  x_sign = (BID_UINT32)x & MASK_SIGN32;
   // if the integer is negative, use the absolute value
   if (x_sign)
     C = ~((BID_UINT32) x) + 1;
   else
-    C = x;
+    C = (BID_UINT32)x;
   if (C <= BID32_SIG_MAX) { // |C| <= 10^7-1 and the result is exact
     if (C < 0x00800000) { // C < 2^23
       res = x_sign | 0x32800000 | C;
@@ -414,7 +414,7 @@ bid32_from_int32 (BID_SINT32 x
     }
     // overflow and underflow are not possible
     // Note: performance can be improved by inlining this call
-    bid_round64_2_18 (q, ind, C, &res64, &incr_exp,
+    bid_round64_2_18 ((int)q, (int)ind, C, &res64, &incr_exp,
            &is_midpoint_lt_even, &is_midpoint_gt_even,
            &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     res = (BID_UINT32)res64;
@@ -511,7 +511,7 @@ bid32_from_uint32 (BID_UINT32 x
     // overflow and underflow are not possible
     // Note: performance can be improved by inlining this call
     bid_round64_2_18 ( // would work for 20 digits too if x fits in 64 bits
-       q, ind, x, &res64, &incr_exp,
+       (int)q, (int)ind, x, &res64, &incr_exp,
        &is_midpoint_lt_even, &is_midpoint_gt_even,
        &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     res = (BID_UINT32)res64;
@@ -578,13 +578,13 @@ bid32_from_int64 (BID_SINT64 x
   int is_midpoint_lt_even = 0, is_midpoint_gt_even = 0;
   int is_inexact_lt_midpoint = 0, is_inexact_gt_midpoint = 0;
 
-  x_sign = x & 0x8000000000000000ull;
+  x_sign = (BID_UINT64)x & 0x8000000000000000ull;
   x_sign32 = (x_sign ? 0x80000000 : 0x00000000);
   // if the integer is negative, use the absolute value
   if (x_sign)
     C = ~((BID_UINT64) x) + 1;
   else
-    C = x;
+    C = (BID_UINT64)x;
   if (C <= (BID_UINT64)BID32_SIG_MAX) { // |C| <= 10^7-1 and the result is exact
     if (C < (BID_UINT64)0x00800000) { // C < 2^23
       res = x_sign32 | 0x32800000 | (BID_UINT32)(C & 0x007fffff);
@@ -634,7 +634,7 @@ bid32_from_int64 (BID_SINT64 x
     // overflow and underflow are not possible
     // Note: performance can be improved by inlining this call
     bid_round64_2_18 ( // will work for 19 digits too if C fits in 64 bits
-           q, ind, C, &res64, &incr_exp,
+           (int)q, (int)ind, C, &res64, &incr_exp,
            &is_midpoint_lt_even, &is_midpoint_gt_even,
            &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
     res = (BID_UINT32)res64;
@@ -763,14 +763,14 @@ bid32_from_uint64 (BID_UINT64 x
     // Note: performance can be improved by inlining this call
     if (q <= 19) {
       bid_round64_2_18 ( // would work for 20 digits too if x fits in 64 bits
-             q, ind, x, &res64, &incr_exp,
+             (int)q, (int)ind, x, &res64, &incr_exp,
              &is_midpoint_lt_even, &is_midpoint_gt_even,
              &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       res = (BID_UINT32)res64;
     } else { // q = 20
       x128.w[1] = 0x0;
       x128.w[0] = x;
-      bid_round128_19_38 (q, ind, x128, &res128, &incr_exp,
+      bid_round128_19_38 ((int)q, (int)ind, x128, &res128, &incr_exp,
               &is_midpoint_lt_even, &is_midpoint_gt_even,
               &is_inexact_lt_midpoint, &is_inexact_gt_midpoint);
       res = (BID_UINT32)res128.w[0]; // res.w[1] is 0

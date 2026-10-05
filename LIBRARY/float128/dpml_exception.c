@@ -41,6 +41,7 @@
 
 #define GLOBAL_TABLE_VALUES
 #include "dpml_private.h"
+#include "dpml_ux.h"
 #include "dpml_error_codes.h"
 
 /*
@@ -183,7 +184,8 @@ extern int raise(int);
         /* set ieee sticky bit before signaling exception */
         DPML_UPDATE_STICKY_BITS(p);
 
-        if (G_EXCPT_REC_ENVIRONMENT(p) & SET_BIT(G_EXCPT_REC_DPML_ECODE(p)))
+        if ((G_EXCPT_REC_ENVIRONMENT(p) &
+             (WORD)SET_BIT(G_EXCPT_REC_DPML_ECODE(p))))
             DPML_SIGNAL(p);
 #     endif
 
@@ -208,8 +210,8 @@ extern int raise(int);
             { \
             WORD e, v, t; \
             e = G_EXCPT_REC_FUNC_ECODE(p); \
-            P_EXCPT_REC_DPML_ECODE(p, GET_IEEE_ERROR(e)); \
-            v = GET_IEEE_VALUE(e); \
+            P_EXCPT_REC_DPML_ECODE(p, (char)GET_IEEE_ERROR(e)); \
+            v = (WORD)GET_IEEE_VALUE(e); \
             t = G_EXCPT_REC_DATA_TYPE(p); \
             P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t,v)); \
             }
@@ -219,8 +221,8 @@ extern int raise(int);
             { \
             WORD e, v, t; \
             e = G_EXCPT_REC_FUNC_ECODE(p); \
-            P_EXCPT_REC_DPML_ECODE(p, GET_FAST_ERROR(e)); \
-            v = GET_FAST_VALUE(e); \
+            P_EXCPT_REC_DPML_ECODE(p, (char)GET_FAST_ERROR(e)); \
+            v = (WORD)GET_FAST_VALUE(e); \
             t = G_EXCPT_REC_DATA_TYPE(p); \
             P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t,v)); \
             }
@@ -244,7 +246,8 @@ extern int raise(int);
 
         /* Split input error code into type, and base error */
         P_EXCPT_REC_DATA_TYPE(p, GET_ERR_CODE_TYPE(err));
-        P_EXCPT_REC_FUNC_ECODE(p, GET_TYPELESS_ERR_CODE(err));
+        P_EXCPT_REC_FUNC_ECODE(p,
+            (WORD)((U_WORD)GET_TYPELESS_ERR_CODE((U_WORD)err)));
 
         DPML_GET_ENVIRONMENT(p);
         if (err < 0)

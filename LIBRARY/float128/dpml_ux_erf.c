@@ -172,8 +172,8 @@
          (b << (0*MAP_BIT_WIDTH)) |		\
          s)
 
-#define ERFC_INTERVAL_TO_CONSTANT_MAP 	MAP_IT(3, 2, 1, UX_SIGN_BIT)
-#define ERF_INTERVAL_TO_CONSTANT_MAP 	MAP_IT(0, 1, 2, 0)
+#define ERFC_INTERVAL_TO_CONSTANT_MAP 	((U_WORD)MAP_IT(3, 2, 1, UX_SIGN_BIT))
+#define ERF_INTERVAL_TO_CONSTANT_MAP 	((U_WORD)MAP_IT(0, 1, 2, 0))
 
 #define IS_ERF_EVALUATION(i)	(i & 1)
 #define IS_ERFC_EVALUATION(i)	((i & 1) == 0)
@@ -247,13 +247,13 @@ C_UX_ERF(
     ** Branch to appropriate action code.
     */
 
-    sign = UX_SIGN_BIT & interval_to_constant_map;
+    sign = (UX_SIGN_TYPE)((U_WORD)UX_SIGN_BIT & interval_to_constant_map);
     eval_result = & tmp[0];
     switch (index)
         {
     case INTERVAL(4):
             sign ^= UX_SIGN_BIT;
-            /* Fall through */
+            DPML_FALLTHROUGH;
 
     case INTERVAL(0):
             EVALUATE_RATIONAL(
@@ -267,7 +267,7 @@ C_UX_ERF(
 
     case INTERVAL(1):
             sign ^= UX_SIGN_BIT;
-            /* Fall through */
+            DPML_FALLTHROUGH;
 
     case INTERVAL(5):
              EVALUATE_PACKED_POLY( &unpacked_argument,
@@ -295,8 +295,7 @@ C_UX_ERF(
                 NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY)
                   | DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(3),
                 eval_result);
- 
-             /* Fall through */
+             goto multiply_by_exp_m_x_sqr;
 
         multiply_by_exp_m_x_sqr:
 
@@ -326,7 +325,7 @@ C_UX_ERF(
                  UX_SET_SIGN_EXP_MSD(&tmp[0], 0, UX_UNDERFLOW_EXPONENT, UX_MSB);
              break;
                  }
-             /* Fall through */
+             DPML_FALLTHROUGH;
 
         default:
         default_label:
@@ -338,7 +337,7 @@ C_UX_ERF(
 
     P_UX_SIGN(&tmp[0], sign);
     index = (interval_to_constant_map >> (MAP_BIT_WIDTH*index)) & MAP_MASK;
-    WORD_TO_UX(index - 1, &tmp[1]);
+    WORD_TO_UX(UX_TO_DIGIT(index - 1), &tmp[1]);
     ADDSUB(eval_result, &tmp[1], ADD | NO_NORMALIZATION, &tmp[0]);
 
     PACK(

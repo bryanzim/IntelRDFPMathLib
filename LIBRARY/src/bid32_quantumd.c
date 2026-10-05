@@ -57,14 +57,14 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_quantum, BID_UINT32, x)
 
   // Extract exponent
   if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
-    int_exp = ((x >> 21) & 0xff) - 101;
+    int_exp = ((x >> 21) & 0xffU) - 101;
   }
   else {
-    int_exp = ((x >> 23) & 0xff) - 101;
+    int_exp = ((x >> 23) & 0xffU) - 101;
   }
 
   // Form 10^new_exponent*1  
-  res = (int_exp << 23) + 0x32800001ull;
+  res = ((BID_UINT32)int_exp << 23U) + 0x32800001U;
 
   BID_RETURN (res);
 

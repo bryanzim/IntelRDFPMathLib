@@ -39,6 +39,36 @@ function(idfp_set_static_runtime_and_link_flags)
 endfunction()
 
 function(idfp_apply_compiler_warning_flags target)
+    if (IDFP_STRICT_CLANG_WARNINGS)
+        if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
+            if (CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC")
+                target_compile_options(${target} PRIVATE "/W4" "/WX")
+                if (IDFP_EXTRA_STRICT_CLANG_WARNINGS)
+                    # /Wall flags thousands of reserved-identifier hits in legacy headers; use
+                    # Clang-specific diagnostics that we can fix incrementally instead.
+                    target_compile_options(${target} PRIVATE
+                        "-Wconversion"
+                        "-Wno-shorten-64-to-32"
+                        "-Wno-implicit-int-float-conversion"
+                        "-Wimplicit-fallthrough"
+                        "-Wformat=2")
+                endif()
+            else()
+                target_compile_options(${target} PRIVATE
+                    "-Wall" "-Wextra" "-Wpedantic" "-Werror")
+                if (IDFP_EXTRA_STRICT_CLANG_WARNINGS)
+                    target_compile_options(${target} PRIVATE
+                        "-Wconversion"
+                        "-Wno-shorten-64-to-32"
+                        "-Wno-implicit-int-float-conversion"
+                        "-Wimplicit-fallthrough"
+                        "-Wformat=2")
+                endif()
+            endif()
+        endif()
+        return()
+    endif()
+
     if (IntelCompiler)
         target_compile_options(${target} PRIVATE
             "-Qlong-double"
@@ -80,6 +110,20 @@ function(idfp_apply_compiler_warning_flags target)
         )
     else()
         message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
+    endif()
+endfunction()
+
+# float128 table headers use macro initializers that trigger -Wmissing-braces.
+function(idfp_apply_float128_clang_relaxations target)
+    if (NOT IDFP_STRICT_CLANG_WARNINGS)
+        return()
+    endif()
+    if (NOT CMAKE_C_COMPILER_ID STREQUAL "Clang")
+        return()
+    endif()
+    target_compile_options(${target} PRIVATE "-Wno-missing-braces")
+    if (NOT IDFP_EXTRA_STRICT_CLANG_WARNINGS)
+        target_compile_options(${target} PRIVATE "-Wno-sign-compare")
     endif()
 endfunction()
 

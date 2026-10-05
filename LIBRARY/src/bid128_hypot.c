@@ -143,8 +143,8 @@ else {
     BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
 
 	//quick_unpack_BID128_em (&exponent_res, &coeff_res, res);
-	coeff_res.w[0] = res.w[BID_LOW_128W];
-	coeff_res.w[1] = (res.w[BID_HIGH_128W]) & SMALL_COEFF_MASK128;
+	coeff_res.w[0U] = res.w[BID_LOW_128W];
+	coeff_res.w[1U] = (res.w[BID_HIGH_128W]) & SMALL_COEFF_MASK128;
 	exponent_res = (res.w[BID_HIGH_128W]) >> 49;
 	exponent_res = ((int) exponent_res) & EXPONENT_MASK128;
 

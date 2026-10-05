@@ -44,7 +44,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid64_ilogb, BID_UINT64, x)
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
- 	 res = ((x & 0x7c00000000000000ull) == 0x7800000000000000ull) ? 0x7fffffff : 0x80000000;
+ 	 res = ((x & 0x7c00000000000000ull) == 0x7800000000000000ull)
+       ? 0x7fffffffU : (int)0x80000000U;
      BID_RETURN (res);
   }
   // find number of digits in coefficient
@@ -54,7 +55,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid64_ilogb, BID_UINT64, x)
     dx.d = (double)coefficient_x;   // exact conversion;
     bin_expon_cx = (int)(dx.i >> 52) - 1023;
     digits = bid_estimate_decimal_digits[bin_expon_cx];
-    if (coefficient_x >= bid_power10_table_128[digits].w[0])
+    if (coefficient_x >= bid_power10_table_128[digits].w[0U])
       digits++;
   }
   exponent_x = exponent_x - DECIMAL_EXPONENT_BIAS + digits - 1;

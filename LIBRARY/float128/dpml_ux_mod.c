@@ -412,10 +412,11 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
         ** Note that the shift of (R2-8) should be a signed shift.
         */ 
 
-        R = (UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_23*r_hi);
-        T1 = (UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_78*r_lo);
-        R = (R << (BITS_PER_UX_FRACTION_DIGIT_TYPE - S_PRECISION)) +
-         ((T1 - 8) >> (79 - BITS_PER_UX_FRACTION_DIGIT_TYPE));
+        R = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_23*r_hi));
+        T1 = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE) (D_TWO_POW_78*r_lo));
+        R = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)
+            (UX_TO_SDIGIT(R) << (BITS_PER_UX_FRACTION_DIGIT_TYPE - S_PRECISION))
+         + ((UX_TO_SDIGIT(T1) - 8) >> (79 - BITS_PER_UX_FRACTION_DIGIT_TYPE)));
 
 #    endif
 
@@ -504,7 +505,7 @@ UX_MOD( UX_FLOAT * x, UX_FLOAT * y, WORD rounding_flags, UX_FLOAT * result )
 
         if (F1 == G1)
             {
-            Q = -1;
+            Q = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)-1);
             T2 = F2 + G1;
             T1 = (T2 < G1);
             }
@@ -591,7 +592,8 @@ final_step:
       | (((UX_OR_LOW_FRACTION_DIGITS(result) | G_UX_MSD(result)) == 0) ? 0 : 4)
       | (Q & 3);
 
-    rounding_flags = (rounding_flags >> (SKLR*FLAGS_BIT_WIDTH)) & FLAGS_MASK;
+    rounding_flags = UX_TO_WORD((UX_TO_UWORD(rounding_flags)
+        >> (SKLR*FLAGS_BIT_WIDTH)) & FLAGS_MASK);
 
     Q >>= 1;    
     UX_DECR_EXPONENT(result, 1);
@@ -609,7 +611,8 @@ final_step:
     */
 
      Q &= KMASK;
-     quotient = ((sign_xor) ? -((UX_SIGNED_FRACTION_DIGIT_TYPE) Q) : Q );
+     quotient = UX_TO_WORD((sign_xor) ?
+         -UX_TO_SDIGIT(Q) : UX_TO_SDIGIT(Q) );
 
      /* add final sign */
      UX_TOGGLE_SIGN(result, sign_x);
@@ -654,7 +657,7 @@ C_UX_MOD(_X_FLOAT * packed_x, _X_FLOAT * packed_y, U_WORD bit_vector,
     quot = UX_MOD(
         &unpacked_x,
         &unpacked_y,
-        bit_vector,
+        UX_TO_WORD(bit_vector),
         &unpacked_result);
 
     PACK(
@@ -701,7 +704,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     C_UX_MOD(
         PASS_ARG_X_FLOAT(packed_x),
         PASS_ARG_X_FLOAT(packed_y),
-        CVT_B_TO_B_PRIME(RZ_BIT_VECTOR),
+        UX_TO_UWORD(CVT_B_TO_B_PRIME(RZ_BIT_VECTOR)),
         MOD_UNDERFLOW,
         MOD_CLASS_TO_ACTION_MAP,
         PASS_RET_X_FLOAT(packed_result)
@@ -724,7 +727,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     C_UX_MOD(
         PASS_ARG_X_FLOAT(packed_x),
         PASS_ARG_X_FLOAT(packed_y),
-        CVT_B_TO_B_PRIME(RN_BIT_VECTOR),
+        UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)),
         REM_UNDERFLOW,
         REM_CLASS_TO_ACTION_MAP,
         PASS_RET_X_FLOAT(packed_result)
@@ -747,7 +750,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y)
     C_UX_MOD(
         PASS_ARG_X_FLOAT(packed_x),
         PASS_ARG_X_FLOAT(packed_y),
-        CVT_B_TO_B_PRIME(RN_BIT_VECTOR),
+        UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)),
         REM_UNDERFLOW,
         REM_CLASS_TO_ACTION_MAP,
         PASS_RET_X_FLOAT(packed_result)
@@ -772,7 +775,7 @@ X_XXIptr_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y, quotient)
     quot = C_UX_MOD(
         PASS_ARG_X_FLOAT(packed_x),
         PASS_ARG_X_FLOAT(packed_y),
-        CVT_B_TO_B_PRIME(RN_BIT_VECTOR),
+        UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)),
         REMQUO_UNDERFLOW,
         REMQUO_CLASS_TO_ACTION_MAP,
         PASS_RET_X_FLOAT(packed_result)

@@ -40,7 +40,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
   int exp;			// unbiased exponent
   // Note: C1 represents the significand (BID_UINT64)
   BID_UI64DOUBLE tmp1;
-  int x_nr_bits;
+  unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT64 C1;
   // BID_UINT64 res is C* at first - represents up to 16 decimal digits <= 54 bits
@@ -140,11 +140,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
   } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1;
-      if (C1 >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+      if (C1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
     q++;
     }
   }
@@ -185,19 +185,19 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
       // n = C* * 10^(e+x)  
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
-    fstar.w[1] = 0;
-    fstar.w[0] = P128.w[0];
+    res = P128.w[1U];
+    fstar.w[1U] = 0;
+    fstar.w[0U] = P128.w[0U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
-    fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-    fstar.w[0] = P128.w[0];
+    res = (P128.w[1U] >> shift);
+    fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+    fstar.w[0U] = P128.w[0U];
       }
       // if (0 < f* < 10^(-x)) then the result is a midpoint
       // since round_to_even, subtract 1 if current result is odd
-      if ((res & 0x0000000000000001ull) && (fstar.w[1] == 0)
-      && (fstar.w[0] < bid_ten2mk64[ind - 1])) {
+      if ((res & 0x0000000000000001ull) && (fstar.w[1U] == 0)
+      && (fstar.w[0U] < bid_ten2mk64[ind - 1])) {
     res--;
       }
       // set exponent to zero as it was negative before.
@@ -236,10 +236,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
       // n = C* * 10^(e+x)
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
+    res = P128.w[1U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
+    res = (P128.w[1U] >> shift);
       }
       res = x_sign | 0x31c0000000000000ull | res;
       BID_RETURN (res);
@@ -271,17 +271,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
       // n = C* * 10^(e+x)  
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
-    fstar.w[1] = 0;
-    fstar.w[0] = P128.w[0];
+    res = P128.w[1U];
+    fstar.w[1U] = 0;
+    fstar.w[0U] = P128.w[0U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
-    fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-    fstar.w[0] = P128.w[0];
+    res = (P128.w[1U] >> shift);
+    fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+    fstar.w[0U] = P128.w[0U];
       }
       // if (f* > 10^(-x)) then the result is inexact
-      if ((fstar.w[1] != 0) || (fstar.w[0] >= bid_ten2mk64[ind - 1])) {
+      if ((fstar.w[1U] != 0) || (fstar.w[0U] >= bid_ten2mk64[ind - 1])) {
     if (x_sign) {
       // if negative and not exact, increment magnitude
       res++;
@@ -322,17 +322,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
       // n = C* * 10^(e+x)  
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
-    fstar.w[1] = 0;
-    fstar.w[0] = P128.w[0];
+    res = P128.w[1U];
+    fstar.w[1U] = 0;
+    fstar.w[0U] = P128.w[0U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
-    fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-    fstar.w[0] = P128.w[0];
+    res = (P128.w[1U] >> shift);
+    fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+    fstar.w[0U] = P128.w[0U];
       }
       // if (f* > 10^(-x)) then the result is inexact
-      if ((fstar.w[1] != 0) || (fstar.w[0] >= bid_ten2mk64[ind - 1])) {
+      if ((fstar.w[1U] != 0) || (fstar.w[0U] >= bid_ten2mk64[ind - 1])) {
     if (!x_sign) {
       // if positive and not exact, increment magnitude
       res++;
@@ -373,10 +373,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_nearbyint, BID_UINT64, x)
       // n = C* * 10^(e+x)  
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
+    res = P128.w[1U];
       } else if (ind - 1 <= 21) { // 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
+    res = (P128.w[1U] >> shift);
       }
       // set exponent to zero as it was negative before.
       res = x_sign | 0x31c0000000000000ull | res;

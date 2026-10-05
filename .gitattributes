@@ -1,0 +1,17 @@
+# Normalize text line endings in the repository (LF), except Windows launchers.
+* text=auto eol=lf
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Explicit binary assets
+*.lib binary
+*.a binary
+*.obj binary
+*.o binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary

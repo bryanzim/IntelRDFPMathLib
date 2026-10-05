@@ -108,7 +108,7 @@
     /* 352 */ DATA_1x2( 0x00000000, 0x3fd80000 ),
 
     /* 3 in unpacked format */
-    /* 360 */ POS, 0002, DATA_2x2( 0x00000000, 0xc0000000, 0x00000000, 0x00000000 ),
+    /* 360 */ POS, TW(0002), DATA_2x2( 0x00000000, 0xc0000000, 0x00000000, 0x00000000 ),
     };
 
 #define	NEGATE_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) TABLE_NAME + 0))

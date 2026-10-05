@@ -42,9 +42,9 @@ short_sqrt128 (BID_UINT128 A10) {
   int_float f64;
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
   l64 = (BINARY80) f64.d;
-  lx = (BINARY80) A10.w[1] * l64 + (BINARY80) A10.w[0];
+  lx = (BINARY80) A10.w[1U] * l64 + (BINARY80) A10.w[0U];
   ly = SQRT80 (lx);
   return (BID_UINT64) ly;
 }
@@ -66,26 +66,26 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   int_dext tmp_dext;
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
   l64 = (BINARY80) f64.d;
 
   l128 = l64 * l64;
-  lx = l3 = (BINARY80) C256.w[3] * l64 * l128;
-  l2 = (BINARY80) C256.w[2] * l128;
+  lx = l3 = (BINARY80) C256.w[3U] * l64 * l128;
+  l2 = (BINARY80) C256.w[2U] * l128;
   lx = FENCE (lx + l2);
-  l1 = (BINARY80) C256.w[1] * l64;
+  l1 = (BINARY80) C256.w[1U] * l64;
   lx = FENCE (lx + l1);
-  l0 = (BINARY80) C256.w[0];
+  l0 = (BINARY80) C256.w[0U];
   lx = FENCE (lx + l0);
   // sqrt(C256)
   lS = SQRT80 (lx);
 
   // get coefficient
   // 2^(-64)
-  fm64.i = 0x1f800000;
+  fm64.i = 0x1f800000U;
   lm64 = (BINARY80) fm64.d;
-  CS.w[1] = (BID_UINT64) (lS * lm64);
-  CS.w[0] = (BID_UINT64) (lS - (BINARY80) CS.w[1] * l64);
+  CS.w[1U] = (BID_UINT64) (lS * lm64);
+  CS.w[0U] = (BID_UINT64) (lS - (BINARY80) CS.w[1U] * l64);
 
   //printf("C256=%016I64x %016I64x %016I64x %016I64x, CS=%016I64x %016I64x \n",C256.w[3],C256.w[2],C256.w[1],C256.w[0],CS.w[1],CS.w[0]);
 
@@ -97,12 +97,12 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
     tmp_dext.d = lS;
 
 #if BID_BIG_ENDIAN
-    tmp_dext.w[0] &= 0xffffffffffff0000ull;
-    tmp_dext.w[1] = 0;
+    tmp_dext.w[0U] &= 0xffffffffffff0000ull;
+    tmp_dext.w[1U] = 0;
 #else
   //lSH = lS;
   //*((BID_UINT64 *) & lSH) &= 0xffffffff00000000ull;
-    tmp_dext.w[0] &= 0xffffffff00000000ull;
+    tmp_dext.w[0U] &= 0xffffffff00000000ull;
 #endif
     lSH = tmp_dext.d;
 
@@ -131,21 +131,21 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   lE = lCl / (lS + lS);
 
   // get low part of coefficient
-  X = CS.w[0];
+  X = CS.w[0U];
   if (lCl >= 0) {
     SE = (BID_SINT64) (lE);
-    CS.w[0] += SE;
-    if (CS.w[0] < X)
-      CS.w[1]++;
+    CS.w[0U] += SE;
+    if (CS.w[0U] < X)
+      CS.w[1U]++;
   } else {
     SE = (BID_SINT64) (-lE);
-    CS.w[0] -= SE;
-    if (CS.w[0] > X)
-      CS.w[1]--;
+    CS.w[0U] -= SE;
+    if (CS.w[0U] > X)
+      CS.w[1U]--;
   }
 
-  pCS->w[0] = CS.w[0];
-  pCS->w[1] = CS.w[1];
+  pCS->w[0U] = CS.w[0U];
+  pCS->w[1U] = CS.w[1U];
 }
 
 #else
@@ -162,11 +162,11 @@ short_sqrt128 (BID_UINT128 A10) {
   // 2^64
   f64.i = 0x43f0000000000000ull;
   l64 = f64.d;
-  lx = (double) A10.w[1] * l64 + (double) A10.w[0];
+  lx = (double) A10.w[1U] * l64 + (double) A10.w[0U];
   ly.d = 1.0 / sqrt (lx);
 
   MY = (ly.i & 0x000fffffffffffffull) | 0x0010000000000000ull;
-  ey = 0x3ff - (ly.i >> 52);
+  ey = 0x3ffU - (ly.i >> 52);
 
   // A10*RS^2
   __mul_64x128_to_192 (ARS0, MY, A10);
@@ -176,59 +176,59 @@ short_sqrt128 (BID_UINT128 A10) {
   k = (ey << 1) + 104 - 64;
   if (k >= 128) {
     if (k > 128)
-      ES = (ARS.w[2] >> (k - 128)) | (ARS.w[3] << (192 - k));
+      ES = (ARS.w[2U] >> (k - 128)) | (ARS.w[3U] << (192 - k));
     else
-      ES = ARS.w[2];
+      ES = ARS.w[2U];
   } else {
     if (k >= 64) {
-      ARS.w[0] = ARS.w[1];
-      ARS.w[1] = ARS.w[2];
+      ARS.w[0U] = ARS.w[1U];
+      ARS.w[1U] = ARS.w[2U];
       k -= 64;
     }
     if (k) {
       __shr_128 (ARS, ARS, k);
     }
-    ES = ARS.w[0];
+    ES = ARS.w[0U];
   }
 
-  ES = ((BID_SINT64) ES) >> 1;
+  ES = (BID_UINT64)(((BID_SINT64) ES) >> 1);
 
   if (((BID_SINT64) ES) < 0) {
-    ES = -((BID_SINT64) ES);
+    ES = (BID_UINT64)(-((BID_SINT64) ES));
 
     // A*RS*eps (scaled by 2^64)
     __mul_64x192_to_256 (AE0, ES, ARS0);
 
-    AE.w[0] = AE0.w[1];
-    AE.w[1] = AE0.w[2];
-    AE.w[2] = AE0.w[3];
+    AE.w[0U] = AE0.w[1U];
+    AE.w[1U] = AE0.w[2U];
+    AE.w[2U] = AE0.w[3U];
 
-    __add_carry_out (S.w[0], CY, ARS0.w[0], AE.w[0]);
-    __add_carry_in_out (S.w[1], CY, ARS0.w[1], AE.w[1], CY);
-    S.w[2] = ARS0.w[2] + AE.w[2] + CY;
+    __add_carry_out (S.w[0U], CY, ARS0.w[0U], AE.w[0U]);
+    __add_carry_in_out (S.w[1U], CY, ARS0.w[1U], AE.w[1U], CY);
+    S.w[2U] = ARS0.w[2U] + AE.w[2U] + CY;
   } else {
     // A*RS*eps (scaled by 2^64)
     __mul_64x192_to_256 (AE0, ES, ARS0);
 
-    AE.w[0] = AE0.w[1];
-    AE.w[1] = AE0.w[2];
-    AE.w[2] = AE0.w[3];
+    AE.w[0U] = AE0.w[1U];
+    AE.w[1U] = AE0.w[2U];
+    AE.w[2U] = AE0.w[3U];
 
-    __sub_borrow_out (S.w[0], CY, ARS0.w[0], AE.w[0]);
-    __sub_borrow_in_out (S.w[1], CY, ARS0.w[1], AE.w[1], CY);
-    S.w[2] = ARS0.w[2] - AE.w[2] - CY;
+    __sub_borrow_out (S.w[0U], CY, ARS0.w[0U], AE.w[0U]);
+    __sub_borrow_in_out (S.w[1U], CY, ARS0.w[1U], AE.w[1U], CY);
+    S.w[2U] = ARS0.w[2U] - AE.w[2U] - CY;
   }
 
   k = ey + 51;
 
   if (k >= 64) {
     if (k >= 128) {
-      S.w[0] = S.w[2];
-      S.w[1] = 0;
+      S.w[0U] = S.w[2U];
+      S.w[1U] = 0;
       k -= 128;
     } else {
-      S.w[0] = S.w[1];
-      S.w[1] = S.w[2];
+      S.w[0U] = S.w[1U];
+      S.w[1U] = S.w[2U];
     }
     k -= 64;
   }
@@ -236,7 +236,7 @@ short_sqrt128 (BID_UINT128 A10) {
     __shr_128 (S, S, k);
   }
 
-  return (BID_UINT64) ((S.w[0] + 1) >> 1);
+  return (BID_UINT64) ((S.w[0U] + 1) >> 1);
 
 }
 
@@ -255,18 +255,18 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   l64 = f64.d;
 
   l128 = l64 * l64;
-  lx = (double) C256.w[3] * l64 * l128;
-  l2 = (double) C256.w[2] * l128;
+  lx = (double) C256.w[3U] * l64 * l128;
+  l2 = (double) C256.w[2U] * l128;
   lx = FENCE (lx + l2);
-  l1 = (double) C256.w[1] * l64;
+  l1 = (double) C256.w[1U] * l64;
   lx = FENCE (lx + l1);
-  l0 = (double) C256.w[0];
+  l0 = (double) C256.w[0U];
   lx = FENCE (lx + l0);
   // sqrt(C256)
   ly.d = 1.0 / sqrt (lx);
 
   MY = (ly.i & 0x000fffffffffffffull) | 0x0010000000000000ull;
-  ey = 0x3ff - (ly.i >> 52);
+  ey = 0x3ffU - (ly.i >> 52);
 
   // A10*RS^2, scaled by 2^(2*ey+104)
   __mul_64x256_to_320 (ARS0, MY, C256);
@@ -277,68 +277,68 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   // apply an additional signed shift by 1 at the same time (to get eps=eps0/2)
   k = (ey << 1) + 104 - 128 - 192;
   k2 = 64 - k;
-  ES.w[0] = (ARS.w[3] >> (k + 1)) | (ARS.w[4] << (k2 - 1));
-  ES.w[1] = (ARS.w[4] >> k) | (ARS.w[5] << k2);
-  ES.w[1] = ((BID_SINT64) ES.w[1]) >> 1;
+  ES.w[0U] = (ARS.w[3U] >> (k + 1)) | (ARS.w[4U] << (k2 - 1));
+  ES.w[1U] = (ARS.w[4U] >> k) | (ARS.w[5U] << k2);
+  ES.w[1U] = (BID_UINT64)(((BID_SINT64) ES.w[1U]) >> 1);
 
   // A*RS >> 192 (for error term computation)
-  ARS1.w[0] = ARS0.w[3];
-  ARS1.w[1] = ARS0.w[4];
+  ARS1.w[0U] = ARS0.w[3U];
+  ARS1.w[1U] = ARS0.w[4U];
 
   // A*RS>>64
-  ARS00.w[0] = ARS0.w[1];
-  ARS00.w[1] = ARS0.w[2];
-  ARS00.w[2] = ARS0.w[3];
-  ARS00.w[3] = ARS0.w[4];
+  ARS00.w[0U] = ARS0.w[1U];
+  ARS00.w[1U] = ARS0.w[2U];
+  ARS00.w[2U] = ARS0.w[3U];
+  ARS00.w[3U] = ARS0.w[4U];
 
-  if (((BID_SINT64) ES.w[1]) < 0) {
-    ES.w[0] = -((BID_SINT64) ES.w[0]);
-    ES.w[1] = -((BID_SINT64) ES.w[1]);
-    if (ES.w[0])
-      ES.w[1]--;
+  if (((BID_SINT64) ES.w[1U]) < 0) {
+    ES.w[0U] = (BID_UINT64)(-((BID_SINT64) ES.w[0U]));
+    ES.w[1U] = (BID_UINT64)(-((BID_SINT64) ES.w[1U]));
+    if (ES.w[0U])
+      ES.w[1U]--;
 
     // A*RS*eps 
     __mul_128x128_to_256 (AE, ES, ARS1);
 
-    __add_carry_out (S.w[0], CY, ARS00.w[0], AE.w[0]);
-    __add_carry_in_out (S.w[1], CY, ARS00.w[1], AE.w[1], CY);
-    __add_carry_in_out (S.w[2], CY, ARS00.w[2], AE.w[2], CY);
-    S.w[3] = ARS00.w[3] + AE.w[3] + CY;
+    __add_carry_out (S.w[0U], CY, ARS00.w[0U], AE.w[0U]);
+    __add_carry_in_out (S.w[1U], CY, ARS00.w[1U], AE.w[1U], CY);
+    __add_carry_in_out (S.w[2U], CY, ARS00.w[2U], AE.w[2U], CY);
+    S.w[3U] = ARS00.w[3U] + AE.w[3U] + CY;
   } else {
     // A*RS*eps 
     __mul_128x128_to_256 (AE, ES, ARS1);
 
-    __sub_borrow_out (S.w[0], CY, ARS00.w[0], AE.w[0]);
-    __sub_borrow_in_out (S.w[1], CY, ARS00.w[1], AE.w[1], CY);
-    __sub_borrow_in_out (S.w[2], CY, ARS00.w[2], AE.w[2], CY);
-    S.w[3] = ARS00.w[3] - AE.w[3] - CY;
+    __sub_borrow_out (S.w[0U], CY, ARS00.w[0U], AE.w[0U]);
+    __sub_borrow_in_out (S.w[1U], CY, ARS00.w[1U], AE.w[1U], CY);
+    __sub_borrow_in_out (S.w[2U], CY, ARS00.w[2U], AE.w[2U], CY);
+    S.w[3U] = ARS00.w[3U] - AE.w[3U] - CY;
   }
 
   // 3/2*eps^2, scaled by 2^128
-  ES32 = ES.w[1] + (ES.w[1] >> 1);
-  __mul_64x64_to_128 (ES2, ES32, ES.w[1]);
+  ES32 = ES.w[1U] + (ES.w[1U] >> 1);
+  __mul_64x64_to_128 (ES2, ES32, ES.w[1U]);
   // A*RS*3/2*eps^2
   __mul_128x128_to_256 (AE2, ES2, ARS1);
 
   // result, scaled by 2^(ey+52-64)
-  __add_carry_out (S.w[0], CY, S.w[0], AE2.w[0]);
-  __add_carry_in_out (S.w[1], CY, S.w[1], AE2.w[1], CY);
-  __add_carry_in_out (S.w[2], CY, S.w[2], AE2.w[2], CY);
-  S.w[3] = S.w[3] + AE2.w[3] + CY;
+  __add_carry_out (S.w[0U], CY, S.w[0U], AE2.w[0U]);
+  __add_carry_in_out (S.w[1U], CY, S.w[1U], AE2.w[1U], CY);
+  __add_carry_in_out (S.w[2U], CY, S.w[2U], AE2.w[2U], CY);
+  S.w[3U] = S.w[3U] + AE2.w[3U] + CY;
 
   // k in (0, 64)
   k = ey + 51 - 128;
   k2 = 64 - k;
-  S.w[0] = (S.w[1] >> k) | (S.w[2] << k2);
-  S.w[1] = (S.w[2] >> k) | (S.w[3] << k2);
+  S.w[0U] = (S.w[1U] >> k) | (S.w[2U] << k2);
+  S.w[1U] = (S.w[2U] >> k) | (S.w[3U] << k2);
 
   // round to nearest
-  S.w[0]++;
-  if (!S.w[0])
-    S.w[1]++;
+  S.w[0U]++;
+  if (!S.w[0U])
+    S.w[1U]++;
 
-  pCS->w[0] = (S.w[1] << 63) | (S.w[0] >> 1);
-  pCS->w[1] = S.w[1] >> 1;
+  pCS->w[0U] = (S.w[1U] << 63) | (S.w[0U] >> 1);
+  pCS->w[1U] = S.w[1U] >> 1;
 
 }
 

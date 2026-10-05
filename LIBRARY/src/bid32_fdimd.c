@@ -54,7 +54,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_fdim, x, y)
   *pfpsf = tmp_fpsf;    // restore fpsf
   if (((x & MASK_NAN32) != MASK_NAN32) && ((y & MASK_NAN32) != MASK_NAN32) &&
       !cmpres) { // if x != NaN and y != NaN and x <= y return +0
-    res = 0x32800000;
+    res = 0x32800000U;
     BID_RETURN (res);
   }
 

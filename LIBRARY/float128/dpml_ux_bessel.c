@@ -445,7 +445,8 @@ UX_LARGE_ORDER_BESSEL(
     ** In the process, do underflow and overflow screening.
     */
 
-    n_exponent = BITS_PER_UX_FRACTION_DIGIT_TYPE - U_WORD_TO_UX(order, &tmp[0]);
+    n_exponent = (WORD)(BITS_PER_UX_FRACTION_DIGIT_TYPE
+        - (WORD)U_WORD_TO_UX((U_WORD)order, &tmp[0]));
     exponent = G_UX_EXPONENT(unpacked_argument);
 
     c = .5*( 111.5 - (double) (n_exponent + order));
@@ -612,7 +613,7 @@ backward_recurrence:
     */
 
     N = (UX_FRACTION_DIGIT_TYPE) (fN + 9.99999940395355224609375e-1);
-    N =  (((WORD) N) < (order + 1) ) ? (order + 1) : N;
+    N =  (((WORD) N) < (order + 1) ) ? UX_TO_DIGIT(order + 1) : N;
 
     /*
     ** We want to compute C(k-1,x) = (2k/x)*C(k,x) - C(k+1,x)
@@ -651,7 +652,7 @@ backward_recurrence:
 
         /* if N == n, C2 = K*J(n,x).  Save it for later */
 
-        if (N == order)
+        if (N == (UX_FRACTION_DIGIT_TYPE)order)
             UX_COPY(C2, unpacked_result);
 
         /* Add to sum if N is even */
@@ -778,7 +779,8 @@ typedef struct {
 #   define G_OFFSET(ip)	((ip)->eval_data_hi & OFFSET_MASK)
 #else
 #   define __NUM_WORDS	1
-#   define G_OFFSET(ip)	((((ip)->eval_data) >> OFFSET_POS) & OFFSET_MASK)
+#   define G_OFFSET(ip)	((U_WORD)(((U_WORD)(ip)->eval_data >> OFFSET_POS) \
+				    & OFFSET_MASK))
 #endif
 
 /*
@@ -872,8 +874,9 @@ typedef struct {
 #define BESSEL_EXP_WIDTH_POS		 7
 #define BESSEL_EXP_WIDTH_WIDTH		 7
 
-#define EXTR_BITS(name,val)	(((val) >> PASTE_3(BESSEL_,name,_POS)) & \
-				  MAKE_MASK(PASTE_3(BESSEL_,name,_WIDTH),0))
+#define EXTR_BITS(name,val)	((U_WORD)(((U_WORD)(val) >> \
+				  PASTE_3(BESSEL_,name,_POS)) & \
+				  MAKE_MASK(PASTE_3(BESSEL_,name,_WIDTH),0)))
 
 /*
 ** The next 4 definitions are used to extract the exponent information from
@@ -943,7 +946,7 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
             if (f_hi <= interval_data->extrema)
                 break;
             interval_data = (INTERVAL_DATA *) ((char *) interval_data +
-               G_OFFSET(interval_data));
+               (ptrdiff_t)G_OFFSET(interval_data));
             }
         }
 
@@ -953,8 +956,8 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
     ** x - a.
     */
 
-    eval_data = interval_data->eval_data;
-    if ((eval_data & BESSEL_USE_ZERO) == 0)
+    eval_data = UX_TO_WORD(interval_data->eval_data);
+    if ((UX_TO_UWORD(eval_data) & BESSEL_USE_ZERO) == 0)
         poly_argument = unpacked_argument;
     else
         {
@@ -973,21 +976,21 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
     ** Evaluate the polynomial.
     */
 
-    if ( eval_data & BESSEL_PACKED_POLY)
+    if ( UX_TO_UWORD(eval_data) & BESSEL_PACKED_POLY)
         EVALUATE_PACKED_POLY(
             poly_argument,
-            EXTR_BITS( DEGREE, eval_data),
+            (WORD)EXTR_BITS( DEGREE, eval_data),
             interval_data->coefficients,
             MAKE_MASK( EXTR_BITS( EXP_WIDTH, eval_data), 0), 
-            EXTR_BITS( EXP_BIAS, eval_data),
+            UX_TO_WORD(EXTR_BITS( EXP_BIAS, eval_data)),
             unpacked_result);
     else
         {
         EVALUATE_RATIONAL(
             poly_argument,
             interval_data->coefficients,
-            EXTR_BITS( DEGREE, eval_data),
-            eval_data,
+            (U_WORD)EXTR_BITS( DEGREE, eval_data),
+            (U_WORD)eval_data,
             unpacked_result);
 
 #if 0
@@ -998,18 +1001,19 @@ UX_BESSEL( UX_FLOAT * unpacked_argument, WORD order, WORD kind,
         UX_DECR_EXPONENT(poly_argument, G_SCALE(eval_data));
 #endif
         }
-    op = EXTR_BITS( EVEN_ODD_OP, eval_data);
+    op = (WORD)EXTR_BITS( EVEN_ODD_OP, eval_data);
     if ( op )
-        ADDSUB(unpacked_result, unpacked_result + 1, op - 1, unpacked_result);
+        ADDSUB(unpacked_result, unpacked_result + 1, (U_WORD)(op - 1),
+            unpacked_result);
 
-    if ( eval_data & BESSEL_POST_MULTIPLY )
+    if ( UX_TO_UWORD(eval_data) & BESSEL_POST_MULTIPLY )
         MULTIPLY( poly_argument, unpacked_result, unpacked_result);
 
-    if ( eval_data & BESSEL_NEGATE_POLY )
+    if ( UX_TO_UWORD(eval_data) & BESSEL_NEGATE_POLY )
         UX_TOGGLE_SIGN( unpacked_result, UX_SIGN_BIT);
 
     /* For y bessel functions, add in jn(x)*ln(x) term */
-    if ( eval_data & BESSEL_NEUMANN_POLY )
+    if ( UX_TO_UWORD(eval_data) & BESSEL_NEUMANN_POLY )
         {
         /*
         ** For Y_BESSEL:
@@ -1094,7 +1098,7 @@ BESSEL_ERROR_CODE_TABLE[] = {
 				 ((no) << N_OVERFLOW_POS) )
 
 #define MAP_MASK		MAKE_MASK(_FIELD_WITDTH,0)
-#define ERROR_INDEX(s,m,n,p)	(m >> (s ? n : p)) & MAP_MASK
+#define ERROR_INDEX(s,m,n,p)	(((U_WORD)(m) >> ((s) ? (n) : (p))) & MAP_MASK)
 #define ERROR(s,m,n,p)		BESSEL_ERROR_CODE_TABLE[ ERROR_INDEX(s,m,n,p) ]
 #define OVERFLOW_ERROR(s,m)	ERROR(s, m, N_OVERFLOW_POS,  P_OVERFLOW_POS)
 #define UNDERFLOW_ERROR(s,m)	ERROR(s, m, N_UNDERFLOW_POS, P_UNDERFLOW_POS)
@@ -1161,8 +1165,8 @@ C_BESSEL(_X_FLOAT * packed_argument, WORD order, WORD bessel_kind,
     PACK(
         unpacked_result,
         packed_result,
-        UNDERFLOW_ERROR(sign_toggle, error_map),
-        OVERFLOW_ERROR(sign_toggle, error_map)
+        UX_TO_WORD(UNDERFLOW_ERROR(sign_toggle, error_map)),
+        UX_TO_WORD(OVERFLOW_ERROR(sign_toggle, error_map))
         OPT_EXCEPTION_INFO_ARGUMENT );
     }
 

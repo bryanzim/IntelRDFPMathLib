@@ -50,7 +50,8 @@ BID_UINT64 bid64_frexp (BID_UINT64 x, int *exp) {
   BID_UINT64 sig_x; 
   unsigned int exp_x;
   BID_UI64DOUBLE tmp;
-  int x_nr_bits, q;
+  unsigned int x_nr_bits;
+  int q;
 
   if ((x & MASK_NAN) == MASK_NAN || (x & MASK_INF) == MASK_INF) {
     // if NaN or infinity
@@ -94,21 +95,23 @@ BID_UINT64 bid64_frexp (BID_UINT64 x, int *exp) {
       q = 16;  
     } else { // if x < 2^53
       tmp.d = (double) sig_x; // exact conversion
-      x_nr_bits = 1 + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ff) - 0x3ff);
-      q = bid_nr_digits[x_nr_bits - 1].digits; 
-      if (q == 0) { 
-        q = bid_nr_digits[x_nr_bits - 1].digits1;
-        if (sig_x >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
-          q++;  
-      }    
-    }  
+      x_nr_bits = 1U + ((((unsigned int) (tmp.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
+      if (q == 0) {
+        q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
+        if (sig_x >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+          q++;
+      }
+    }
     // Do not add trailing zeros if q < 16; leave sig_x with q digits
-    *exp = exp_x - 398 + q;
+    *exp = (int)exp_x - 398 + q;
     // assemble the result
     if (sig_x < 0x0020000000000000ull) { // sig_x < 2^53 (fits in 53 bits)
-      res = (x & 0x801fffffffffffffull) | ((-q + 398ull) << 53); // replace exp.
+      res = (x & 0x801fffffffffffffull)
+        | ((BID_UINT64)(398 - q) << 53); // replace exp.
     } else { // sig_x fits in 54 bits, but not in 53
-      res = (x & 0xe007ffffffffffffull) | ((-q + 398ull) << 51); // replace exp.
+      res = (x & 0xe007ffffffffffffull)
+        | ((BID_UINT64)(398 - q) << 51); // replace exp.
     }
     BID_RETURN (res);
   }

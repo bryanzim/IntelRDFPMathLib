@@ -65,7 +65,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
     if ((x & INFINITY_MASK32) == INFINITY_MASK32) {
       // check if y is Inf
       if (((y & NAN_MASK32) == INFINITY_MASK32)) {
-    if (sign_x == (y & 0x80000000)) {
+    if (sign_x == (y & 0x80000000U)) {
       res = coefficient_x;
       BID_RETURN (res);
     }
@@ -125,7 +125,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
       if (rnd_mode == BID_ROUNDING_DOWN && sign_x != sign_y)
-    res |= 0x80000000;
+    res |= 0x80000000U;
 #endif
 #endif
       BID_RETURN (res);
@@ -157,7 +157,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
   if (diff_dec_expon > MAX_FORMAT_DIGITS_32) {
 
       tempx.d = (double) coefficient_a;
-      bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+      bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
       scale_ca = bid_estimate_decimal_digits[bin_expon];
       
       d2 = 16 - scale_ca;
@@ -170,33 +170,33 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 
     sign_ab = ((BID_SINT64)(sign_a ^ sign_b))<<32;
     sign_ab = ((BID_SINT64) sign_ab) >> 63;
-    CB = ((BID_UINT64)coefficient_b + sign_ab) ^ sign_ab;
+    CB = (BID_UINT64)(((BID_SINT64)coefficient_b + sign_ab) ^ sign_ab);
 
-    SU = (BID_UINT64)coefficient_a * bid_power10_table_128[diff_dec_expon].w[0];
-    S = SU + CB;
+    SU = (BID_UINT64)coefficient_a * bid_power10_table_128[diff_dec_expon].w[0U];
+    S = (BID_SINT64)(SU + CB);
 
-    if(S<0) {
-        sign_a ^= 0x80000000;
+    if (S < 0) {
+        sign_a ^= 0x80000000U;
         S = -S;
     }
-    P = S;
+    P = (BID_UINT64)S;
 
     if(!P) {
         sign_a = 0;
-        if(rnd_mode == BID_ROUNDING_DOWN) sign_a = 0x80000000;
+        if(rnd_mode == BID_ROUNDING_DOWN) sign_a = 0x80000000U;
         if(!coefficient_a) sign_a = sign_x;
         n_digits=0;
     }
     else {
         tempx.d = (double) P;
-        bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+        bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
         n_digits = bid_estimate_decimal_digits[bin_expon];
-        if(P >=bid_power10_table_128[n_digits].w[0])
+        if(P >=bid_power10_table_128[n_digits].w[0U])
             n_digits++;
     }
 
     if(n_digits <= MAX_FORMAT_DIGITS_32) {
-      res = 	get_BID32 (sign_a, exponent_b, (BID_UINT32)P, rnd_mode,
+      res = 	get_BID32 (sign_a, exponent_b, (BID_UINT32)P, (int)rnd_mode,
            pfpsf);
       BID_RETURN (res);
     }
@@ -205,7 +205,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 
     #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (int)rnd_mode;
     if (sign_a && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -222,10 +222,10 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
 
       // now get P/10^extra_digits: shift Q_high right by M[extra_digits]-64
       amount = bid_short_recip_scale[extra_digits];
-      Q = Tmp.w[1] >> amount;
+      Q = Tmp.w[1U] >> amount;
 
       // remainder
-      R = P - Q * bid_power10_table_128[extra_digits].w[0];
+      R = P - Q * bid_power10_table_128[extra_digits].w[0U];
       if(R==bid_round_const_table[rmode][extra_digits])
           status = 0;
       else status = BID_INEXACT_EXCEPTION;
@@ -239,10 +239,10 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_add, x, y)
       if (rmode == 0)	//BID_ROUNDING_TO_NEAREST
 #endif
        if(R==0)
-           Q &= 0xfffffffe;
+           Q &= 0xfffffffeU;
 #endif
 
-      res = get_BID32 (sign_a, exponent_b+extra_digits, Q, rnd_mode, pfpsf);
+      res = get_BID32 (sign_a, exponent_b+extra_digits, Q, (int)rnd_mode, pfpsf);
 
     BID_RETURN (res);
   

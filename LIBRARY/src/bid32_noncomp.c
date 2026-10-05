@@ -29,7 +29,7 @@
 
 #include "bid_internal.h"
 
-static const BID_UINT32 bid_mult_factor[7] = {
+static const BID_UINT32 bid_mult_factor[7U] = {
   1, 10, 100, 1000, 10000, 100000, 1000000
 };
 
@@ -259,15 +259,15 @@ bid32_isCanonical (BID_UINT32 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   int res;
 
   if ((x & MASK_NAN32) == MASK_NAN32) {	// NaN
-    if (x & 0x01f00000) {
+    if (x & 0x01f00000U) {
       res = 0;
-    } else if ((x & 0x000fffff) > 999999) { // payload
+    } else if ((x & 0x000fffffU) > 999999) { // payload
       res = 0;
     } else {
       res = 1;
     }
   } else if ((x & MASK_INF32) == MASK_INF32) {
-    if (x & 0x03ffffff) {
+    if (x & 0x03ffffffU) {
       res = 0;
     } else {
       res = 1;
@@ -515,8 +515,8 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
       // it comes down to the payload.  we want to return true if x has a
       // larger payload, or if the payloads are equal (canonical forms
       // are bitwise identical)
-      pyld_y = y & 0x000fffff;
-      pyld_x = x & 0x000fffff;
+      pyld_y = y & 0x000fffffU;
+      pyld_x = x & 0x000fffffU;
       if (pyld_y > 999999 || pyld_y == 0) {
         // if y is zero, x must be less than or numerically equal
         // y's payload is 0
@@ -552,8 +552,8 @@ bid32_totalOrder (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
       // it comes down to the payload.  we want to return true if x has a
       // smaller payload, or if the payloads are equal (canonical forms
       // are bitwise identical)
-      pyld_y = y & 0x000fffff;
-      pyld_x = x & 0x000fffff;
+      pyld_y = y & 0x000fffffU;
+      pyld_x = x & 0x000fffffU;
       // if x is zero and y isn't, x has the smaller 
       // payload definitely (since we know y isn't 0 at this point)
       if (pyld_x > 999999 || pyld_x == 0) {
@@ -770,8 +770,8 @@ bid32_totalOrderMag (BID_UINT32 x, BID_UINT32 y _EXC_MASKS_PARAM _EXC_INFO_PARAM
     // it comes down to the payload.  we want to return true if x has a
     // smaller payload, or if the payloads are equal (canonical forms
     // are bitwise identical)
-    pyld_y = y & 0x000fffff;
-    pyld_x = x & 0x000fffff;
+    pyld_y = y & 0x000fffffU;
+    pyld_x = x & 0x000fffffU;
     // if x is zero and y isn't, x has the smaller 
     // payload definitely (since we know y isn't 0 at this point)
     if (pyld_x > 999999 || pyld_x == 0) {
@@ -950,7 +950,7 @@ BID_UINT32 bid32_inf (void) {
 #endif
  
   BID_UINT32 res; 
-  res = 0x78000000; // + inf
+  res = 0x78000000U; // + inf
   BID_RETURN(res);
 }
 
@@ -972,7 +972,7 @@ BID_UINT32 bid32_nan (const char *tagp) {
   unsigned int *pfpsf = &fpsf;
 #endif
 
-  res = 0x7c000000; // +QNaN
+  res = 0x7c000000U; // +QNaN
   if (!tagp) BID_RETURN(res);
 
 #if DECIMAL_CALL_BY_REFERENCE
@@ -980,7 +980,7 @@ BID_UINT32 bid32_nan (const char *tagp) {
 #else      
   x = bid32_from_string ((char *)tagp _RND_MODE_ARG _EXC_FLAGS_ARG);
 #endif
-  x = x & 0x000fffff; // valid values fit in 20 bits
+  x = x & 0x000fffffU; // valid values fit in 20 bits
   res = res | x;
 
   BID_RETURN(res);

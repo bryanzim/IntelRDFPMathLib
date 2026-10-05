@@ -379,9 +379,9 @@ int tmpi; \
              exit(1); \
           } \
       } \
-        { int *px = (int*)&dbl1; \
-            if (((*(px+BID_HIGH_128W) & 0x7ff00000) == 0x7ff00000) && ((*(px+BID_HIGH_128W) & 0x0007ffff) || (*(px+BID_LOW_128W) & 0xffffffff)) && !(*(px+BID_HIGH_128W) & 0x00080000)) arg64_snan = 1; \
-            if (((*(px+BID_HIGH_128W) & 0x7ff00000) == 0x00000000) && ((*(px+BID_HIGH_128W) & 0x000fffff) || (*(px+BID_LOW_128W) & 0xffffffff))) arg64_den = 1; \
+        { unsigned int *px = (unsigned int*)&dbl1; \
+            if (((*(px+BID_HIGH_128W) & 0x7ff00000u) == 0x7ff00000u) && ((*(px+BID_HIGH_128W) & 0x0007ffffu) || (*(px+BID_LOW_128W) & 0xffffffffu)) && !(*(px+BID_HIGH_128W) & 0x00080000u)) arg64_snan = 1; \
+            if (((*(px+BID_HIGH_128W) & 0x7ff00000u) == 0x00000000u) && ((*(px+BID_HIGH_128W) & 0x000fffffu) || (*(px+BID_LOW_128W) & 0xffffffffu))) arg64_den = 1; \
         } \
      sprintf(str, "%27.17e", dbl1);
 
@@ -398,9 +398,9 @@ int tmpi; \
              exit(1); \
           } \
       } \
-        { int *px = (int*)&flt1;  \
-            if (((*(px) & 0x7f800000) == 0x7f800000) && (*(px) & 0x003fffff) && !(*(px) & 0x00400000)) arg32_snan = 1; \
-            if (((*(px) & 0x7f800000) == 0x00000000) && (*(px) & 0x007fffff)) arg32_den = 1; \
+        { unsigned int *px = (unsigned int*)&flt1;  \
+            if (((*(px) & 0x7f800000u) == 0x7f800000u) && (*(px) & 0x003fffffu) && !(*(px) & 0x00400000u)) arg32_snan = 1; \
+            if (((*(px) & 0x7f800000u) == 0x00000000u) && (*(px) & 0x007fffffu)) arg32_den = 1; \
         } \
      sprintf(str, "%18.9e", flt1);
 
@@ -685,7 +685,7 @@ check128_rel(BID_UINT128 aIn, BID_UINT128 bIn)
 {
     BID_UINT128 r1, r2, m1, m2;
     BID_UINT64 e1, e2;
-    int sign, less;
+    int less;
     int t1, t2, t3, t4;
 
     BIDECIMAL_CALL1_NORND_NOSTAT (bid128_isNaN, t1, aIn);
@@ -711,8 +711,6 @@ check128_rel(BID_UINT128 aIn, BID_UINT128 bIn)
     if ((aIn.w[BID_HIGH_128W] & 0x8000000000000000ull) != (bIn.w[BID_HIGH_128W] & 0x8000000000000000ull)) {
         return 1;
     }
-
-    if (aIn.w[BID_HIGH_128W] & 0x8000000000000000ull) sign = 1;
 
     GET_EXP_128(e1, aIn.w[BID_HIGH_128W])
     GET_EXP_128(e2, bIn.w[BID_HIGH_128W])
@@ -762,7 +760,7 @@ check64_rel(BID_UINT64 aIn, BID_UINT64 bIn)
 {
     BID_UINT64 r1, r2;
     BID_UINT64 e1, e2, m1, m2;
-    int sign, less;
+    int less;
     int t1, t2, t3, t4;
  
     BIDECIMAL_CALL1_NORND_NOSTAT (bid64_isNaN, t1, aIn);
@@ -779,8 +777,6 @@ check64_rel(BID_UINT64 aIn, BID_UINT64 bIn)
     if ((aIn & 0x8000000000000000ull) != (bIn & 0x8000000000000000ull)) {
         return 1;
     }
-    if (aIn & 0x8000000000000000ull) sign = 1;
-
     GET_EXP_64(e1, aIn)
     GET_EXP_64(e2, bIn)
     GET_MANT_64(m1, aIn)
@@ -827,7 +823,7 @@ check32_rel(BID_UINT32 a32In, BID_UINT32 b32In)
 {
     BID_UINT32 r1, r2;
     BID_UINT32 e1, e2, m1, m2;
-    int sign, less;
+    int less;
     int t1, t2, t3, t4;
  
     BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isNaN, t1, a32In);
@@ -846,8 +842,6 @@ check32_rel(BID_UINT32 a32In, BID_UINT32 b32In)
     if ((a32In & 0x80000000) != (b32In & 0x80000000)) {
         return 1;
     }
-    if (a32In & 0x80000000) sign = 1;
-
     GET_EXP_32(e1, a32In)
     GET_EXP_32(e2, b32In)
     GET_MANT_32(m1, a32In)
@@ -1395,8 +1389,8 @@ printf("STRING result is not implemented\n");
   case OP_LINT:
     break;
   case OP_BIN128:
-//        sprintf(str1, "%.17le", Rquad); \
-//        sprintf(str2, "%.17le", Rtquad); \
+    /* sprintf(str1, "%.17le", Rquad); */
+    /* sprintf(str2, "%.17le", Rtquad); */
 
     strcpy (str1, "unavailable");
     strcpy (str2, "unavailable");
@@ -1448,8 +1442,8 @@ check_results (enum _CMPTYPE cmp) {
   p = strstr (func, "binary64_to");
   if ( p ) {
 //printf("check fo binary snan\n");
-        if (SNaN_passed_incorrectly64 && ((*((int*)&Adbl+BID_HIGH_128W) & 0x7ff80000) == 0x7ff00000) &&
-        ((*((int*)&Adbl+BID_HIGH_128W) & 0x0007ffff) || (*((int*)&Adbl+BID_LOW_128W) & 0xffffffff))
+        if (SNaN_passed_incorrectly64 && ((*((unsigned int*)&Adbl+BID_HIGH_128W) & 0x7ff80000u) == 0x7ff00000u) &&
+        ((*((unsigned int*)&Adbl+BID_HIGH_128W) & 0x0007ffffu) || (*((unsigned int*)&Adbl+BID_LOW_128W) & 0xffffffffu))
         ) {
 //printf("set invalid for 64\n");
             *pfpsf |= BID_INVALID_EXCEPTION;
@@ -1457,8 +1451,8 @@ check_results (enum _CMPTYPE cmp) {
   }
   p = strstr (func, "binary32_to");
   if ( p ) {
-        if (SNaN_passed_incorrectly32 && ((*((int*)&Aflt) & 0x7fc00000) == 0x7f800000) &&
-        ((*((int*)&Aflt) & 0x003fffff))
+        if (SNaN_passed_incorrectly32 && ((*((unsigned int*)&Aflt) & 0x7fc00000u) == 0x7f800000u) &&
+        ((*((unsigned int*)&Aflt) & 0x003fffffu))
         ) {
 //printf("set invalid for 32\n");
             *pfpsf |= BID_INVALID_EXCEPTION;
@@ -1467,9 +1461,9 @@ check_results (enum _CMPTYPE cmp) {
   p = strstr (func, "binary80_to");
   if ( p ) {
 //printf("check fo binary snan\n");
-        if (SNaN_passed_incorrectly80 && ((*((int*)&Aldbl+2) & 0x7fff) == 0x7fff) &&
-        ((*((int*)&Aldbl+BID_HIGH_128W) & 0xc0000000) == 0x80000000) &&
-        ((*((int*)&Aldbl+BID_HIGH_128W) & 0x7fffffff) || (*((int*)&Aldbl+BID_LOW_128W) & 0xffffffff))
+        if (SNaN_passed_incorrectly80 && ((*((unsigned int*)&Aldbl+2) & 0x7fffu) == 0x7fffu) &&
+        ((*((unsigned int*)&Aldbl+BID_HIGH_128W) & 0xc0000000u) == 0x80000000u) &&
+        ((*((unsigned int*)&Aldbl+BID_HIGH_128W) & 0x7fffffffu) || (*((unsigned int*)&Aldbl+BID_LOW_128W) & 0xffffffffu))
         ) {
 //printf("set invalid for 80\n");
             *pfpsf |= BID_INVALID_EXCEPTION;
@@ -1653,12 +1647,12 @@ status_compare(char* stat1, char* stat2) {
     if (wp1n != wp2n)
         return 1;
 #ifdef LINUX
-    qsort(wp1, wp1n, sizeof(char*), (__compar_fn_t)st_compare);
-    qsort(wp2, wp2n, sizeof(char*), (__compar_fn_t)st_compare);
+    qsort(wp1, (size_t)wp1n, sizeof(char*), (__compar_fn_t)st_compare);
+    qsort(wp2, (size_t)wp2n, sizeof(char*), (__compar_fn_t)st_compare);
 #else
-    qsort(wp1, wp1n, sizeof(char*),
+    qsort(wp1, (size_t)wp1n, sizeof(char*),
           (int(__cdecl*) (const void*, const void*)) st_compare);
-    qsort(wp2, wp2n, sizeof(char*),
+    qsort(wp2, (size_t)wp2n, sizeof(char*),
           (int(__cdecl*) (const void*, const void*)) st_compare);
 #endif
     for (i = 0; i < wp1n; i++) {
@@ -1822,7 +1816,7 @@ main(int argc, char* argv[]) {
     *((short*)&snan_check80 + 4) = 1;
 #else
     * ((short*)&snan_check80 + 4) = 0x7fff;
-    *((int*)&snan_check80 + 1) = 0x80000000;
+    *((unsigned int*)&snan_check80 + 1) = 0x80000000u;
     *((int*)&snan_check80 + 0) = 0x00000001;
 #endif
     check_snan_passing80(snan_check80);
@@ -1998,7 +1992,7 @@ main(int argc, char* argv[]) {
             strcpy(rounding, roundstr_bid[rnd]);
 
             //clean expected underflow if it is for before rounding mode and we are checking after rounidng 
-            if ((expected_status & 0x10) && Underflow_Before && underflow_after_opt) expected_status &= ~0x00000010;
+            if ((expected_status & 0x10u) && Underflow_Before && underflow_after_opt) expected_status &= ~0x00000010u;
 
 #include "readtest.h"
 

@@ -93,16 +93,16 @@
     /* 312 */ DATA_1x2( 0x00000008, 0x00000000 ),
 
     /* 0, pi/4, pi/2, 3pi/4, pi in unpacked format */
-    /* 320 */ POS, -131072, DATA_2x2( 0x00000000, 0x00000000, 0x00000000, 0x00000000 ),
-    /* 344 */ POS, 0000, DATA_2x2( 0x2168c234, 0xc90fdaa2, 0x80dc1cd1, 0xc4c6628b ),
-    /* 368 */ POS, 0001, DATA_2x2( 0x2168c234, 0xc90fdaa2, 0x80dc1cd1, 0xc4c6628b ),
-    /* 392 */ POS, 0002, DATA_2x2( 0x990e91a7, 0x96cbe3f9, 0xa0a5159c, 0x9394c9e8 ),
-    /* 416 */ POS, 0002, DATA_2x2( 0x2168c234, 0xc90fdaa2, 0x80dc1cd1, 0xc4c6628b ),
+    /* 320 */ POS, TW(-131072), DATA_2x2( 0x00000000, 0x00000000, 0x00000000, 0x00000000 ),
+    /* 344 */ POS, TW(0000), DATA_2x2( 0x2168c234, 0xc90fdaa2, 0x80dc1cd1, 0xc4c6628b ),
+    /* 368 */ POS, TW(0001), DATA_2x2( 0x2168c234, 0xc90fdaa2, 0x80dc1cd1, 0xc4c6628b ),
+    /* 392 */ POS, TW(0002), DATA_2x2( 0x990e91a7, 0x96cbe3f9, 0xa0a5159c, 0x9394c9e8 ),
+    /* 416 */ POS, TW(0002), DATA_2x2( 0x2168c234, 0xc90fdaa2, 0x80dc1cd1, 0xc4c6628b ),
 
     /* 1, 180/pi, 1/3 in unpacked format */
-    /* 440 */ POS, 0001, DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
-    /* 464 */ POS, 0006, DATA_2x2( 0x1e0fbdc3, 0xe52ee0d3, 0x40d257d7, 0x0a97537f ),
-    /* 488 */ POS, 00-1, DATA_2x2( 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa ),
+    /* 440 */ POS, TW(0001), DATA_2x2( 0x00000000, 0x80000000, 0x00000000, 0x00000000 ),
+    /* 464 */ POS, TW(0006), DATA_2x2( 0x1e0fbdc3, 0xe52ee0d3, 0x40d257d7, 0x0a97537f ),
+    /* 488 */ POS, TW(00-1), DATA_2x2( 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa, 0xaaaaaaaa ),
 
     /* Fixed point coefficients for atan evaluation */
     /* 512 */ DATA_2x2( 0x00000000, 0x00000000, 0x00000000, 0x00000000 ),

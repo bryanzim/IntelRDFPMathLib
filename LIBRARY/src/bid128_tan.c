@@ -12430,7 +12430,7 @@ BID128_FUNCTION_ARG1 (bid128_tan, x)
   BID_UINT128 res;
   int s, e;
   BID_UINT128 c;
-  BID_F128_TYPE xd, yd;
+  BID_F128_TYPE xd, yd = {0};
   BID_UINT384 m;
   BID_UINT512 p;
   int sf, k, ef, el;
@@ -12470,21 +12470,21 @@ BID128_FUNCTION_ARG1 (bid128_tan, x)
      else
       { // "large coefficient" input, which is always non-canonical here
         e = 0;
-        c.w[1] = c.w[0] = 0ull;
+        c.w[1U] = c.w[0U] = 0ull;
       }
    }
   else
    { // "small coefficient" input, the normal case for finite numbers
      e = ((x.w[BID_HIGH_128W] >> 49) & ((1ull<<14)-1)) - 6176;
-     c.w[1] = x.w[BID_HIGH_128W] & ((1ull<<49)-1);
-     c.w[0] = x.w[BID_LOW_128W];
-     if (lt128(542101086242752ull,4003012203950112767ull,c.w[1],c.w[0]))
-      { c.w[1] = 0ull; c.w[0] = 0ull; }
+     c.w[1U] = x.w[BID_HIGH_128W] & ((1ull<<49)-1);
+     c.w[0U] = x.w[BID_LOW_128W];
+     if (lt128(542101086242752ull,4003012203950112767ull,c.w[1U],c.w[0U]))
+      { c.w[1U] = 0ull; c.w[0U] = 0ull; }
    }
 
 // Make sure we treat zero even with huge exponent as small
 
-  if ((c.w[1] == 0) && (c.w[0] == 0)) e = -53;
+  if ((c.w[1U] == 0) && (c.w[0U] == 0)) e = -53;
 
 // If the input is <= 1/10 in magnitude, don't use the main path.
 //
@@ -12519,7 +12519,7 @@ BID128_FUNCTION_ARG1 (bid128_tan, x)
 // use modulo (pi/2) reduction at the start to keep integer parities.
 
   k = p.w[5] >> 62;
-  sll256_short(p.w[5],p.w[4],p.w[3],p.w[2],2);
+  sll256_short(p.w[5],p.w[4],p.w[3U],p.w[2U],2);
 
 // If the fraction is >= 1/2, add 1 to integer and complement the fraction
 // with an appropriate sign change so we have a "rounded to nearest" version
@@ -12530,8 +12530,8 @@ BID128_FUNCTION_ARG1 (bid128_tan, x)
    { k = (k + 1) & 3;
      p.w[5] = ~p.w[5];
      p.w[4] = ~p.w[4];
-     p.w[3] = ~p.w[3];
-     p.w[2] = ~p.w[2];
+     p.w[3U] = ~p.w[3U];
+     p.w[2U] = ~p.w[2U];
      sf = 1 - s;
    }
   else
@@ -12547,14 +12547,14 @@ BID128_FUNCTION_ARG1 (bid128_tan, x)
   if (p.w[5] == 0)      // Could we even have two clears? Marginal...
    { ef = 16382-64;
      p.w[5] = p.w[4];
-     p.w[4] = p.w[3];
-     p.w[3] = p.w[2];
+     p.w[4] = p.w[3U];
+     p.w[3U] = p.w[2U];
    }
   else ef = 16382;
 
   el = clz64_nz(p.w[5]);
   ef = ef - el;
-  if (el != 0) sll192_short(p.w[5],p.w[4],p.w[3],el);
+  if (el != 0) sll192_short(p.w[5],p.w[4],p.w[3U],el);
 
 // Shift right to be in the right place for a quad coefficient
 

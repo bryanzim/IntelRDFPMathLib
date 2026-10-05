@@ -156,7 +156,7 @@ void bid_round64_2_18 (int q,
   // calculate C* = floor (P128) and f*
   // Cstar = P128 >> Ex
   // fstar = low Ex bits of P128
-  shift = bid_Ex64m64[ind];	// in [3, 56]
+  shift = (int)bid_Ex64m64[ind];	// in [3, 56]
   Cstar = P128.w[1] >> shift;
   fstar.w[1] = P128.w[1] & bid_mask64[ind];
   fstar.w[0] = P128.w[0];
@@ -278,7 +278,7 @@ void bid_round128_19_38 (int q,
   // calculate C* = floor (P256) and f*
   // Cstar = P256 >> Ex
   // fstar = low Ex bits of P256
-  shift = bid_Ex128m128[ind];	// in [2, 63] but have to consider two cases
+  shift = (int)bid_Ex128m128[ind];	// in [2, 63] but have to consider two cases
   if (ind <= 18) {	// if 0 <= ind <= 18 
     Cstar.w[0] = (P256.w[2] >> shift) | (P256.w[3] << (64 - shift));
     Cstar.w[1] = (P256.w[3] >> shift);
@@ -480,7 +480,7 @@ void bid_round192_39_57 (int q,
   // calculate C* = floor (P384) and f*
   // Cstar = P384 >> Ex
   // fstar = low Ex bits of P384
-  shift = bid_Ex192m192[ind];	// in [1, 63] but have to consider three cases
+  shift = (int)bid_Ex192m192[ind];	// in [1, 63] but have to consider three cases
   if (ind <= 18) {	// if 0 <= ind <= 18 
     Cstar.w[2] = (P384.w[5] >> shift);
     Cstar.w[1] = (P384.w[5] << (64 - shift)) | (P384.w[4] >> shift);
@@ -791,7 +791,7 @@ void bid_round256_58_76 (int q,
   // calculate C* = floor (P512) and f*
   // Cstar = P512 >> Ex
   // fstar = low Ex bits of P512
-  shift = bid_Ex256m256[ind];	// in [0, 63] but have to consider four cases
+  shift = (int)bid_Ex256m256[ind];	// in [0, 63] but have to consider four cases
   if (ind <= 18) {	// if 0 <= ind <= 18 
     Cstar.w[3] = (P512.w[7] >> shift);
     Cstar.w[2] = (P512.w[7] << (64 - shift)) | (P512.w[6] >> shift);

@@ -50,7 +50,8 @@ BID_UINT32 bid32_frexp (BID_UINT32 x, int *exp) {
   BID_UINT32 sig_x; 
   unsigned int exp_x;
   BID_UI32FLOAT tmp;
-  int x_nr_bits, q;
+  unsigned int x_nr_bits;
+  int q;
 
   if ((x & MASK_INF32) == MASK_INF32) {
     // if NaN or infinity
@@ -61,7 +62,7 @@ BID_UINT32 bid32_frexp (BID_UINT32 x, int *exp) {
     //   // set invalid flag
     //   *pfpsf |= BID_INVALID_EXCEPTION;
       // return quiet (x)
-      res = x & 0xfdffffff;
+      res = x & 0xfdffffffU;
     // } else {
     //   res = x;
     }
@@ -75,7 +76,7 @@ BID_UINT32 bid32_frexp (BID_UINT32 x, int *exp) {
       // check for zero or non-canonical 
       if (sig_x > 9999999 || sig_x == 0) {
         *exp = 0;
-        res = (x & 0x80000000) | (exp_x << 23); // zero of the same sign
+        res = (x & 0x80000000U) | (exp_x << 23); // zero of the same sign
         BID_RETURN (res); 
       }  
     } else { 
@@ -83,7 +84,7 @@ BID_UINT32 bid32_frexp (BID_UINT32 x, int *exp) {
       sig_x = (x & MASK_BINARY_SIG1_32);
       if (sig_x == 0) { 
         *exp = 0;
-        res = (x & 0x80000000) | (exp_x << 23); // zero of the same sign
+        res = (x & 0x80000000U) | (exp_x << 23); // zero of the same sign
         BID_RETURN (res);
       }  
     }
@@ -92,25 +93,24 @@ BID_UINT32 bid32_frexp (BID_UINT32 x, int *exp) {
     // q = nr. of decimal digits in sig_x (1 <= q <= 7) 
     //  determine first the nr. of bits in sig_x
     tmp.f = (float) sig_x; // exact conversion
-    x_nr_bits = 
-      1 + ((((unsigned int) (tmp.ui32 >> 23)) & 0xff) - 0x7f);
-    q = bid_nr_digits[x_nr_bits - 1].digits;
+    x_nr_bits = 1U + ((((unsigned int) (tmp.ui32 >> 23)) & 0xffU) - 0x7fU);
+    q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
-      q = bid_nr_digits[x_nr_bits - 1].digits1; 
-      if ((BID_UINT64)sig_x >= bid_nr_digits[x_nr_bits - 1].threshold_lo)
+      q = (int)bid_nr_digits[x_nr_bits - 1U].digits1; 
+      if ((BID_UINT64)sig_x >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
         q++; 
     }
     // Do not add trailing zeros if q < 7; leave sig_x with q digits
     // sig_x = sig_x * bid_mult_factor[7 - q]; // sig_x has now 7 digits
-    *exp = exp_x - 101 + q;
+    *exp = (int)exp_x - 101 + q;
     // assemble the result
-    if (sig_x < 0x00800000) { // sig_x < 2^23 (fits in 23 bits)
+    if (sig_x < 0x00800000U) { // sig_x < 2^23 (fits in 23 bits)
       // res = (x & 0x80000000) | ((-q + 101) << 23) | sig_x; 
-      res = (x & 0x807fffff) | ((-q + 101) << 23); // replace exponent
+      res = (x & 0x807fffffU) | (BID_UINT32)((-q + 101) << 23); // replace exponent
     } else { // sig_x fits in 24 bits, but not in 23
       // res = (x & 0x80000000) | 0x60000000 | 
       //     ((-q + 101) << 21) | (sig_x & 0x001fffff); 
-      res = (x & 0xe01fffff) | ((-q + 101) << 21); // replace exponent
+      res = (x & 0xe01fffffU) | (BID_UINT32)((-q + 101) << 21); // replace exponent
     }
     BID_RETURN (res);
   }

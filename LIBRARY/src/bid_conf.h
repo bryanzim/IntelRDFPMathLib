@@ -36,6 +36,12 @@
 #ifndef _BID_CONF_H
 #define _BID_CONF_H
 
+#if defined(__clang__) || defined(__GNUC__)
+#   define BID_FALLTHROUGH __attribute__((fallthrough))
+#else
+#   define BID_FALLTHROUGH ((void)0)
+#endif
+
 // Name Changes
 
 #define _IDEC_glbflags __bid_IDEC_glbflags
@@ -1065,9 +1071,9 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #if BID_BIG_ENDIAN
 #define BID_SWAP128(x) {  \
   BID_UINT64 sw;              \
-  sw = (x).w[1];          \
-  (x).w[1] = (x).w[0];    \
-  (x).w[0] = sw;          \
+  sw = (x).w[1U];          \
+  (x).w[1U] = (x).w[0U];    \
+  (x).w[0U] = sw;          \
   }
 #else
 #define BID_SWAP128(x)
@@ -1426,9 +1432,9 @@ union {\
 
 #if (BID_BIG_ENDIAN) && defined(BID_128RES)
 #define BID_COPY_ARG_REF(arg_name) \
-       BID_UINT128 arg_name={{ pbid_##arg_name->w[1], pbid_##arg_name->w[0]}};
+       BID_UINT128 arg_name={{ pbid_##arg_name->w[1U], pbid_##arg_name->w[0U]}};
 #define BID_COPY_ARG_VAL(arg_name) \
-       BID_UINT128 arg_name={{ bid_##arg_name.w[1], bid_##arg_name.w[0]}};
+       BID_UINT128 arg_name={{ bid_##arg_name.w[1U], bid_##arg_name.w[0U]}};
 #else
 #define BID_COPY_ARG_REF(arg_name) \
        BID_UINT128 arg_name=*pbid_##arg_name;
@@ -2065,7 +2071,7 @@ DECLSPEC_OPT      type0                                     \
         type2 res, sgn_mask;                                          \
         _IDEC_flags saved_fpsc=*pfpsf;                                \
     BIDECIMAL_CALL1_NORND(cvt_fn_name, res, arg_name);            \
-        sgn_mask = res & size_mask;                                   \
+        sgn_mask = (type2)(res & (type2)size_mask);                                   \
         if(sgn_mask && (sgn_mask != (type2)size_mask)) {                     \
       *pfpsf = saved_fpsc | BID_INVALID_EXCEPTION;                    \
           res = invalid_res; }                                        \

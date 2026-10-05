@@ -29,7 +29,7 @@
 
 #include "bid_internal.h"
 
-static const BID_UINT64 bid_mult_factor[16] = {
+static const BID_UINT64 bid_mult_factor[16U] = {
   1ull, 10ull, 100ull, 1000ull,
   10000ull, 100000ull, 1000000ull, 10000000ull,
   100000000ull, 1000000000ull, 10000000000ull, 100000000000ull,
@@ -113,8 +113,8 @@ bid64_isNormal (BID_UINT64 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     // if (exp_x - 398 = -383) the number may be subnormal
     if (exp_x < 15) {
       __mul_64x64_to_128MACH (sig_x_prime, sig_x, bid_mult_factor[exp_x]);
-      if (sig_x_prime.w[1] == 0
-      && sig_x_prime.w[0] < 1000000000000000ull) {
+      if (sig_x_prime.w[1U] == 0
+      && sig_x_prime.w[0U] < 1000000000000000ull) {
     res = 0;	// subnormal
       } else {
     res = 1;	// normal
@@ -166,8 +166,8 @@ bid64_isSubnormal (BID_UINT64 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
     // if (exp_x - 398 = -383) the number may be subnormal
     if (exp_x < 15) {
       __mul_64x64_to_128MACH (sig_x_prime, sig_x, bid_mult_factor[exp_x]);
-      if (sig_x_prime.w[1] == 0
-      && sig_x_prime.w[0] < 1000000000000000ull) {
+      if (sig_x_prime.w[1U] == 0
+      && sig_x_prime.w[0U] < 1000000000000000ull) {
     res = 1;	// subnormal
       } else {
     res = 0;	// normal
@@ -430,8 +430,8 @@ bid64_class (BID_UINT64 x _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   //  if (exp_x - 398 < -383)
   if (exp_x < 15) {	// sig_x *10^exp_x
     __mul_64x64_to_128MACH (sig_x_prime, sig_x, bid_mult_factor[exp_x]);
-    if (sig_x_prime.w[1] == 0
-    && (sig_x_prime.w[0] < 1000000000000000ull)) {
+    if (sig_x_prime.w[1U] == 0
+    && (sig_x_prime.w[0U] < 1000000000000000ull)) {
       res =
     ((x & MASK_SIGN) ==
      MASK_SIGN) ? negativeSubnormal : positiveSubnormal;
@@ -724,15 +724,15 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
                 bid_mult_factor[exp_x - exp_y]);
     // if x and y represent the same entities, 
     // and both are negative, return true iff exp_x <= exp_y
-    if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
+    if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_y)) {
       // case cannot occure, because all bits must 
       // be the same - would have been caught if (x==y)
       res = (exp_x <= exp_y) ^ ((x & MASK_SIGN) == MASK_SIGN);
       BID_RETURN (res);
     }
     // if positive, return 1 if adjusted x is smaller than y
-    res = ((sig_n_prime.w[1] == 0)
-       && sig_n_prime.w[0] < sig_y) ^ ((x & MASK_SIGN) ==
+    res = ((sig_n_prime.w[1U] == 0)
+       && sig_n_prime.w[0U] < sig_y) ^ ((x & MASK_SIGN) ==
                        MASK_SIGN);
     BID_RETURN (res);
   }
@@ -742,7 +742,7 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 
   // if x and y represent the same entities, 
   // and both are negative, return true iff exp_x <= exp_y
-  if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
+  if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_x)) {
     // Cannot occur, because all bits must be the same. 
     // Case would have been caught if (x==y)
     res = (exp_x <= exp_y) ^ ((x & MASK_SIGN) == MASK_SIGN);
@@ -750,8 +750,8 @@ bid64_totalOrder (BID_UINT64 x, BID_UINT64 y _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   }
   // values are not equal, for positive numbers return 1 
   // if x is less than y.  0 otherwise
-  res = ((sig_n_prime.w[1] > 0)
-     || (sig_x < sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+  res = ((sig_n_prime.w[1U] > 0)
+     || (sig_x < sig_n_prime.w[0U])) ^ ((x & MASK_SIGN) ==
                        MASK_SIGN);
   BID_RETURN (res);
 }
@@ -933,14 +933,14 @@ bid64_totalOrderMag (BID_UINT64 x,
 
     // if x and y represent the same entities, 
     // and both are negative, return true iff exp_x <= exp_y
-    if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
+    if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_y)) {
       // case cannot occur, because all bits 
       // must be the same - would have been caught if (x==y)
       res = 0; // res = (exp_x <= exp_y); but exp_x > exp_y
       BID_RETURN (res);
     }
     // if positive, return 1 if adjusted x is smaller than y
-    res = ((sig_n_prime.w[1] == 0) && sig_n_prime.w[0] < sig_y);
+    res = ((sig_n_prime.w[1U] == 0) && sig_n_prime.w[0U] < sig_y);
     BID_RETURN (res);
   } // from this point on -15 <= exp_x - exp_y <= 0
   // adjust the y significand upwards
@@ -949,13 +949,13 @@ bid64_totalOrderMag (BID_UINT64 x,
 
   // if x and y represent the same entities, 
   // and both are negative, return true iff exp_x <= exp_y
-  if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
+  if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_x)) {
     res = 1; // res = (exp_x <= exp_y); but -15 <= exp_x - exp_y <= 0
     BID_RETURN (res);
   }
   // values are not equal, for positive numbers 
   // return 1 if x is less than y.  0 otherwise
-  res = ((sig_n_prime.w[1] > 0) || (sig_x < sig_n_prime.w[0]));
+  res = ((sig_n_prime.w[1U] > 0) || (sig_x < sig_n_prime.w[0U]));
   BID_RETURN (res);
 
 }

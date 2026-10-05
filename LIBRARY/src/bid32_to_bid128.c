@@ -42,22 +42,22 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS (BID_UINT128, bid32_to_bid128, BID_UIN
      BID_UINT32 coefficient_x;
 
 if (!unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x)) {
-if (((x) & 0x78000000) == 0x78000000) {
+if (((x) & 0x78000000U) == 0x78000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-  if (((x) & 0x7e000000) == 0x7e000000)	// sNaN
+  if (((x) & 0x7e000000U) == 0x7e000000U)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[0] = (coefficient_x & 0x000fffff);
-  __mul_64x128_low (res, res.w[0], bid_power10_table_128[27]);
-  res.w[1] |=
+  res.w[0U] = (coefficient_x & 0x000fffffU);
+  __mul_64x128_low (res, res.w[0U], bid_power10_table_128[27U]);
+  res.w[1U] |=
     ((((BID_UINT64) coefficient_x) << 32) & 0xfc00000000000000ull);
 
   BID_RETURN_NOFLAGS (res);
 }
 }
 
-new_coeff.w[0] = coefficient_x;
-new_coeff.w[1] = 0;
+new_coeff.w[0U] = coefficient_x;
+new_coeff.w[1U] = 0;
 bid_get_BID128_very_fast (&res, ((BID_UINT64) sign_x) << 32,
               exponent_x + DECIMAL_EXPONENT_BIAS_128 -
               DECIMAL_EXPONENT_BIAS_32, new_coeff);
@@ -82,15 +82,15 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
   BID_SWAP128 (x);
   // unpack arguments, check for NaN or Infinity or 0
   if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
-    if (((x.w[1]) & 0x7800000000000000ull) == 0x7800000000000000ull) {
-      Tmp.w[1] = (CX.w[1] & 0x00003fffffffffffull);
-      Tmp.w[0] = CX.w[0];
-      TP128 = bid_reciprocals10_128[27];
+    if (((x.w[1U]) & 0x7800000000000000ull) == 0x7800000000000000ull) {
+      Tmp.w[1U] = (CX.w[1U] & 0x00003fffffffffffull);
+      Tmp.w[0U] = CX.w[0U];
+      TP128 = bid_reciprocals10_128[27U];
       __mul_128x128_full (Qh, Ql, Tmp, TP128);
-      amount = bid_recip_scale[27] - 64;
-      res = (BID_UINT32) (((CX.w[1] >> 32) & 0xfc000000) | (Qh.w[1] >> amount));
+      amount = bid_recip_scale[27U] - 64;
+      res = (BID_UINT32) (((CX.w[1U] >> 32) & 0xfc000000U) | (Qh.w[1U] >> amount));
 #ifdef BID_SET_STATUS_FLAGS
-      if ((x.w[1] & SNAN_MASK64) == SNAN_MASK64)	// sNaN
+      if ((x.w[1U] & SNAN_MASK64) == SNAN_MASK64)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       BID_RETURN_VAL (res);
@@ -102,31 +102,31 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
       exponent_x = 0;
     if (exponent_x > DECIMAL_MAX_EXPON_32)
       exponent_x = DECIMAL_MAX_EXPON_32;
-    res = (sign_x >> 32) | (exponent_x << 23);
+    res = (BID_UINT32)((sign_x >> 32) | ((BID_UINT64)exponent_x << 23U));
     BID_RETURN_VAL (res);
 
   }
 
-  if (CX.w[1] || (CX.w[0] >= 10000000)) {
+  if (CX.w[1U] || (CX.w[0U] >= 10000000)) {
     // find number of digits in coefficient
     // 2^64
-    f64.i = 0x5f800000;
+    f64.i = 0x5f800000U;
     // fx ~ CX
-    fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-    bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
+    fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+    bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
     extra_digits = bid_estimate_decimal_digits[bin_expon_cx] - 7;
     // scale = 38-estimate_decimal_digits[bin_expon_cx];
-    D = CX.w[1] - bid_power10_index_binexp_128[bin_expon_cx].w[1];
+    D = (BID_SINT64)CX.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
     if (D > 0
     || (!D
-        && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0]))
+        && CX.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U]))
       extra_digits++;
 
     exponent_x += extra_digits;
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-    rmode = rnd_mode;
+    rmode = (unsigned int)rnd_mode;
     if (sign_x && (unsigned) (rmode - 1) < 2)
       rmode = 3 - rmode;
 #else
@@ -143,8 +143,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
     if (exponent_x ==
         DECIMAL_EXPONENT_BIAS_128 - DECIMAL_EXPONENT_BIAS_32 - 1) {
       T128 = bid_round_const_table_128[rmode][extra_digits];
-      __add_carry_out (CX1.w[0], carry, T128.w[0], CX.w[0]);
-      CX1.w[1] = CX.w[1] + T128.w[1] + carry;
+      __add_carry_out (CX1.w[0U], carry, T128.w[0U], CX.w[0U]);
+      CX1.w[1U] = CX.w[1U] + T128.w[1U] + carry;
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING  
       if (__unsigned_compare_ge_128
           (CX1, bid_power10_table_128[extra_digits + 7]))
@@ -161,16 +161,16 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
     }
 
     T128 = bid_round_const_table_128[rmode][extra_digits];
-    __add_carry_out (CX.w[0], carry, T128.w[0], CX.w[0]);
-    CX.w[1] = CX.w[1] + T128.w[1] + carry;
+    __add_carry_out (CX.w[0U], carry, T128.w[0U], CX.w[0U]);
+    CX.w[1U] = CX.w[1U] + T128.w[1U] + carry;
 
     TP128 = bid_reciprocals10_128[extra_digits];
     __mul_128x128_full (Qh, Ql, CX, TP128);
     amount = bid_recip_scale[extra_digits];
 
     if (amount >= 64) {
-      CX.w[0] = Qh.w[1] >> (amount - 64);
-      CX.w[1] = 0;
+      CX.w[0U] = Qh.w[1U] >> (amount - 64);
+      CX.w[1U] = 0;
     } else {
       __shr_128 (CX, Qh, amount);
     }
@@ -179,17 +179,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
 #ifndef IEEE_ROUND_NEAREST
     if (!(rnd_mode))
 #endif
-      if (CX.w[0] & 1) {
+      if (CX.w[0U] & 1) {
     // check whether fractional part of initial_P/10^ed1 is exactly .5
 
     // get remainder
     __shl_128_long (Qh1, Qh, (128 - amount));
 
-    if (!Qh1.w[1] && !Qh1.w[0]
-        && (Ql.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-        || (Ql.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-            && Ql.w[0] < bid_reciprocals10_128[extra_digits].w[0]))) {
-      CX.w[0]--;
+    if (!Qh1.w[1U] && !Qh1.w[0U]
+        && (Ql.w[1U] < bid_reciprocals10_128[extra_digits].w[1U]
+        || (Ql.w[1U] == bid_reciprocals10_128[extra_digits].w[1U]
+            && Ql.w[0U] < bid_reciprocals10_128[extra_digits].w[0U]))) {
+      CX.w[0U]--;
     }
       }
 #endif
@@ -203,33 +203,33 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
       case BID_ROUNDING_TO_NEAREST:
       case BID_ROUNDING_TIES_AWAY:
     // test whether fractional part is 0
-    if (Qh1.w[1] == 0x8000000000000000ull && (!Qh1.w[0])
-        && (Ql.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-        || (Ql.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-            && Ql.w[0] < bid_reciprocals10_128[extra_digits].w[0])))
+    if (Qh1.w[1U] == 0x8000000000000000ull && (!Qh1.w[0U])
+        && (Ql.w[1U] < bid_reciprocals10_128[extra_digits].w[1U]
+        || (Ql.w[1U] == bid_reciprocals10_128[extra_digits].w[1U]
+            && Ql.w[0U] < bid_reciprocals10_128[extra_digits].w[0U])))
       status = BID_EXACT_STATUS;
     break;
       case BID_ROUNDING_DOWN:
       case BID_ROUNDING_TO_ZERO:
-    if ((!Qh1.w[1]) && (!Qh1.w[0])
-        && (Ql.w[1] < bid_reciprocals10_128[extra_digits].w[1]
-        || (Ql.w[1] == bid_reciprocals10_128[extra_digits].w[1]
-            && Ql.w[0] < bid_reciprocals10_128[extra_digits].w[0])))
+    if ((!Qh1.w[1U]) && (!Qh1.w[0U])
+        && (Ql.w[1U] < bid_reciprocals10_128[extra_digits].w[1U]
+        || (Ql.w[1U] == bid_reciprocals10_128[extra_digits].w[1U]
+            && Ql.w[0U] < bid_reciprocals10_128[extra_digits].w[0U])))
       status = BID_EXACT_STATUS;
     break;
       default:
     // round up
-    __add_carry_out (Stemp.w[0], cy, Ql.w[0],
-             bid_reciprocals10_128[extra_digits].w[0]);
-    __add_carry_in_out (Stemp.w[1], carry, Ql.w[1],
-                bid_reciprocals10_128[extra_digits].w[1], cy);
+    __add_carry_out (Stemp.w[0U], cy, Ql.w[0U],
+             bid_reciprocals10_128[extra_digits].w[0U]);
+    __add_carry_in_out (Stemp.w[1U], carry, Ql.w[1U],
+                bid_reciprocals10_128[extra_digits].w[1U], cy);
     __shr_128_long (Qh, Qh1, (128 - amount));
-    Tmp.w[0] = 1;
-    Tmp.w[1] = 0;
+    Tmp.w[0U] = 1;
+    Tmp.w[1U] = 0;
     __shl_128_long (Tmp1, Tmp, amount);
-    Qh.w[0] += carry;
-    if (Qh.w[0] < carry)
-      Qh.w[1]++;
+    Qh.w[0U] += carry;
+    if (Qh.w[0U] < carry)
+      Qh.w[1U]++;
     if (__unsigned_compare_ge_128 (Qh, Tmp1))
       status = BID_EXACT_STATUS;
       }
@@ -249,7 +249,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
   res =
     get_BID32 ((BID_UINT32) (sign_x >> 32),
            exponent_x - DECIMAL_EXPONENT_BIAS_128 +
-           DECIMAL_EXPONENT_BIAS_32, CX.w[0], rnd_mode, pfpsf);
+           DECIMAL_EXPONENT_BIAS_32, CX.w[0U], (int)rnd_mode, pfpsf);
   BID_RETURN_VAL (res);
 
 }

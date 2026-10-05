@@ -32,7 +32,7 @@
 #include "bid_div_macros.h"
 #include <fenv.h>
 
-BID_EXTERN_C const BID_UINT32 bid_convert_table[5][128][2];
+BID_EXTERN_C const BID_UINT32 bid_convert_table[5U][128][2];
 BID_EXTERN_C const BID_SINT8 bid_factors[][2];
 BID_EXTERN_C const BID_UINT8 bid_packed_10000_zeros[];
 
@@ -63,68 +63,68 @@ valid_y = unpack_BID128_value (&sign_y, &exponent_y, &CY, y);
   // unpack arguments, check for NaN or Infinity
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
     // test if x is NaN
-if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+if ((x.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull ||	// sNaN
-      (y.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull)
+  if ((x.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull ||	// sNaN
+      (y.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull)
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[1] = (CX.w[1]) & QUIET_MASK64;
-  res.w[0] = CX.w[0];
+  res.w[1U] = (CX.w[1U]) & QUIET_MASK64;
+  res.w[0U] = CX.w[0U];
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
     // x is Infinity?
-if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+if ((x.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   // check if y is Inf. 
-  if (((y.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull))
+  if (((y.w[1U] & 0x7c00000000000000ull) == 0x7800000000000000ull))
     // return NaN 
   {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[1] = 0x7c00000000000000ull;
-    res.w[0] = 0;
+    res.w[1U] = 0x7c00000000000000ull;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // y is NaN?
-  if (((y.w[1] & 0x7c00000000000000ull) != 0x7c00000000000000ull))
+  if (((y.w[1U] & 0x7c00000000000000ull) != 0x7c00000000000000ull))
     // return NaN 
   {
     // return +/-Inf
-    res.w[1] = ((x.w[1] ^ y.w[1]) & 0x8000000000000000ull) |
+    res.w[1U] = ((x.w[1U] ^ y.w[1U]) & 0x8000000000000000ull) |
       0x7800000000000000ull;
-    res.w[0] = 0;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
 }
     // x is 0
-if ((y.w[1] & 0x7800000000000000ull) < 0x7800000000000000ull) {
-  if ((!CY.w[0]) && !(CY.w[1] & 0x0001ffffffffffffull)) {
+if ((y.w[1U] & 0x7800000000000000ull) < 0x7800000000000000ull) {
+  if ((!CY.w[0U]) && !(CY.w[1U] & 0x0001ffffffffffffull)) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
     // x=y=0, return NaN
-    res.w[1] = 0x7c00000000000000ull;
-    res.w[0] = 0;
+    res.w[1U] = 0x7c00000000000000ull;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // return 0
-  res.w[1] = (x.w[1] ^ y.w[1]) & 0x8000000000000000ull;
+  res.w[1U] = (x.w[1U] ^ y.w[1U]) & 0x8000000000000000ull;
   exponent_x = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS_128;
   if (exponent_x > DECIMAL_MAX_EXPON_128)
     exponent_x = DECIMAL_MAX_EXPON_128;
   else if (exponent_x < 0)
     exponent_x = 0;
-  res.w[1] |= (((BID_UINT64) exponent_x) << 49);
-  res.w[0] = 0;
+  res.w[1U] |= (((BID_UINT64) exponent_x) << 49);
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -134,22 +134,22 @@ if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if ((y.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((y.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if ((y.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
+    if ((y.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[1] = CY.w[1] & QUIET_MASK64;
-    res.w[0] = CY.w[0];
+    res.w[1U] = CY.w[1U] & QUIET_MASK64;
+    res.w[0U] = CY.w[0U];
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // y is Infinity?
-  if ((y.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((y.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // return +/-0
-    res.w[1] = sign_x ^ sign_y;
-    res.w[0] = 0;
+    res.w[1U] = sign_x ^ sign_y;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
@@ -158,9 +158,9 @@ if (!valid_y) {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-  res.w[1] =
-    ((x.w[1] ^ y.w[1]) & 0x8000000000000000ull) | 0x7800000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] =
+    ((x.w[1U] ^ y.w[1U]) & 0x8000000000000000ull) | 0x7800000000000000ull;
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -174,20 +174,20 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   // CX < CY
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
 
   // fx ~ CX,   fy ~ CY
-  fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-  fy.d = (float) CY.w[1] * f64.d + (float) CY.w[0];
+  fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+  fy.d = (float) CY.w[1U] * f64.d + (float) CY.w[0U];
   // expon_cy - expon_cx
   bin_index = (fy.i - fx.i) >> 23;
 
-  if (CX.w[1]) {
-    T = bid_power10_index_binexp_128[bin_index].w[0];
+  if (CX.w[1U]) {
+    T = bid_power10_index_binexp_128[bin_index].w[0U];
     __mul_64x128_short (CA, T, CX);
   } else {
     T128 = bid_power10_index_binexp_128[bin_index];
-    __mul_64x128_short (CA, CX.w[0], T128);
+    __mul_64x128_short (CA, CX.w[0U], T128);
   }
 
   ed2 = 33;
@@ -198,14 +198,14 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   __mul_128x128_to_256 (CA4, CA, T128);
 
   ed2 += bid_estimate_decimal_digits[bin_index];
-  CQ.w[0] = CQ.w[1] = 0;
+  CQ.w[0U] = CQ.w[1U] = 0;
   diff_expon = diff_expon - ed2;
 
 } else {
   // get CQ = CX/CY
   bid___div_128_by_128 (&CQ, &CR, CX, CY);
 
-  if (!CR.w[1] && !CR.w[0]) {
+  if (!CR.w[1U] && !CR.w[0U]) {
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
         pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
@@ -217,20 +217,20 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   }
   // get number of decimal digits in CQ
   // 2^64
-  f64.i = 0x5f800000;
-  fx.d = (float) CQ.w[1] * f64.d + (float) CQ.w[0];
+  f64.i = 0x5f800000U;
+  fx.d = (float) CQ.w[1U] * f64.d + (float) CQ.w[0U];
   // binary expon. of CQ
-  bin_expon = (fx.i - 0x3f800000) >> 23;
+  bin_expon = (fx.i - 0x3f800000U) >> 23;
 
   digits_q = bid_estimate_decimal_digits[bin_expon];
-  TP128.w[0] = bid_power10_index_binexp_128[bin_expon].w[0];
-  TP128.w[1] = bid_power10_index_binexp_128[bin_expon].w[1];
+  TP128.w[0U] = bid_power10_index_binexp_128[bin_expon].w[0U];
+  TP128.w[1U] = bid_power10_index_binexp_128[bin_expon].w[1U];
   if (__unsigned_compare_ge_128 (CQ, TP128))
     digits_q++;
 
   ed2 = 34 - digits_q;
-  T128.w[0] = bid_power10_table_128[ed2].w[0];
-  T128.w[1] = bid_power10_table_128[ed2].w[1];
+  T128.w[0U] = bid_power10_table_128[ed2].w[0U];
+  T128.w[1U] = bid_power10_table_128[ed2].w[1U];
   __mul_128x128_to_256 (CA4, CR, T128);
   diff_expon = diff_expon - ed2;
   __mul_128x128_low (CQ, CQ, T128);
@@ -240,7 +240,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 bid___div_256_by_128 (&CQ, &CA4, CY);
 
 #ifdef BID_SET_STATUS_FLAGS
-if (CA4.w[0] || CA4.w[1]) {
+if (CA4.w[0U] || CA4.w[1U]) {
   // set status flags
   __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
 }
@@ -249,20 +249,20 @@ else
 #endif
 #else
 #ifndef LEAVE_TRAILING_ZEROS
-if (!CA4.w[0] && !CA4.w[1])
+if (!CA4.w[0U] && !CA4.w[1U])
 #endif
 #endif
 #ifndef LEAVE_TRAILING_ZEROS
   // check whether result is exact
 {
   // check whether CX, CY are short
-  if (!CX.w[1] && !CY.w[1] && (CX.w[0] <= 1024) && (CY.w[0] <= 1024)) {
-    i = (int) CY.w[0] - 1;
-    j = (int) CX.w[0] - 1;
+  if (!CX.w[1U] && !CY.w[1U] && (CX.w[0U] <= 1024) && (CY.w[0U] <= 1024)) {
+    i = (int) CY.w[0U] - 1;
+    j = (int) CX.w[0U] - 1;
     // difference in powers of 2 bid_factors for Y and X
-    nzeros = ed2 - bid_factors[i][0] + bid_factors[j][0];
+    nzeros = ed2 - bid_factors[i][0U] + bid_factors[j][0U];
     // difference in powers of 5 bid_factors
-    d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
+    d5 = ed2 - bid_factors[i][1U] + bid_factors[j][1U];
     if (d5 < nzeros)
       nzeros = d5;
     // get P*(2^M[extra_digits])/10^extra_digits
@@ -276,45 +276,45 @@ if (!CA4.w[0] && !CA4.w[1])
   } else {
     // decompose Q as Qh*10^17 + Ql
     //T128 = bid_reciprocals10_128[17];
-    T128.w[0] = 0x44909befeb9fad49ull;
-    T128.w[1] = 0x000b877aa3236a4bull;
+    T128.w[0U] = 0x44909befeb9fad49ull;
+    T128.w[1U] = 0x000b877aa3236a4bull;
     __mul_128x128_to_256 (P256, CQ, T128);
     //amount = bid_recip_scale[17];
-    Q_high = (P256.w[2] >> 44) | (P256.w[3] << (64 - 44));
-    Q_low = CQ.w[0] - Q_high * 100000000000000000ull;
+    Q_high = (P256.w[2U] >> 44) | (P256.w[3U] << (64 - 44));
+    Q_low = CQ.w[0U] - Q_high * 100000000000000000ull;
 
     if (!Q_low) {
       diff_expon += 17;
 
-      tdigit[0] = Q_high & 0x3ffffff;
-      tdigit[1] = 0;
+      tdigit[0U] = Q_high & 0x3ffffffU;
+      tdigit[1U] = 0;
       QX = Q_high >> 26;
       QX32 = (BID_UINT32) QX;
       nzeros = 0;
 
       for (j = 0; QX32; j++, QX32 >>= 7) {
     k = (QX32 & 127);
-    tdigit[0] += bid_convert_table[j][k][0];
-    tdigit[1] += bid_convert_table[j][k][1];
-    if (tdigit[0] >= 100000000) {
-      tdigit[0] -= 100000000;
-      tdigit[1]++;
+    tdigit[0U] += bid_convert_table[j][k][0U];
+    tdigit[1U] += bid_convert_table[j][k][1U];
+    if (tdigit[0U] >= 100000000) {
+      tdigit[0U] -= 100000000;
+      tdigit[1U]++;
     }
       }
 
-      if (tdigit[1] >= 100000000) {
-    tdigit[1] -= 100000000;
-    if (tdigit[1] >= 100000000)
-      tdigit[1] -= 100000000;
+      if (tdigit[1U] >= 100000000) {
+    tdigit[1U] -= 100000000;
+    if (tdigit[1U] >= 100000000)
+      tdigit[1U] -= 100000000;
       }
 
-      digit = tdigit[0];
-      if (!digit && !tdigit[1])
+      digit = tdigit[0U];
+      if (!digit && !tdigit[1U])
     nzeros += 16;
       else {
     if (!digit) {
       nzeros += 8;
-      digit = tdigit[1];
+      digit = tdigit[1U];
     }
     // decompose digit
     PD = (BID_UINT64) digit *0x068DB8BBull;
@@ -337,42 +337,42 @@ if (!CA4.w[0] && !CA4.w[1])
 
     // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
     amount = bid_short_recip_scale[nzeros];
-    CQ.w[0] = CQ.w[1] >> amount;
+    CQ.w[0U] = CQ.w[1U] >> amount;
       } else
-    CQ.w[0] = Q_high;
-      CQ.w[1] = 0;
+    CQ.w[0U] = Q_high;
+      CQ.w[1U] = 0;
 
       diff_expon += nzeros;
     } else {
-      tdigit[0] = Q_low & 0x3ffffff;
-      tdigit[1] = 0;
+      tdigit[0U] = Q_low & 0x3ffffffU;
+      tdigit[1U] = 0;
       QX = Q_low >> 26;
       QX32 = (BID_UINT32) QX;
       nzeros = 0;
 
       for (j = 0; QX32; j++, QX32 >>= 7) {
     k = (QX32 & 127);
-    tdigit[0] += bid_convert_table[j][k][0];
-    tdigit[1] += bid_convert_table[j][k][1];
-    if (tdigit[0] >= 100000000) {
-      tdigit[0] -= 100000000;
-      tdigit[1]++;
+    tdigit[0U] += bid_convert_table[j][k][0U];
+    tdigit[1U] += bid_convert_table[j][k][1U];
+    if (tdigit[0U] >= 100000000) {
+      tdigit[0U] -= 100000000;
+      tdigit[1U]++;
     }
       }
 
-      if (tdigit[1] >= 100000000) {
-    tdigit[1] -= 100000000;
-    if (tdigit[1] >= 100000000)
-      tdigit[1] -= 100000000;
+      if (tdigit[1U] >= 100000000) {
+    tdigit[1U] -= 100000000;
+    if (tdigit[1U] >= 100000000)
+      tdigit[1U] -= 100000000;
       }
 
-      digit = tdigit[0];
-      if (!digit && !tdigit[1])
+      digit = tdigit[0U];
+      if (!digit && !tdigit[1U])
     nzeros += 16;
       else {
     if (!digit) {
       nzeros += 8;
-      digit = tdigit[1];
+      digit = tdigit[1U];
     }
     // decompose digit
     PD = (BID_UINT64) digit *0x068DB8BBull;
@@ -416,70 +416,70 @@ if (diff_expon >= 0) {
 #ifdef IEEE_ROUND_NEAREST
   // rounding
   // 2*CA4 - CY
-  CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-  CA4r.w[0] = CA4.w[0] + CA4.w[0];
-  __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-  CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
+  CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+  CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+  __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+  CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
 
-  D = (CA4r.w[1] | CA4r.w[0]) ? 1 : 0;
-  carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) & ((CQ.w[0]) | D);
+  D = (CA4r.w[1U] | CA4r.w[0U]) ? 1 : 0;
+  carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) & (CQ.w[0U] | D));
 
-  CQ.w[0] += carry64;
-  if (CQ.w[0] < carry64)
-    CQ.w[1]++;
+  CQ.w[0U] += carry64;
+  if (CQ.w[0U] < carry64)
+    CQ.w[1U]++;
 #else
 #ifdef IEEE_ROUND_NEAREST_TIES_AWAY
   // rounding
   // 2*CA4 - CY
-  CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-  CA4r.w[0] = CA4.w[0] + CA4.w[0];
-  __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-  CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
+  CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+  CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+  __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+  CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
 
-  D = (CA4r.w[1] | CA4r.w[0]) ? 0 : 1;
-  carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) | D;
+  D = (CA4r.w[1U] | CA4r.w[0U]) ? 0 : 1;
+  carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) | D);
 
-  CQ.w[0] += carry64;
-  if (CQ.w[0] < carry64)
-    CQ.w[1]++;
+  CQ.w[0U] += carry64;
+  if (CQ.w[0U] < carry64)
+    CQ.w[1U]++;
 #else
-  rmode = rnd_mode;
+  rmode = (unsigned int)rnd_mode;
   if (sign_x ^ sign_y && (unsigned) (rmode - 1) < 2)
     rmode = 3 - rmode;
   switch (rmode) {
   case BID_ROUNDING_TO_NEAREST:	// round to nearest code
     // rounding
     // 2*CA4 - CY
-    CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-    CA4r.w[0] = CA4.w[0] + CA4.w[0];
-    __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-    CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
-    D = (CA4r.w[1] | CA4r.w[0]) ? 1 : 0;
-    carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) & ((CQ.w[0]) | D);
-    CQ.w[0] += carry64;
-    if (CQ.w[0] < carry64)
-      CQ.w[1]++;
+    CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+    CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+    __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+    CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
+    D = (CA4r.w[1U] | CA4r.w[0U]) ? 1 : 0;
+    carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) & (CQ.w[0U] | D));
+    CQ.w[0U] += carry64;
+    if (CQ.w[0U] < carry64)
+      CQ.w[1U]++;
     break;
   case BID_ROUNDING_TIES_AWAY:
     // rounding
     // 2*CA4 - CY
-    CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-    CA4r.w[0] = CA4.w[0] + CA4.w[0];
-    __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-    CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
-    D = (CA4r.w[1] | CA4r.w[0]) ? 0 : 1;
-    carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) | D;
-    CQ.w[0] += carry64;
-    if (CQ.w[0] < carry64)
-      CQ.w[1]++;
+    CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+    CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+    __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+    CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
+    D = (CA4r.w[1U] | CA4r.w[0U]) ? 0 : 1;
+    carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) | D);
+    CQ.w[0U] += carry64;
+    if (CQ.w[0U] < carry64)
+      CQ.w[1U]++;
     break;
   case BID_ROUNDING_DOWN:
   case BID_ROUNDING_TO_ZERO:
     break;
   default:	// rounding up
-    CQ.w[0]++;
-    if (!CQ.w[0])
-      CQ.w[1]++;
+    CQ.w[0U]++;
+    if (!CQ.w[0U])
+      CQ.w[1U]++;
     break;
   }
 #endif
@@ -487,14 +487,14 @@ if (diff_expon >= 0) {
 
 } else {
 #ifdef BID_SET_STATUS_FLAGS
-  if (CA4.w[0] || CA4.w[1]) {
+  if (CA4.w[0U] || CA4.w[1U]) {
     // set status flags
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
 #endif
 
   bid_handle_UF_128_rem (&res, sign_x ^ sign_y, diff_expon, CQ,
-             CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
+             CA4.w[1U] | CA4.w[0U], &rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -539,11 +539,11 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2 (BID_UINT128, bid128dd_div, BID_UINT64, x,
     fesetround(FE_TONEAREST);
   }
 
-valid_y = unpack_BID64 (&sign_y, &exponent_y, &CY.w[0], y);
+valid_y = unpack_BID64 (&sign_y, &exponent_y, &CY.w[0U], y);
 
     // unpack arguments, check for NaN or Infinity
-CX.w[1] = 0;
-if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], (x))) {
+CX.w[1U] = 0;
+if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0U], (x))) {
 #ifdef BID_SET_STATUS_FLAGS
 if ((y & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -555,9 +555,9 @@ if ((x & NAN_MASK64) == NAN_MASK64) {
   if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[0] = (CX.w[0] & 0x0003ffffffffffffull);
-  __mul_64x64_to_128 (res, res.w[0], bid_power10_table_128[18].w[0]);
-  res.w[1] |= ((CX.w[0]) & 0xfc00000000000000ull);
+  res.w[0U] = (CX.w[0U] & 0x0003ffffffffffffull);
+  __mul_64x64_to_128 (res, res.w[0U], bid_power10_table_128[18U].w[0U]);
+  res.w[1U] |= ((CX.w[0U]) & 0xfc00000000000000ull);
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -571,17 +571,17 @@ if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[1] = 0x7c00000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] = 0x7c00000000000000ull;
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
   }
   if ((((y) & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
   // otherwise return +/-Inf
-  res.w[1] =
+  res.w[1U] =
     (((x) ^ (y)) & 0x8000000000000000ull) | 0x7800000000000000ull;
-  res.w[0] = 0;
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -589,33 +589,33 @@ if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
 }
        // x is 0
 if ((((y) & 0x7800000000000000ull) != 0x7800000000000000ull)) {
-    if(!CY.w[0]) {
+    if(!CY.w[0U]) {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   // x=y=0, return NaN
-  res.w[1] = 0x7c00000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] = 0x7c00000000000000ull;
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
        // return 0
-res.w[1] = ((x) ^ (y)) & 0x8000000000000000ull;
+res.w[1U] = ((x) ^ (y)) & 0x8000000000000000ull;
 if (((y) & 0x6000000000000000ull) == 0x6000000000000000ull)
-  exponent_y = ((BID_UINT32) ((y) >> 51)) & 0x3ff;
+  exponent_y = ((BID_UINT32) ((y) >> 51)) & 0x3ffU;
 else
-  exponent_y = ((BID_UINT32) ((y) >> 53)) & 0x3ff;
+  exponent_y = ((BID_UINT32) ((y) >> 53)) & 0x3ffU;
 exponent_x = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS_128;
-res.w[1] |= (((BID_UINT64) exponent_x) << 49);
-res.w[0] = 0;
+res.w[1U] |= (((BID_UINT64) exponent_x) << 49);
+res.w[0U] = 0;
 // restore the rounding mode back if it has been changed
 if (rm_changed) fesetround(old_rm);
 BID_RETURN (res);
 }
 }
 
-CY.w[1] = 0;
+CY.w[1U] = 0;
 if (!valid_y) {
   // y is Inf. or NaN
 
@@ -625,9 +625,9 @@ if (!valid_y) {
     if ((y & SNAN_MASK64) == SNAN_MASK64)	// sNaN
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[0] = (CY.w[0] & 0x0003ffffffffffffull);
-  __mul_64x64_to_128 (res, res.w[0], bid_power10_table_128[18].w[0]);
-  res.w[1] |= ((CY.w[0]) & 0xfc00000000000000ull);
+  res.w[0U] = (CY.w[0U] & 0x0003ffffffffffffull);
+  __mul_64x64_to_128 (res, res.w[0U], bid_power10_table_128[18U].w[0U]);
+  res.w[1U] |= ((CY.w[0U]) & 0xfc00000000000000ull);
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -635,16 +635,16 @@ if (!valid_y) {
   // y is Infinity?
   if (((y) & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // return +/-0
-    res.w[1] = sign_x ^ sign_y;
-    res.w[0] = 0;
+    res.w[1U] = sign_x ^ sign_y;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // y is 0, return +/-Inf
-  res.w[1] =
+  res.w[1U] =
     (((x) ^ (y)) & 0x8000000000000000ull) | 0x7800000000000000ull;
-  res.w[0] = 0;
+  res.w[0U] = 0;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
@@ -661,16 +661,16 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   // CX < CY
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
 
   // fx ~ CX,   fy ~ CY
-  fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-  fy.d = (float) CY.w[1] * f64.d + (float) CY.w[0];
+  fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+  fy.d = (float) CY.w[1U] * f64.d + (float) CY.w[0U];
   // expon_cy - expon_cx
   bin_index = (fy.i - fx.i) >> 23;
 
   T128 = bid_power10_index_binexp_128[bin_index];
-  __mul_64x128_short (CA, CX.w[0], T128);
+  __mul_64x128_short (CA, CX.w[0U], T128);
 
   ed2 = 33;
   if (__unsigned_compare_gt_128 (CY, CA))
@@ -680,14 +680,14 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   __mul_128x128_to_256 (CA4, CA, T128);
 
   ed2 += bid_estimate_decimal_digits[bin_index];
-  CQ.w[0] = CQ.w[1] = 0;
+  CQ.w[0U] = CQ.w[1U] = 0;
   diff_expon = diff_expon - ed2;
 
 } else {
   // get CQ = CX/CY
   bid___div_128_by_128 (&CQ, &CR, CX, CY);
 
-  if (!CR.w[1] && !CR.w[0]) {
+  if (!CR.w[1U] && !CR.w[0U]) {
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
         pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
@@ -699,20 +699,20 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   }
   // get number of decimal digits in CQ
   // 2^64
-  f64.i = 0x5f800000;
-  fx.d = (float) CQ.w[1] * f64.d + (float) CQ.w[0];
+  f64.i = 0x5f800000U;
+  fx.d = (float) CQ.w[1U] * f64.d + (float) CQ.w[0U];
   // binary expon. of CQ
-  bin_expon = (fx.i - 0x3f800000) >> 23;
+  bin_expon = (fx.i - 0x3f800000U) >> 23;
 
   digits_q = bid_estimate_decimal_digits[bin_expon];
-  TP128.w[0] = bid_power10_index_binexp_128[bin_expon].w[0];
-  TP128.w[1] = bid_power10_index_binexp_128[bin_expon].w[1];
+  TP128.w[0U] = bid_power10_index_binexp_128[bin_expon].w[0U];
+  TP128.w[1U] = bid_power10_index_binexp_128[bin_expon].w[1U];
   if (__unsigned_compare_ge_128 (CQ, TP128))
     digits_q++;
 
   ed2 = 34 - digits_q;
-  T128.w[0] = bid_power10_table_128[ed2].w[0];
-  T128.w[1] = bid_power10_table_128[ed2].w[1];
+  T128.w[0U] = bid_power10_table_128[ed2].w[0U];
+  T128.w[1U] = bid_power10_table_128[ed2].w[1U];
   __mul_128x128_to_256 (CA4, CR, T128);
   diff_expon = diff_expon - ed2;
   __mul_128x128_low (CQ, CQ, T128);
@@ -723,7 +723,7 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
 
 
 #ifdef BID_SET_STATUS_FLAGS
-  if (CA4.w[0] || CA4.w[1]) {
+  if (CA4.w[0U] || CA4.w[1U]) {
     // set status flags
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
@@ -732,20 +732,20 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
 #endif
 #else
 #ifndef LEAVE_TRAILING_ZEROS
-  if (!CA4.w[0] && !CA4.w[1])
+  if (!CA4.w[0U] && !CA4.w[1U])
 #endif
 #endif
 #ifndef LEAVE_TRAILING_ZEROS
     // check whether result is exact
   {
     // check whether CX, CY are short
-    if (!CX.w[1] && !CY.w[1] && (CX.w[0] <= 1024) && (CY.w[0] <= 1024)) {
-      i = (int) CY.w[0] - 1;
-      j = (int) CX.w[0] - 1;
+    if (!CX.w[1U] && !CY.w[1U] && (CX.w[0U] <= 1024) && (CY.w[0U] <= 1024)) {
+      i = (int) CY.w[0U] - 1;
+      j = (int) CX.w[0U] - 1;
       // difference in powers of 2 bid_factors for Y and X
-      nzeros = ed2 - bid_factors[i][0] + bid_factors[j][0];
+      nzeros = ed2 - bid_factors[i][0U] + bid_factors[j][0U];
       // difference in powers of 5 bid_factors
-      d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
+      d5 = ed2 - bid_factors[i][1U] + bid_factors[j][1U];
       if (d5 < nzeros)
     nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
@@ -760,46 +760,46 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
     } else {
       // decompose Q as Qh*10^17 + Ql
       //T128 = bid_reciprocals10_128[17];
-      T128.w[0] = 0x44909befeb9fad49ull;
-      T128.w[1] = 0x000b877aa3236a4bull;
+      T128.w[0U] = 0x44909befeb9fad49ull;
+      T128.w[1U] = 0x000b877aa3236a4bull;
       __mul_128x128_to_256 (P256, CQ, T128);
       //amount = bid_recip_scale[17];
-      Q_high = (P256.w[2] >> 44) | (P256.w[3] << (64 - 44));
-      Q_low = CQ.w[0] - Q_high * 100000000000000000ull;
+      Q_high = (P256.w[2U] >> 44) | (P256.w[3U] << (64 - 44));
+      Q_low = CQ.w[0U] - Q_high * 100000000000000000ull;
 
       if (!Q_low) {
     diff_expon += 17;
 
-    tdigit[0] = Q_high & 0x3ffffff;
-    tdigit[1] = 0;
+    tdigit[0U] = Q_high & 0x3ffffffU;
+    tdigit[1U] = 0;
     QX = Q_high >> 26;
     QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
       k = (QX32 & 127);
-      tdigit[0] += bid_convert_table[j][k][0];
-      tdigit[1] += bid_convert_table[j][k][1];
-      if (tdigit[0] >= 100000000) {
-        tdigit[0] -= 100000000;
-        tdigit[1]++;
+      tdigit[0U] += bid_convert_table[j][k][0U];
+      tdigit[1U] += bid_convert_table[j][k][1U];
+      if (tdigit[0U] >= 100000000) {
+        tdigit[0U] -= 100000000;
+        tdigit[1U]++;
       }
     }
 
 
-    if (tdigit[1] >= 100000000) {
-      tdigit[1] -= 100000000;
-      if (tdigit[1] >= 100000000)
-        tdigit[1] -= 100000000;
+    if (tdigit[1U] >= 100000000) {
+      tdigit[1U] -= 100000000;
+      if (tdigit[1U] >= 100000000)
+        tdigit[1U] -= 100000000;
     }
 
-    digit = tdigit[0];
-    if (!digit && !tdigit[1])
+    digit = tdigit[0U];
+    if (!digit && !tdigit[1U])
       nzeros += 16;
     else {
       if (!digit) {
         nzeros += 8;
-        digit = tdigit[1];
+        digit = tdigit[1U];
       }
       // decompose digit
       PD = (BID_UINT64) digit *0x068DB8BBull;
@@ -822,42 +822,42 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
 
       // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
       amount = bid_short_recip_scale[nzeros];
-      CQ.w[0] = CQ.w[1] >> amount;
+      CQ.w[0U] = CQ.w[1U] >> amount;
     } else
-      CQ.w[0] = Q_high;
-    CQ.w[1] = 0;
+      CQ.w[0U] = Q_high;
+    CQ.w[1U] = 0;
 
     diff_expon += nzeros;
       } else {
-    tdigit[0] = Q_low & 0x3ffffff;
-    tdigit[1] = 0;
+    tdigit[0U] = Q_low & 0x3ffffffU;
+    tdigit[1U] = 0;
     QX = Q_low >> 26;
     QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
       k = (QX32 & 127);
-      tdigit[0] += bid_convert_table[j][k][0];
-      tdigit[1] += bid_convert_table[j][k][1];
-      if (tdigit[0] >= 100000000) {
-        tdigit[0] -= 100000000;
-        tdigit[1]++;
+      tdigit[0U] += bid_convert_table[j][k][0U];
+      tdigit[1U] += bid_convert_table[j][k][1U];
+      if (tdigit[0U] >= 100000000) {
+        tdigit[0U] -= 100000000;
+        tdigit[1U]++;
       }
     }
 
-    if (tdigit[1] >= 100000000) {
-      tdigit[1] -= 100000000;
-      if (tdigit[1] >= 100000000)
-        tdigit[1] -= 100000000;
+    if (tdigit[1U] >= 100000000) {
+      tdigit[1U] -= 100000000;
+      if (tdigit[1U] >= 100000000)
+        tdigit[1U] -= 100000000;
     }
 
-    digit = tdigit[0];
-    if (!digit && !tdigit[1])
+    digit = tdigit[0U];
+    if (!digit && !tdigit[1U])
       nzeros += 16;
     else {
       if (!digit) {
         nzeros += 8;
-        digit = tdigit[1];
+        digit = tdigit[1U];
       }
       // decompose digit
       PD = (BID_UINT64) digit *0x068DB8BBull;
@@ -901,70 +901,70 @@ if (diff_expon >= 0) {
 #ifdef IEEE_ROUND_NEAREST
   // rounding
   // 2*CA4 - CY
-  CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-  CA4r.w[0] = CA4.w[0] + CA4.w[0];
-  __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-  CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
+  CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+  CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+  __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+  CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
 
-  D = (CA4r.w[1] | CA4r.w[0]) ? 1 : 0;
-  carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) & ((CQ.w[0]) | D);
+  D = (CA4r.w[1U] | CA4r.w[0U]) ? 1 : 0;
+  carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) & (CQ.w[0U] | D));
 
-  CQ.w[0] += carry64;
-  if (CQ.w[0] < carry64)
-    CQ.w[1]++;
+  CQ.w[0U] += carry64;
+  if (CQ.w[0U] < carry64)
+    CQ.w[1U]++;
 #else
 #ifdef IEEE_ROUND_NEAREST_TIES_AWAY
   // rounding
   // 2*CA4 - CY
-  CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-  CA4r.w[0] = CA4.w[0] + CA4.w[0];
-  __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-  CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
+  CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+  CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+  __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+  CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
 
-  D = (CA4r.w[1] | CA4r.w[0]) ? 0 : 1;
-  carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) | D;
+  D = (CA4r.w[1U] | CA4r.w[0U]) ? 0 : 1;
+  carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) | D);
 
-  CQ.w[0] += carry64;
-  if (CQ.w[0] < carry64)
-    CQ.w[1]++;
+  CQ.w[0U] += carry64;
+  if (CQ.w[0U] < carry64)
+    CQ.w[1U]++;
 #else
-  rmode = rnd_mode;
+  rmode = (unsigned int)rnd_mode;
   if (sign_x ^ sign_y && (unsigned) (rmode - 1) < 2)
     rmode = 3 - rmode;
   switch (rmode) {
   case BID_ROUNDING_TO_NEAREST:	// round to nearest code
     // rounding
     // 2*CA4 - CY
-    CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-    CA4r.w[0] = CA4.w[0] + CA4.w[0];
-    __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-    CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
-    D = (CA4r.w[1] | CA4r.w[0]) ? 1 : 0;
-    carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) & ((CQ.w[0]) | D);
-    CQ.w[0] += carry64;
-    if (CQ.w[0] < carry64)
-      CQ.w[1]++;
+    CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+    CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+    __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+    CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
+    D = (CA4r.w[1U] | CA4r.w[0U]) ? 1 : 0;
+    carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) & (CQ.w[0U] | D));
+    CQ.w[0U] += carry64;
+    if (CQ.w[0U] < carry64)
+      CQ.w[1U]++;
     break;
   case BID_ROUNDING_TIES_AWAY:
     // rounding
     // 2*CA4 - CY
-    CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-    CA4r.w[0] = CA4.w[0] + CA4.w[0];
-    __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-    CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
-    D = (CA4r.w[1] | CA4r.w[0]) ? 0 : 1;
-    carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) | D;
-    CQ.w[0] += carry64;
-    if (CQ.w[0] < carry64)
-      CQ.w[1]++;
+    CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+    CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+    __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+    CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
+    D = (CA4r.w[1U] | CA4r.w[0U]) ? 0 : 1;
+    carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) | D);
+    CQ.w[0U] += carry64;
+    if (CQ.w[0U] < carry64)
+      CQ.w[1U]++;
     break;
   case BID_ROUNDING_DOWN:
   case BID_ROUNDING_TO_ZERO:
     break;
   default:	// rounding up
-    CQ.w[0]++;
-    if (!CQ.w[0])
-      CQ.w[1]++;
+    CQ.w[0U]++;
+    if (!CQ.w[0U])
+      CQ.w[1U]++;
     break;
   }
 #endif
@@ -972,13 +972,13 @@ if (diff_expon >= 0) {
 
 } else {
 #ifdef BID_SET_STATUS_FLAGS
-  if (CA4.w[0] || CA4.w[1]) {
+  if (CA4.w[0U] || CA4.w[1U]) {
     // set status flags
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
 #endif
   bid_handle_UF_128_rem (&res, sign_x ^ sign_y, diff_expon, CQ,
-             CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
+             CA4.w[1U] | CA4.w[0U], &rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1022,10 +1022,10 @@ BID128_FUNCTION_ARGTYPE1_ARG128 (bid128dq_div, BID_UINT64, x, y)
 valid_y = unpack_BID128_value (&sign_y, &exponent_y, &CY, y);
 
     // unpack arguments, check for NaN or Infinity
-CX.w[1] = 0;
-if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], x)) {
+CX.w[1U] = 0;
+if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0U], x)) {
 #ifdef BID_SET_STATUS_FLAGS
-if ((y.w[1] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
+if ((y.w[1U] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
 
@@ -1035,9 +1035,9 @@ if ((x & NAN_MASK64) == NAN_MASK64) {
   if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[0] = (CX.w[0] & 0x0003ffffffffffffull);
-  __mul_64x64_to_128 (res, res.w[0], bid_power10_table_128[18].w[0]);
-  res.w[1] |= ((CX.w[0]) & 0xfc00000000000000ull);
+  res.w[0U] = (CX.w[0U] & 0x0003ffffffffffffull);
+  __mul_64x64_to_128 (res, res.w[0U], bid_power10_table_128[18U].w[0U]);
+  res.w[1U] |= ((CX.w[0U]) & 0xfc00000000000000ull);
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -1045,50 +1045,50 @@ if ((x & NAN_MASK64) == NAN_MASK64) {
        // x is Infinity?
 if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
   // check if y is Inf.
-  if (((y.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull))
+  if (((y.w[1U] & 0x7c00000000000000ull) == 0x7800000000000000ull))
     // return NaN 
   {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[1] = 0x7c00000000000000ull;
-    res.w[0] = 0;
+    res.w[1U] = 0x7c00000000000000ull;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
-  if (((y.w[1] & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
+  if (((y.w[1U] & 0x7c00000000000000ull) != 0x7c00000000000000ull)) {
   // otherwise return +/-Inf
-  res.w[1] =
-    ((x ^ y.w[1]) & 0x8000000000000000ull) | 0x7800000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] =
+    ((x ^ y.w[1U]) & 0x8000000000000000ull) | 0x7800000000000000ull;
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
   }
 }
        // x is 0
-if ((y.w[1] & INFINITY_MASK64) != INFINITY_MASK64) {
-  if ((!CY.w[0]) && !(CY.w[1] & 0x0001ffffffffffffull)) {
+if ((y.w[1U] & INFINITY_MASK64) != INFINITY_MASK64) {
+  if ((!CY.w[0U]) && !(CY.w[1U] & 0x0001ffffffffffffull)) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
     // x=y=0, return NaN
-    res.w[1] = 0x7c00000000000000ull;
-    res.w[0] = 0;
+    res.w[1U] = 0x7c00000000000000ull;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // return 0
-  res.w[1] = (x ^ y.w[1]) & 0x8000000000000000ull;
+  res.w[1U] = (x ^ y.w[1U]) & 0x8000000000000000ull;
   exponent_x = exponent_x - exponent_y + (DECIMAL_EXPONENT_BIAS_128<<1) - DECIMAL_EXPONENT_BIAS;
   if (exponent_x > DECIMAL_MAX_EXPON_128)
     exponent_x = DECIMAL_MAX_EXPON_128;
   else if (exponent_x < 0)
     exponent_x = 0;
-  res.w[1] |= (((BID_UINT64) exponent_x) << 49);
-  res.w[0] = 0;
+  res.w[1U] |= (((BID_UINT64) exponent_x) << 49);
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -1100,30 +1100,30 @@ if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if ((y.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((y.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if ((y.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
+    if ((y.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[1] = CY.w[1] & QUIET_MASK64;
-    res.w[0] = CY.w[0];
+    res.w[1U] = CY.w[1U] & QUIET_MASK64;
+    res.w[0U] = CY.w[0U];
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // y is Infinity?
-  if ((y.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((y.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // return +/-0
-    res.w[1] = sign_x ^ sign_y;
-    res.w[0] = 0;
+    res.w[1U] = sign_x ^ sign_y;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // y is 0, return +/-Inf
-  res.w[1] =
-    ((x ^ y.w[1]) & 0x8000000000000000ull) | 0x7800000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] =
+    ((x ^ y.w[1U]) & 0x8000000000000000ull) | 0x7800000000000000ull;
+  res.w[0U] = 0;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
@@ -1140,16 +1140,16 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   // CX < CY
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
 
   // fx ~ CX,   fy ~ CY
-  fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-  fy.d = (float) CY.w[1] * f64.d + (float) CY.w[0];
+  fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+  fy.d = (float) CY.w[1U] * f64.d + (float) CY.w[0U];
   // expon_cy - expon_cx
   bin_index = (fy.i - fx.i) >> 23;
 
   T128 = bid_power10_index_binexp_128[bin_index];
-  __mul_64x128_short (CA, CX.w[0], T128);
+  __mul_64x128_short (CA, CX.w[0U], T128);
 
   ed2 = 33;
   if (__unsigned_compare_gt_128 (CY, CA))
@@ -1159,14 +1159,14 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   __mul_128x128_to_256 (CA4, CA, T128);
 
   ed2 += bid_estimate_decimal_digits[bin_index];
-  CQ.w[0] = CQ.w[1] = 0;
+  CQ.w[0U] = CQ.w[1U] = 0;
   diff_expon = diff_expon - ed2;
 
 } else {
   // get CQ = CX/CY
   bid___div_128_by_128 (&CQ, &CR, CX, CY);
 
-  if (!CR.w[1] && !CR.w[0]) {
+  if (!CR.w[1U] && !CR.w[0U]) {
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
         pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
@@ -1178,20 +1178,20 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   }
   // get number of decimal digits in CQ
   // 2^64
-  f64.i = 0x5f800000;
-  fx.d = (float) CQ.w[1] * f64.d + (float) CQ.w[0];
+  f64.i = 0x5f800000U;
+  fx.d = (float) CQ.w[1U] * f64.d + (float) CQ.w[0U];
   // binary expon. of CQ
-  bin_expon = (fx.i - 0x3f800000) >> 23;
+  bin_expon = (fx.i - 0x3f800000U) >> 23;
 
   digits_q = bid_estimate_decimal_digits[bin_expon];
-  TP128.w[0] = bid_power10_index_binexp_128[bin_expon].w[0];
-  TP128.w[1] = bid_power10_index_binexp_128[bin_expon].w[1];
+  TP128.w[0U] = bid_power10_index_binexp_128[bin_expon].w[0U];
+  TP128.w[1U] = bid_power10_index_binexp_128[bin_expon].w[1U];
   if (__unsigned_compare_ge_128 (CQ, TP128))
     digits_q++;
 
   ed2 = 34 - digits_q;
-  T128.w[0] = bid_power10_table_128[ed2].w[0];
-  T128.w[1] = bid_power10_table_128[ed2].w[1];
+  T128.w[0U] = bid_power10_table_128[ed2].w[0U];
+  T128.w[1U] = bid_power10_table_128[ed2].w[1U];
   __mul_128x128_to_256 (CA4, CR, T128);
   diff_expon = diff_expon - ed2;
   __mul_128x128_low (CQ, CQ, T128);
@@ -1201,7 +1201,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 bid___div_256_by_128 (&CQ, &CA4, CY);
 
 #ifdef BID_SET_STATUS_FLAGS
-  if (CA4.w[0] || CA4.w[1]) {
+  if (CA4.w[0U] || CA4.w[1U]) {
     // set status flags
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
@@ -1210,7 +1210,7 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
 #endif
 #else
 #ifndef LEAVE_TRAILING_ZEROS
-  if (!CA4.w[0] && !CA4.w[1])
+  if (!CA4.w[0U] && !CA4.w[1U])
 #endif
 #endif
 #ifndef LEAVE_TRAILING_ZEROS
@@ -1218,13 +1218,13 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
   {
     //printf("ed2=%d,nz=%d,a=%d,CQ="BID_LX16","BID_LX16", RH="BID_LX16", RL="BID_LX16"\n",ed2,nzeros,amount,CQ.w[1],CQ.w[0],reciprocals10_128[nzeros].w[1],reciprocals10_128[nzeros].w[0]);fflush(stdout);
     // check whether CX, CY are short
-    if (!CX.w[1] && !CY.w[1] && (CX.w[0] <= 1024) && (CY.w[0] <= 1024)) {
-      i = (int) CY.w[0] - 1;
-      j = (int) CX.w[0] - 1;
+    if (!CX.w[1U] && !CY.w[1U] && (CX.w[0U] <= 1024) && (CY.w[0U] <= 1024)) {
+      i = (int) CY.w[0U] - 1;
+      j = (int) CX.w[0U] - 1;
       // difference in powers of 2 bid_factors for Y and X
-      nzeros = ed2 - bid_factors[i][0] + bid_factors[j][0];
+      nzeros = ed2 - bid_factors[i][0U] + bid_factors[j][0U];
       // difference in powers of 5 bid_factors
-      d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
+      d5 = ed2 - bid_factors[i][1U] + bid_factors[j][1U];
       if (d5 < nzeros)
     nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
@@ -1239,46 +1239,46 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
     } else {
       // decompose Q as Qh*10^17 + Ql
       //T128 = bid_reciprocals10_128[17];
-      T128.w[0] = 0x44909befeb9fad49ull;
-      T128.w[1] = 0x000b877aa3236a4bull;
+      T128.w[0U] = 0x44909befeb9fad49ull;
+      T128.w[1U] = 0x000b877aa3236a4bull;
       __mul_128x128_to_256 (P256, CQ, T128);
       //amount = bid_recip_scale[17];
-      Q_high = (P256.w[2] >> 44) | (P256.w[3] << (64 - 44));
-      Q_low = CQ.w[0] - Q_high * 100000000000000000ull;
+      Q_high = (P256.w[2U] >> 44) | (P256.w[3U] << (64 - 44));
+      Q_low = CQ.w[0U] - Q_high * 100000000000000000ull;
 
       if (!Q_low) {
     diff_expon += 17;
 
-    tdigit[0] = Q_high & 0x3ffffff;
-    tdigit[1] = 0;
+    tdigit[0U] = Q_high & 0x3ffffffU;
+    tdigit[1U] = 0;
     QX = Q_high >> 26;
     QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
       k = (QX32 & 127);
-      tdigit[0] += bid_convert_table[j][k][0];
-      tdigit[1] += bid_convert_table[j][k][1];
-      if (tdigit[0] >= 100000000) {
-        tdigit[0] -= 100000000;
-        tdigit[1]++;
+      tdigit[0U] += bid_convert_table[j][k][0U];
+      tdigit[1U] += bid_convert_table[j][k][1U];
+      if (tdigit[0U] >= 100000000) {
+        tdigit[0U] -= 100000000;
+        tdigit[1U]++;
       }
     }
 
 
-    if (tdigit[1] >= 100000000) {
-      tdigit[1] -= 100000000;
-      if (tdigit[1] >= 100000000)
-        tdigit[1] -= 100000000;
+    if (tdigit[1U] >= 100000000) {
+      tdigit[1U] -= 100000000;
+      if (tdigit[1U] >= 100000000)
+        tdigit[1U] -= 100000000;
     }
 
-    digit = tdigit[0];
-    if (!digit && !tdigit[1])
+    digit = tdigit[0U];
+    if (!digit && !tdigit[1U])
       nzeros += 16;
     else {
       if (!digit) {
         nzeros += 8;
-        digit = tdigit[1];
+        digit = tdigit[1U];
       }
       // decompose digit
       PD = (BID_UINT64) digit *0x068DB8BBull;
@@ -1302,42 +1302,42 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
 
       // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
       amount = bid_short_recip_scale[nzeros];
-      CQ.w[0] = CQ.w[1] >> amount;
+      CQ.w[0U] = CQ.w[1U] >> amount;
     } else
-      CQ.w[0] = Q_high;
-    CQ.w[1] = 0;
+      CQ.w[0U] = Q_high;
+    CQ.w[1U] = 0;
 
     diff_expon += nzeros;
       } else {
-    tdigit[0] = Q_low & 0x3ffffff;
-    tdigit[1] = 0;
+    tdigit[0U] = Q_low & 0x3ffffffU;
+    tdigit[1U] = 0;
     QX = Q_low >> 26;
     QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
       k = (QX32 & 127);
-      tdigit[0] += bid_convert_table[j][k][0];
-      tdigit[1] += bid_convert_table[j][k][1];
-      if (tdigit[0] >= 100000000) {
-        tdigit[0] -= 100000000;
-        tdigit[1]++;
+      tdigit[0U] += bid_convert_table[j][k][0U];
+      tdigit[1U] += bid_convert_table[j][k][1U];
+      if (tdigit[0U] >= 100000000) {
+        tdigit[0U] -= 100000000;
+        tdigit[1U]++;
       }
     }
 
-    if (tdigit[1] >= 100000000) {
-      tdigit[1] -= 100000000;
-      if (tdigit[1] >= 100000000)
-        tdigit[1] -= 100000000;
+    if (tdigit[1U] >= 100000000) {
+      tdigit[1U] -= 100000000;
+      if (tdigit[1U] >= 100000000)
+        tdigit[1U] -= 100000000;
     }
 
-    digit = tdigit[0];
-    if (!digit && !tdigit[1])
+    digit = tdigit[0U];
+    if (!digit && !tdigit[1U])
       nzeros += 16;
     else {
       if (!digit) {
         nzeros += 8;
-        digit = tdigit[1];
+        digit = tdigit[1U];
       }
       // decompose digit
       PD = (BID_UINT64) digit *0x068DB8BBull;
@@ -1383,70 +1383,70 @@ if (diff_expon >= 0) {
 #ifdef IEEE_ROUND_NEAREST
   // rounding
   // 2*CA4 - CY
-  CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-  CA4r.w[0] = CA4.w[0] + CA4.w[0];
-  __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-  CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
+  CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+  CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+  __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+  CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
 
-  D = (CA4r.w[1] | CA4r.w[0]) ? 1 : 0;
-  carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) & ((CQ.w[0]) | D);
+  D = (CA4r.w[1U] | CA4r.w[0U]) ? 1 : 0;
+  carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) & (CQ.w[0U] | D));
 
-  CQ.w[0] += carry64;
-  if (CQ.w[0] < carry64)
-    CQ.w[1]++;
+  CQ.w[0U] += carry64;
+  if (CQ.w[0U] < carry64)
+    CQ.w[1U]++;
 #else
 #ifdef IEEE_ROUND_NEAREST_TIES_AWAY
   // rounding
   // 2*CA4 - CY
-  CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-  CA4r.w[0] = CA4.w[0] + CA4.w[0];
-  __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-  CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
+  CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+  CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+  __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+  CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
 
-  D = (CA4r.w[1] | CA4r.w[0]) ? 0 : 1;
-  carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) | D;
+  D = (CA4r.w[1U] | CA4r.w[0U]) ? 0 : 1;
+  carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) | D);
 
-  CQ.w[0] += carry64;
-  if (CQ.w[0] < carry64)
-    CQ.w[1]++;
+  CQ.w[0U] += carry64;
+  if (CQ.w[0U] < carry64)
+    CQ.w[1U]++;
 #else
-  rmode = rnd_mode;
+  rmode = (unsigned int)rnd_mode;
   if (sign_x ^ sign_y && (unsigned) (rmode - 1) < 2)
     rmode = 3 - rmode;
   switch (rmode) {
   case BID_ROUNDING_TO_NEAREST:	// round to nearest code
     // rounding
     // 2*CA4 - CY
-    CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-    CA4r.w[0] = CA4.w[0] + CA4.w[0];
-    __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-    CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
-    D = (CA4r.w[1] | CA4r.w[0]) ? 1 : 0;
-    carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) & ((CQ.w[0]) | D);
-    CQ.w[0] += carry64;
-    if (CQ.w[0] < carry64)
-      CQ.w[1]++;
+    CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+    CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+    __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+    CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
+    D = (CA4r.w[1U] | CA4r.w[0U]) ? 1 : 0;
+    carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) & (CQ.w[0U] | D));
+    CQ.w[0U] += carry64;
+    if (CQ.w[0U] < carry64)
+      CQ.w[1U]++;
     break;
   case BID_ROUNDING_TIES_AWAY:
     // rounding
     // 2*CA4 - CY
-    CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-    CA4r.w[0] = CA4.w[0] + CA4.w[0];
-    __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-    CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
-    D = (CA4r.w[1] | CA4r.w[0]) ? 0 : 1;
-    carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) | D;
-    CQ.w[0] += carry64;
-    if (CQ.w[0] < carry64)
-      CQ.w[1]++;
+    CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+    CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+    __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+    CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
+    D = (CA4r.w[1U] | CA4r.w[0U]) ? 0 : 1;
+    carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) | D);
+    CQ.w[0U] += carry64;
+    if (CQ.w[0U] < carry64)
+      CQ.w[1U]++;
     break;
   case BID_ROUNDING_DOWN:
   case BID_ROUNDING_TO_ZERO:
     break;
   default:	// rounding up
-    CQ.w[0]++;
-    if (!CQ.w[0])
-      CQ.w[1]++;
+    CQ.w[0U]++;
+    if (!CQ.w[0U])
+      CQ.w[1U]++;
     break;
   }
 #endif
@@ -1454,13 +1454,13 @@ if (diff_expon >= 0) {
 
 } else {
 #ifdef BID_SET_STATUS_FLAGS
-  if (CA4.w[0] || CA4.w[1]) {
+  if (CA4.w[0U] || CA4.w[1U]) {
     // set status flags
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
 #endif
   bid_handle_UF_128_rem (&res, sign_x ^ sign_y, diff_expon, CQ,
-             CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
+             CA4.w[1U] | CA4.w[0U], &rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -1487,7 +1487,8 @@ BID128_FUNCTION_ARG128_ARGTYPE2 (bid128qd_div, x, BID_UINT64, y)
      BID_UINT32 QX32, tdigit[3], digit, digit_h, digit_low;
      int exponent_x, exponent_y, bin_index, bin_expon, diff_expon, ed2,
        digits_q, amount;
-     int nzeros, i, j, k, d5, rmode;
+     int nzeros, i, j, k, d5;
+     unsigned rmode;
      int old_rm, rm_changed=0;
 
   BID_OPT_SAVE_BINARY_FLAGS()
@@ -1498,24 +1499,24 @@ BID128_FUNCTION_ARG128_ARGTYPE2 (bid128qd_div, x, BID_UINT64, y)
     fesetround(FE_TONEAREST);
   }
 
-valid_y = unpack_BID64 (&sign_y, &exponent_y, &CY.w[0], y);
+valid_y = unpack_BID64 (&sign_y, &exponent_y, &CY.w[0U], y);
     // unpack arguments, check for NaN or Infinity
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
     // test if x is NaN
-if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+if ((x.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull ||	// sNaN
+  if ((x.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull ||	// sNaN
       (y & 0x7e00000000000000ull) == 0x7e00000000000000ull)
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[1] = (CX.w[1]) & QUIET_MASK64;
-  res.w[0] = CX.w[0];
+  res.w[1U] = (CX.w[1U]) & QUIET_MASK64;
+  res.w[0U] = CX.w[0U];
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
     // x is Infinity?
-if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+if ((x.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   // check if y is Inf. 
   if (((y & 0x7c00000000000000ull) == 0x7800000000000000ull))
     // return NaN 
@@ -1523,8 +1524,8 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[1] = 0x7c00000000000000ull;
-    res.w[0] = 0;
+    res.w[1U] = 0x7c00000000000000ull;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
@@ -1534,9 +1535,9 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // return NaN 
   {
     // return +/-Inf
-    res.w[1] = ((x.w[1] ^ y) & 0x8000000000000000ull) |
+    res.w[1U] = ((x.w[1U] ^ y) & 0x8000000000000000ull) |
       0x7800000000000000ull;
-    res.w[0] = 0;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
@@ -1544,32 +1545,32 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 }
     // x is 0
 if ((y & 0x7800000000000000ull) < 0x7800000000000000ull) {
-    if (!CY.w[0]) {
+    if (!CY.w[0U]) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
     // x=y=0, return NaN
-    res.w[1] = 0x7c00000000000000ull;
-    res.w[0] = 0;
+    res.w[1U] = 0x7c00000000000000ull;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // return 0
-  res.w[1] = (x.w[1] ^ y) & 0x8000000000000000ull;
+  res.w[1U] = (x.w[1U] ^ y) & 0x8000000000000000ull;
   exponent_x = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS;
   if (exponent_x > DECIMAL_MAX_EXPON_128)
     exponent_x = DECIMAL_MAX_EXPON_128;
   else if (exponent_x < 0)
     exponent_x = 0;
-  res.w[1] |= (((BID_UINT64) exponent_x) << 49);
-  res.w[0] = 0;
+  res.w[1U] |= (((BID_UINT64) exponent_x) << 49);
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
 }
-CY.w[1] = 0;
+CY.w[1U] = 0;
 if (!valid_y) {
   // y is Inf. or NaN
 
@@ -1579,9 +1580,9 @@ if (!valid_y) {
     if ((y & SNAN_MASK64) == SNAN_MASK64)	// sNaN
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[0] = (CY.w[0] & 0x0003ffffffffffffull);
-  __mul_64x64_to_128 (res, res.w[0], bid_power10_table_128[18].w[0]);
-  res.w[1] |= ((CY.w[0]) & 0xfc00000000000000ull);
+  res.w[0U] = (CY.w[0U] & 0x0003ffffffffffffull);
+  __mul_64x64_to_128 (res, res.w[0U], bid_power10_table_128[18U].w[0U]);
+  res.w[1U] |= ((CY.w[0U]) & 0xfc00000000000000ull);
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -1589,8 +1590,8 @@ if (!valid_y) {
   // y is Infinity?
   if ((y & INFINITY_MASK64) == INFINITY_MASK64) {
     // return +/-0
-    res.w[1] = ((x.w[1] ^ y) & 0x8000000000000000ull);
-    res.w[0] = 0;
+    res.w[1U] = ((x.w[1U] ^ y) & 0x8000000000000000ull);
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
@@ -1599,8 +1600,8 @@ if (!valid_y) {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-  res.w[1] = (sign_x ^ sign_y) | INFINITY_MASK64;
-  res.w[0] = 0;
+  res.w[1U] = (sign_x ^ sign_y) | INFINITY_MASK64;
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -1614,16 +1615,16 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   // CX < CY
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
 
   // fx ~ CX,   fy ~ CY
-  fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-  fy.d = (float) CY.w[1] * f64.d + (float) CY.w[0];
+  fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+  fy.d = (float) CY.w[1U] * f64.d + (float) CY.w[0U];
   // expon_cy - expon_cx
   bin_index = (fy.i - fx.i) >> 23;
 
   T128 = bid_power10_index_binexp_128[bin_index];
-  __mul_64x128_short (CA, CX.w[0], T128);
+  __mul_64x128_short (CA, CX.w[0U], T128);
 
   ed2 = 33;
   if (__unsigned_compare_gt_128 (CY, CA))
@@ -1633,14 +1634,14 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   __mul_128x128_to_256 (CA4, CA, T128);
 
   ed2 += bid_estimate_decimal_digits[bin_index];
-  CQ.w[0] = CQ.w[1] = 0;
+  CQ.w[0U] = CQ.w[1U] = 0;
   diff_expon = diff_expon - ed2;
 
 } else {
   // get CQ = CX/CY
   bid___div_128_by_128 (&CQ, &CR, CX, CY);
 
-  if (!CR.w[1] && !CR.w[0]) {
+  if (!CR.w[1U] && !CR.w[0U]) {
     bid_get_BID128 (&res, sign_x ^ sign_y, diff_expon, CQ, &rnd_mode,
         pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
@@ -1652,20 +1653,20 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   }
   // get number of decimal digits in CQ
   // 2^64
-  f64.i = 0x5f800000;
-  fx.d = (float) CQ.w[1] * f64.d + (float) CQ.w[0];
+  f64.i = 0x5f800000U;
+  fx.d = (float) CQ.w[1U] * f64.d + (float) CQ.w[0U];
   // binary expon. of CQ
-  bin_expon = (fx.i - 0x3f800000) >> 23;
+  bin_expon = (fx.i - 0x3f800000U) >> 23;
 
   digits_q = bid_estimate_decimal_digits[bin_expon];
-  TP128.w[0] = bid_power10_index_binexp_128[bin_expon].w[0];
-  TP128.w[1] = bid_power10_index_binexp_128[bin_expon].w[1];
+  TP128.w[0U] = bid_power10_index_binexp_128[bin_expon].w[0U];
+  TP128.w[1U] = bid_power10_index_binexp_128[bin_expon].w[1U];
   if (__unsigned_compare_ge_128 (CQ, TP128))
     digits_q++;
 
   ed2 = 34 - digits_q;
-  T128.w[0] = bid_power10_table_128[ed2].w[0];
-  T128.w[1] = bid_power10_table_128[ed2].w[1];
+  T128.w[0U] = bid_power10_table_128[ed2].w[0U];
+  T128.w[1U] = bid_power10_table_128[ed2].w[1U];
   __mul_128x128_to_256 (CA4, CR, T128);
   diff_expon = diff_expon - ed2;
   __mul_128x128_low (CQ, CQ, T128);
@@ -1676,7 +1677,7 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
 
 
 #ifdef BID_SET_STATUS_FLAGS
-  if (CA4.w[0] || CA4.w[1]) {
+  if (CA4.w[0U] || CA4.w[1U]) {
     // set status flags
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
@@ -1685,20 +1686,20 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
 #endif
 #else
 #ifndef LEAVE_TRAILING_ZEROS
-  if (!CA4.w[0] && !CA4.w[1])
+  if (!CA4.w[0U] && !CA4.w[1U])
 #endif
 #endif
 #ifndef LEAVE_TRAILING_ZEROS
     // check whether result is exact
   {
     // check whether CX, CY are short
-    if (!CX.w[1] && !CY.w[1] && (CX.w[0] <= 1024) && (CY.w[0] <= 1024)) {
-      i = (int) CY.w[0] - 1;
-      j = (int) CX.w[0] - 1;
+    if (!CX.w[1U] && !CY.w[1U] && (CX.w[0U] <= 1024) && (CY.w[0U] <= 1024)) {
+      i = (int) CY.w[0U] - 1;
+      j = (int) CX.w[0U] - 1;
       // difference in powers of 2 bid_factors for Y and X
-      nzeros = ed2 - bid_factors[i][0] + bid_factors[j][0];
+      nzeros = ed2 - bid_factors[i][0U] + bid_factors[j][0U];
       // difference in powers of 5 bid_factors
-      d5 = ed2 - bid_factors[i][1] + bid_factors[j][1];
+      d5 = ed2 - bid_factors[i][1U] + bid_factors[j][1U];
       if (d5 < nzeros)
     nzeros = d5;
       // get P*(2^M[extra_digits])/10^extra_digits
@@ -1713,46 +1714,46 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
     } else {
       // decompose Q as Qh*10^17 + Ql
       //T128 = bid_reciprocals10_128[17];
-      T128.w[0] = 0x44909befeb9fad49ull;
-      T128.w[1] = 0x000b877aa3236a4bull;
+      T128.w[0U] = 0x44909befeb9fad49ull;
+      T128.w[1U] = 0x000b877aa3236a4bull;
       __mul_128x128_to_256 (P256, CQ, T128);
       //amount = bid_recip_scale[17];
-      Q_high = (P256.w[2] >> 44) | (P256.w[3] << (64 - 44));
-      Q_low = CQ.w[0] - Q_high * 100000000000000000ull;
+      Q_high = (P256.w[2U] >> 44) | (P256.w[3U] << (64 - 44));
+      Q_low = CQ.w[0U] - Q_high * 100000000000000000ull;
 
       if (!Q_low) {
     diff_expon += 17;
 
-    tdigit[0] = Q_high & 0x3ffffff;
-    tdigit[1] = 0;
+    tdigit[0U] = Q_high & 0x3ffffffU;
+    tdigit[1U] = 0;
     QX = Q_high >> 26;
     QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
       k = (QX32 & 127);
-      tdigit[0] += bid_convert_table[j][k][0];
-      tdigit[1] += bid_convert_table[j][k][1];
-      if (tdigit[0] >= 100000000) {
-        tdigit[0] -= 100000000;
-        tdigit[1]++;
+      tdigit[0U] += bid_convert_table[j][k][0U];
+      tdigit[1U] += bid_convert_table[j][k][1U];
+      if (tdigit[0U] >= 100000000) {
+        tdigit[0U] -= 100000000;
+        tdigit[1U]++;
       }
     }
 
 
-    if (tdigit[1] >= 100000000) {
-      tdigit[1] -= 100000000;
-      if (tdigit[1] >= 100000000)
-        tdigit[1] -= 100000000;
+    if (tdigit[1U] >= 100000000) {
+      tdigit[1U] -= 100000000;
+      if (tdigit[1U] >= 100000000)
+        tdigit[1U] -= 100000000;
     }
 
-    digit = tdigit[0];
-    if (!digit && !tdigit[1])
+    digit = tdigit[0U];
+    if (!digit && !tdigit[1U])
       nzeros += 16;
     else {
       if (!digit) {
         nzeros += 8;
-        digit = tdigit[1];
+        digit = tdigit[1U];
       }
       // decompose digit
       PD = (BID_UINT64) digit *0x068DB8BBull;
@@ -1775,42 +1776,42 @@ bid___div_256_by_128 (&CQ, &CA4, CY);
 
       // now get P/10^extra_digits: shift C64 right by M[extra_digits]-64
       amount = bid_short_recip_scale[nzeros];
-      CQ.w[0] = CQ.w[1] >> amount;
+      CQ.w[0U] = CQ.w[1U] >> amount;
     } else
-      CQ.w[0] = Q_high;
-    CQ.w[1] = 0;
+      CQ.w[0U] = Q_high;
+    CQ.w[1U] = 0;
 
     diff_expon += nzeros;
       } else {
-    tdigit[0] = Q_low & 0x3ffffff;
-    tdigit[1] = 0;
+    tdigit[0U] = Q_low & 0x3ffffffU;
+    tdigit[1U] = 0;
     QX = Q_low >> 26;
     QX32 = (BID_UINT32) QX;
     nzeros = 0;
 
     for (j = 0; QX32; j++, QX32 >>= 7) {
       k = (QX32 & 127);
-      tdigit[0] += bid_convert_table[j][k][0];
-      tdigit[1] += bid_convert_table[j][k][1];
-      if (tdigit[0] >= 100000000) {
-        tdigit[0] -= 100000000;
-        tdigit[1]++;
+      tdigit[0U] += bid_convert_table[j][k][0U];
+      tdigit[1U] += bid_convert_table[j][k][1U];
+      if (tdigit[0U] >= 100000000) {
+        tdigit[0U] -= 100000000;
+        tdigit[1U]++;
       }
     }
 
-    if (tdigit[1] >= 100000000) {
-      tdigit[1] -= 100000000;
-      if (tdigit[1] >= 100000000)
-        tdigit[1] -= 100000000;
+    if (tdigit[1U] >= 100000000) {
+      tdigit[1U] -= 100000000;
+      if (tdigit[1U] >= 100000000)
+        tdigit[1U] -= 100000000;
     }
 
-    digit = tdigit[0];
-    if (!digit && !tdigit[1])
+    digit = tdigit[0U];
+    if (!digit && !tdigit[1U])
       nzeros += 16;
     else {
       if (!digit) {
         nzeros += 8;
-        digit = tdigit[1];
+        digit = tdigit[1U];
       }
       // decompose digit
       PD = (BID_UINT64) digit *0x068DB8BBull;
@@ -1854,70 +1855,70 @@ if (diff_expon >= 0) {
 #ifdef IEEE_ROUND_NEAREST
   // rounding
   // 2*CA4 - CY
-  CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-  CA4r.w[0] = CA4.w[0] + CA4.w[0];
-  __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-  CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
+  CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+  CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+  __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+  CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
 
-  D = (CA4r.w[1] | CA4r.w[0]) ? 1 : 0;
-  carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) & ((CQ.w[0]) | D);
+  D = (CA4r.w[1U] | CA4r.w[0U]) ? 1 : 0;
+  carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) & (CQ.w[0U] | D));
 
-  CQ.w[0] += carry64;
-  if (CQ.w[0] < carry64)
-    CQ.w[1]++;
+  CQ.w[0U] += carry64;
+  if (CQ.w[0U] < carry64)
+    CQ.w[1U]++;
 #else
 #ifdef IEEE_ROUND_NEAREST_TIES_AWAY
   // rounding
   // 2*CA4 - CY
-  CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-  CA4r.w[0] = CA4.w[0] + CA4.w[0];
-  __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-  CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
+  CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+  CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+  __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+  CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
 
-  D = (CA4r.w[1] | CA4r.w[0]) ? 0 : 1;
-  carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) | D;
+  D = (CA4r.w[1U] | CA4r.w[0U]) ? 0 : 1;
+  carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) | D);
 
-  CQ.w[0] += carry64;
-  if (CQ.w[0] < carry64)
-    CQ.w[1]++;
+  CQ.w[0U] += carry64;
+  if (CQ.w[0U] < carry64)
+    CQ.w[1U]++;
 #else
-  rmode = rnd_mode;
+  rmode = (unsigned int)rnd_mode;
   if (sign_x ^ sign_y && (unsigned) (rmode - 1) < 2)
     rmode = 3 - rmode;
   switch (rmode) {
   case BID_ROUNDING_TO_NEAREST:	// round to nearest code
     // rounding
     // 2*CA4 - CY
-    CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-    CA4r.w[0] = CA4.w[0] + CA4.w[0];
-    __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-    CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
-    D = (CA4r.w[1] | CA4r.w[0]) ? 1 : 0;
-    carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) & ((CQ.w[0]) | D);
-    CQ.w[0] += carry64;
-    if (CQ.w[0] < carry64)
-      CQ.w[1]++;
+    CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+    CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+    __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+    CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
+    D = (CA4r.w[1U] | CA4r.w[0U]) ? 1 : 0;
+    carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) & (CQ.w[0U] | D));
+    CQ.w[0U] += carry64;
+    if (CQ.w[0U] < carry64)
+      CQ.w[1U]++;
     break;
   case BID_ROUNDING_TIES_AWAY:
     // rounding
     // 2*CA4 - CY
-    CA4r.w[1] = (CA4.w[1] + CA4.w[1]) | (CA4.w[0] >> 63);
-    CA4r.w[0] = CA4.w[0] + CA4.w[0];
-    __sub_borrow_out (CA4r.w[0], carry64, CA4r.w[0], CY.w[0]);
-    CA4r.w[1] = CA4r.w[1] - CY.w[1] - carry64;
-    D = (CA4r.w[1] | CA4r.w[0]) ? 0 : 1;
-    carry64 = (1 + (((BID_SINT64) CA4r.w[1]) >> 63)) | D;
-    CQ.w[0] += carry64;
-    if (CQ.w[0] < carry64)
-      CQ.w[1]++;
+    CA4r.w[1U] = (CA4.w[1U] + CA4.w[1U]) | (CA4.w[0U] >> 63);
+    CA4r.w[0U] = CA4.w[0U] + CA4.w[0U];
+    __sub_borrow_out (CA4r.w[0U], carry64, CA4r.w[0U], CY.w[0U]);
+    CA4r.w[1U] = CA4r.w[1U] - CY.w[1U] - carry64;
+    D = (CA4r.w[1U] | CA4r.w[0U]) ? 0 : 1;
+    carry64 = (BID_UINT64)((1ULL + (BID_UINT64)(((BID_SINT64) CA4r.w[1U]) >> 63)) | D);
+    CQ.w[0U] += carry64;
+    if (CQ.w[0U] < carry64)
+      CQ.w[1U]++;
     break;
   case BID_ROUNDING_DOWN:
   case BID_ROUNDING_TO_ZERO:
     break;
   default:	// rounding up
-    CQ.w[0]++;
-    if (!CQ.w[0])
-      CQ.w[1]++;
+    CQ.w[0U]++;
+    if (!CQ.w[0U])
+      CQ.w[1U]++;
     break;
   }
 #endif
@@ -1925,13 +1926,13 @@ if (diff_expon >= 0) {
 
 } else {
 #ifdef BID_SET_STATUS_FLAGS
-  if (CA4.w[0] || CA4.w[1]) {
+  if (CA4.w[0U] || CA4.w[1U]) {
     // set status flags
     __set_status_flags (pfpsf, BID_INEXACT_EXCEPTION);
   }
 #endif
   bid_handle_UF_128_rem (&res, sign_x ^ sign_y, diff_expon, CQ,
-             CA4.w[1] | CA4.w[0], &rnd_mode, pfpsf);
+             CA4.w[1U] | CA4.w[0U], &rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif

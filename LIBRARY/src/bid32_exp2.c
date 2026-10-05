@@ -53,16 +53,16 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_exp2, BID_UINT32, x)
   BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isZero, z, x);
   if (z) {
           // 1 according C99
-          res = 0x32800001;
+          res = 0x32800001U;
      BID_RETURN (res);
   }
   BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, z, x);
   if (z) {
           // 0 or Inf according C99
           if (x & MASK_SIGN32) {
-                  res = 0x32800000;
+                  res = 0x32800000U;
           } else {
-                  res = 0x78000000;
+                  res = 0x78000000U;
           }
 #ifdef BID_SET_STATUS_FLAGS
                 *pfpsf = 0;

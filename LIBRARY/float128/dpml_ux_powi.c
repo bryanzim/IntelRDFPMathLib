@@ -107,8 +107,10 @@ C_UX_POW_I(_X_FLOAT * packed_argument,  WORD n, WORD index_map,
     ** the even cases.
     */
 
-    index = (((n >> (BITS_PER_WORD - 1)) & 2) | (n & 1)) + (n != 0);
-    index = (index_map >> (EXPONENT_INDEX_FIELD_WIDTH*index)) & POWI_INDEX_MASK;
+    index = (WORD)((((U_WORD)n >> (BITS_PER_WORD - 1)) & 2) | (n & 1))
+        + (n != 0);
+    index = (WORD)(((U_WORD)index_map >> ((U_WORD)EXPONENT_INDEX_FIELD_WIDTH
+        * (U_WORD)index)) & POWI_INDEX_MASK);
 
     fp_class = UNPACK(
         packed_argument,
@@ -138,7 +140,7 @@ C_UX_POW_I(_X_FLOAT * packed_argument,  WORD n, WORD index_map,
             NORMALIZE(&unpacked_result);
             }
         exponent = G_UX_EXPONENT(&unpacked_result) - UX_UNDERFLOW_EXPONENT;
-        n = (U_WORD)(n >> 1);
+        n = UX_TO_WORD((U_WORD)(n >> 1));
         if (( 0 == n ) || (((unsigned) exponent) >
           (UX_OVERFLOW_EXPONENT - UX_UNDERFLOW_EXPONENT )))
             break;

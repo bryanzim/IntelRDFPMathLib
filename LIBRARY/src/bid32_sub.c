@@ -55,7 +55,7 @@ bid32_sub (BID_UINT32 x,
 #endif
 
   if (((y & NAN_MASK32) != NAN_MASK32))
-    y ^= 0x80000000;
+    y ^= 0x80000000U;
 
     BIDECIMAL_CALL2 (bid32_add, r32, x, y);
 

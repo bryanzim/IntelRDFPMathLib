@@ -47,7 +47,7 @@
     /* 040 */ DATA_1x2( 0x00000002, 0x00000000 ),
 
     /* unpacked 0 constant */
-    /* 048 */ POS, -131072, DATA_2x2( 0x00000000, 0x00000000, 0x00000000, 0x00000000 ),
+    /* 048 */ POS, TW(-131072), DATA_2x2( 0x00000000, 0x00000000, 0x00000000, 0x00000000 ),
 
     /* Fixed point coefficients for erf(x) evaluation */
     /* 072 */ DATA_4( 0x690507d1, 0xeef69e7e, 0x0009a2c0, 0x00000000 ),
