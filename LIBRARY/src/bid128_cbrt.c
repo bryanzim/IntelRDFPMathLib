@@ -62,7 +62,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 
     // get exponent/3
     iexpon = exponent_x+1;
-    k = ((int)iexpon * (int)0x5556) >> 16;
+    k = ((int)iexpon * (int)0x5556U) >> 16;
     // exponent%3
     j = iexpon - 3*k;
     // eliminate bias from k

@@ -1014,10 +1014,10 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 // and return -inf in that case.
 
   e = ((xa.w[BID_HIGH_128W] >> 49) & ((1ull<<14)-1)) - 6176;
-  c.w[1] = xa.w[BID_HIGH_128W] & ((1ull<<49)-1);
-  c.w[0] = xa.w[BID_LOW_128W];
-  k = clz128(c.w[1],c.w[0]);
-  sll128(c.w[1],c.w[0],k);
+  c.w[1U] = xa.w[BID_HIGH_128W] & ((1ull<<49)-1);
+  c.w[0U] = xa.w[BID_LOW_128W];
+  k = clz128(c.w[1U],c.w[0U]);
+  sll128(c.w[1U],c.w[0U],k);
   k = 128 - k;
 
 // Start out our result as e * log(10) + k * log(2)
@@ -1037,7 +1037,7 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 // After this multiplication the result (considered as a fraction)
 // is 1/2 * (1 - e) where 0 <= e <= 2^-7
 
-  b = c.w[1] >> 56;
+  b = c.w[1U] >> 56;
   r1 = bid_recip_table_1[b-128];
   __mul_64x128_to_192(p,r1,c);
   __sub_192_192(ans,ans,bid_log_table_1[b-128]);
@@ -1046,22 +1046,22 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 // After this the result (considered as a fraction) is
 // 1/4 * (1 - e) where 0 <= e < 2^-12 (maybe 2^-13, I should check)
 
-  b = (p.w[2] >> 49) & 0x7F;
+  b = (p.w[2U] >> 49) & 0x7FU;
   r2 = bid_recip_table_2[b];
   __mul_64x192_to_256(q,r2,p);
   __sub_192_192(ans,ans,bid_log_table_2[b]);
 
 // Complement and shift back by 2 bits to get a proper binary fraction
 
-  sll192_short(q.w[3],q.w[2],q.w[1],2);
-  q.w[3] = ~q.w[3], q.w[2] = ~q.w[2], q.w[1] = ~q.w[1];
+  sll192_short(q.w[3U],q.w[2U],q.w[1U],2);
+  q.w[3U] = ~q.w[3U], q.w[2U] = ~q.w[2U], q.w[1U] = ~q.w[1U];
 
 // Now compute the power series
 // Should use Remez and maybe something shorter?
 
-  sx.w[2] = xx.w[2] = q.w[3];
-  sx.w[1] = xx.w[1] = q.w[2];
-  sx.w[0] = xx.w[0] = q.w[1];
+  sx.w[2U] = xx.w[2U] = q.w[3U];
+  sx.w[1U] = xx.w[1U] = q.w[2U];
+  sx.w[0U] = xx.w[0U] = q.w[1U];
 
   __mul_192x192_to_192_hi(xp,xx,xx);
   __mul_192x192_to_192_hi(cxp,xp,bid_recip_2);
@@ -1101,17 +1101,17 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 
 // Now shift it right by 32 bits and add to rest
 
-  srl192(sx.w[2],sx.w[1],sx.w[0],32);
+  srl192(sx.w[2U],sx.w[1U],sx.w[0U],32);
   __sub_192_192(ans,ans,sx);
 
 // Figure out sign and negate as needed (actually complement, which
 // only makes a difference of 2^-192).
 
-  if (ans.w[2] & (1ull<<63))
+  if (ans.w[2U] & (1ull<<63))
    { s_log = 1;
-     ans.w[2] = ~ans.w[2];
-     ans.w[1] = ~ans.w[1];
-     ans.w[0] = ~ans.w[0];
+     ans.w[2U] = ~ans.w[2U];
+     ans.w[1U] = ~ans.w[1U];
+     ans.w[0U] = ~ans.w[0U];
    }
   else s_log = 0;
 
@@ -1123,7 +1123,7 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 // And the trailing part is for a number with exponent 10^-47
 // (which is nowhere near normalized, btw, as this is just one word).
 
-  __mul_64x64_to_64_hi(c_lo,10000000000000000000ull,ans.w[0]);
+  __mul_64x64_to_64_hi(c_lo,10000000000000000000ull,ans.w[0U]);
 
 // We need about 127 bits of accuracy in this logarithm, and we have
 // about 158 bits of fraction (being pessimistic). So if the 31 leading
@@ -1132,7 +1132,7 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 // the next three terms of the Taylor series otherwise.
 // (i.e. -t^2/2 + t^3/3 - t^4/4). Again, it'd be better to use a Remez series
 
-  if (ans.w[2] < 2)
+  if (ans.w[2U] < 2)
     { BID_UINT128 t, tp, tn, ts;
 
       BIDECIMAL_CALL2(bid128_sub,t,xa,BID128_1);
@@ -1154,8 +1154,8 @@ BID128_FUNCTION_ARG2 (bid128_pow, x, y)
 // Note that the sign "s_log" is needed in both of them.
 
   else
-   { l_hi.w[BID_HIGH_128W] = ((BID_UINT64) (s_log) << 63) + (6148ull << 49) + ans.w[2];
-     l_hi.w[BID_LOW_128W] = ans.w[1];
+   { l_hi.w[BID_HIGH_128W] = ((BID_UINT64) (s_log) << 63) + (6148ull << 49) + ans.w[2U];
+     l_hi.w[BID_LOW_128W] = ans.w[1U];
      l_lo.w[BID_HIGH_128W] = ((BID_UINT64) (s_log) << 63) + (6129ull << 49);
      l_lo.w[BID_LOW_128W] = c_lo;
    }

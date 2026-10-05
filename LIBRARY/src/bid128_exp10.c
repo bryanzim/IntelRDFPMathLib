@@ -62,7 +62,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 }
 
     threshold.w[BID_HIGH_128W] = 0x3040000000000000ull;
-    threshold.w[BID_LOW_128W] = 0x17df;   // 6111 = emax - bias
+    threshold.w[BID_LOW_128W] = 0x17dfU;   // 6111 = emax - bias
 
     xn.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] ^ sign_x;
     xn.w[BID_LOW_128W] = x.w[BID_LOW_128W];
@@ -74,7 +74,7 @@ if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     {
         // compare to 6400 
         threshold.w[BID_HIGH_128W] = 0x3040000000000000ull;
-        threshold.w[BID_LOW_128W] = 0x1900;   // 6400
+        threshold.w[BID_LOW_128W] = 0x1900U;   // 6400
         // compare |x| to threshold
         BIDECIMAL_CALL2_NORND (bid128_quiet_less, cmp_res, threshold, xn);
 

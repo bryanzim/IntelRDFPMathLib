@@ -61,7 +61,7 @@ BID128_FUNCTION_ARG1 (bid128_log2, x)
           0x0000314dc6448d93ull) ||
          (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
             0x0000314dc6448d93ull) &&
-          res.w[0] >= 0x38c15b0a00000000ull))
+          res.w[0U] >= 0x38c15b0a00000000ull))
       { res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
         res.w[BID_LOW_128W] = 0ull;
       }

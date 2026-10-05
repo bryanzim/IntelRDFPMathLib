@@ -101,7 +101,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_quantize, BID_UINT64, x, 
   }
   // get number of decimal digits in coefficient_x
   tempx.d = (float) coefficient_x;
-  bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+  bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
   digits_x = bid_estimate_decimal_digits[bin_expon_cx];
   if (coefficient_x >= bid_power10_table_128[digits_x].w[0U])
     digits_x++;

@@ -42,13 +42,13 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS (BID_UINT64, bid32_to_bid64, BID_UINT3
 
 if (!unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x)) {
     // Inf, NaN, 0
-if (((x) & 0x78000000) == 0x78000000) {
-  if (((x) & 0x7e000000) == 0x7e000000) {	// sNaN
+if (((x) & 0x78000000U) == 0x78000000U) {
+  if (((x) & 0x7e000000U) == 0x7e000000U) {	// sNaN
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   }
-  res = (coefficient_x & 0x000fffff);
+  res = (coefficient_x & 0x000fffffU);
   res *= 1000000000;
   res |= ((((BID_UINT64) coefficient_x) << 32) & 0xfc00000000000000ull);
 
@@ -85,7 +85,7 @@ BID_UINT128 Q;
     if (((x) & 0x7800000000000000ull) == 0x7800000000000000ull) {
       t64 = (coefficient_x & 0x0003ffffffffffffull);
       res = (BID_UINT32) (t64/1000000000ull);
-      res |= ((coefficient_x >> 32) & 0xfc000000);
+      res |= ((coefficient_x >> 32) & 0xfc000000U);
 #ifdef BID_SET_STATUS_FLAGS
       if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -108,7 +108,7 @@ BID_UINT128 Q;
   // check number of digits
   if (coefficient_x >= 10000000) {
     tempx.d = (float) coefficient_x;
-    bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+    bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
     extra_digits = bid_estimate_decimal_digits[bin_expon_cx] - 7;
     // add test for range
     if (coefficient_x >= bid_power10_index_binexp[bin_expon_cx])

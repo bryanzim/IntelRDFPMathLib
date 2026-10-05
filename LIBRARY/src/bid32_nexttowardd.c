@@ -52,15 +52,15 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
     // x is NaN or infinity or y is NaN or infinity
 
     if ((x & MASK_NAN32) == MASK_NAN32) { // x is NAN
-      if ((x & 0x000fffff) > 999999)
-    x = x & 0xfe000000; // clear G6-G10 and the payload bits
+      if ((x & 0x000fffffU) > 999999)
+    x = x & 0xfe000000U; // clear G6-G10 and the payload bits
       else
-    x = x & 0xfe0fffff; // clear G6-G10
+    x = x & 0xfe0fffffU; // clear G6-G10
       if ((x & MASK_SNAN32) == MASK_SNAN32) { // x is SNAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return quiet (x)
-    res = x & 0xfdffffff;
+    res = x & 0xfdffffffU;
       } else {	// x is QNaN
     if ((y.w[BID_HIGH_128W] & MASK_SNAN) == MASK_SNAN) { // y is SNAN
       // set invalid flag
@@ -130,7 +130,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
   *pfpsf = tmp_fpsf; // restore fpsf
   if (res1) { // x = y
     // return x with the sign of y
-    res = (BID_UINT32)((y.w[BID_HIGH_128W] & MASK_SIGN) >> 32) | (x & 0x7fffffff);
+    res = (BID_UINT32)((y.w[BID_HIGH_128W] & MASK_SIGN) >> 32) | (x & 0x7fffffffU);
   } else if (res2) { // x > y
     BIDECIMAL_CALL1_NORND (bid32_nextdown, res, x);
   } else {	// x < y
@@ -146,8 +146,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nexttoward, BID_UIN
   }
   // if the result is in (-10^emin, 10^emin), and is different from the
   // operand x, signal underflow and inexact 
-  tmp1 = 0x0f4240; // +1000000 * 10^emin
-  tmp2 = res & 0x7fffffff;
+  tmp1 = 0x0f4240U; // +1000000 * 10^emin
+  tmp2 = res & 0x7fffffffU;
   tmp_fpsf = *pfpsf; // save fpsf
   BIDECIMAL_CALL2_NORND (bid32_quiet_greater, res1, tmp1, tmp2);
   BIDECIMAL_CALL2_NORND (bid32_quiet_not_equal, res2, x, res);

@@ -241,18 +241,18 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_sin, BID_UINT32, x)
 // modulo (pi/2). Note that we have to do this afterwards rather than
 // use modulo (pi/2) reduction at the start to keep integer parities.
 
-  k = p.w[1] >> 62;
-  sll128_short(p.w[1],p.w[0],2);
+  k = p.w[1U] >> 62;
+  sll128_short(p.w[1U],p.w[0U],2);
 
 // If the fraction is >= 1/2, add 1 to integer and complement the fraction
 // with an appropriate sign change so we have a "rounded to nearest" version
 // (Complementing is slightly different from negation but it's negligible.)
 // Set "sf" to the correct sign for the fraction
 
-  if (p.w[1] >= 0x8000000000000000ull)
+  if (p.w[1U] >= 0x8000000000000000ull)
    { k = (k + 1) & 3;
-     p.w[1] = ~p.w[1];
-     p.w[0] = ~p.w[0];
+     p.w[1U] = ~p.w[1U];
+     p.w[0U] = ~p.w[0U];
      sf = 1 - s;
    }
   else
@@ -265,16 +265,16 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_sin, BID_UINT32, x)
 
 // Normalize the binary fraction with exponent ef
 
-  el = clz64_nz(p.w[1]);
+  el = clz64_nz(p.w[1U]);
   ef = 1022 - el;
-  if (el != 0) sll128_short(p.w[1],p.w[0],el);
+  if (el != 0) sll128_short(p.w[1U],p.w[0U],el);
 
 // Now shift right and mask off integer bit for double coefficient
 // and package up as a double-precision number
 
   { union { double d; BID_UINT64 i; } di;
     di.i = (((BID_UINT64) sf) << 63) + ((BID_UINT64) ef << 52) +
-           ((p.w[1] >> 11) & ((1ull<<52)-1));
+           ((p.w[1U] >> 11) & ((1ull<<52)-1));
 
     xd = di.d;
   }

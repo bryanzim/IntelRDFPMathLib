@@ -121,10 +121,10 @@ if (!valid_x) {
   // get number of decimal digits in coefficient_x
 if (CX.w[1U]) {
   tempx.d = (float) CX.w[1U];
-  bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f + 64;
+  bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU + 64;
 } else {
   tempx.d = (float) CX.w[0U];
-  bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+  bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
 }
 
 digits_x = bid_estimate_decimal_digits[bin_expon_cx];

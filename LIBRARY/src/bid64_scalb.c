@@ -78,7 +78,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT64, bid64_scalbn, BID_UINT64,
       res = very_fast_get_BID64 (sign_x, exponent_x, coefficient_x);
       BID_RETURN (res);
     } else
-      exponent_x = 0x7fffffff;	// overflow
+      exponent_x = 0x7fffffffU;	// overflow
   }
   // exponent < 0
   // the BID pack routine will round the coefficient

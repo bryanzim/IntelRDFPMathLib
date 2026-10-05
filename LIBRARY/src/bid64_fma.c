@@ -339,7 +339,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT64, bid64_fma, BID_UINT64,
     if (final_exponent < 0) {
       //--- get number of bits in the coefficients of z  ---
       tempx.d = (double) coefficient_z;
-      bin_expon_cx = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+      bin_expon_cx = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
       // get number of decimal digits in the coeff_x
       digits_z = bid_estimate_decimal_digits[bin_expon_cx];
       if (coefficient_z >= bid_power10_table_128[digits_z].w[0U])

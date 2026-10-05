@@ -65,7 +65,7 @@
 #include "bid_div_macros.h"
 #include <fenv.h>
 
-BID_EXTERN_C const BID_UINT32 bid_convert_table[5][128][2];
+BID_EXTERN_C const BID_UINT32 bid_convert_table[5U][128][2];
 BID_EXTERN_C const BID_SINT8 bid_factors[][2];
 BID_EXTERN_C const BID_UINT8 bid_packed_10000_zeros[];
 
@@ -150,9 +150,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     }
     if (((y & INFINITY_MASK64) != INFINITY_MASK64)) {
       if ((y & SPECIAL_ENCODING_MASK64) == SPECIAL_ENCODING_MASK64)
-	exponent_y = ((BID_UINT32) (y >> 51)) & 0x3ff;
+	exponent_y = ((BID_UINT32) (y >> 51)) & 0x3ffU;
       else
-	exponent_y = ((BID_UINT32) (y >> 53)) & 0x3ff;
+	exponent_y = ((BID_UINT32) (y >> 53)) & 0x3ffU;
       sign_y = y & 0x8000000000000000ull;
 
       exponent_x = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS;
@@ -244,7 +244,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
     R = coefficient_x - coefficient_y * Q;
 
     // will use to get number of dec. digits of Q
-    bin_expon_cx = (tempq.i >> 52) - 0x3ff;
+    bin_expon_cx = (tempq.i >> 52) - 0x3ffU;
 
     // R<0 ?
     D = (BID_UINT64)((BID_SINT64) R) >> 63;
@@ -374,7 +374,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_div, BID_UINT64, x, BID_U
 
       diff_expon += nzeros;
     } else {
-      tdigit[0U] = Q & 0x3ffffff;
+      tdigit[0U] = Q & 0x3ffffffU;
       tdigit[1U] = 0;
       QX = Q >> 26;
       QX32 = QX;
@@ -663,7 +663,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   // CX < CY
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
 
   // fx ~ CX,   fy ~ CY
   fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
@@ -697,10 +697,10 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 
   // get number of decimal digits in CQ
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
   fx.d = (float) CQ.w[1U] * f64.d + (float) CQ.w[0U];
   // binary expon. of CQ
-  bin_expon = (fx.i - 0x3f800000) >> 23;
+  bin_expon = (fx.i - 0x3f800000U) >> 23;
 
   digits_q = bid_estimate_decimal_digits[bin_expon];
   TP128.w[0U] = bid_power10_index_binexp_128[bin_expon].w[0U];
@@ -772,7 +772,7 @@ if (!done) {
       Q_low = CQ.w[0U];
 
       {
-	tdigit[0U] = Q_low & 0x3ffffff;
+	tdigit[0U] = Q_low & 0x3ffffffU;
 	tdigit[1U] = 0;
 	QX = Q_low >> 26;
 	QX32 = QX;
@@ -1079,7 +1079,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   // CX < CY
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
 
   // fx ~ CX,   fy ~ CY
   fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
@@ -1115,10 +1115,10 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 
   // get number of decimal digits in CQ
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
   fx.d = (float) CQ.w[1U] * f64.d + (float) CQ.w[0U];
   // binary expon. of CQ
-  bin_expon = (fx.i - 0x3f800000) >> 23;
+  bin_expon = (fx.i - 0x3f800000U) >> 23;
 
   digits_q = bid_estimate_decimal_digits[bin_expon];
   TP128.w[0U] = bid_power10_index_binexp_128[bin_expon].w[0U];
@@ -1164,8 +1164,8 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
     if (CX.w[0U] < QB256.w[0U])
       CA4.w[1U]--;
 //printf("CA4_0=%016I64x,%016I64x, CY=%016I64x %016I64x, p=%I64x\n",CA4.w[1], CA4.w[0],CY.w[1],CY.w[0],power10_table_128[ed2].w[0]);
-    /*if (CR.w[0] || CR.w[1])
-      CA4.w[0] |= 1;*/
+    /*if (CR.w[0U] || CR.w[1U])
+      CA4.w[0U] |= 1;*/
     done = 1;
 //printf("CA4=%016I64x,%016I64x, CY=%016I64x %016I64x, p=%I64x\n",CA4.w[1], CA4.w[0],CY.w[1],CY.w[0],power10_table_128[ed2].w[0]);
 	if(CA4.w[1U]|CA4.w[0U]) {
@@ -1222,7 +1222,7 @@ if (!done) {
       Q_low = CQ.w[0U];
 
       {
-	tdigit[0U] = Q_low & 0x3ffffff;
+	tdigit[0U] = Q_low & 0x3ffffffU;
 	tdigit[1U] = 0;
 	QX = Q_low >> 26;
 	QX32 = QX;
@@ -1398,7 +1398,7 @@ if (!done) {
 
 //#define LEAVE_TRAILING_ZEROS
 
-BID_EXTERN_C const BID_UINT32 bid_convert_table[5][128][2];
+BID_EXTERN_C const BID_UINT32 bid_convert_table[5U][128][2];
 BID_EXTERN_C const BID_SINT8 bid_factors[][2];
 BID_EXTERN_C const BID_UINT8 bid_packed_10000_zeros[];
 
@@ -1544,7 +1544,7 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
   // CX < CY
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
 
   // fx ~ CX,   fy ~ CY
   fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
@@ -1577,10 +1577,10 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
 
   // get number of decimal digits in CQ
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
   fx.d = (float) CQ.w[1U] * f64.d + (float) CQ.w[0U];
   // binary expon. of CQ
-  bin_expon = (fx.i - 0x3f800000) >> 23;
+  bin_expon = (fx.i - 0x3f800000U) >> 23;
 
   digits_q = bid_estimate_decimal_digits[bin_expon];
   TP128.w[0U] = bid_power10_index_binexp_128[bin_expon].w[0U];
@@ -1623,8 +1623,8 @@ if (__unsigned_compare_gt_128 (CY, CX)) {
     CA4.w[0U] = CX.w[0U] - QB256.w[0U];
     if (CX.w[0U] < QB256.w[0U])
       CA4.w[1U]--;
-    /*if (CR.w[0] || CR.w[1])
-      CA4.w[0] |= 1;*/
+    /*if (CR.w[0U] || CR.w[1U])
+      CA4.w[0U] |= 1;*/
     done = 1;
 	if(CA4.w[1U]|CA4.w[0U]) {
     __mul_64x128_low(CY, (bid_power10_table_128[ed2].w[0U]),CY);
@@ -1681,7 +1681,7 @@ if (!done) {
       Q_low = CQ.w[0U];
 
       {
-	tdigit[0U] = Q_low & 0x3ffffff;
+	tdigit[0U] = Q_low & 0x3ffffffU;
 	tdigit[1U] = 0;
 	QX = Q_low >> 26;
 	QX32 = QX;

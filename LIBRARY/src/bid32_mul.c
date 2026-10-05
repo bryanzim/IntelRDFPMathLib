@@ -74,15 +74,15 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
     // y==NaN , return NaN
     BID_RETURN (coefficient_y & QUIET_MASK32);
       // otherwise return +/-Inf
-      BID_RETURN (((x ^ y) & 0x80000000) | INFINITY_MASK32);
+      BID_RETURN (((x ^ y) & 0x80000000U) | INFINITY_MASK32);
     }
     // x is 0
     if (((y & INFINITY_MASK32) != INFINITY_MASK32)) {
       if ((y & SPECIAL_ENCODING_MASK32) == SPECIAL_ENCODING_MASK32)
-    exponent_y = ((BID_UINT32) (y >> 21)) & 0xff;
+    exponent_y = ((BID_UINT32) (y >> 21)) & 0xffU;
       else
-    exponent_y = ((BID_UINT32) (y >> 23)) & 0xff;
-      sign_y = y & 0x80000000;
+    exponent_y = ((BID_UINT32) (y >> 23)) & 0xffU;
+      sign_y = y & 0x80000000U;
 
       exponent_x += exponent_y - DECIMAL_EXPONENT_BIAS_32;
       if (exponent_x > DECIMAL_MAX_EXPON_32)
@@ -112,7 +112,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
     BID_RETURN (NAN_MASK32);
       }
       // otherwise return +/-Inf
-      BID_RETURN (((x ^ y) & 0x80000000) | INFINITY_MASK32);
+      BID_RETURN (((x ^ y) & 0x80000000U) | INFINITY_MASK32);
     }
     // y is 0
     exponent_x += exponent_y - DECIMAL_EXPONENT_BIAS_32;
@@ -128,7 +128,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
   //--- get number of bits in C64 ---
   // version 2 (original)
   tempx.d = (double) P;
-  bin_expon_p = ((tempx.i & MASK_BINARY_EXPONENT) >> 52)-0x3ff;
+  bin_expon_p = ((tempx.i & MASK_BINARY_EXPONENT) >> 52)-0x3ffU;
   n_digits = bid_estimate_decimal_digits[bin_expon_p];
   if(P >=bid_power10_table_128[n_digits].w[0U])
       n_digits++;
@@ -184,7 +184,7 @@ BID_TYPE_FUNCTION_ARG2(BID_UINT32, bid32_mul, x, y)
       if (rmode == 0)	//BID_ROUNDING_TO_NEAREST
 #endif
        if(R==0)
-           Q &= 0xfffffffe;
+           Q &= 0xfffffffeU;
 #endif
 
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING 

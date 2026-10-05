@@ -62,7 +62,7 @@ BID_UINT32 bid32_frexp (BID_UINT32 x, int *exp) {
     //   // set invalid flag
     //   *pfpsf |= BID_INVALID_EXCEPTION;
       // return quiet (x)
-      res = x & 0xfdffffff;
+      res = x & 0xfdffffffU;
     // } else {
     //   res = x;
     }
@@ -76,7 +76,7 @@ BID_UINT32 bid32_frexp (BID_UINT32 x, int *exp) {
       // check for zero or non-canonical 
       if (sig_x > 9999999 || sig_x == 0) {
         *exp = 0;
-        res = (x & 0x80000000) | (exp_x << 23); // zero of the same sign
+        res = (x & 0x80000000U) | (exp_x << 23); // zero of the same sign
         BID_RETURN (res); 
       }  
     } else { 
@@ -84,7 +84,7 @@ BID_UINT32 bid32_frexp (BID_UINT32 x, int *exp) {
       sig_x = (x & MASK_BINARY_SIG1_32);
       if (sig_x == 0) { 
         *exp = 0;
-        res = (x & 0x80000000) | (exp_x << 23); // zero of the same sign
+        res = (x & 0x80000000U) | (exp_x << 23); // zero of the same sign
         BID_RETURN (res);
       }  
     }

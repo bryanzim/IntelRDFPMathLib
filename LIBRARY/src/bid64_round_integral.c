@@ -144,7 +144,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
   } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
       q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
@@ -189,19 +189,19 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // n = C* * 10^(e+x)  
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
-    fstar.w[1] = 0;
-    fstar.w[0] = P128.w[0];
+    res = P128.w[1U];
+    fstar.w[1U] = 0;
+    fstar.w[0U] = P128.w[0U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
-    fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-    fstar.w[0] = P128.w[0];
+    res = (P128.w[1U] >> shift);
+    fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+    fstar.w[0U] = P128.w[0U];
       }
       // if (0 < f* < 10^(-x)) then the result is a midpoint
       // since round_to_even, subtract 1 if current result is odd
-      if ((res & 0x0000000000000001ull) && (fstar.w[1] == 0)
-      && (fstar.w[0] < bid_ten2mk64[ind - 1])) {
+      if ((res & 0x0000000000000001ull) && (fstar.w[1U] == 0)
+      && (fstar.w[0U] < bid_ten2mk64[ind - 1])) {
     res--;
       }
       // determine inexactness of the rounding of C*
@@ -210,10 +210,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // else // if (f* - 1/2 > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-    if (fstar.w[0] > 0x8000000000000000ull) {
+    if (fstar.w[0U] > 0x8000000000000000ull) {
       // f* > 1/2 and the result may be exact
       // fstar.w[0] - 0x8000000000000000ull is f* - 1/2
-      if ((fstar.w[0] - 0x8000000000000000ull) > bid_ten2mk64[ind - 1]) {
+      if ((fstar.w[0U] - 0x8000000000000000ull) > bid_ten2mk64[ind - 1]) {
         // set the inexact flag
         *pfpsf |= BID_INEXACT_EXCEPTION;
       }	// else the result is exact
@@ -222,12 +222,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       *pfpsf |= BID_INEXACT_EXCEPTION;
     }
       } else {	// if 3 <= ind - 1 <= 21
-    if (fstar.w[1] > bid_onehalf128[ind - 1] ||
-        (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
+    if (fstar.w[1U] > bid_onehalf128[ind - 1] ||
+        (fstar.w[1U] == bid_onehalf128[ind - 1] && fstar.w[0U])) {
       // f2* > 1/2 and the result may be exact
       // Calculate f2* - 1/2
-      if (fstar.w[1] > bid_onehalf128[ind - 1]
-          || fstar.w[0] > bid_ten2mk64[ind - 1]) {
+      if (fstar.w[1U] > bid_onehalf128[ind - 1]
+          || fstar.w[0U] > bid_ten2mk64[ind - 1]) {
         // set the inexact flag
         *pfpsf |= BID_INEXACT_EXCEPTION;
       }	// else the result is exact
@@ -273,14 +273,14 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // n = C* * 10^(e+x)
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
-    fstar.w[1] = 0;
-    fstar.w[0] = P128.w[0];
+    res = P128.w[1U];
+    fstar.w[1U] = 0;
+    fstar.w[0U] = P128.w[0U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
-    fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-    fstar.w[0] = P128.w[0];
+    res = (P128.w[1U] >> shift);
+    fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+    fstar.w[0U] = P128.w[0U];
       }
       // midpoints are already rounded correctly
       // determine inexactness of the rounding of C*
@@ -289,10 +289,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // else // if (f* - 1/2 > T*) then
       //   the result is inexact
       if (ind - 1 <= 2) {
-    if (fstar.w[0] > 0x8000000000000000ull) {
+    if (fstar.w[0U] > 0x8000000000000000ull) {
       // f* > 1/2 and the result may be exact 
       // fstar.w[0] - 0x8000000000000000ull is f* - 1/2
-      if ((fstar.w[0] - 0x8000000000000000ull) > bid_ten2mk64[ind - 1]) {
+      if ((fstar.w[0U] - 0x8000000000000000ull) > bid_ten2mk64[ind - 1]) {
         // set the inexact flag
         *pfpsf |= BID_INEXACT_EXCEPTION;
       }	// else the result is exact
@@ -301,12 +301,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       *pfpsf |= BID_INEXACT_EXCEPTION;
     }
       } else {	// if 3 <= ind - 1 <= 21
-    if (fstar.w[1] > bid_onehalf128[ind - 1] ||
-        (fstar.w[1] == bid_onehalf128[ind - 1] && fstar.w[0])) {
+    if (fstar.w[1U] > bid_onehalf128[ind - 1] ||
+        (fstar.w[1U] == bid_onehalf128[ind - 1] && fstar.w[0U])) {
       // f2* > 1/2 and the result may be exact
       // Calculate f2* - 1/2
-      if (fstar.w[1] > bid_onehalf128[ind - 1]
-          || fstar.w[0] > bid_ten2mk64[ind - 1]) {
+      if (fstar.w[1U] > bid_onehalf128[ind - 1]
+          || fstar.w[0U] > bid_ten2mk64[ind - 1]) {
         // set the inexact flag
         *pfpsf |= BID_INEXACT_EXCEPTION;
       }	// else the result is exact
@@ -347,17 +347,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // n = C* * 10^(e+x)  
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
-    fstar.w[1] = 0;
-    fstar.w[0] = P128.w[0];
+    res = P128.w[1U];
+    fstar.w[1U] = 0;
+    fstar.w[0U] = P128.w[0U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
-    fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-    fstar.w[0] = P128.w[0];
+    res = (P128.w[1U] >> shift);
+    fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+    fstar.w[0U] = P128.w[0U];
       }
       // if (f* > 10^(-x)) then the result is inexact
-      if ((fstar.w[1] != 0) || (fstar.w[0] >= bid_ten2mk64[ind - 1])) {
+      if ((fstar.w[1U] != 0) || (fstar.w[0U] >= bid_ten2mk64[ind - 1])) {
     if (x_sign) {
       // if negative and not exact, increment magnitude
       res++;
@@ -400,17 +400,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // n = C* * 10^(e+x)  
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
-    fstar.w[1] = 0;
-    fstar.w[0] = P128.w[0];
+    res = P128.w[1U];
+    fstar.w[1U] = 0;
+    fstar.w[0U] = P128.w[0U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
-    fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-    fstar.w[0] = P128.w[0];
+    res = (P128.w[1U] >> shift);
+    fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+    fstar.w[0U] = P128.w[0U];
       }
       // if (f* > 10^(-x)) then the result is inexact
-      if ((fstar.w[1] != 0) || (fstar.w[0] >= bid_ten2mk64[ind - 1])) {
+      if ((fstar.w[1U] != 0) || (fstar.w[0U] >= bid_ten2mk64[ind - 1])) {
     if (!x_sign) {
       // if positive and not exact, increment magnitude
       res++;
@@ -453,17 +453,17 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_round_integral_exact, BID_UINT64, 
       // n = C* * 10^(e+x)  
 
       if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-    res = P128.w[1];
-    fstar.w[1] = 0;
-    fstar.w[0] = P128.w[0];
+    res = P128.w[1U];
+    fstar.w[1U] = 0;
+    fstar.w[0U] = P128.w[0U];
       } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
     shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-    res = (P128.w[1] >> shift);
-    fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-    fstar.w[0] = P128.w[0];
+    res = (P128.w[1U] >> shift);
+    fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+    fstar.w[0U] = P128.w[0U];
       }
       // if (f* > 10^(-x)) then the result is inexact
-      if ((fstar.w[1] != 0) || (fstar.w[0] >= bid_ten2mk64[ind - 1])) {
+      if ((fstar.w[1U] != 0) || (fstar.w[0U] >= bid_ten2mk64[ind - 1])) {
     *pfpsf |= BID_INEXACT_EXCEPTION;
       }
       // set exponent to zero as it was negative before.
@@ -554,7 +554,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_e
   } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
       q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
@@ -595,19 +595,19 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_e
     // n = C* * 10^(e+x)  
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-      res = P128.w[1];
-      fstar.w[1] = 0;
-      fstar.w[0] = P128.w[0];
+      res = P128.w[1U];
+      fstar.w[1U] = 0;
+      fstar.w[0U] = P128.w[0U];
     } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
       shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-      res = (P128.w[1] >> shift);
-      fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-      fstar.w[0] = P128.w[0];
+      res = (P128.w[1U] >> shift);
+      fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+      fstar.w[0U] = P128.w[0U];
     }
     // if (0 < f* < 10^(-x)) then the result is a midpoint
     // since round_to_even, subtract 1 if current result is odd
-    if ((res & 0x0000000000000001ull) && (fstar.w[1] == 0)
-    && (fstar.w[0] < bid_ten2mk64[ind - 1])) {
+    if ((res & 0x0000000000000001ull) && (fstar.w[1U] == 0)
+    && (fstar.w[0U] < bid_ten2mk64[ind - 1])) {
       res--;
     }
     // set exponent to zero as it was negative before.
@@ -698,7 +698,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_negative,
   } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
       q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
@@ -732,18 +732,18 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_negative,
     // n = C* * 10^(e+x)  
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-      res = P128.w[1];
-      fstar.w[1] = 0;
-      fstar.w[0] = P128.w[0];
+      res = P128.w[1U];
+      fstar.w[1U] = 0;
+      fstar.w[0U] = P128.w[0U];
     } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
       shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-      res = (P128.w[1] >> shift);
-      fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-      fstar.w[0] = P128.w[0];
+      res = (P128.w[1U] >> shift);
+      fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+      fstar.w[0U] = P128.w[0U];
     }
     // if (f* > 10^(-x)) then the result is inexact
     if (x_sign
-    && ((fstar.w[1] != 0) || (fstar.w[0] >= bid_ten2mk64[ind - 1]))) {
+    && ((fstar.w[1U] != 0) || (fstar.w[0U] >= bid_ten2mk64[ind - 1]))) {
       // if negative and not exact, increment magnitude
       res++;
     }
@@ -839,7 +839,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_positive,
   } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
       q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
@@ -873,18 +873,18 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_positive,
     // n = C* * 10^(e+x)  
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-      res = P128.w[1];
-      fstar.w[1] = 0;
-      fstar.w[0] = P128.w[0];
+      res = P128.w[1U];
+      fstar.w[1U] = 0;
+      fstar.w[0U] = P128.w[0U];
     } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
       shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-      res = (P128.w[1] >> shift);
-      fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
-      fstar.w[0] = P128.w[0];
+      res = (P128.w[1U] >> shift);
+      fstar.w[1U] = P128.w[1U] & bid_maskhigh128[ind - 1];
+      fstar.w[0U] = P128.w[0U];
     }
     // if (f* > 10^(-x)) then the result is inexact
     if (!x_sign
-    && ((fstar.w[1] != 0) || (fstar.w[0] >= bid_ten2mk64[ind - 1]))) {
+    && ((fstar.w[1U] != 0) || (fstar.w[0U] >= bid_ten2mk64[ind - 1]))) {
       // if positive and not exact, increment magnitude
       res++;
     }
@@ -975,7 +975,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_zero, BID
   } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
       q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
@@ -1009,12 +1009,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_zero, BID
     // n = C* * 10^(e+x)  
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-      res = P128.w[1];
+      res = P128.w[1U];
       // redundant fstar.w[1] = 0;
       // redundant fstar.w[0] = P128.w[0];
     } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
       shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-      res = (P128.w[1] >> shift);
+      res = (P128.w[1U] >> shift);
       // redundant fstar.w[1] = P128.w[1] & bid_maskhigh128[ind - 1];
       // redundant fstar.w[0] = P128.w[0];
     }
@@ -1104,7 +1104,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_a
   } else {	// if x < 2^53
     tmp1.d = (double) C1;	// exact conversion
     x_nr_bits =
-      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+      1 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
     if (q == 0) {
       q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
@@ -1143,10 +1143,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT64, bid64_round_integral_nearest_a
     // n = C* * 10^(e+x)
 
     if (ind - 1 <= 2) {	// 0 <= ind - 1 <= 2 => shift = 0
-      res = P128.w[1];
+      res = P128.w[1U];
     } else if (ind - 1 <= 21) {	// 3 <= ind - 1 <= 21 => 3 <= shift <= 63
       shift = bid_shiftright128[ind - 1];	// 3 <= shift <= 63
-      res = (P128.w[1] >> shift);
+      res = (P128.w[1U] >> shift);
     }
     // midpoints are already rounded correctly
     // set exponent to zero as it was negative before.

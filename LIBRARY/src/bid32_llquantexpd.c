@@ -48,8 +48,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(long long int, bid32_llquantexp, BID_UINT32, x
     BID_RETURN (res);
   }
   if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32)
-    res = (long long int)((x >> 21) & 0xff) - 101;
+    res = (long long int)((x >> 21) & 0xffU) - 101;
   else
-    res = (long long int)((x >> 23) & 0xff) - 101;
+    res = (long long int)((x >> 23) & 0xffU) - 101;
   BID_RETURN (res);
 }

@@ -552,19 +552,19 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_cos, BID_UINT64, x)
 // modulo (pi/2). Note that we have to do this afterwards rather than
 // use modulo (pi/2) reduction at the start to keep integer parities.
 
-  k = p.w[2] >> 62;
-  sll192_short(p.w[2],p.w[1],p.w[0],2);
+  k = p.w[2U] >> 62;
+  sll192_short(p.w[2U],p.w[1U],p.w[0U],2);
 
 // If the fraction is >= 1/2, add 1 to integer and complement the fraction
 // with an appropriate sign change so we have a "rounded to nearest" version
 // (Complementing is slightly different from negation but it's negligible.)
 // Set "sf" to the correct sign for the fraction
 
-  if (p.w[2] >= 0x8000000000000000ull)
+  if (p.w[2U] >= 0x8000000000000000ull)
    { k = (k + 1) & 3;
-     p.w[2] = ~p.w[2];
-     p.w[1] = ~p.w[1];
-     p.w[0] = ~p.w[0];
+     p.w[2U] = ~p.w[2U];
+     p.w[1U] = ~p.w[1U];
+     p.w[0U] = ~p.w[0U];
      sf = 1 - s;
    }
   else
@@ -577,21 +577,21 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_cos, BID_UINT64, x)
 
 // Normalize the binary fraction with exponent ef
 
-  if (p.w[2] == 0)      // This probably can't happen but I'm not quite sure
+  if (p.w[2U] == 0)      // This probably can't happen but I'm not quite sure
    { ef = 16382-64;
-     p.w[2] = p.w[1];
-     p.w[1] = p.w[0];
+     p.w[2U] = p.w[1U];
+     p.w[1U] = p.w[0U];
    }
   else ef = 16382;
 
-  el = clz64_nz(p.w[2]);
+  el = clz64_nz(p.w[2U]);
   ef = ef - el;
-  if (el != 0) sll128_short(p.w[2],p.w[1],el);
+  if (el != 0) sll128_short(p.w[2U],p.w[1U],el);
 
 // Now package it as a double-extended number.
 
   { BID_F80_CONST tmp;
-    BID_F80_PACK_TRIG( tmp, sf, ef, p.w[2] );
+    BID_F80_PACK_TRIG( tmp, sf, ef, p.w[2U] );
     BID_F80_ASSIGN( xd, tmp );
   }
 

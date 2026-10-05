@@ -49,8 +49,8 @@ BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(long long int, bid128_llquantexp, x)
     BID_RETURN_VAL (res);
   }
   if ((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS)
-    res = (long long int)((x.w[1U] >> 47) & 0x3fff) - 6176;
+    res = (long long int)((x.w[1U] >> 47) & 0x3fffU) - 6176;
   else
-    res = (long long int)((x.w[1U] >> 49) & 0x3fff) - 6176;
+    res = (long long int)((x.w[1U] >> 49) & 0x3fffU) - 6176;
   BID_RETURN_VAL (res);
 }

@@ -106,9 +106,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_mul, BID_UINT64, x, BID_U
     // x is 0
     if (((y & INFINITY_MASK64) != INFINITY_MASK64)) {
       if ((y & SPECIAL_ENCODING_MASK64) == SPECIAL_ENCODING_MASK64)
-    exponent_y = ((BID_UINT32) (y >> 51)) & 0x3ff;
+    exponent_y = ((BID_UINT32) (y >> 51)) & 0x3ffU;
       else
-    exponent_y = ((BID_UINT32) (y >> 53)) & 0x3ff;
+    exponent_y = ((BID_UINT32) (y >> 53)) & 0x3ffU;
       sign_y = y & 0x8000000000000000ull;
 
       exponent_x += exponent_y - DECIMAL_EXPONENT_BIAS;

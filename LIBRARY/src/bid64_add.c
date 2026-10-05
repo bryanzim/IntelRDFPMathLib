@@ -244,7 +244,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_add, BID_UINT64, x, BID_U
 
   // version 2 (original)
   tempx.d = (double) coefficient_a;
-  bin_expon_ca = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+  bin_expon_ca = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
 
   if (diff_dec_expon > MAX_FORMAT_DIGITS) {
     // normalize a to a 16-digit coefficient
@@ -264,7 +264,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(BID_UINT64, bid64_add, BID_UINT64, x, BID_U
 
     //--- get number of bits in the coefficients of x and y ---
     tempx.d = (double) coefficient_a;
-    bin_expon_ca = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+    bin_expon_ca = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
 
     if (diff_dec_expon > MAX_FORMAT_DIGITS) {
 #ifdef BID_SET_STATUS_FLAGS

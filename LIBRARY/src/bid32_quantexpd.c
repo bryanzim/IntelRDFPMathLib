@@ -44,13 +44,13 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid32_quantexp, BID_UINT32, x)
   if (((x & MASK_INF32) == MASK_INF32) || ((x & MASK_NAN32) == MASK_NAN32)) {
     // set invalid flag 
     *pfpsf |= BID_INVALID_EXCEPTION;
-    res = (int)0x80000000;
+    res = (int)0x80000000U;
     BID_RETURN (res);
   }
   if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32)
-    res = ((x >> 21) & 0xff) - 101;
+    res = ((x >> 21) & 0xffU) - 101;
   else
-    res = ((x >> 23) & 0xff) - 101;
+    res = ((x >> 23) & 0xffU) - 101;
   BID_RETURN (res);
 }
 

@@ -42,12 +42,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS (BID_UINT128, bid32_to_bid128, BID_UIN
      BID_UINT32 coefficient_x;
 
 if (!unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x)) {
-if (((x) & 0x78000000) == 0x78000000) {
+if (((x) & 0x78000000U) == 0x78000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-  if (((x) & 0x7e000000) == 0x7e000000)	// sNaN
+  if (((x) & 0x7e000000U) == 0x7e000000U)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[0U] = (coefficient_x & 0x000fffff);
+  res.w[0U] = (coefficient_x & 0x000fffffU);
   __mul_64x128_low (res, res.w[0U], bid_power10_table_128[27U]);
   res.w[1U] |=
     ((((BID_UINT64) coefficient_x) << 32) & 0xfc00000000000000ull);
@@ -88,7 +88,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
       TP128 = bid_reciprocals10_128[27U];
       __mul_128x128_full (Qh, Ql, Tmp, TP128);
       amount = bid_recip_scale[27U] - 64;
-      res = (BID_UINT32) (((CX.w[1U] >> 32) & 0xfc000000) | (Qh.w[1U] >> amount));
+      res = (BID_UINT32) (((CX.w[1U] >> 32) & 0xfc000000U) | (Qh.w[1U] >> amount));
 #ifdef BID_SET_STATUS_FLAGS
       if ((x.w[1U] & SNAN_MASK64) == SNAN_MASK64)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
@@ -110,10 +110,10 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid128_to_bid32, BID_UINT128, x)
   if (CX.w[1U] || (CX.w[0U] >= 10000000)) {
     // find number of digits in coefficient
     // 2^64
-    f64.i = 0x5f800000;
+    f64.i = 0x5f800000U;
     // fx ~ CX
     fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
-    bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
+    bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
     extra_digits = bid_estimate_decimal_digits[bin_expon_cx] - 7;
     // scale = 38-estimate_decimal_digits[bin_expon_cx];
     D = (BID_SINT64)CX.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];

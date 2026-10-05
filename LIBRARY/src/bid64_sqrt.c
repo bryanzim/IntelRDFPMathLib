@@ -114,7 +114,7 @@ BID_TYPE_FUNCTION_ARG1(BID_UINT64, bid64_sqrt, x)
 #endif
   //--- get number of bits in the coefficient of x ---
   tempx.d = (float) coefficient_x;
-  bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+  bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
   digits_x = bid_estimate_decimal_digits[bin_expon_cx];
   // add test for range
   if (coefficient_x >= bid_power10_index_binexp[bin_expon_cx])
@@ -289,11 +289,11 @@ if (sign_x) {
 #endif
 
 	   // 2^64
-f64.i = 0x5f800000;
+f64.i = 0x5f800000U;
 
 	   // fx ~ CX
 fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
-bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
+bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
 digits = bid_estimate_decimal_digits[bin_expon_cx];
 
 A10 = CX;

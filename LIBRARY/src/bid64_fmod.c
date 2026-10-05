@@ -103,9 +103,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_fmod, BID_UINT64, x
     if (((y & 0x7800000000000000ull) < 0x7800000000000000ull) &&
     coefficient_y) {
       if ((y & 0x6000000000000000ull) == 0x6000000000000000ull)
-    exponent_y = (y >> 51) & 0x3ff;
+    exponent_y = (y >> 51) & 0x3ffU;
       else
-    exponent_y = (y >> 53) & 0x3ff;
+    exponent_y = (y >> 53) & 0x3ffU;
 
       if (exponent_y < exponent_x)
     exponent_x = exponent_y;
@@ -156,16 +156,16 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_fmod, BID_UINT64, x
       BID_RETURN (res);
     }
     // set exponent of y to exponent_x, scale coefficient_y
-    T = bid_power10_table_128[diff_expon].w[0];
+    T = bid_power10_table_128[diff_expon].w[0U];
     __mul_64x64_to_128 (CY, coefficient_y, T);
 
-    if (CY.w[1] || CY.w[0] > (coefficient_x)) {
+    if (CY.w[1U] || CY.w[0U] > (coefficient_x)) {
       res = x;
       BID_RETURN (res);
     }
 
-    Q = coefficient_x / CY.w[0];
-    R = coefficient_x - Q * CY.w[0];
+    Q = coefficient_x / CY.w[0U];
+    R = coefficient_x - Q * CY.w[0U];
 
     res = very_fast_get_BID64 (sign_x, exponent_x, R);
     BID_RETURN (res);
@@ -175,7 +175,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_fmod, BID_UINT64, x
   while (diff_expon > 0) {
     // get number of digits in coeff_x
     tempx.d = (float) coefficient_x;
-    bin_expon = ((tempx.i >> 23) & 0xff) - 0x7f;
+    bin_expon = ((tempx.i >> 23) & 0xffU) - 0x7fU;
     digits_x = bid_estimate_decimal_digits[bin_expon];
     // will not use this test, dividend will have 18 or 19 digits
     //if(coefficient_x >= bid_power10_table_128[digits_x].w[0])
@@ -190,7 +190,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_fmod, BID_UINT64, x
     }
 
     // scale dividend to 18 or 19 digits
-    coefficient_x *= bid_power10_table_128[e_scale].w[0];
+    coefficient_x *= bid_power10_table_128[e_scale].w[0U];
 
     // quotient
     Q = coefficient_x / coefficient_y;

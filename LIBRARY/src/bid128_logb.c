@@ -45,20 +45,20 @@ BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(int, bid128_ilogb, x)
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-     res =  ((x.w[1] & 0x7c00000000000000ull) == 0x7800000000000000ull)
-       ? 0x7fffffff : (int)0x80000000U;
+     res =  ((x.w[1U] & 0x7c00000000000000ull) == 0x7800000000000000ull)
+       ? 0x7fffffffU : (int)0x80000000U;
      BID_RETURN_VAL (res);
   }
   // find number of digits in coefficient
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
   // fx ~ CX
-  fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-  bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
+  fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+  bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
   digits = bid_estimate_decimal_digits[bin_expon_cx];
   // scale = 38-estimate_decimal_digits[bin_expon_cx];
-  D = (BID_SINT64)CX.w[1] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1];
-  if (D > 0 || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0])) {
+  D = (BID_SINT64)CX.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
+  if (D > 0 || (!D && CX.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U])) {
     digits++;
   }
 

@@ -62,7 +62,7 @@ add_zero32 (int exponent_y, BID_UINT32 sign_z, int exponent_z,
   diff_expon = exponent_z - exponent_y;
 
   tempx.d = (double) coefficient_z;
-  bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+  bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
   scale_cz = bid_estimate_decimal_digits[bin_expon];
   if (coefficient_z >= bid_power10_table_128[scale_cz].w[0U])
     scale_cz++;
@@ -142,37 +142,37 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
       // x is Inf. or 0
 
       // x is Infinity?
-      if ((x & 0x78000000) == 0x78000000) {
+      if ((x & 0x78000000U) == 0x78000000U) {
     // check if y is 0
     if (!coefficient_y) {
       // y==0, return NaN
 #ifdef BID_SET_STATUS_FLAGS
-      if ((z & 0x7e000000) != 0x7c000000)
+      if ((z & 0x7e000000U) != 0x7c000000U)
         __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-      BID_RETURN (0x7c000000);
+      BID_RETURN (0x7c000000U);
     }
     // test if z is Inf of oposite sign
-    if (((z & 0x7c000000) == 0x78000000)
-        && (((x ^ y) ^ z) & 0x80000000)) {
+    if (((z & 0x7c000000U) == 0x78000000U)
+        && (((x ^ y) ^ z) & 0x80000000U)) {
       // return NaN 
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-      BID_RETURN (0x7c000000);
+      BID_RETURN (0x7c000000U);
     }
     // otherwise return +/-Inf
-    BID_RETURN (((x ^ y) & 0x80000000) |
-            0x78000000);
+    BID_RETURN (((x ^ y) & 0x80000000U) |
+            0x78000000U);
       }
       // x is 0
-      if (((y & 0x78000000) != 0x78000000)
-      && ((z & 0x78000000) != 0x78000000)) {
+      if (((y & 0x78000000U) != 0x78000000U)
+      && ((z & 0x78000000U) != 0x78000000U)) {
 
     if (coefficient_z) {
       exponent_y = exponent_x - DECIMAL_EXPONENT_BIAS_32 + exponent_y;
 
-      sign_z = z & 0x80000000;
+      sign_z = z & 0x80000000U;
 
       if (exponent_y >= exponent_z)
         BID_RETURN (z);
@@ -186,35 +186,35 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
       // y is Inf. or 0
 
       // y is Infinity?
-      if ((y & 0x78000000) == 0x78000000) {
+      if ((y & 0x78000000U) == 0x78000000U) {
     // check if x is 0
     if (!coefficient_x) {
       // y==0, return NaN
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-      BID_RETURN (0x7c000000);
+      BID_RETURN (0x7c000000U);
     }
     // test if z is Inf of oposite sign
-    if (((z & 0x7c000000) == 0x78000000)
-        && (((x ^ y) ^ z) & 0x80000000)) {
+    if (((z & 0x7c000000U) == 0x78000000U)
+        && (((x ^ y) ^ z) & 0x80000000U)) {
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
       // return NaN
-      BID_RETURN (0x7c000000);
+      BID_RETURN (0x7c000000U);
     }
     // otherwise return +/-Inf
-    BID_RETURN (((x ^ y) & 0x80000000) |
-            0x78000000);
+    BID_RETURN (((x ^ y) & 0x80000000U) |
+            0x78000000U);
       }
       // y is 0 
-      if (((z & 0x78000000) != 0x78000000)) {
+      if (((z & 0x78000000U) != 0x78000000U)) {
 
     if (coefficient_z) {
       exponent_y += exponent_x - DECIMAL_EXPONENT_BIAS_32;
 
-      sign_z = z & 0x80000000;
+      sign_z = z & 0x80000000U;
 
       if (exponent_y >= exponent_z)
         BID_RETURN (z);
@@ -229,7 +229,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
       // y is Inf. or 0
 
       // test if y is NaN/Inf
-      if ((z & 0x78000000) == 0x78000000) {
+      if ((z & 0x78000000U) == 0x78000000U) {
     BID_RETURN (coefficient_z & QUIET_MASK32);
       }
       // z is 0, return x*y
@@ -249,7 +249,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
     else if (rnd_mode == BID_ROUNDING_DOWN)
-      res |= 0x80000000;
+      res |= 0x80000000U;
 #endif
 #endif
     BID_RETURN (res);
@@ -286,7 +286,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
   if (diff_dec_expon > 17) {
 
       tempx.d = (double) coefficient_a;
-      bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+      bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
       scale_ca = bid_estimate_decimal_digits[bin_expon];
       
       d2 = 31 - scale_ca;
@@ -309,7 +309,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
    __mul_64x128_low(Tmp, coefficient_a, bid_power10_table_128[diff_dec_expon]);
    __add_128_128(P, Tmp, CB);
    if(((BID_SINT64)P.w[1U])<0) {
-       sign_a ^= 0x80000000;
+       sign_a ^= 0x80000000U;
        P.w[1U] = 0 - P.w[1U];
        if(P.w[0U]) P.w[1U]--;
        P.w[0U] = 0 - P.w[0U];
@@ -317,20 +317,20 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(BID_UINT32, bid32_fma, BID_UINT32,
 
    if(P.w[1U]) {
       tempx.d = (double) P.w[1U];
-      bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff + 64;
+      bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU + 64;
       n_digits = bid_estimate_decimal_digits[bin_expon];
       if(__unsigned_compare_ge_128 (P, bid_power10_table_128[n_digits]))
           n_digits ++;
    } else {
        if(P.w[0U]) {
             tempx.d = (double) P.w[0U];
-            bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ff;
+            bin_expon = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
             n_digits = bid_estimate_decimal_digits[bin_expon];
             if(P.w[0U] >= bid_power10_table_128[n_digits].w[0U])
                 n_digits++;
        } else { // result = 0
             sign_a = 0;
-            if(rnd_mode == BID_ROUNDING_DOWN) sign_a = 0x80000000;
+            if(rnd_mode == BID_ROUNDING_DOWN) sign_a = 0x80000000U;
             if(!coefficient_a) sign_a = sign_x;
             n_digits=0;
        }}

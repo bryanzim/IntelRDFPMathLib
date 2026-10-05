@@ -42,9 +42,9 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_exp, BID_UINT32, x)
           )
         __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-                res = x & 0xfc0fffff; //quiet and make combination 0 (canonize)
-                if ((res & 0x000fffff) > 999999) { // payload
-                        res &= ~(BID_UINT32)0x000fffff;
+                res = x & 0xfc0fffffU; //quiet and make combination 0 (canonize)
+                if ((res & 0x000fffffU) > 999999) { // payload
+                        res &= ~(BID_UINT32)0x000fffffU;
                 }
       BID_RETURN (res);
     }
@@ -52,16 +52,16 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_exp, BID_UINT32, x)
         BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isZero, z, x);
         if (z) {
                 // 1 according C99
-                res = 0x32800001;
+                res = 0x32800001U;
            BID_RETURN (res);
         }
         BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, z, x);
         if (z) {
                 // 0 or Inf according C99
                 if (x & MASK_SIGN32) {
-                        res = 0x32800000;
+                        res = 0x32800000U;
                 } else {
-                        res = 0x78000000;
+                        res = 0x78000000U;
                 }
 #ifdef BID_SET_STATUS_FLAGS
                 *pfpsf = 0;

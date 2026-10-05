@@ -63,7 +63,7 @@
 #include "bid_internal.h"
 #include "bid_div_macros.h"
 
-BID_EXTERN_C const BID_UINT32 bid_convert_table[5][128][2];
+BID_EXTERN_C const BID_UINT32 bid_convert_table[5U][128][2];
 BID_EXTERN_C const BID_SINT8 bid_factors[][2];
 BID_EXTERN_C const BID_UINT8 bid_packed_10000_zeros[];
 
@@ -115,7 +115,7 @@ BID_UINT64 CA, CT, PD;
     }
       } else {
     // otherwise return +/-Inf
-    BID_RETURN (((x ^ y) & 0x80000000) |
+    BID_RETURN (((x ^ y) & 0x80000000U) |
             INFINITY_MASK32);
       }
     }
@@ -130,10 +130,10 @@ BID_UINT64 CA, CT, PD;
     }
     if (((y & INFINITY_MASK32) != INFINITY_MASK32)) {
       if ((y & SPECIAL_ENCODING_MASK32) == SPECIAL_ENCODING_MASK32)
-    exponent_y = ((BID_UINT32) (y >> 21)) & 0xff;
+    exponent_y = ((BID_UINT32) (y >> 21)) & 0xffU;
       else
-    exponent_y = ((BID_UINT32) (y >> 23)) & 0xff;
-      sign_y = y & 0x80000000;
+    exponent_y = ((BID_UINT32) (y >> 23)) & 0xffU;
+      sign_y = y & 0x80000000U;
 
       exponent_x = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS_32;
       if (exponent_x > DECIMAL_MAX_EXPON_32)
@@ -158,7 +158,7 @@ BID_UINT64 CA, CT, PD;
     // y is Infinity?
     if ((y & INFINITY_MASK32) == INFINITY_MASK32) {
       // return +/-0
-      BID_RETURN (((x ^ y) & 0x80000000));
+      BID_RETURN (((x ^ y) & 0x80000000U));
     }
     // y is 0
 #ifdef BID_SET_STATUS_FLAGS
@@ -202,7 +202,7 @@ BID_UINT64 CA, CT, PD;
 
     // will use to get number of dec. digits of Q
     tempq.d = (float)Q;
-    bin_expon_cx = (tempq.i >> 23) - 0x7f;
+    bin_expon_cx = (tempq.i >> 23) - 0x7fU;
 
     // exact result ?
     if (R == 0) {

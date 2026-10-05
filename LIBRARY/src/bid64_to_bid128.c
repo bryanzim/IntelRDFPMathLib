@@ -111,10 +111,10 @@ BID_UINT128 CX, T128, TP128, Qh, Ql, Qh1, Stemp, Tmp, Tmp1, CX1;
   if (CX.w[1U] || (CX.w[0U] >= 10000000000000000ull)) {
     // find number of digits in coefficient
     // 2^64
-    f64.i = 0x5f800000;
+    f64.i = 0x5f800000U;
     // fx ~ CX
     fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
-    bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
+    bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
     extra_digits = bid_estimate_decimal_digits[bin_expon_cx] - 16;
     // scale = 38-estimate_decimal_digits[bin_expon_cx];
     D = (BID_SINT64)CX.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];

@@ -40,20 +40,20 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_atanh, BID_UINT32, x)
 
   if (!valid_x) {
     // test if x is NaN
-if ((x & 0x7c000000) == 0x7c000000) {
+if ((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x & 0x7e000000) == 0x7e000000)	// sNaN
+  if ((x & 0x7e000000U) == 0x7e000000U)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
     res = (coefficient_x) & QUIET_MASK32;
     BID_RETURN (res);
 }
     // x is Infinity?
-if ((x & 0x78000000) == 0x78000000) {
+if ((x & 0x78000000U) == 0x78000000U) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-      res = 0x7c000000;
+      res = 0x7c000000U;
       BID_RETURN (res);
   }
     // x is 0
@@ -69,7 +69,7 @@ if ((x & 0x78000000) == 0x78000000) {
     }
 
     // |x| 
-    xn = x & 0x7fffffff;
+    xn = x & 0x7fffffffU;
 
     // 1.0
     one = 0x32800001ull;    
@@ -77,13 +77,13 @@ if ((x & 0x78000000) == 0x78000000) {
     // 1 - |x|
     BIDECIMAL_CALL2 (bid32_sub, one_m_x, one, xn);
 
-    if(one_m_x & 0x80000000)
+    if(one_m_x & 0x80000000U)
     {
         // |x|>1
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-      res = 0x7c000000;
+      res = 0x7c000000U;
       BID_RETURN (res);
   }
 
@@ -93,7 +93,7 @@ if ((x & 0x78000000) == 0x78000000) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-      res = sign_x | 0x78000000;
+      res = sign_x | 0x78000000U;
       BID_RETURN (res);
   }
 

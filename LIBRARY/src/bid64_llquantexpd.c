@@ -48,8 +48,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_NORND(long long int, bid64_llquantexp, BID_UINT64, x
     BID_RETURN (res);
   }
   if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS)
-    res = (long long int)((x >> 51) & 0x3ff) - 398;
+    res = (long long int)((x >> 51) & 0x3ffU) - 398;
   else
-    res = (long long int)((x >> 53) & 0x3ff) - 398;
+    res = (long long int)((x >> 53) & 0x3ffU) - 398;
   BID_RETURN (res);
 }

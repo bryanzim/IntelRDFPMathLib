@@ -33,7 +33,7 @@
  *  BID64 minimum function - returns greater of two numbers
  *****************************************************************************/
 
-static const BID_UINT64 bid_mult_factor[16] = {
+static const BID_UINT64 bid_mult_factor[16U] = {
   1ull, 10ull, 100ull, 1000ull,
   10000ull, 100000ull, 1000000ull, 10000000ull,
   100000000ull, 1000000000ull, 10000000000ull, 100000000000ull,
@@ -223,13 +223,13 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
                 bid_mult_factor[exp_x - exp_y]);
     // if postitive, return whichever significand is larger 
     // (converse if negative)
-    if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
+    if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_y)) {
       res = y;
       BID_RETURN (res);
     }
 
-    res = (((sig_n_prime.w[1] > 0)
-        || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
+    res = (((sig_n_prime.w[1U] > 0)
+        || sig_n_prime.w[0U] > sig_y) ^ ((x & MASK_SIGN) ==
                         MASK_SIGN)) ? y : x;
     BID_RETURN (res);
   }
@@ -238,12 +238,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum, BID_UINT64,
               bid_mult_factor[exp_y - exp_x]);
 
   // if postitive, return whichever significand is larger (converse if negative)
-  if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
+  if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_x)) {
     res = y;
     BID_RETURN (res);
   }
-  res = (((sig_n_prime.w[1] == 0)
-      && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+  res = (((sig_n_prime.w[1U] == 0)
+      && (sig_x > sig_n_prime.w[0U])) ^ ((x & MASK_SIGN) ==
                         MASK_SIGN)) ? y : x;
   BID_RETURN (res);
 }
@@ -407,27 +407,27 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_minnum_mag, BID_UIN
                 bid_mult_factor[exp_x - exp_y]);
     // now, sig_n_prime has: sig_x * 10^(exp_x-exp_y), this is 
     // the compensated signif.
-    if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
+    if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_y)) {
       // two numbers are equal, return minNum(x,y)
       res = ((y & MASK_SIGN) == MASK_SIGN) ? y : x;
       BID_RETURN (res);
     }
     // now, if compensated_x (sig_n_prime) is greater than y, return y,  
     // otherwise return x
-    res = ((sig_n_prime.w[1] != 0) || sig_n_prime.w[0] > sig_y) ? y : x;
+    res = ((sig_n_prime.w[1U] != 0) || sig_n_prime.w[0U] > sig_y) ? y : x;
     BID_RETURN (res);
   }
   // exp_y must be greater than exp_x, thus adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
               bid_mult_factor[exp_y - exp_x]);
 
-  if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
+  if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_x)) {
     res = ((y & MASK_SIGN) == MASK_SIGN) ? y : x;
     // two numbers are equal, return either
     BID_RETURN (res);
   }
 
-  res = ((sig_n_prime.w[1] == 0) && (sig_x > sig_n_prime.w[0])) ? y : x;
+  res = ((sig_n_prime.w[1U] == 0) && (sig_x > sig_n_prime.w[0U])) ? y : x;
   BID_RETURN (res);
 }
 
@@ -616,12 +616,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
                 bid_mult_factor[exp_x - exp_y]);
     // if postitive, return whichever significand is larger 
     // (converse if negative)
-    if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
+    if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_y)) {
       res = y;
       BID_RETURN (res);
     }
-    res = (((sig_n_prime.w[1] > 0)
-        || sig_n_prime.w[0] > sig_y) ^ ((x & MASK_SIGN) ==
+    res = (((sig_n_prime.w[1U] > 0)
+        || sig_n_prime.w[0U] > sig_y) ^ ((x & MASK_SIGN) ==
                         MASK_SIGN)) ? x : y;
     BID_RETURN (res);
   }
@@ -630,12 +630,12 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum, BID_UINT64,
               bid_mult_factor[exp_y - exp_x]);
 
   // if postitive, return whichever significand is larger (converse if negative)
-  if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
+  if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_x)) {
     res = y;
     BID_RETURN (res);
   }
-  res = (((sig_n_prime.w[1] == 0)
-      && (sig_x > sig_n_prime.w[0])) ^ ((x & MASK_SIGN) ==
+  res = (((sig_n_prime.w[1U] == 0)
+      && (sig_x > sig_n_prime.w[0U])) ^ ((x & MASK_SIGN) ==
                         MASK_SIGN)) ? x : y;
   BID_RETURN (res);
 }
@@ -799,26 +799,26 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_maxnum_mag, BID_UIN
                 bid_mult_factor[exp_x - exp_y]);
     // now, sig_n_prime has: sig_x * 10^(exp_x-exp_y), 
     // this is the compensated signif.
-    if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_y)) {
+    if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_y)) {
       // two numbers are equal, return maxNum(x,y)
       res = ((y & MASK_SIGN) == MASK_SIGN) ? x : y;
       BID_RETURN (res);
     }
     // now, if compensated_x (sig_n_prime) is greater than y return y,  
     // otherwise return x
-    res = ((sig_n_prime.w[1] != 0) || sig_n_prime.w[0] > sig_y) ? x : y;
+    res = ((sig_n_prime.w[1U] != 0) || sig_n_prime.w[0U] > sig_y) ? x : y;
     BID_RETURN (res);
   }
   // exp_y must be greater than exp_x, thus adjust the y significand upwards
   __mul_64x64_to_128MACH (sig_n_prime, sig_y,
               bid_mult_factor[exp_y - exp_x]);
 
-  if (sig_n_prime.w[1] == 0 && (sig_n_prime.w[0] == sig_x)) {
+  if (sig_n_prime.w[1U] == 0 && (sig_n_prime.w[0U] == sig_x)) {
     res = ((y & MASK_SIGN) == MASK_SIGN) ? x : y;
     // two numbers are equal, return either
     BID_RETURN (res);
   }
 
-  res = ((sig_n_prime.w[1] == 0) && (sig_x > sig_n_prime.w[0])) ? x : y;
+  res = ((sig_n_prime.w[1U] == 0) && (sig_x > sig_n_prime.w[0U])) ? x : y;
   BID_RETURN (res);
 }

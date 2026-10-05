@@ -42,7 +42,7 @@ short_sqrt128 (BID_UINT128 A10) {
   int_float f64;
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
   l64 = (BINARY80) f64.d;
   lx = (BINARY80) A10.w[1U] * l64 + (BINARY80) A10.w[0U];
   ly = SQRT80 (lx);
@@ -66,7 +66,7 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   int_dext tmp_dext;
 
   // 2^64
-  f64.i = 0x5f800000;
+  f64.i = 0x5f800000U;
   l64 = (BINARY80) f64.d;
 
   l128 = l64 * l64;
@@ -82,7 +82,7 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
 
   // get coefficient
   // 2^(-64)
-  fm64.i = 0x1f800000;
+  fm64.i = 0x1f800000U;
   lm64 = (BINARY80) fm64.d;
   CS.w[1U] = (BID_UINT64) (lS * lm64);
   CS.w[0U] = (BID_UINT64) (lS - (BINARY80) CS.w[1U] * l64);
@@ -166,7 +166,7 @@ short_sqrt128 (BID_UINT128 A10) {
   ly.d = 1.0 / sqrt (lx);
 
   MY = (ly.i & 0x000fffffffffffffull) | 0x0010000000000000ull;
-  ey = 0x3ff - (ly.i >> 52);
+  ey = 0x3ffU - (ly.i >> 52);
 
   // A10*RS^2
   __mul_64x128_to_192 (ARS0, MY, A10);
@@ -266,7 +266,7 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   ly.d = 1.0 / sqrt (lx);
 
   MY = (ly.i & 0x000fffffffffffffull) | 0x0010000000000000ull;
-  ey = 0x3ff - (ly.i >> 52);
+  ey = 0x3ffU - (ly.i >> 52);
 
   // A10*RS^2, scaled by 2^(2*ey+104)
   __mul_64x256_to_320 (ARS0, MY, C256);

@@ -90,7 +90,7 @@ if (exp64 > MAX_DECIMAL_EXPONENT_128) {
     bid_get_BID128_very_fast (&res, sign_x, exponent_x, CX);
     BID_RETURN (res);
   } else
-    exponent_x = 0x7fffffff;	// overflow
+    exponent_x = 0x7fffffffU;	// overflow
 }
   // exponent < 0
   // the BID pack routine will round the coefficient

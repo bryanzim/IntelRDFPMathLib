@@ -59,33 +59,33 @@ valid_y = unpack_BID128_value (&sign_y, &exponent_y, &CY, y);
 
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
 #ifdef BID_SET_STATUS_FLAGS
-if ((y.w[1] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
+if ((y.w[1U] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
     // test if x is NaN
-if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+if ((x.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x.w[1] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
+  if ((x.w[1U] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[1] = CX.w[1] & QUIET_MASK64;
-  res.w[0] = CX.w[0];
+  res.w[1U] = CX.w[1U] & QUIET_MASK64;
+  res.w[0U] = CX.w[0U];
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
     // x is Infinity?
-if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+if ((x.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
   // check if y is Inf.
-  if (((y.w[1] & 0x7c00000000000000ull) != 0x7c00000000000000ull))
+  if (((y.w[1U] & 0x7c00000000000000ull) != 0x7c00000000000000ull))
     // return NaN 
   {
 #ifdef BID_SET_STATUS_FLAGS
     // set status flags
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[1] = 0x7c00000000000000ull;
-    res.w[0] = 0;
+    res.w[1U] = 0x7c00000000000000ull;
+    res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
@@ -93,26 +93,26 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 
 }
     // x is 0
-if ((!CY.w[1]) && (!CY.w[0])) {
+if ((!CY.w[1U]) && (!CY.w[0U])) {
 #ifdef BID_SET_STATUS_FLAGS
   // set status flags
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
   // x=y=0, return NaN
-  res.w[1] = 0x7c00000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] = 0x7c00000000000000ull;
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
-if (valid_y || ((y.w[1] & NAN_MASK64) == INFINITY_MASK64)) {
+if (valid_y || ((y.w[1U] & NAN_MASK64) == INFINITY_MASK64)) {
   // return 0
   if ((exponent_x > exponent_y)
-      && ((y.w[1] & NAN_MASK64) != INFINITY_MASK64))
+      && ((y.w[1U] & NAN_MASK64) != INFINITY_MASK64))
     exponent_x = exponent_y;
 
-  res.w[1] = sign_x | (((BID_UINT64) exponent_x) << 49);
-  res.w[0] = 0;
+  res.w[1U] = sign_x | (((BID_UINT64) exponent_x) << 49);
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -122,22 +122,22 @@ if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if ((y.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((y.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if ((y.w[1] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
+    if ((y.w[1U] & SNAN_MASK64) == SNAN_MASK64)	// y is sNaN
       __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[1] = CY.w[1] & QUIET_MASK64;
-    res.w[0] = CY.w[0];
+    res.w[1U] = CY.w[1U] & QUIET_MASK64;
+    res.w[0U] = CY.w[0U];
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
   }
   // y is Infinity?
-  if ((y.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((y.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // return x
-    res.w[1] = x.w[1];
-    res.w[0] = x.w[0];
+    res.w[1U] = x.w[1U];
+    res.w[0U] = x.w[0U];
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);
     BID_RETURN (res);
@@ -147,8 +147,8 @@ if (!valid_y) {
   // set status flags
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[1] = 0x7c00000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] = 0x7c00000000000000ull;
+  res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -170,7 +170,7 @@ if (diff_expon <= 0) {
   T = bid_power10_table_128[diff_expon];
   __mul_128x128_to_256 (P256, CY, T);
 
-  if (P256.w[2] || P256.w[3]) {
+  if (P256.w[2U] || P256.w[3U]) {
     // |x|<|y| in this case
     res = x;
     // restore the rounding mode back if it has been changed
@@ -186,8 +186,8 @@ if (diff_expon <= 0) {
     BID_RETURN (res);
   }
 
-  P128.w[0] = P256.w[0];
-  P128.w[1] = P256.w[1];
+  P128.w[0U] = P256.w[0U];
+  P128.w[1U] = P256.w[1U];
   bid___div_128_by_128 (&CQ, &CR, CX, P128);
 
   bid_get_BID128_very_fast (&res, sign_x, exponent_x, CR);
@@ -196,22 +196,22 @@ if (diff_expon <= 0) {
   BID_RETURN (res);
 }
   // 2^64
-f64.i = 0x5f800000;
+f64.i = 0x5f800000U;
 
 scale0 = 38;
-if (!CY.w[1])
+if (!CY.w[1U])
   scale0 = 34;
 
 while (diff_expon > 0) {
   // get number of digits in CX and scale=38-digits
   // fx ~ CX
-  fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-  bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
+  fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+  bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
   scale = scale0 - bid_estimate_decimal_digits[bin_expon_cx];
   // scale = 38-estimate_decimal_digits[bin_expon_cx];
-  D = (BID_SINT64)CX.w[1] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1];
+  D = (BID_SINT64)CX.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
   if (D > 0
-      || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0]))
+      || (!D && CX.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U]))
     scale--;
 
   if (diff_expon >= scale)
@@ -227,7 +227,7 @@ while (diff_expon > 0) {
   bid___div_128_by_128 (&CQ, &CX, CXS, CY);
 
   // check for remainder == 0
-  if (!CX.w[1] && !CX.w[0]) {
+  if (!CX.w[1U] && !CX.w[0U]) {
     bid_get_BID128_very_fast (&res, sign_x, exponent_y, CX);
     // restore the rounding mode back if it has been changed
     if (rm_changed) fesetround(old_rm);

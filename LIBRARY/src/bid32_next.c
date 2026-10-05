@@ -54,24 +54,24 @@ bid32_nextup (BID_UINT32 x
 
   // check for NaNs and infinities
   if ((x & MASK_NAN32) == MASK_NAN32) { // check for NaN
-    if ((x & 0x000fffff) > 999999)
-      x = x & 0xfe000000; // clear G6-G10 and the payload bits
+    if ((x & 0x000fffffU) > 999999)
+      x = x & 0xfe000000U; // clear G6-G10 and the payload bits
     else
-      x = x & 0xfe0fffff; // clear G6-G10
+      x = x & 0xfe0fffffU; // clear G6-G10
     if ((x & MASK_SNAN32) == MASK_SNAN32) { // SNaN
       // set invalid flag
       *pfpsf |= BID_INVALID_EXCEPTION;
       // return quiet (SNaN)
-      res = x & 0xfdffffff;
+      res = x & 0xfdffffffU;
     } else {	// QNaN
       res = x;
     }
     BID_RETURN (res);
   } else if ((x & MASK_INF32) == MASK_INF32) { // check for Infinity
-    if (!(x & 0x80000000)) { // x is +inf
-      res = 0x78000000;
+    if (!(x & 0x80000000U)) { // x is +inf
+      res = 0x78000000U;
     } else { // x is -inf
-      res = 0xf7f8967f;	// -MAXFP = -9999999 * 10^emax
+      res = 0xf7f8967fU;	// -MAXFP = -9999999 * 10^emax
     }
     BID_RETURN (res);
   }
@@ -91,16 +91,16 @@ bid32_nextup (BID_UINT32 x
   }
 
   // check for zeros (possibly from non-canonical values)
-  if (C1 == 0x0) {
+  if (C1 == 0x0U) {
     // x is 0
-    res = 0x00000001; // MINFP = 1 * 10^emin
+    res = 0x00000001U; // MINFP = 1 * 10^emin
   } else { // x is not special and is not zero
-    if (x == 0x77f8967f) {
+    if (x == 0x77f8967fU) {
       // x = +MAXFP = 9999999 * 10^emax
-      res = 0x78000000; // +inf
-    } else if (x == 0x80000001) {
+      res = 0x78000000U; // +inf
+    } else if (x == 0x80000001U) {
       // x = -MINFP = 1...99 * 10^emin
-      res = 0x80000000; // -0
+      res = 0x80000000U; // -0
     } else {	// -MAXFP <= x <= -MINFP - 1 ulp OR MINFP <= x <= MAXFP - 1 ulp
       // can add/subtract 1 ulp to the significand
 
@@ -132,16 +132,16 @@ bid32_nextup (BID_UINT32 x
       if (!x_sign) {	// x > 0
     // add 1 ulp (add 1 to the significand)
     C1++;
-    if (C1 == 0x989680) { // if  C1 = 10^7
-      C1 = 0x0f4240; // C1 = 10^6
+    if (C1 == 0x989680U) { // if  C1 = 10^7
+      C1 = 0x0f4240U; // C1 = 10^6
       x_exp++;
     }
     // Ok, because MAXFP = 9999999 * 10^emax was caught already
       } else {	// x < 0
     // subtract 1 ulp (subtract 1 from the significand)
     C1--;
-    if (C1 == 0x0f423f && x_exp != 0) { // if  C1 = 10^6 - 1
-      C1 = 0x98967f; // C1 = 10^7 - 1
+    if (C1 == 0x0f423fU && x_exp != 0) { // if  C1 = 10^6 - 1
+      C1 = 0x98967fU; // C1 = 10^7 - 1
       x_exp--;
     }
       }
@@ -183,24 +183,24 @@ bid32_nextdown (BID_UINT32 x
 
   // check for NaNs and infinities
   if ((x & MASK_NAN32) == MASK_NAN32) {	// check for NaN 
-    if ((x & 0x000fffff) > 999999)
-      x = x & 0xfe000000; // clear G6-G10 and the payload bits 
+    if ((x & 0x000fffffU) > 999999)
+      x = x & 0xfe000000U; // clear G6-G10 and the payload bits 
     else
-      x = x & 0xfe0fffff; // clear G6-G10 
+      x = x & 0xfe0fffffU; // clear G6-G10 
     if ((x & MASK_SNAN32) == MASK_SNAN32) { // SNaN 
       // set invalid flag
       *pfpsf |= BID_INVALID_EXCEPTION;
       // return quiet (SNaN)
-      res = x & 0xfdffffff;
+      res = x & 0xfdffffffU;
     } else { // QNaN 
       res = x;
     }
     BID_RETURN (res);
   } else if ((x & MASK_INF32) == MASK_INF32) { // check for Infinity
-    if (x & 0x80000000) { // x is -inf
-      res = 0xf8000000;
+    if (x & 0x80000000U) { // x is -inf
+      res = 0xf8000000U;
     } else { // x is +inf
-      res = 0x77f8967f;	// +MAXFP = +9999999 * 10^emax
+      res = 0x77f8967fU;	// +MAXFP = +9999999 * 10^emax
     }
     BID_RETURN (res);
   }
@@ -220,16 +220,16 @@ bid32_nextdown (BID_UINT32 x
   }
 
   // check for zeros (possibly from non-canonical values)
-  if (C1 == 0x0) {
+  if (C1 == 0x0U) {
     // x is 0
-    res = 0x80000001; // -MINFP = -1 * 10^emin
+    res = 0x80000001U; // -MINFP = -1 * 10^emin
   } else { // x is not special and is not zero
-    if (x == 0xf7f8967f) {
+    if (x == 0xf7f8967fU) {
       // x = -MAXFP = -9999999 * 10^emax
-      res = 0xf8000000;	// -inf
-    } else if (x == 0x00000001) {
+      res = 0xf8000000U;	// -inf
+    } else if (x == 0x00000001U) {
       // x = +MINFP = 1 * 10^emin
-      res = 0x00000000; // +0
+      res = 0x00000000U; // +0
     } else { // -MAXFP + 1ulp <= x <= -MINFP OR MINFP + 1 ulp <= x <= MAXFP
       // can add/subtract 1 ulp to the significand
 
@@ -261,16 +261,16 @@ bid32_nextdown (BID_UINT32 x
       if (x_sign) {	// x < 0
     // add 1 ulp (add 1 to the significand)
     C1++;
-    if (C1 == 0x989680) { // if  C1 = 10^7
-      C1 = 0x0f4240; // C1 = 10^6
+    if (C1 == 0x989680U) { // if  C1 = 10^7
+      C1 = 0x0f4240U; // C1 = 10^6
       x_exp++;
     }
         // Ok, because -MAXFP = -9999999 * 10^emax was caught already
       } else {	// x > 0
     // subtract 1 ulp (subtract 1 from the significand)
     C1--;
-    if (C1 == 0x0f423f && x_exp != 0) { // if  C1 = 10^6 - 1
-      C1 = 0x98967f; // C1 = 10^7 - 1
+    if (C1 == 0x0f423fU && x_exp != 0) { // if  C1 = 10^6 - 1
+      C1 = 0x98967fU; // C1 = 10^7 - 1
       x_exp--;
     }
       }
@@ -305,15 +305,15 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
     // x is NaN or infinity or y is NaN or infinity
 
     if ((x & MASK_NAN32) == MASK_NAN32) { // x is NAN
-      if ((x & 0x000fffff) > 999999)
-    x = x & 0xfe000000; // clear G6-G10 and the payload bits
+      if ((x & 0x000fffffU) > 999999)
+    x = x & 0xfe000000U; // clear G6-G10 and the payload bits
       else
-    x = x & 0xfe0fffff; // clear G6-G10
+    x = x & 0xfe0fffffU; // clear G6-G10
       if ((x & MASK_SNAN32) == MASK_SNAN32) { // x is SNAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return quiet (x)
-    res = x & 0xfdffffff;
+    res = x & 0xfdffffffU;
       } else {	// x is QNaN
     if ((y & MASK_SNAN32) == MASK_SNAN32) {	// y is SNAN
       // set invalid flag
@@ -324,15 +324,15 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
       }
       BID_RETURN (res);
     } else if ((y & MASK_NAN32) == MASK_NAN32) {	// y is NAN
-      if ((y & 0x000fffff) > 999999)
-    y = y & 0xfe000000; // clear G6-G10 and the payload bits
+      if ((y & 0x000fffffU) > 999999)
+    y = y & 0xfe000000U; // clear G6-G10 and the payload bits
       else
-    y = y & 0xfe0fffff; // clear G6-G10
+    y = y & 0xfe0fffffU; // clear G6-G10
       if ((y & MASK_SNAN32) == MASK_SNAN32) { // y is SNAN
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return quiet (y)
-    res = y & 0xfdffffff;
+    res = y & 0xfdffffffU;
       } else {	// y is QNaN
     // return y
     res = y;
@@ -382,7 +382,7 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
   *pfpsf = tmp_fpsf; // restore fpsf
   if (res1) { // x = y
     // return x with the sign of y
-    res = (y & 0x80000000) | (x & 0x7fffffff);
+    res = (y & 0x80000000U) | (x & 0x7fffffffU);
   } else if (res2) { // x > y
 #if DECIMAL_CALL_BY_REFERENCE
     bid32_nextdown (&res, &x _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
@@ -406,8 +406,8 @@ BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_nextafter, BID_UINT
   }
   // if the result is in (-10^emin, 10^emin), and is different from the
   // operand x, signal underflow and inexact 
-  tmp1 = 0x0f4240; // +1000000 * 10^emin
-  tmp2 = res & 0x7fffffff;
+  tmp1 = 0x0f4240U; // +1000000 * 10^emin
+  tmp2 = res & 0x7fffffffU;
   tmp_fpsf = *pfpsf; // save fpsf
 #if DECIMAL_CALL_BY_REFERENCE
   bid32_quiet_greater (&res1, &tmp1, &tmp2 

@@ -114,7 +114,7 @@ bid64_nextup (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= 0x0000000100000000ull) {	// x >= 2^32
       tmp1.d = (double) (C1 >> 32);	// exact conversion
       x_nr_bits =
-        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     } else {	// x < 2^32
       tmp1.d = (double) C1;	// exact conversion
       x_nr_bits =
@@ -261,7 +261,7 @@ bid64_nextdown (BID_UINT64 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     if (C1 >= 0x0000000100000000ull) {	// x >= 2^32
       tmp1.d = (double) (C1 >> 32);	// exact conversion
       x_nr_bits =
-        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ff) - 0x3ff);
+        33 + ((((unsigned int) (tmp1.ui64 >> 52)) & 0x7ffU) - 0x3ffU);
     } else {	// x < 2^32
       tmp1.d = (double) C1;	// exact conversion
       x_nr_bits =

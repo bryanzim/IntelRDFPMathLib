@@ -54,25 +54,25 @@ BID128_FUNCTION_ARG1 (bid128_sqrt, x)
 
   // unpack arguments, check for NaN or Infinity
 if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
-res.w[1] = CX.w[1];
-res.w[0] = CX.w[0];
+res.w[1U] = CX.w[1U];
+res.w[0U] = CX.w[0U];
     // NaN ?
-if ((x.w[1] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+if ((x.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x.w[1] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
+  if ((x.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[1] = CX.w[1] & QUIET_MASK64;
+  res.w[1U] = CX.w[1U] & QUIET_MASK64;
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
 }
     // x is Infinity?
-if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-  res.w[1] = CX.w[1];
+if ((x.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  res.w[1U] = CX.w[1U];
   if (sign_x) {
     // -Inf, return NaN
-    res.w[1] = 0x7c00000000000000ull;
+    res.w[1U] = 0x7c00000000000000ull;
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -83,17 +83,17 @@ if ((x.w[1] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 }
     // x is 0 otherwise
 
-res.w[1] =
+res.w[1U] =
   sign_x |
   ((((BID_UINT64) (exponent_x + DECIMAL_EXPONENT_BIAS_128)) >> 1) << 49);
-res.w[0] = 0;
+res.w[0U] = 0;
 // restore the rounding mode back if it has been changed
 if (rm_changed) fesetround(old_rm);
 BID_RETURN (res);
 }
 if (sign_x) {
-  res.w[1] = 0x7c00000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] = 0x7c00000000000000ull;
+  res.w[0U] = 0;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -105,28 +105,28 @@ if (sign_x) {
 // (void) fegetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
   // 2^64
-f64.i = 0x5f800000;
+f64.i = 0x5f800000U;
 
   // fx ~ CX
-fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
+fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
 digits = bid_estimate_decimal_digits[bin_expon_cx];
 
 A10 = CX;
 if (exponent_x & 1) {
-  A10.w[1] = (CX.w[1] << 3) | (CX.w[0] >> 61);
-  A10.w[0] = CX.w[0] << 3;
-  CX2.w[1] = (CX.w[1] << 1) | (CX.w[0] >> 63);
-  CX2.w[0] = CX.w[0] << 1;
+  A10.w[1U] = (CX.w[1U] << 3) | (CX.w[0U] >> 61);
+  A10.w[0U] = CX.w[0U] << 3;
+  CX2.w[1U] = (CX.w[1U] << 1) | (CX.w[0U] >> 63);
+  CX2.w[0U] = CX.w[0U] << 1;
   __add_128_128 (A10, A10, CX2);
 }
 
-CS.w[0] = short_sqrt128 (A10);
-CS.w[1] = 0;
+CS.w[0U] = short_sqrt128 (A10);
+CS.w[1U] = 0;
   // check for exact result
-if (CS.w[0] * CS.w[0] == A10.w[0]) {
-  __mul_64x64_to_128_fast (S2, CS.w[0], CS.w[0]);
-  if (S2.w[1] == A10.w[1])	// && S2.w[0]==A10.w[0])
+if (CS.w[0U] * CS.w[0U] == A10.w[0U]) {
+  __mul_64x64_to_128_fast (S2, CS.w[0U], CS.w[0U]);
+  if (S2.w[1U] == A10.w[1U])	// && S2.w[0]==A10.w[0])
   {
     bid_get_BID128_very_fast (&res, 0,
 			  (exponent_x +
@@ -140,9 +140,9 @@ if (CS.w[0] * CS.w[0] == A10.w[0]) {
   }
 }
   // get number of digits in CX
-D = (BID_SINT64)CX.w[1] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1];
+D = (BID_SINT64)CX.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
 if (D > 0
-    || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0]))
+    || (!D && CX.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U]))
   digits++;
 
   // if exponent is odd, scale coefficient by 10
@@ -154,7 +154,7 @@ if (scale > 38) {
   T128 = bid_power10_table_128[scale - 37];
   __mul_128x128_low (CX1, CX, T128);
 
-  TP128 = bid_power10_table_128[37];
+  TP128 = bid_power10_table_128[37U];
   __mul_128x128_to_256 (C256, CX1, TP128);
 } else {
   T128 = bid_power10_table_128[scale];
@@ -163,10 +163,10 @@ if (scale > 38) {
 
 
   // 4*C256
-C4.w[3] = (C256.w[3] << 2) | (C256.w[2] >> 62);
-C4.w[2] = (C256.w[2] << 2) | (C256.w[1] >> 62);
-C4.w[1] = (C256.w[1] << 2) | (C256.w[0] >> 62);
-C4.w[0] = C256.w[0] << 2;
+C4.w[3U] = (C256.w[3U] << 2) | (C256.w[2U] >> 62);
+C4.w[2U] = (C256.w[2U] << 2) | (C256.w[1U] >> 62);
+C4.w[1U] = (C256.w[1U] << 2) | (C256.w[0U] >> 62);
+C4.w[0U] = C256.w[0U] << 2;
 
 bid_long_sqrt128 (&CS, C256);
    //printf("C256=%016I64x %016I64x %016I64x %016I64x, CS=%016I64x %016I64x \n",C256.w[3],C256.w[2],C256.w[1],C256.w[0],CS.w[1],CS.w[0]);
@@ -177,123 +177,123 @@ if (!((rnd_mode) & 3)) {
 #endif
 #endif
   // compare to midpoints
-  CSM.w[1] = (CS.w[1] << 1) | (CS.w[0] >> 63);
-  CSM.w[0] = (CS.w[0] + CS.w[0]) | 1;
+  CSM.w[1U] = (CS.w[1U] << 1) | (CS.w[0U] >> 63);
+  CSM.w[0U] = (CS.w[0U] + CS.w[0U]) | 1;
   // CSM^2
   //__mul_128x128_to_256(M256, CSM, CSM);
   __sqr128_to_256 (M256, CSM);
 
-  if (C4.w[3] > M256.w[3]
-      || (C4.w[3] == M256.w[3]
-	  && (C4.w[2] > M256.w[2]
-	      || (C4.w[2] == M256.w[2]
-		  && (C4.w[1] > M256.w[1]
-		      || (C4.w[1] == M256.w[1]
-			  && C4.w[0] > M256.w[0])))))) {
+  if (C4.w[3U] > M256.w[3U]
+      || (C4.w[3U] == M256.w[3U]
+	  && (C4.w[2U] > M256.w[2U]
+	      || (C4.w[2U] == M256.w[2U]
+		  && (C4.w[1U] > M256.w[1U]
+		      || (C4.w[1U] == M256.w[1U]
+			  && C4.w[0U] > M256.w[0U])))))) {
     // round up
-    CS.w[0]++;
-    if (!CS.w[0])
-      CS.w[1]++;
+    CS.w[0U]++;
+    if (!CS.w[0U])
+      CS.w[1U]++;
   } else {
-    C8.w[1] = (CS.w[1] << 3) | (CS.w[0] >> 61);
-    C8.w[0] = CS.w[0] << 3;
+    C8.w[1U] = (CS.w[1U] << 3) | (CS.w[0U] >> 61);
+    C8.w[0U] = CS.w[0U] << 3;
     // M256 - 8*CSM
-    __sub_borrow_out (M256.w[0], Carry, M256.w[0], C8.w[0]);
-    __sub_borrow_in_out (M256.w[1], Carry, M256.w[1], C8.w[1], Carry);
-    __sub_borrow_in_out (M256.w[2], Carry, M256.w[2], 0, Carry);
-    M256.w[3] = M256.w[3] - Carry;
+    __sub_borrow_out (M256.w[0U], Carry, M256.w[0U], C8.w[0U]);
+    __sub_borrow_in_out (M256.w[1U], Carry, M256.w[1U], C8.w[1U], Carry);
+    __sub_borrow_in_out (M256.w[2U], Carry, M256.w[2U], 0, Carry);
+    M256.w[3U] = M256.w[3U] - Carry;
 
     // if CSM' > C256, round up
-    if (M256.w[3] > C4.w[3]
-	|| (M256.w[3] == C4.w[3]
-	    && (M256.w[2] > C4.w[2]
-		|| (M256.w[2] == C4.w[2]
-		    && (M256.w[1] > C4.w[1]
-			|| (M256.w[1] == C4.w[1]
-			    && M256.w[0] > C4.w[0])))))) {
+    if (M256.w[3U] > C4.w[3U]
+	|| (M256.w[3U] == C4.w[3U]
+	    && (M256.w[2U] > C4.w[2U]
+		|| (M256.w[2U] == C4.w[2U]
+		    && (M256.w[1U] > C4.w[1U]
+			|| (M256.w[1U] == C4.w[1U]
+			    && M256.w[0U] > C4.w[0U])))))) {
       // round down
-      if (!CS.w[0])
-	CS.w[1]--;
-      CS.w[0]--;
+      if (!CS.w[0U])
+	CS.w[1U]--;
+      CS.w[0U]--;
     }
   }
 #ifndef IEEE_ROUND_NEAREST
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 } else {
   __sqr128_to_256 (M256, CS);
-  C8.w[1] = (CS.w[1] << 1) | (CS.w[0] >> 63);
-  C8.w[0] = CS.w[0] << 1;
-  if (M256.w[3] > C256.w[3]
-      || (M256.w[3] == C256.w[3]
-	  && (M256.w[2] > C256.w[2]
-	      || (M256.w[2] == C256.w[2]
-		  && (M256.w[1] > C256.w[1]
-		      || (M256.w[1] == C256.w[1]
-			  && M256.w[0] > C256.w[0])))))) {
-    __sub_borrow_out (M256.w[0], Carry, M256.w[0], C8.w[0]);
-    __sub_borrow_in_out (M256.w[1], Carry, M256.w[1], C8.w[1], Carry);
-    __sub_borrow_in_out (M256.w[2], Carry, M256.w[2], 0, Carry);
-    M256.w[3] = M256.w[3] - Carry;
-    M256.w[0]++;
-    if (!M256.w[0]) {
-      M256.w[1]++;
-      if (!M256.w[1]) {
-	M256.w[2]++;
-	if (!M256.w[2])
-	  M256.w[3]++;
+  C8.w[1U] = (CS.w[1U] << 1) | (CS.w[0U] >> 63);
+  C8.w[0U] = CS.w[0U] << 1;
+  if (M256.w[3U] > C256.w[3U]
+      || (M256.w[3U] == C256.w[3U]
+	  && (M256.w[2U] > C256.w[2U]
+	      || (M256.w[2U] == C256.w[2U]
+		  && (M256.w[1U] > C256.w[1U]
+		      || (M256.w[1U] == C256.w[1U]
+			  && M256.w[0U] > C256.w[0U])))))) {
+    __sub_borrow_out (M256.w[0U], Carry, M256.w[0U], C8.w[0U]);
+    __sub_borrow_in_out (M256.w[1U], Carry, M256.w[1U], C8.w[1U], Carry);
+    __sub_borrow_in_out (M256.w[2U], Carry, M256.w[2U], 0, Carry);
+    M256.w[3U] = M256.w[3U] - Carry;
+    M256.w[0U]++;
+    if (!M256.w[0U]) {
+      M256.w[1U]++;
+      if (!M256.w[1U]) {
+	M256.w[2U]++;
+	if (!M256.w[2U])
+	  M256.w[3U]++;
       }
     }
 
-    if (!CS.w[0])
-      CS.w[1]--;
-    CS.w[0]--;
+    if (!CS.w[0U])
+      CS.w[1U]--;
+    CS.w[0U]--;
 
-    if (M256.w[3] > C256.w[3]
-	|| (M256.w[3] == C256.w[3]
-	    && (M256.w[2] > C256.w[2]
-		|| (M256.w[2] == C256.w[2]
-		    && (M256.w[1] > C256.w[1]
-			|| (M256.w[1] == C256.w[1]
-			    && M256.w[0] > C256.w[0])))))) {
+    if (M256.w[3U] > C256.w[3U]
+	|| (M256.w[3U] == C256.w[3U]
+	    && (M256.w[2U] > C256.w[2U]
+		|| (M256.w[2U] == C256.w[2U]
+		    && (M256.w[1U] > C256.w[1U]
+			|| (M256.w[1U] == C256.w[1U]
+			    && M256.w[0U] > C256.w[0U])))))) {
 
-      if (!CS.w[0])
-	CS.w[1]--;
-      CS.w[0]--;
+      if (!CS.w[0U])
+	CS.w[1U]--;
+      CS.w[0U]--;
     }
   }
 
   else {
-    __add_carry_out (M256.w[0], Carry, M256.w[0], C8.w[0]);
-    __add_carry_in_out (M256.w[1], Carry, M256.w[1], C8.w[1], Carry);
-    __add_carry_in_out (M256.w[2], Carry, M256.w[2], 0, Carry);
-    M256.w[3] = M256.w[3] + Carry;
-    M256.w[0]++;
-    if (!M256.w[0]) {
-      M256.w[1]++;
-      if (!M256.w[1]) {
-	M256.w[2]++;
-	if (!M256.w[2])
-	  M256.w[3]++;
+    __add_carry_out (M256.w[0U], Carry, M256.w[0U], C8.w[0U]);
+    __add_carry_in_out (M256.w[1U], Carry, M256.w[1U], C8.w[1U], Carry);
+    __add_carry_in_out (M256.w[2U], Carry, M256.w[2U], 0, Carry);
+    M256.w[3U] = M256.w[3U] + Carry;
+    M256.w[0U]++;
+    if (!M256.w[0U]) {
+      M256.w[1U]++;
+      if (!M256.w[1U]) {
+	M256.w[2U]++;
+	if (!M256.w[2U])
+	  M256.w[3U]++;
       }
     }
-    if (M256.w[3] < C256.w[3]
-	|| (M256.w[3] == C256.w[3]
-	    && (M256.w[2] < C256.w[2]
-		|| (M256.w[2] == C256.w[2]
-		    && (M256.w[1] < C256.w[1]
-			|| (M256.w[1] == C256.w[1]
-			    && M256.w[0] <= C256.w[0])))))) {
+    if (M256.w[3U] < C256.w[3U]
+	|| (M256.w[3U] == C256.w[3U]
+	    && (M256.w[2U] < C256.w[2U]
+		|| (M256.w[2U] == C256.w[2U]
+		    && (M256.w[1U] < C256.w[1U]
+			|| (M256.w[1U] == C256.w[1U]
+			    && M256.w[0U] <= C256.w[0U])))))) {
 
-      CS.w[0]++;
-      if (!CS.w[0])
-	CS.w[1]++;
+      CS.w[0U]++;
+      if (!CS.w[0U])
+	CS.w[1U]++;
     }
   }
   // RU?
   if ((rnd_mode) == BID_ROUNDING_UP) {
-    CS.w[0]++;
-    if (!CS.w[0])
-      CS.w[1]++;
+    CS.w[0U]++;
+    if (!CS.w[0U])
+      CS.w[1U]++;
   }
 
 }
@@ -336,19 +336,19 @@ BID128_FUNCTION_ARGTYPE1 (bid128d_sqrt, BID_UINT64, x)
 
 	// unpack arguments, check for NaN or Infinity
    // unpack arguments, check for NaN or Infinity
-CX.w[1] = 0;
-if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0], x)) {
-res.w[1] = CX.w[0];
-res.w[0] = 0;
+CX.w[1U] = 0;
+if (!unpack_BID64 (&sign_x, &exponent_x, &CX.w[0U], x)) {
+res.w[1U] = CX.w[0U];
+res.w[0U] = 0;
 	   // NaN ?
 if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
   if ((x & SNAN_MASK64) == SNAN_MASK64)	// sNaN
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  res.w[0] = (CX.w[0] & 0x0003ffffffffffffull);
-  __mul_64x64_to_128 (res, res.w[0], bid_power10_table_128[18].w[0]);
-  res.w[1] |= ((CX.w[0]) & 0xfc00000000000000ull);
+  res.w[0U] = (CX.w[0U] & 0x0003ffffffffffffull);
+  __mul_64x64_to_128 (res, res.w[0U], bid_power10_table_128[18U].w[0U]);
+  res.w[1U] |= ((CX.w[0U]) & 0xfc00000000000000ull);
   // restore the rounding mode back if it has been changed
   if (rm_changed) fesetround(old_rm);
   BID_RETURN (res);
@@ -357,7 +357,7 @@ if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
   if (sign_x) {
     // -Inf, return NaN
-    res.w[1] = 0x7c00000000000000ull;
+    res.w[1U] = 0x7c00000000000000ull;
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -370,17 +370,17 @@ if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
 
 exponent_x =
   exponent_x - DECIMAL_EXPONENT_BIAS + DECIMAL_EXPONENT_BIAS_128;
-res.w[1] =
+res.w[1U] =
   sign_x | ((((BID_UINT64) (exponent_x + DECIMAL_EXPONENT_BIAS_128)) >> 1)
 	    << 49);
-res.w[0] = 0;
+res.w[0U] = 0;
 // restore the rounding mode back if it has been changed
 if (rm_changed) fesetround(old_rm);
 BID_RETURN (res);
 }
 if (sign_x) {
-  res.w[1] = 0x7c00000000000000ull;
-  res.w[0] = 0;
+  res.w[1U] = 0x7c00000000000000ull;
+  res.w[0U] = 0;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -395,28 +395,28 @@ exponent_x =
   exponent_x - DECIMAL_EXPONENT_BIAS + DECIMAL_EXPONENT_BIAS_128;
 
 	   // 2^64
-f64.i = 0x5f800000;
+f64.i = 0x5f800000U;
 
 	   // fx ~ CX
-fx.d = (float) CX.w[1] * f64.d + (float) CX.w[0];
-bin_expon_cx = ((fx.i >> 23) & 0xff) - 0x7f;
+fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
+bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
 digits = bid_estimate_decimal_digits[bin_expon_cx];
 
 A10 = CX;
 if (exponent_x & 1) {
-  A10.w[1] = (CX.w[1] << 3) | (CX.w[0] >> 61);
-  A10.w[0] = CX.w[0] << 3;
-  CX2.w[1] = (CX.w[1] << 1) | (CX.w[0] >> 63);
-  CX2.w[0] = CX.w[0] << 1;
+  A10.w[1U] = (CX.w[1U] << 3) | (CX.w[0U] >> 61);
+  A10.w[0U] = CX.w[0U] << 3;
+  CX2.w[1U] = (CX.w[1U] << 1) | (CX.w[0U] >> 63);
+  CX2.w[0U] = CX.w[0U] << 1;
   __add_128_128 (A10, A10, CX2);
 }
 
-CS.w[0] = short_sqrt128 (A10);
-CS.w[1] = 0;
+CS.w[0U] = short_sqrt128 (A10);
+CS.w[1U] = 0;
 	   // check for exact result
-if (CS.w[0] * CS.w[0] == A10.w[0]) {
-  __mul_64x64_to_128_fast (S2, CS.w[0], CS.w[0]);
-  if (S2.w[1] == A10.w[1]) {
+if (CS.w[0U] * CS.w[0U] == A10.w[0U]) {
+  __mul_64x64_to_128_fast (S2, CS.w[0U], CS.w[0U]);
+  if (S2.w[1U] == A10.w[1U]) {
     bid_get_BID128_very_fast (&res, 0,
 			  (exponent_x + DECIMAL_EXPONENT_BIAS_128) >> 1,
 			  CS);
@@ -429,9 +429,9 @@ if (CS.w[0] * CS.w[0] == A10.w[0]) {
   }
 }
 	   // get number of digits in CX
-D = (BID_SINT64)CX.w[1] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1];
+D = (BID_SINT64)CX.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
 if (D > 0
-    || (!D && CX.w[0] >= bid_power10_index_binexp_128[bin_expon_cx].w[0]))
+    || (!D && CX.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U]))
   digits++;
 
 		// if exponent is odd, scale coefficient by 10
@@ -443,7 +443,7 @@ if (scale > 38) {
   T128 = bid_power10_table_128[scale - 37];
   __mul_128x128_low (CX1, CX, T128);
 
-  TP128 = bid_power10_table_128[37];
+  TP128 = bid_power10_table_128[37U];
   __mul_128x128_to_256 (C256, CX1, TP128);
 } else {
   T128 = bid_power10_table_128[scale];
@@ -452,10 +452,10 @@ if (scale > 38) {
 
 
 	   // 4*C256
-C4.w[3] = (C256.w[3] << 2) | (C256.w[2] >> 62);
-C4.w[2] = (C256.w[2] << 2) | (C256.w[1] >> 62);
-C4.w[1] = (C256.w[1] << 2) | (C256.w[0] >> 62);
-C4.w[0] = C256.w[0] << 2;
+C4.w[3U] = (C256.w[3U] << 2) | (C256.w[2U] >> 62);
+C4.w[2U] = (C256.w[2U] << 2) | (C256.w[1U] >> 62);
+C4.w[1U] = (C256.w[1U] << 2) | (C256.w[0U] >> 62);
+C4.w[0U] = C256.w[0U] << 2;
 
 bid_long_sqrt128 (&CS, C256);
 
@@ -465,123 +465,123 @@ if (!((rnd_mode) & 3)) {
 #endif
 #endif
   // compare to midpoints
-  CSM.w[1] = (CS.w[1] << 1) | (CS.w[0] >> 63);
-  CSM.w[0] = (CS.w[0] + CS.w[0]) | 1;
+  CSM.w[1U] = (CS.w[1U] << 1) | (CS.w[0U] >> 63);
+  CSM.w[0U] = (CS.w[0U] + CS.w[0U]) | 1;
   // CSM^2
   //__mul_128x128_to_256(M256, CSM, CSM);
   __sqr128_to_256 (M256, CSM);
 
-  if (C4.w[3] > M256.w[3]
-      || (C4.w[3] == M256.w[3]
-	  && (C4.w[2] > M256.w[2]
-	      || (C4.w[2] == M256.w[2]
-		  && (C4.w[1] > M256.w[1]
-		      || (C4.w[1] == M256.w[1]
-			  && C4.w[0] > M256.w[0])))))) {
+  if (C4.w[3U] > M256.w[3U]
+      || (C4.w[3U] == M256.w[3U]
+	  && (C4.w[2U] > M256.w[2U]
+	      || (C4.w[2U] == M256.w[2U]
+		  && (C4.w[1U] > M256.w[1U]
+		      || (C4.w[1U] == M256.w[1U]
+			  && C4.w[0U] > M256.w[0U])))))) {
     // round up
-    CS.w[0]++;
-    if (!CS.w[0])
-      CS.w[1]++;
+    CS.w[0U]++;
+    if (!CS.w[0U])
+      CS.w[1U]++;
   } else {
-    C8.w[1] = (CS.w[1] << 3) | (CS.w[0] >> 61);
-    C8.w[0] = CS.w[0] << 3;
+    C8.w[1U] = (CS.w[1U] << 3) | (CS.w[0U] >> 61);
+    C8.w[0U] = CS.w[0U] << 3;
     // M256 - 8*CSM
-    __sub_borrow_out (M256.w[0], Carry, M256.w[0], C8.w[0]);
-    __sub_borrow_in_out (M256.w[1], Carry, M256.w[1], C8.w[1], Carry);
-    __sub_borrow_in_out (M256.w[2], Carry, M256.w[2], 0, Carry);
-    M256.w[3] = M256.w[3] - Carry;
+    __sub_borrow_out (M256.w[0U], Carry, M256.w[0U], C8.w[0U]);
+    __sub_borrow_in_out (M256.w[1U], Carry, M256.w[1U], C8.w[1U], Carry);
+    __sub_borrow_in_out (M256.w[2U], Carry, M256.w[2U], 0, Carry);
+    M256.w[3U] = M256.w[3U] - Carry;
 
     // if CSM' > C256, round up
-    if (M256.w[3] > C4.w[3]
-	|| (M256.w[3] == C4.w[3]
-	    && (M256.w[2] > C4.w[2]
-		|| (M256.w[2] == C4.w[2]
-		    && (M256.w[1] > C4.w[1]
-			|| (M256.w[1] == C4.w[1]
-			    && M256.w[0] > C4.w[0])))))) {
+    if (M256.w[3U] > C4.w[3U]
+	|| (M256.w[3U] == C4.w[3U]
+	    && (M256.w[2U] > C4.w[2U]
+		|| (M256.w[2U] == C4.w[2U]
+		    && (M256.w[1U] > C4.w[1U]
+			|| (M256.w[1U] == C4.w[1U]
+			    && M256.w[0U] > C4.w[0U])))))) {
       // round down
-      if (!CS.w[0])
-	CS.w[1]--;
-      CS.w[0]--;
+      if (!CS.w[0U])
+	CS.w[1U]--;
+      CS.w[0U]--;
     }
   }
 #ifndef IEEE_ROUND_NEAREST
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 } else {
   __sqr128_to_256 (M256, CS);
-  C8.w[1] = (CS.w[1] << 1) | (CS.w[0] >> 63);
-  C8.w[0] = CS.w[0] << 1;
-  if (M256.w[3] > C256.w[3]
-      || (M256.w[3] == C256.w[3]
-	  && (M256.w[2] > C256.w[2]
-	      || (M256.w[2] == C256.w[2]
-		  && (M256.w[1] > C256.w[1]
-		      || (M256.w[1] == C256.w[1]
-			  && M256.w[0] > C256.w[0])))))) {
-    __sub_borrow_out (M256.w[0], Carry, M256.w[0], C8.w[0]);
-    __sub_borrow_in_out (M256.w[1], Carry, M256.w[1], C8.w[1], Carry);
-    __sub_borrow_in_out (M256.w[2], Carry, M256.w[2], 0, Carry);
-    M256.w[3] = M256.w[3] - Carry;
-    M256.w[0]++;
-    if (!M256.w[0]) {
-      M256.w[1]++;
-      if (!M256.w[1]) {
-	M256.w[2]++;
-	if (!M256.w[2])
-	  M256.w[3]++;
+  C8.w[1U] = (CS.w[1U] << 1) | (CS.w[0U] >> 63);
+  C8.w[0U] = CS.w[0U] << 1;
+  if (M256.w[3U] > C256.w[3U]
+      || (M256.w[3U] == C256.w[3U]
+	  && (M256.w[2U] > C256.w[2U]
+	      || (M256.w[2U] == C256.w[2U]
+		  && (M256.w[1U] > C256.w[1U]
+		      || (M256.w[1U] == C256.w[1U]
+			  && M256.w[0U] > C256.w[0U])))))) {
+    __sub_borrow_out (M256.w[0U], Carry, M256.w[0U], C8.w[0U]);
+    __sub_borrow_in_out (M256.w[1U], Carry, M256.w[1U], C8.w[1U], Carry);
+    __sub_borrow_in_out (M256.w[2U], Carry, M256.w[2U], 0, Carry);
+    M256.w[3U] = M256.w[3U] - Carry;
+    M256.w[0U]++;
+    if (!M256.w[0U]) {
+      M256.w[1U]++;
+      if (!M256.w[1U]) {
+	M256.w[2U]++;
+	if (!M256.w[2U])
+	  M256.w[3U]++;
       }
     }
 
-    if (!CS.w[0])
-      CS.w[1]--;
-    CS.w[0]--;
+    if (!CS.w[0U])
+      CS.w[1U]--;
+    CS.w[0U]--;
 
-    if (M256.w[3] > C256.w[3]
-	|| (M256.w[3] == C256.w[3]
-	    && (M256.w[2] > C256.w[2]
-		|| (M256.w[2] == C256.w[2]
-		    && (M256.w[1] > C256.w[1]
-			|| (M256.w[1] == C256.w[1]
-			    && M256.w[0] > C256.w[0])))))) {
+    if (M256.w[3U] > C256.w[3U]
+	|| (M256.w[3U] == C256.w[3U]
+	    && (M256.w[2U] > C256.w[2U]
+		|| (M256.w[2U] == C256.w[2U]
+		    && (M256.w[1U] > C256.w[1U]
+			|| (M256.w[1U] == C256.w[1U]
+			    && M256.w[0U] > C256.w[0U])))))) {
 
-      if (!CS.w[0])
-	CS.w[1]--;
-      CS.w[0]--;
+      if (!CS.w[0U])
+	CS.w[1U]--;
+      CS.w[0U]--;
     }
   }
 
   else {
-    __add_carry_out (M256.w[0], Carry, M256.w[0], C8.w[0]);
-    __add_carry_in_out (M256.w[1], Carry, M256.w[1], C8.w[1], Carry);
-    __add_carry_in_out (M256.w[2], Carry, M256.w[2], 0, Carry);
-    M256.w[3] = M256.w[3] + Carry;
-    M256.w[0]++;
-    if (!M256.w[0]) {
-      M256.w[1]++;
-      if (!M256.w[1]) {
-	M256.w[2]++;
-	if (!M256.w[2])
-	  M256.w[3]++;
+    __add_carry_out (M256.w[0U], Carry, M256.w[0U], C8.w[0U]);
+    __add_carry_in_out (M256.w[1U], Carry, M256.w[1U], C8.w[1U], Carry);
+    __add_carry_in_out (M256.w[2U], Carry, M256.w[2U], 0, Carry);
+    M256.w[3U] = M256.w[3U] + Carry;
+    M256.w[0U]++;
+    if (!M256.w[0U]) {
+      M256.w[1U]++;
+      if (!M256.w[1U]) {
+	M256.w[2U]++;
+	if (!M256.w[2U])
+	  M256.w[3U]++;
       }
     }
-    if (M256.w[3] < C256.w[3]
-	|| (M256.w[3] == C256.w[3]
-	    && (M256.w[2] < C256.w[2]
-		|| (M256.w[2] == C256.w[2]
-		    && (M256.w[1] < C256.w[1]
-			|| (M256.w[1] == C256.w[1]
-			    && M256.w[0] <= C256.w[0])))))) {
+    if (M256.w[3U] < C256.w[3U]
+	|| (M256.w[3U] == C256.w[3U]
+	    && (M256.w[2U] < C256.w[2U]
+		|| (M256.w[2U] == C256.w[2U]
+		    && (M256.w[1U] < C256.w[1U]
+			|| (M256.w[1U] == C256.w[1U]
+			    && M256.w[0U] <= C256.w[0U])))))) {
 
-      CS.w[0]++;
-      if (!CS.w[0])
-	CS.w[1]++;
+      CS.w[0U]++;
+      if (!CS.w[0U])
+	CS.w[1U]++;
     }
   }
   // RU?
   if ((rnd_mode) == BID_ROUNDING_UP) {
-    CS.w[0]++;
-    if (!CS.w[0])
-      CS.w[1]++;
+    CS.w[0U]++;
+    if (!CS.w[0U])
+      CS.w[1U]++;
   }
 
 }

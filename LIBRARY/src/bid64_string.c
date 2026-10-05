@@ -106,16 +106,16 @@ bid64_to_string (char *ps, BID_UINT64 x
     if (exponent_x) {
       // get decimal digits in coefficient_x
       tempx.d = (float) exponent_x;
-      bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+      bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
       digits_x = bid_estimate_decimal_digits[bin_expon_cx];
-      if ((BID_UINT64)exponent_x >= bid_power10_table_128[digits_x].w[0])
+      if ((BID_UINT64)exponent_x >= bid_power10_table_128[digits_x].w[0U])
 	digits_x++;
 
       j = istart + digits_x - 1;
       istart = j + 1;
 
       // 2^32/10
-      ER10 = 0x1999999a;
+      ER10 = 0x1999999aU;
 
       while (exponent_x > 9) {
         D = (BID_UINT64) exponent_x *ER10;
@@ -137,7 +137,7 @@ bid64_to_string (char *ps, BID_UINT64 x
   // convert expon, coeff to ASCII
   exponent_x -= DECIMAL_EXPONENT_BIAS;
 
-  ER10 = 0x1999999a;
+  ER10 = 0x1999999aU;
 
     istart = 1;
     ps[0] = (sign_x)? '-': '+';
@@ -149,7 +149,7 @@ bid64_to_string (char *ps, BID_UINT64 x
       ps[istart++] = '0';
     } else {
       /* ****************************************************
-       This takes a bid coefficient in C1.w[1],C1.w[0] 
+       This takes a bid coefficient in C1.w[1U],C1.w[0U] 
        and put the converted character sequence at location 
        starting at &(str[k]). The function returns the number
        of MiDi returned. Note that the character sequence 
@@ -163,9 +163,9 @@ bid64_to_string (char *ps, BID_UINT64 x
        18 digits. (The high can have at most 16 digits). It then
        uses macro that handle 18 digit portions.
        The first step is to get hi and lo such that
-       2^(64) C1.w[1] + C1.w[0] = hi * 10^18  + lo,   0 <= lo < 10^18.
+       2^(64) C1.w[1U] + C1.w[0U] = hi * 10^18  + lo,   0 <= lo < 10^18.
        We use a table lookup method to obtain the hi and lo 18 digits.
-       [C1.w[1],C1.w[0]] = c_8 2^(107) + c_7 2^(101) + ... + c_0 2^(59) + d
+       [C1.w[1U],C1.w[0U]] = c_8 2^(107) + c_7 2^(101) + ... + c_0 2^(59) + d
        where 0 <= d < 2^59 and each c_j has 6 bits. Because d fits in
        18 digits,  we set hi = 0, and lo = d to begin with.
        We then retrieve from a table, for j = 0, 1, ..., 8
@@ -212,16 +212,16 @@ bid64_to_string (char *ps, BID_UINT64 x
     if (exponent_x) {
       // get decimal digits in coefficient_x
       tempx.d = (float) exponent_x;
-      bin_expon_cx = ((tempx.i >> 23) & 0xff) - 0x7f;
+      bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
       digits_x = bid_estimate_decimal_digits[bin_expon_cx];
-      if ((BID_UINT64)exponent_x >= bid_power10_table_128[digits_x].w[0])
+      if ((BID_UINT64)exponent_x >= bid_power10_table_128[digits_x].w[0U])
         digits_x++;
 
       j = istart + digits_x - 1;
       istart = j + 1;
 
       // 2^32/10
-      ER10 = 0x1999999a;
+      ER10 = 0x1999999aU;
 
       while (exponent_x > 9) {
         D = (BID_UINT64) exponent_x *ER10;
