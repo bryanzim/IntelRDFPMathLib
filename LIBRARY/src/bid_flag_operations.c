@@ -361,6 +361,7 @@ unsigned int __bid_ms_restore_flags(unsigned int* pflags)
 {
 unsigned int crt_flags, n=0;
 int_float tmp;
+volatile float bin_op;
 
 
     crt_flags = _statusfp();
@@ -383,29 +384,27 @@ int_float tmp;
           }
           if(crt_flags & _SW_OVERFLOW)
           {
-#if !defined(_MSC_VER)
-              // Intentional overflow. MSVC skips this; tmp would be uninitialized.
+              /* Raise overflow. volatile keeps the operation from being deleted. */
               tmp.i = 0x7f000001;
-              tmp.d *= tmp.d;
+              bin_op = tmp.d;
+              bin_op *= bin_op;
+              tmp.d = bin_op;
               n |= tmp.i;
-#endif
           }
           if(crt_flags & _SW_ZERODIVIDE)
           {
               tmp.i = 0x80000000;
-#if !defined(_MSC_VER)
-              // Intentional divide by 0
-              tmp.d = 1.0f/tmp.d;
-#endif
+              bin_op = tmp.d;
+              bin_op = 1.0f / bin_op;
+              tmp.d = bin_op;
               n |= tmp.i;
           }
           if(crt_flags & _SW_INVALID)
           {
               tmp.i = 0x80000000;
-#if !defined(_MSC_VER)
-              // Intentional divide by 0
-              tmp.d /= tmp.d;
-#endif
+              bin_op = tmp.d;
+              bin_op = bin_op / bin_op;
+              tmp.d = bin_op;
               n |= tmp.i;
           }
 

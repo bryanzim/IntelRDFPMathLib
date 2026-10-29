@@ -36,6 +36,11 @@
 #define DECIMAL_EXPONENT_BIAS 398
 #define MAX_DECIMAL_EXPONENT  767
 
+/* Above this, the decimal64 exponent is outside the format for any
+   explicit exponent this parser accepts, and the int counters cannot wrap. */
+#define BID_COUNT_LIMIT (1 << 22)
+#define BID_COUNT_INC(v) do { if ((v) < BID_COUNT_LIMIT) (v)++; } while (0)
+
 #if DECIMAL_CALL_BY_REFERENCE
 
 void
@@ -359,7 +364,7 @@ bid64_from_string (char *ps
       // for numbers such as 0.0000000000000000000000000000000000001001, 
       // we want to count the leading zeros
       if (rdx_pt_enc) {
-        right_radix_leading_zeros++;
+        BID_COUNT_INC(right_radix_leading_zeros);
       }
       // if this character is a radix point, make sure we haven't already 
       // encountered one
@@ -404,9 +409,10 @@ bid64_from_string (char *ps
       c = *ps;
       continue;
     }
-    dec_expon_scale += rdx_pt_enc;
+    if (rdx_pt_enc)
+      BID_COUNT_INC(dec_expon_scale);
 
-    ndigits++;
+    BID_COUNT_INC(ndigits);
     if (ndigits <= 16) {
       coefficient_x = (coefficient_x << 1) + (coefficient_x << 3);
       coefficient_x += (BID_UINT64) (c - '0');
@@ -441,9 +447,9 @@ bid64_from_string (char *ps
       }
       if (c > '0')
 	rounded = 1;
-      add_expon += 1;
+      BID_COUNT_INC(add_expon);
     } else { // ndigits > 17
-      add_expon++;
+      BID_COUNT_INC(add_expon);
       if (midpoint && c > '0') {
 	coefficient_x++;
 	midpoint = 0;
@@ -460,7 +466,7 @@ bid64_from_string (char *ps
 
           if (coefficient_x == 10000000000000000ull) {
             coefficient_x = 1000000000000000ull; 
-            add_expon++;
+            BID_COUNT_INC(add_expon);
 	  }
 	}
       }

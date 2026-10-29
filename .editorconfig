@@ -11,3 +11,9 @@ end_of_line = crlf
 
 [*.md]
 trim_trailing_whitespace = false
+
+# Google C++ Style Guide indent for new C++ sources. Shared C headers stay
+# at the width already in the file.
+[*.{cc,cpp,cxx,hpp,hh,hxx}]
+indent_style = space
+indent_size = 2

@@ -275,6 +275,9 @@ bid128_to_string (char *str, BID_UINT128 x
 #define MAX_FORMAT_DIGITS_128   34
 #define MAX_STRING_DIGITS_128   100
 #define MAX_SEARCH              MAX_STRING_DIGITS_128-MAX_FORMAT_DIGITS_128-1
+/* Larger than any exponent this parser accepts (7 digits) plus the
+   decimal128 range, and small enough that the int counters cannot wrap. */
+#define BID_COUNT_LIMIT         20000000
 
 
 
@@ -471,7 +474,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       else if(c>'0') { set_inexact=1;  sticky_bit = 1; }
       ps++;
       c = *ps;
-      ndigits_before++;
+      if (ndigits_before < BID_COUNT_LIMIT)
+        ndigits_before++;
     }
 
     ndigits_total = ndigits_before;
@@ -487,7 +491,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
           else if(c>'0') { set_inexact=1;  sticky_bit = 1; }
           ps++;
           c = *ps;
-          ndigits_total++;
+          if (ndigits_total < BID_COUNT_LIMIT)
+            ndigits_total++;
         }
         ndigits_after = ndigits_total - ndigits_before;
       }
@@ -506,7 +511,8 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
 	  else if(c>'0') { set_inexact=1;  sticky_bit = 1; }
       ps++;
       c = *ps;
-      ndigits_total++;
+      if (ndigits_total < BID_COUNT_LIMIT)
+        ndigits_total++;
     }
     ndigits_after = ndigits_total - ndigits_before;
   }
@@ -563,10 +569,13 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
   }
 
 
+  {
+    int lead_zeros = (right_radix_leading_zeros > (BID_UINT64)BID_COUNT_LIMIT)
+      ? BID_COUNT_LIMIT : (int)right_radix_leading_zeros;
   if (ndigits_total <= MAX_FORMAT_DIGITS_128) {
     dec_expon +=
       (int)DECIMAL_EXPONENT_BIAS_128 - ndigits_after -
-      (int)right_radix_leading_zeros;
+      lead_zeros;
     if (dec_expon < 0) {
       res.w[1U] = 0 | sign_x;
       res.w[0U] = 0;
@@ -609,7 +618,7 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
 
     dec_expon +=
       ndigits_before + (int)DECIMAL_EXPONENT_BIAS_128 -
-      MAX_FORMAT_DIGITS_128 - (int)right_radix_leading_zeros;
+      MAX_FORMAT_DIGITS_128 - lead_zeros;
 
     if (dec_expon < 0) {
       res.w[1U] = 0 | sign_x;
@@ -711,5 +720,6 @@ bid128_from_string (char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
 
     bid_get_BID128(&res, sign_x, dec_expon, CX, &rnd_mode, pfpsf);
     BID_RETURN (res);
+  }
   }
 }
