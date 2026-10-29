@@ -276,6 +276,10 @@ bid64_from_string (char *ps
 
   save_fpsf = *pfpsf; // place holder only
   (void)save_fpsf;
+  if (!ps) {
+    res = 0x7c00000000000000ull;
+    BID_RETURN (res);
+  }
   // eliminate leading whitespace
   while (((*ps == ' ') || (*ps == '\t')) && (*ps))
     ps++;
@@ -374,9 +378,10 @@ bid64_from_string (char *ps
 	  // if this is the first radix point, and the next character is NULL, 
           // we have a zero
 	  if (!*(ps + 1)) {
-	    res =
-	      ((BID_UINT64) (398 - right_radix_leading_zeros) << 53) |
-	      sign_x;
+	    int zero_exp = DECIMAL_EXPONENT_BIAS - right_radix_leading_zeros;
+	    if (zero_exp < 0)
+	      zero_exp = 0;
+	    res = ((BID_UINT64) zero_exp << 53) | sign_x;
 	    BID_RETURN (res);
 	  }
 	  ps = ps + 1;
@@ -386,9 +391,10 @@ bid64_from_string (char *ps
 	  BID_RETURN (res);
 	}
       } else if (!*(ps)) {
-	//pres->w[1] = 0x3040000000000000ull | sign_x;
-	res =
-	  ((BID_UINT64) (398 - right_radix_leading_zeros) << 53) | sign_x;
+	int zero_exp = DECIMAL_EXPONENT_BIAS - right_radix_leading_zeros;
+	if (zero_exp < 0)
+	  zero_exp = 0;
+	res = ((BID_UINT64) zero_exp << 53) | sign_x;
 	BID_RETURN (res);
       }
     }

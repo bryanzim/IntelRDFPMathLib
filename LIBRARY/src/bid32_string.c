@@ -190,6 +190,10 @@ bid32_from_string (char *ps
 
   save_fpsf = *pfpsf; // place holder only
   (void)save_fpsf;
+  if (!ps) {
+    res = 0x7c000000ul;
+    BID_RETURN (res);
+  }
   // eliminate leading whitespace
   while (((*ps == ' ') || (*ps == '\t')) && (*ps))
     ps++;
