@@ -32,6 +32,11 @@
 #include "bid128_2_str.h"
 #include "bid128_2_str_macros.h"
 
+/* Above this, the decimal32 exponent is outside the format for any
+   explicit exponent this parser accepts, and the int counters cannot wrap. */
+#define BID_COUNT_LIMIT (1 << 22)
+#define BID_COUNT_INC(v) do { if ((v) < BID_COUNT_LIMIT) (v)++; } while (0)
+
 #if DECIMAL_CALL_BY_REFERENCE
 
 void
@@ -185,6 +190,10 @@ bid32_from_string (char *ps
 
   save_fpsf = *pfpsf; // place holder only
   (void)save_fpsf;
+  if (!ps) {
+    res = 0x7c000000ul;
+    BID_RETURN (res);
+  }
   // eliminate leading whitespace
   while (((*ps == ' ') || (*ps == '\t')) && (*ps))
     ps++;
@@ -273,7 +282,7 @@ bid32_from_string (char *ps
       // for numbers such as 0.0000000000000000000000000000000000001001, 
       // we want to count the leading zeros
       if (rdx_pt_enc) {
-	right_radix_leading_zeros++;
+        BID_COUNT_INC(right_radix_leading_zeros);
       }
       // if this character is a radix point, make sure we haven't already 
       // encountered one
@@ -324,9 +333,10 @@ bid32_from_string (char *ps
       c = *ps;
       continue;
     }
-    dec_expon_scale += rdx_pt_enc;
+    if (rdx_pt_enc)
+      BID_COUNT_INC(dec_expon_scale);
 
-    ndigits++;
+    BID_COUNT_INC(ndigits);
     if (ndigits <= 7) {
       coefficient_x = (coefficient_x << 1) + (coefficient_x << 3);
       coefficient_x += (BID_UINT64) (c - '0');
@@ -361,9 +371,9 @@ bid32_from_string (char *ps
       }
       if (c > '0')
 	rounded = 1;
-      add_expon += 1;
+      BID_COUNT_INC(add_expon);
     } else { // ndigits > 8
-      add_expon++;
+      BID_COUNT_INC(add_expon);
       if (midpoint && c > '0') {
 	coefficient_x++;
 	midpoint = 0;
@@ -377,7 +387,7 @@ bid32_from_string (char *ps
           coefficient_x ++;
           rounded_up = 1;
           if (coefficient_x == 10000000ul) {
-              coefficient_x = 1000000ul; add_expon ++; }
+              coefficient_x = 1000000ul; BID_COUNT_INC(add_expon); }
 
         }
 

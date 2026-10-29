@@ -29,6 +29,7 @@
 
 #include <ctype.h>
 #include <wctype.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -60,8 +61,15 @@ char * ps0, *ps, *ptail;
      if(endptr) *endptr=NULL;
      return NULL;
    }
-   while(isspace(*ps_in)) ps_in++;
-   ps = malloc((strlen(ps_in)+2)*sizeof(char));
+   while(isspace((unsigned char)*ps_in)) ps_in++;
+   {
+   size_t nchars = strlen(ps_in);
+   if (nchars > (SIZE_MAX - 2)) {
+     set_str_end(endptr, ps_in);
+     return NULL;
+   }
+   ps = malloc((nchars + 2) * sizeof(char));
+   }
    if(!ps)
    {
      set_str_end(endptr, ps_in);
@@ -123,7 +131,7 @@ wcstod_conversion (const wchar_t* RESTRICT ps_in, wchar_t** RESTRICT endptr)
 {
 wchar_t * ps0, *ps, *ptail;
 char* ps0_c;
-int i,k;
+size_t nchars, ncopy, i;
 
    if(!ps_in)
    {
@@ -131,8 +139,12 @@ int i,k;
      return NULL;
    }
    while(iswspace(*ps_in)) ps_in++;
-   k = (int)(1 + wcslen(ps_in));
-   ps = malloc((size_t)(k + 1) * sizeof(wchar_t));
+   nchars = wcslen(ps_in);
+   if (nchars > (SIZE_MAX / sizeof(wchar_t)) - 2) {
+     set_wcs_end(endptr, ps_in);
+     return NULL;
+   }
+   ps = malloc((nchars + 2) * sizeof(wchar_t));
    if(!ps)
    {
      set_wcs_end(endptr,ps_in);
@@ -141,7 +153,7 @@ int i,k;
    wcscpy(ps, ps_in);
    ptail = (wchar_t*)ps_in;
    ps0 = ps;
-   k=1; if((*ps == L'+') || (*ps==L'-')) {ps++; ptail++; k++;}
+   if((*ps == L'+') || (*ps==L'-')) {ps++; ptail++;}
 
    // Infinity?
    if ((towlower_macro (ps[0]) == L'i' && towlower_macro (ps[1]) == L'n' && 
@@ -149,8 +161,8 @@ int i,k;
      if(towlower_macro (ps[3]) == L'i' &&
         towlower_macro (ps[4]) == L'n' && towlower_macro (ps[5]) == L'i' &&
         towlower_macro (ps[6]) == L't' && towlower_macro (ps[7]) == L'y')
-       { ps+=8; ptail+=8; set_wcs_end(endptr, ptail); k+=8; }
-     else { ps+=3; ptail+=3; set_wcs_end(endptr, ptail); k+=3; }
+       { ps+=8; ptail+=8; set_wcs_end(endptr, ptail); }
+     else { ps+=3; ptail+=3; set_wcs_end(endptr, ptail); }
    }
    else if(towlower_macro (ps[0]) == L'n' && towlower_macro (ps[1]) == L'a' && 
 	   towlower_macro (ps[2]) == L'n') {
@@ -164,14 +176,14 @@ int i,k;
        ps0[3] = L'A';
        ps0[4] = L'N';
        ps0[5] = L'\0';
-       k=6; }
+       ps = ps0 + 5; }
      else {
        ps0[0] = L'Q';
        ps0[1] = L'N';
        ps0[2] = L'A';
        ps0[3] = L'N';
        ps0[4] = L'\0';
-       k=5; }
+       ps = ps0 + 4; }
    }
    else {
      if(!iswdigit_macro(*ps) && ((*ps)!=L'.')) {
@@ -179,10 +191,10 @@ int i,k;
        free(ps0);
        return NULL;  // no conversion
      }
-     while(iswdigit_macro(*ps)) { ps++; ptail++; k++; }
+     while(iswdigit_macro(*ps)) { ps++; ptail++; }
      if((*ps) == L'.') {
        if((ps0!=ps) || iswdigit_macro(ps[1])) {
-	 ps++; ptail++; k++; while(iswdigit_macro(*ps)) { ps++; ptail++; k++; } }
+	 ps++; ptail++; while(iswdigit_macro(*ps)) { ps++; ptail++; } }
        else {
 	 if(endptr) *endptr=(wchar_t*)ps_in;
 	 free(ps0);
@@ -190,18 +202,22 @@ int i,k;
        }
      }
      if(towlower_macro(*ps) == L'e') {
-       if((ps[1]=='+') || (ps[1]=='-') || (iswdigit_macro(ps[1]))) { { ps+=2; ptail+=2; k+=2; }
-	 while(iswdigit_macro(*ps)) { ps++; ptail++; k++; } }
+       if((ps[1]=='+') || (ps[1]=='-') || (iswdigit_macro(ps[1]))) { ps+=2; ptail+=2;
+	 while(iswdigit_macro(*ps)) { ps++; ptail++; } }
      }
      set_wcs_end(endptr, ptail);
    }
 
    *ps = L'\0';
-   ps0_c = malloc((size_t)k * sizeof(char));
+   ncopy = (size_t)(ps - ps0) + 1;
+   ps0_c = malloc(ncopy * sizeof(char));
    if(!ps0_c)
    { free(ps0); return NULL;}
-   for(i=0; i<k; i++)
-     ps0_c[i] = (char)((ps0[i] - L'0') + '0');
+   for(i=0; i<ncopy; i++) {
+     wchar_t ch = ps0[i];
+     /* Keep ASCII as itself. A wider code would truncate into a false digit. */
+     ps0_c[i] = (ch <= 127) ? (char)ch : '?';
+   }
    free(ps0);
 
    return ps0_c;
