@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,40 +31,41 @@
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_exp10, BID_UINT32, x)
 
-  BID_UINT32 sign_x, coefficient_x;
-  BID_UINT32 valid_x, res;
-  double xd, zd;
-  int exponent_x;
+BID_UINT32 sign_x, coefficient_x;
+BID_UINT32 valid_x, res;
+double xd, zd;
+int exponent_x;
 
-  valid_x = unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x);
+valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 
-  if (!valid_x) {
-    // test if x is NaN
-if ((x & 0x7c000000U) == 0x7c000000U) {
+if(!valid_x) {
+  // test if x is NaN
+  if((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x & 0x7e000000U) == 0x7e000000U)	// sNaN
-    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    if((x & 0x7e000000U) == 0x7e000000U) // sNaN
+      __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res = (coefficient_x) & QUIET_MASK32;
-    BID_RETURN (res);
-}
-    // x is Infinity?
-if ((x & 0x78000000U) == 0x78000000U) {
-    res = sign_x ? 0 : 0x78000000U;
-    BID_RETURN (res);
+    res = (coefficient_x)&QUIET_MASK32;
+    BID_RETURN(res);
   }
-    // x is 0
-     res = 0x32800001U;
-     BID_RETURN (res);
+  // x is Infinity?
+  if((x & 0x78000000U) == 0x78000000U) {
+    res = sign_x ? 0 : 0x78000000U;
+    BID_RETURN(res);
+  }
+  // x is 0
+  res = 0x32800001U;
+  BID_RETURN(res);
 }
 
-  BIDECIMAL_CALL1(bid32_to_binary64,xd,x);
-  if (xd >= 97.0) zd = 1.0e200;
-  else if (xd < -101.0) zd = 1.0e-200;
-  else zd = pow(10.0, xd);
+BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
+if(xd >= 97.0)
+  zd = 1.0e200;
+else if(xd < -101.0)
+  zd = 1.0e-200;
+else
+  zd = pow(10.0, xd);
 
-  BIDECIMAL_CALL1(binary64_to_bid32,res,zd);
-  BID_RETURN (res);
-
+BIDECIMAL_CALL1(binary64_to_bid32, res, zd);
+BID_RETURN(res);
 }
-

@@ -33,28 +33,28 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_erfc, BID_UINT32, x)
 
 // Declare local variables
 
-  BID_UINT32 res;
-  double xd, yd;
+BID_UINT32 res;
+double xd, yd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-  if ((x & NAN_MASK32) == NAN_MASK32)
-   {
-     #ifdef BID_SET_STATUS_FLAGS
-     if ((x & SNAN_MASK32) == SNAN_MASK32)
-        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-     #endif
-     res = x & 0xfc0ffffful;
-     if ((res & 0x000ffffful) > 999999ul) res &= ~0x000ffffful;
-     BID_RETURN(res);
-   }
+if((x & NAN_MASK32) == NAN_MASK32) {
+#ifdef BID_SET_STATUS_FLAGS
+  if((x & SNAN_MASK32) == SNAN_MASK32)
+    __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+  res = x & 0xfc0ffffful;
+  if((res & 0x000ffffful) > 999999ul)
+    res &= ~0x000ffffful;
+  BID_RETURN(res);
+}
 
 // Otherwise just do the operation "naively".
 // We inherit the erfc([-]inf) = [-]pi/2 case from the binary function
 // rather than having a special case for it.
 
-  BIDECIMAL_CALL1(bid32_to_binary64,xd,x);
-  yd = erfc(xd);
-  BIDECIMAL_CALL1(binary64_to_bid32,res,yd);
-  BID_RETURN (res);
+BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
+yd = erfc(xd);
+BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
+BID_RETURN(res);
 }

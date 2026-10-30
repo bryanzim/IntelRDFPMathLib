@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -29,42 +29,29 @@
 
 #include "bid_strtod.h"
 
+DFP_WRAPFN_TYPE1_TYPE2(128, bid_wcstod128, const wchar_t *RESTRICT, wchar_t **RESTRICT)
 
-DFP_WRAPFN_TYPE1_TYPE2(128, bid_wcstod128, const wchar_t* RESTRICT , wchar_t** RESTRICT)
-
-BID_UINT128 bid_wcstod128(const wchar_t* RESTRICT ps_in, wchar_t** RESTRICT endptr)
-{
-char* ps0_c;
-BID_UINT128 DR;
+BID_UINT128 bid_wcstod128(const wchar_t *RESTRICT ps_in, wchar_t **RESTRICT endptr) {
+  char *ps0_c;
+  BID_UINT128 dr;
 #if !DECIMAL_GLOBAL_EXCEPTION_FLAGS
-unsigned fpsc=0, *pfpsf=&fpsc;
+  unsigned fpsc = 0, *pfpsf = &fpsc;
 #endif
 #if !DECIMAL_GLOBAL_ROUNDING
-unsigned rnd_mode=0;
+  unsigned rnd_mode = 0;
 #endif
 
-   ps0_c = wcstod_conversion(ps_in, endptr);
+  ps0_c = wcstod_conversion(ps_in, endptr);
 
-   if(!ps0_c) {
-       DR.w[BID_HIGH_128W] = 0x3040000000000000ull;
-       DR.w[BID_LOW_128W] = 0ull;
-       return DR;   // 0.0
-   }
+  if(!ps0_c) {
+    dr.w[BID_HIGH_128W] = 0x3040000000000000ull;
+    dr.w[BID_LOW_128W] = 0ull;
+    return dr; // 0.0
+  }
 
-   BIDECIMAL_CALL1_RESARG (bid128_from_string, DR, (char*)ps0_c);
+  BIDECIMAL_CALL1_RESARG(bid128_from_string, dr, (char *)ps0_c);
 
-   free(ps0_c);
+  free(ps0_c);
 
-   return DR;
-
+  return dr;
 }
-
-
-
-       
-
-
-
-
-
-     

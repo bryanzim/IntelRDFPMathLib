@@ -33,27 +33,26 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_sinh, BID_UINT64, x)
 
 // Declare local variables
 
-  BID_UINT64 res;
-  BID_F80_TYPE xd, yd;
+BID_UINT64 res;
+BID_F80_TYPE xd, yd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-  if ((x & NAN_MASK64) == NAN_MASK64)
-   {
-     #ifdef BID_SET_STATUS_FLAGS
-     if ((x & SNAN_MASK64) == SNAN_MASK64)
-        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-     #endif
-     res = x & 0xfc03ffffffffffffull;
-     if ((res & 0x0003ffffffffffffull) > 999999999999999ull)
-        res &= ~0x0003ffffffffffffull;
-     BID_RETURN(res);
-   }
+if((x & NAN_MASK64) == NAN_MASK64) {
+#ifdef BID_SET_STATUS_FLAGS
+  if((x & SNAN_MASK64) == SNAN_MASK64)
+    __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+  res = x & 0xfc03ffffffffffffull;
+  if((res & 0x0003ffffffffffffull) > 999999999999999ull)
+    res &= ~0x0003ffffffffffffull;
+  BID_RETURN(res);
+}
 
 // Convert to binary and do the operation "naively"
 
-  BIDECIMAL_CALL1(bid64_to_binary80,xd,x);
-  __bid_f80_sinh(yd, xd );
-  BIDECIMAL_CALL1(binary80_to_bid64,res,yd);
-  BID_RETURN (res);
+BIDECIMAL_CALL1(bid64_to_binary80, xd, x);
+__bid_f80_sinh(yd, xd);
+BIDECIMAL_CALL1(binary80_to_bid64, res, yd);
+BID_RETURN(res);
 }

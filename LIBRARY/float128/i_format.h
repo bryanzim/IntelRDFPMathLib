@@ -30,74 +30,69 @@
 #ifndef I_FORMAT_H
 #define I_FORMAT_H
 
-
 #ifndef I_TYPE
 
+#if defined(S8_INT)
 
-#	if defined(S8_INT)
+#define I_TYPE INT_8
+#define I_CHAR b
+#define I_TYPE_SIGNED 1
 
-#		define	I_TYPE	INT_8
-#		define	I_CHAR	b
-#		define	I_TYPE_SIGNED	1
+#elif defined(S16_INT)
 
-#	elif defined(S16_INT)
+#define I_TYPE INT_16
+#define I_CHAR w
+#define I_TYPE_SIGNED 1
 
-#		define	I_TYPE	INT_16
-#		define	I_CHAR	w
-#		define	I_TYPE_SIGNED	1
+#elif defined(S32_INT)
 
-#	elif defined(S32_INT)
+#define I_TYPE INT_32
+#define I_CHAR l
+#define I_TYPE_SIGNED 1
 
-#		define	I_TYPE	INT_32
-#		define	I_CHAR	l
-#		define	I_TYPE_SIGNED	1
+#elif defined(S64_INT)
 
-#	elif defined(S64_INT)
+#define I_TYPE INT_64
+#define I_CHAR q
+#define I_TYPE_SIGNED 1
 
-#		define	I_TYPE	INT_64
-#		define	I_CHAR	q
-#		define	I_TYPE_SIGNED	1
+#elif defined(U8_INT)
 
-#	elif defined(U8_INT)
+#define I_TYPE U_INT_8
+#define I_CHAR ub
+#undef I_TYPE_SIGNED
 
-#		define	I_TYPE	U_INT_8
-#		define	I_CHAR	ub
-#		undef	I_TYPE_SIGNED
+#elif defined(U16_INT)
 
-#	elif defined(U16_INT)
+#define I_TYPE U_INT_16
+#define I_CHAR uw
+#undef I_TYPE_SIGNED
 
-#		define	I_TYPE	U_INT_16
-#		define	I_CHAR	uw
-#		undef	I_TYPE_SIGNED
+#elif defined(U32_INT)
 
-#	elif defined(U32_INT)
+#define I_TYPE U_INT_32
+#define I_CHAR ul
+#undef I_TYPE_SIGNED
 
-#		define	I_TYPE	U_INT_32
-#		define	I_CHAR	ul
-#		undef	I_TYPE_SIGNED
+#elif defined(U64_INT)
 
-#	elif defined(U64_INT)
+#define I_TYPE U_INT_64
+#define I_CHAR uq
+#undef I_TYPE_SIGNED
 
-#		define	I_TYPE	U_INT_64
-#		define	I_CHAR	uq
-#		undef	I_TYPE_SIGNED
+#else
 
-#	else
+#if ((defined(DECC) && DECC) || (defined(__decc) && __decc) || (defined(dec_cc) && dec_cc))
+#define I_TYPE INT_64
+#else
+#define I_TYPE WORD
+#endif
 
-#               if ((defined(DECC) && DECC) || (defined(__decc) && __decc) || (defined(dec_cc) && dec_cc))
-#	        	define	I_TYPE	INT_64
-#               else
-#		        define	I_TYPE	WORD
-#               endif
+#define I_CHAR l
+#define I_TYPE_SIGNED 1
 
-#		define	I_CHAR	l
-#		define	I_TYPE_SIGNED	1
+#endif
 
-#	endif
+#endif /* ndef I_TYPE */
 
-
-#endif  /* ndef I_TYPE */
-
-
-#endif  /* I_FORMAT_H */
-
+#endif /* I_FORMAT_H */

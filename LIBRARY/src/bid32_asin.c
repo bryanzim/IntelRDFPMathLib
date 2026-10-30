@@ -38,56 +38,57 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_asin, BID_UINT32, x)
 
 // Declare local variables
 
-  BID_UINT32 res, t, t1 = BID32_1;
-  double xd, td, yd;
+BID_UINT32 res, t, t1 = BID32_1;
+double xd, td, yd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-  if ((x & NAN_MASK32) == NAN_MASK32)
-   {
-     #ifdef BID_SET_STATUS_FLAGS
-     if ((x & SNAN_MASK32) == SNAN_MASK32)
-        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-     #endif
-     res = x & 0xfc0ffffful;
-     if ((res & 0x000ffffful) > 999999ul) res &= ~0x000ffffful;
-     BID_RETURN(res);
-   }
+if((x & NAN_MASK32) == NAN_MASK32) {
+#ifdef BID_SET_STATUS_FLAGS
+  if((x & SNAN_MASK32) == SNAN_MASK32)
+    __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+  res = x & 0xfc0ffffful;
+  if((res & 0x000ffffful) > 999999ul)
+    res &= ~0x000ffffful;
+  BID_RETURN(res);
+}
 
 // Convert to binary
 
-  BIDECIMAL_CALL1(bid32_to_binary64,xd,x);
+BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
 
 // If the input is not too close to +/- 1 then do it "naively"
 
-  if (fabs(xd) <= 0.9)
-   { yd = asin(xd);
-     BIDECIMAL_CALL1(binary64_to_bid32,res,yd);
-     BID_RETURN (res);
-   }
+if(fabs(xd) <= 0.9) {
+  yd = asin(xd);
+  BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
+  BID_RETURN(res);
+}
 
 // If the input is > 1 in magnitude, fail
 
-  else if (fabs(xd) > 1.0)
-   { res = BID32_NAN;
-     #ifdef BID_SET_STATUS_FLAGS
-     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-     #endif
-     BID_RETURN(res)
-   }
+else if(fabs(xd) > 1.0) {
+  res = BID32_NAN;
+#ifdef BID_SET_STATUS_FLAGS
+  __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+  BID_RETURN(res)
+}
 
 // Otherwise compute sqrt(1 - x^2) accurately and use acos instead.
 // Use 1 - |x| as direct decimal computation, since direct fma would
 // give only about working precision error near +1
 
-  else
-   { BIDECIMAL_CALL1_NORND_NOSTAT(bid32_abs,t,x);
-     BIDECIMAL_CALL2(bid32_sub,t,t1,t);
-     BIDECIMAL_CALL1(bid32_to_binary64,td,t);
-     td = (2.0 - td) * td;
-     yd = acos(sqrt(td));
-     if (xd < 0.0) yd = -yd;
-     BIDECIMAL_CALL1(binary64_to_bid32,res,yd);
-     BID_RETURN (res);
-   }
+else {
+  BIDECIMAL_CALL1_NORND_NOSTAT(bid32_abs, t, x);
+  BIDECIMAL_CALL2(bid32_sub, t, t1, t);
+  BIDECIMAL_CALL1(bid32_to_binary64, td, t);
+  td = (2.0 - td) * td;
+  yd = acos(sqrt(td));
+  if(xd < 0.0)
+    yd = -yd;
+  BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
+  BID_RETURN(res);
+}
 }

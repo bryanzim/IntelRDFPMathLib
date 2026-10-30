@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,84 +31,78 @@
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_atanh, BID_UINT32, x)
 
-  BID_UINT32 sign_x, coefficient_x, xn, tmp, y;
-  BID_UINT32 valid_x, res, one, one_m_x;
-  double xq, rq;
-  int exponent_x;
+BID_UINT32 sign_x, coefficient_x, xn, tmp, y;
+BID_UINT32 valid_x, res, one, one_m_x;
+double xq, rq;
+int exponent_x;
 
-  valid_x = unpack_BID32 (&sign_x, &exponent_x, &coefficient_x, x);
+valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 
-  if (!valid_x) {
-    // test if x is NaN
-if ((x & 0x7c000000U) == 0x7c000000U) {
+if(!valid_x) {
+  // test if x is NaN
+  if((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x & 0x7e000000U) == 0x7e000000U)	// sNaN
-    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    if((x & 0x7e000000U) == 0x7e000000U) // sNaN
+      __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res = (coefficient_x) & QUIET_MASK32;
-    BID_RETURN (res);
-}
-    // x is Infinity?
-if ((x & 0x78000000U) == 0x78000000U) {
-#ifdef BID_SET_STATUS_FLAGS
-    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-#endif
-      res = 0x7c000000U;
-      BID_RETURN (res);
+    res = (coefficient_x)&QUIET_MASK32;
+    BID_RETURN(res);
   }
-    // x is 0
-     res = sign_x | coefficient_x;
-     BID_RETURN (res);
-}
-
-    
-    if(exponent_x <= DECIMAL_EXPONENT_BIAS_32 - 12)
-    {
-        res = x;
-        BID_RETURN (res);
-    }
-
-    // |x| 
-    xn = x & 0x7fffffffU;
-
-    // 1.0
-    one = 0x32800001ull;    
-
-    // 1 - |x|
-    BIDECIMAL_CALL2 (bid32_sub, one_m_x, one, xn);
-
-    if(one_m_x & 0x80000000U)
-    {
-        // |x|>1
+  // x is Infinity?
+  if((x & 0x78000000U) == 0x78000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-      res = 0x7c000000U;
-      BID_RETURN (res);
+    res = 0x7c000000U;
+    BID_RETURN(res);
   }
-
-  if(!(one_m_x<<(32-23)) && ((one_m_x & SPECIAL_ENCODING_MASK32)!=SPECIAL_ENCODING_MASK32))
-  {
-      // |x|==1
-#ifdef BID_SET_STATUS_FLAGS
-    __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
-#endif
-      res = sign_x | 0x78000000U;
-      BID_RETURN (res);
-  }
-
-    // (2*|x|)/(1-|x|)
-    BIDECIMAL_CALL2 (bid32_div, tmp, xn, one_m_x);
-    BIDECIMAL_CALL2 (bid32_add, y, tmp, tmp);
-
-    BIDECIMAL_CALL1 (bid32_to_binary64, xq, y);
-    rq = log1p(xq);
-    rq = rq * (double)0.5;
-    BIDECIMAL_CALL1 (binary64_to_bid32, res, rq);
-
-    res ^= sign_x;
-
-    BID_RETURN (res);
-
+  // x is 0
+  res = sign_x | coefficient_x;
+  BID_RETURN(res);
 }
 
+if(exponent_x <= DECIMAL_EXPONENT_BIAS_32 - 12) {
+  res = x;
+  BID_RETURN(res);
+}
+
+// |x|
+xn = x & 0x7fffffffU;
+
+// 1.0
+one = 0x32800001ull;
+
+// 1 - |x|
+BIDECIMAL_CALL2(bid32_sub, one_m_x, one, xn);
+
+if(one_m_x & 0x80000000U) {
+  // |x|>1
+#ifdef BID_SET_STATUS_FLAGS
+  __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+  res = 0x7c000000U;
+  BID_RETURN(res);
+}
+
+if(!(one_m_x << (32 - 23)) && ((one_m_x & SPECIAL_ENCODING_MASK32) != SPECIAL_ENCODING_MASK32)) {
+  // |x|==1
+#ifdef BID_SET_STATUS_FLAGS
+  __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
+#endif
+  res = sign_x | 0x78000000U;
+  BID_RETURN(res);
+}
+
+// (2*|x|)/(1-|x|)
+BIDECIMAL_CALL2(bid32_div, tmp, xn, one_m_x);
+BIDECIMAL_CALL2(bid32_add, y, tmp, tmp);
+
+BIDECIMAL_CALL1(bid32_to_binary64, xq, y);
+rq = log1p(xq);
+rq = rq * (double)0.5;
+BIDECIMAL_CALL1(binary64_to_bid32, res, rq);
+
+res ^= sign_x;
+
+BID_RETURN(res);
+}

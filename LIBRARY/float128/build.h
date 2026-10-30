@@ -37,7 +37,7 @@
 // =============================================================================
 
 #if defined(__GNUC__) && (defined(__ICC) || defined(__ECC))
-#   undef __GNUC__
+#undef __GNUC__
 #endif
 
 // =============================================================================
@@ -46,94 +46,94 @@
 // for dpml_ux_bessel.c
 // =============================================================================
 
-#define S_LOG2_NAME     log2f
+#define S_LOG2_NAME log2f
 
 // =============================================================================
 // Select calling interface to the DPML routines
 // =============================================================================
 
 #if !defined USE_NATIVE_QUAD_TYPE
-#   define  USE_NATIVE_QUAD_TYPE 0
+#define USE_NATIVE_QUAD_TYPE 0
 #endif
 
 #ifdef T_FLOAT
-    #define _Quad   long double
+#define _Quad long double
 #else
-    #if USE_NATIVE_QUAD_TYPE
+#if USE_NATIVE_QUAD_TYPE
 
-        // =====================================================================
-        // On intel platforms, return quad values and arguments are "by-value"
-        // =====================================================================
-        #   define EMT64_LINUX_QUAD_INTERFACE
+// =====================================================================
+// On intel platforms, return quad values and arguments are "by-value"
+// =====================================================================
+#define EMT64_LINUX_QUAD_INTERFACE
 
-        #define ADD_BASE_NAME      _add_
-        #define CMP_BASE_NAME      _cmp_
-        #define DIV_BASE_NAME      _div_
-        #define MUL_BASE_NAME      _mul_
-        #define NEG_BASE_NAME      _neg_
-        #define SUB_BASE_NAME      _sub_
-        #define ITOF_BASE_NAME     _itof_
+#define ADD_BASE_NAME _add_
+#define CMP_BASE_NAME _cmp_
+#define DIV_BASE_NAME _div_
+#define MUL_BASE_NAME _mul_
+#define NEG_BASE_NAME _neg_
+#define SUB_BASE_NAME _sub_
+#define ITOF_BASE_NAME _itof_
 
-        // =====================================================================
-        // Intel quad precision names end in q rather than l and have a '__'
-        // prefix
-        // =====================================================================
+// =====================================================================
+// Intel quad precision names end in q rather than l and have a '__'
+// prefix
+// =====================================================================
 
-        #ifndef F_NAME_SUFFIX
-        #   define F_NAME_SUFFIX    q
-        #endif
+#ifndef F_NAME_SUFFIX
+#define F_NAME_SUFFIX q
+#endif
 
-        #ifndef F_NAME_PREFIX
-        #   define F_NAME_PREFIX   __
-        #endif
+#ifndef F_NAME_PREFIX
+#define F_NAME_PREFIX __
+#endif
 
-    #else
+#else
 
-        // =====================================================================
-        // Use the defualt "pass-by-reference" interface. But this case we need
-        // to provide some type defintion for the _Quad type.
-        // =====================================================================
+// =====================================================================
+// Use the defualt "pass-by-reference" interface. But this case we need
+// to provide some type defintion for the _Quad type.
+// =====================================================================
 
-        #define _Quad   long double
-        #define __int64 long long
+#define _Quad long double
+#define __int64 long long
 
-        #define HYPOT_BASE_NAME     hypot 
-        #define NEXTAFTER_BASE_NAME nextafter
+#define HYPOT_BASE_NAME hypot
+#define NEXTAFTER_BASE_NAME nextafter
 
-        #ifndef F_NAME_SUFFIX
-        #   define F_NAME_SUFFIX    DPML_NULL_MACRO_TOKEN
-        #endif
+#ifndef F_NAME_SUFFIX
+#define F_NAME_SUFFIX DPML_NULL_MACRO_TOKEN
+#endif
 
-        #ifndef F_NAME_PREFIX
-        #   define F_NAME_PREFIX   bid_f128_
-        #endif
-
-        #ifndef INTERNAL_PREFIX
-        #   define INTERNAL_PREFIX   __dpml_bid_
-        #endif
-    #endif
+#ifndef F_NAME_PREFIX
+#define F_NAME_PREFIX bid_f128_
 #endif
 
 #ifndef INTERNAL_PREFIX
-#   define INTERNAL_PREFIX   __dpml_bid_
+#define INTERNAL_PREFIX __dpml_bid_
+#endif
+#endif
+#endif
+
+#ifndef INTERNAL_PREFIX
+#define INTERNAL_PREFIX __dpml_bid_
 #endif
 
 #ifndef TABLE_PREFIX
-#   define TABLE_PREFIX      __dpml_bid_
+#define TABLE_PREFIX __dpml_bid_
 #endif
 
 // =============================================================================
 // Set up the appropriate exception handling macros
 // =============================================================================
 
-#define IEEE_FLOATING				1
-#define COMPATIBILITY_MODE			1
-#define EXCEPTION_INTERFACE_RECEIVE		receive_exception_record
-#define EXCEPTION_INTERFACE_SEND		send_exception_record
-#define __DPML_EXCPT_ENVIRONMENT		ENABLE_NO_ERROR
-#define DPML_GET_FPCSR(fpcsr)			fpcsr = 0
-#define DPML_SET_FPCSR(fpcsr)			((void)(fpcsr))
-#define FPCSR_STICKY_BITS(x)			0
+#define IEEE_FLOATING 1
+#define COMPATIBILITY_MODE 1
+#define EXCEPTION_INTERFACE_RECEIVE receive_exception_record
+#define EXCEPTION_INTERFACE_SEND send_exception_record
+#define __DPML_EXCPT_ENVIRONMENT ENABLE_NO_ERROR
+#define DPML_GET_FPCSR(fpcsr) fpcsr = 0
+#define DPML_SET_FPCSR(fpcsr) ((void)(fpcsr))
+#define FPCSR_STICKY_BITS(x) 0
 
 // =============================================================================
 // Force long double to be 128 bits
@@ -150,10 +150,9 @@
 #endif
 
 #if (defined(__ICC) || defined(__ICL) || defined(__ECC) || defined(__ECL)) && 0
-# pragma warning( disable : 68 )	/* #68: integer conversion resulted in a change of sign */
-# pragma warning( disable : 186 )	/* #186: pointless comparison of unsigned integer with zero */
-# pragma warning( disable : 1572 )	/* #1572: floating-point equality and inequality comparisons are unreliable */
+#pragma warning(disable : 68)   /* #68: integer conversion resulted in a change of sign */
+#pragma warning(disable : 186)  /* #186: pointless comparison of unsigned integer with zero */
+#pragma warning(disable : 1572) /* #1572: floating-point equality and inequality comparisons are unreliable */
 #endif
 
-#endif  /* BUILD_H */
-
+#endif /* BUILD_H */

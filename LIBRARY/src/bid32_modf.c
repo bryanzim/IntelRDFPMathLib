@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -30,37 +30,33 @@
 #include "bid_internal.h"
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_modf (BID_UINT32 * pres, BID_UINT32 * px, BID_UINT32 * iptr
-         _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-        _EXC_INFO_PARAM){
-BID_UINT32 x=*px;
+void bid32_modf(BID_UINT32 *pres, BID_UINT32 *px, BID_UINT32 *iptr _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+  BID_UINT32 x = *px;
 #else
 DFP_WRAPFN_DFP_DFP_POINTER(32, bid32_modf, 32, 32)
-BID_UINT32 bid32_modf (BID_UINT32 x, BID_UINT32 * iptr
-           _EXC_FLAGS_PARAM
-          _EXC_MASKS_PARAM _EXC_INFO_PARAM){
+BID_UINT32 bid32_modf(BID_UINT32 x, BID_UINT32 *iptr
+                                        _EXC_FLAGS_PARAM
+                                            _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 
 #endif
 
-BID_UINT32 xi, res;
+  BID_UINT32 xi, res;
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = 0;
-#else 
-  rnd_mode=0;
+#else
+  rnd_mode = 0;
 #endif
 
-    BIDECIMAL_CALL1_NORND(bid32_round_integral_zero, xi, x);
+  BIDECIMAL_CALL1_NORND(bid32_round_integral_zero, xi, x);
 
-    // check for Infinity
-    if((x & 0x7c000000U) == 0x78000000U)
-        res = (x & 0x80000000U) | 0x5f800000U;
-    else
-        BIDECIMAL_CALL2 (bid32_sub, res, x, xi);
+  // check for Infinity
+  if((x & 0x7c000000U) == 0x78000000U)
+    res = (x & 0x80000000U) | 0x5f800000U;
+  else
+    BIDECIMAL_CALL2(bid32_sub, res, x, xi);
 
-    *iptr = (xi) | (x & 0x80000000U);
-    res |= (x & 0x80000000U);
+  *iptr = (xi) | (x & 0x80000000U);
+  res |= (x & 0x80000000U);
 
-    BID_RETURN (res);
-
+  BID_RETURN(res);
 }
-

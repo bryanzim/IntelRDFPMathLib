@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -29,46 +29,45 @@
 
 #include "bid_internal.h"
 
-BID128_FUNCTION_ARG1_NORND (bid128_logb, x)
+BID128_FUNCTION_ARG1_NORND(bid128_logb, x)
 
-  int ires, exponent_x;
-  BID_UINT64  sign_x;
-  BID_UINT128 res, CX;
+int ires, exponent_x;
+BID_UINT64 sign_x;
+BID_UINT128 res, cx;
 
-  BID_SWAP128 (x);
-  if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
-    // test if x is NaN/Inf
-  BID_SWAP128 (x);
-if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+BID_SWAP128(x);
+if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
+  // test if x is NaN/Inf
+  BID_SWAP128(x);
+  if((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
-    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    if((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+      __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[BID_HIGH_128W] = (CX.w[1U]) & QUIET_MASK64;
-    res.w[BID_LOW_128W] = CX.w[0U];
-    if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull)
-        res.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
-    BID_RETURN (res);
+    res.w[BID_HIGH_128W] = (cx.w[1U]) & QUIET_MASK64;
+    res.w[BID_LOW_128W] = cx.w[0U];
+    if((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull)
+      res.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
+    BID_RETURN(res);
   }
 
   // x is 0
 #ifdef BID_SET_STATUS_FLAGS
-    __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
+  __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
 #endif
-    res.w[BID_HIGH_128W] = 0xf800000000000000ull;
-    res.w[BID_LOW_128W] = 0;
-    BID_RETURN (res);
-
+  res.w[BID_HIGH_128W] = 0xf800000000000000ull;
+  res.w[BID_LOW_128W] = 0;
+  BID_RETURN(res);
 }
 
-  BID_SWAP128 (x);
-  BIDECIMAL_CALL1_NORND (bid128_ilogb, ires, x);
-  if ((BID_UINT32)ires & 0x80000000U) {
-    res.w[BID_HIGH_128W] = 0xb040000000000000ull;
-    res.w[BID_LOW_128W] = (BID_UINT64)(-ires);
-  } else {
-    res.w[BID_HIGH_128W] = 0x3040000000000000ull;
-    res.w[BID_LOW_128W] = (BID_UINT64)ires;
-  }
-  BID_RETURN (res);
+BID_SWAP128(x);
+BIDECIMAL_CALL1_NORND(bid128_ilogb, ires, x);
+if((BID_UINT32)ires & 0x80000000U) {
+  res.w[BID_HIGH_128W] = 0xb040000000000000ull;
+  res.w[BID_LOW_128W] = (BID_UINT64)(-ires);
+} else {
+  res.w[BID_HIGH_128W] = 0x3040000000000000ull;
+  res.w[BID_LOW_128W] = (BID_UINT64)ires;
+}
+BID_RETURN(res);
 }

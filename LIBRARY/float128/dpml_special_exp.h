@@ -30,6 +30,6 @@
 #ifndef DPML_SPECIAL_EXP_H
 #define DPML_SPECIAL_EXP_H
 
-#define POW2_K			8
+#define POW2_K 8
 
 #endif

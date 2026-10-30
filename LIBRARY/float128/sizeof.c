@@ -29,26 +29,25 @@
 
 #include <stdio.h>
 
-#define PRINT(tag, val) printf( "sizeof(%s) = %d\n", tag, (int) val )
-#define SIZEOF(type)    PRINT( #type, sizeof(type))
+#define PRINT(tag, val) printf("sizeof(%s) = %d\n", tag, (int)val)
+#define SIZEOF(type) PRINT(#type, sizeof(type))
 
 main() {
 
-    long double ld[2];
-    SIZEOF(char);
-    SIZEOF(short);
-    SIZEOF(int);
-    SIZEOF(long);
-    SIZEOF(long long);
-    #if __INT64
-        SIZEOF(__int64);
-    #endif
-    SIZEOF(void *);
-    SIZEOF(size_t);
+  long double ld[2];
+  SIZEOF(char);
+  SIZEOF(short);
+  SIZEOF(int);
+  SIZEOF(long);
+  SIZEOF(long long);
+#if __INT64
+  SIZEOF(__int64);
+#endif
+  SIZEOF(void *);
+  SIZEOF(size_t);
 
-    SIZEOF(float);
-    SIZEOF(double);
-    SIZEOF(long double);
-    PRINT("long double[2]", sizeof(ld));
-
+  SIZEOF(float);
+  SIZEOF(double);
+  SIZEOF(long double);
+  PRINT("long double[2]", sizeof(ld));
 }

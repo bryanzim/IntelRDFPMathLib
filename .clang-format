@@ -1,15 +1,25 @@
-# Cursor C++ style for this repo.
-# Mechanical formatting follows the Google C++ Style Guide:
-# https://google.github.io/styleguide/cppguide.html
-# clang-format's Google preset is that guide's formatting subset
-# (2-space indent, 80 columns, pointers left, braces attached).
-#
-# Do not bulk-reformat the existing BID C sources. Run clang-format on
-# new or touched C++ files only.
+# Formatting taken from LIBRARY/src, not an external style guide.
+# Most sources use 2-space indents, braces attached to the signature,
+# and pointers written as `type *name`.
 ---
 Language: Cpp
-BasedOnStyle: Google
+LineEnding: LF
+BasedOnStyle: LLVM
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+ContinuationIndentWidth: 4
+ColumnLimit: 0
+BreakBeforeBraces: Attach
+PointerAlignment: Right
+DerivePointerAlignment: false
+SpaceBeforeParens: Custom
+SpaceBeforeParensOptions:
+  AfterControlStatements: false
+  AfterFunctionDefinitionName: false
+  AfterFunctionDeclarationName: false
+AlignTrailingComments: true
+SortIncludes: Never
+InsertBraces: false
 Standard: c++17
-SortIncludes: CaseSensitive
-IncludeBlocks: Regroup
 ...

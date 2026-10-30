@@ -32,52 +32,50 @@
 
 #if ANSI_C_DEF
 
-#   define IF_ANSI_C(x)	x
-#   define ANSI_C_SELECT(x,y)	x
-#   define ERROR_FILE_NAME	POW_ANSI_C_ERROR_BUILD_FILE_NAME
-#   define ANSI_C_DEF		1
+#define IF_ANSI_C(x) x
+#define ANSI_C_SELECT(x, y) x
+#define ERROR_FILE_NAME POW_ANSI_C_ERROR_BUILD_FILE_NAME
+#define ANSI_C_DEF 1
 
 #else
 
-#   define IF_ANSI_C(x)
-#   define ANSI_C_SELECT(x,y)	y
-#   define ERROR_FILE_NAME	POW_FORTRAN_ERROR_BUILD_FILE_NAME
-#   define ANSI_C_DEF		0
+#define IF_ANSI_C(x)
+#define ANSI_C_SELECT(x, y) y
+#define ERROR_FILE_NAME POW_FORTRAN_ERROR_BUILD_FILE_NAME
+#define ANSI_C_DEF 0
 
 #endif
 
 /* Define the evalution precision characteristics and parameters */
 
-#define ALIGN_WITH_B_TYPE_EXP(w)	((U_WORD)(w) << B_EXP_POS)
-#define S32_PER_B_TYPE			(BITS_PER_B_TYPE >> 5)
-#define __LO_32(n)			UNION_IX(n, (n-1))
-#define SIGNED_LO_32			i32[__LO_32(S32_PER_B_TYPE)]
-#define UNSIGNED_LO_32			u32[__LO_32(S32_PER_B_TYPE)]
-
+#define ALIGN_WITH_B_TYPE_EXP(w) ((U_WORD)(w) << B_EXP_POS)
+#define S32_PER_B_TYPE (BITS_PER_B_TYPE >> 5)
+#define __LO_32(n) UNION_IX(n, (n - 1))
+#define SIGNED_LO_32 i32[__LO_32(S32_PER_B_TYPE)]
+#define UNSIGNED_LO_32 u32[__LO_32(S32_PER_B_TYPE)]
 
 #if BITS_PER_WORD < BITS_PER_B_TYPE
-#   define IF_SMALL_WORD(x)	x
+#define IF_SMALL_WORD(x) x
 #else
-#   define IF_SMALL_WORD(x)
+#define IF_SMALL_WORD(x)
 #endif
 
 /*
 ** When BITS_PER_F_TYPE < BITS_PER_WORD, the sign bit of IEEE floating point
-** values is not at the high end of a WORD, so that integer tests on the 
+** values is not at the high end of a WORD, so that integer tests on the
 ** sign of the value don't yield the correct result.
 */
 
 #if BITS_PER_F_TYPE < BITS_PER_WORD
-#   define R_WORD		PASTE(INT_, BITS_PER_F_TYPE)
-#   define SIGN_EXTEND(x)	((WORD)((R_WORD) (x)))
+#define R_WORD PASTE(INT_, BITS_PER_F_TYPE)
+#define SIGN_EXTEND(x) ((WORD)((R_WORD)(x)))
 #else
-#   define SIGN_EXTEND(x)	((WORD) (x))
+#define SIGN_EXTEND(x) ((WORD)(x))
 #endif
 
-#define NORMALIZE(x,f)	BACKUP_SELECT(					\
-                B_COPY_SIGN_AND_EXP(x, ONE, f),		\
-                                F_COPY_SIGN_AND_EXP((B_TYPE) x, ONE, f)	\
-                )
+#define NORMALIZE(x, f) BACKUP_SELECT( \
+    B_COPY_SIGN_AND_EXP(x, ONE, f),    \
+    F_COPY_SIGN_AND_EXP((B_TYPE)x, ONE, f))
 /*
 ** For IEEE types, we get the index bits for the log table by shifting
 ** right.  But for VAX types we need to do a PDP_SHUFFLE and shift left
@@ -89,17 +87,17 @@
 **	     alignment with the PDP_SHUFFLE.
 */
 
-#define LOG_INDEX_SHIFT		    (LOG2_K + LOG_INDEX_BASE_POS)
-#define LOG_INDEX_AND_RND_BIT_MASK  MAKE_MASK(LOG2_K+1, LOG_INDEX_BASE_POS-1)
-#define LOG_INDEX_MASK		    MAKE_MASK(LOG2_K + 1, LOG_INDEX_BASE_POS)
-#define LOG_INDEX_ROUND_BIT	    SET_BIT(LOG_INDEX_BASE_POS - 1)
+#define LOG_INDEX_SHIFT (LOG2_K + LOG_INDEX_BASE_POS)
+#define LOG_INDEX_AND_RND_BIT_MASK MAKE_MASK(LOG2_K + 1, LOG_INDEX_BASE_POS - 1)
+#define LOG_INDEX_MASK MAKE_MASK(LOG2_K + 1, LOG_INDEX_BASE_POS)
+#define LOG_INDEX_ROUND_BIT SET_BIT(LOG_INDEX_BASE_POS - 1)
 
 #if IEEE_FLOATING
-#   define POSITION_BITS(ix, exp_pos)	(ix >> (exp_pos - LOG_INDEX_SHIFT))
+#define POSITION_BITS(ix, exp_pos) (ix >> (exp_pos - LOG_INDEX_SHIFT))
 #else
-#   define POSITION_BITS(ix, exp_pos)					\
-        ((ix << (LOG_INDEX_SHIFT - (exp_pos))) |		\
-         ((U_INT_32)ix >> ((exp_pos) + (32 - LOG_INDEX_SHIFT)))) 
+#define POSITION_BITS(ix, exp_pos)         \
+  ((ix << (LOG_INDEX_SHIFT - (exp_pos))) | \
+   ((U_INT_32)ix >> ((exp_pos) + (32 - LOG_INDEX_SHIFT))))
 #endif
 
 /*
@@ -115,28 +113,28 @@
 */
 
 #if (B_EXP_POS - POW2_K) >= 0
-#   define ALIGN_SCALE_WITH_EXP(m)	((m) << (B_EXP_POS - POW2_K))
-#   define PDP_F_EXP_POS                F_EXP_POS
-#   define PDP_B_EXP_POS                B_EXP_POS
+#define ALIGN_SCALE_WITH_EXP(m) ((m) << (B_EXP_POS - POW2_K))
+#define PDP_F_EXP_POS F_EXP_POS
+#define PDP_B_EXP_POS B_EXP_POS
 #else
-#   define ALIGN_SCALE_WITH_EXP(m)	((m) >> (POW2_K - B_EXP_POS))
-#   define PDP_F_EXP_POS                (F_EXP_POS + BITS_PER_F_TYPE - 16)
-#   define PDP_B_EXP_POS                (B_EXP_POS + BITS_PER_B_TYPE - 16)
+#define ALIGN_SCALE_WITH_EXP(m) ((m) >> (POW2_K - B_EXP_POS))
+#define PDP_F_EXP_POS (F_EXP_POS + BITS_PER_F_TYPE - 16)
+#define PDP_B_EXP_POS (B_EXP_POS + BITS_PER_B_TYPE - 16)
 #endif
 
 #if IEEE_FLOATING
-#   define W_ADD_TO_EXP_FIELD(i, j)	((i) + (j))
+#define W_ADD_TO_EXP_FIELD(i, j) ((i) + (j))
 #else
-#   define LO_MASK			MAKE_MASK(F_SIGN_BIT_POS + 1, 0)
-#   define W_ADD_TO_EXP_FIELD(i, j)	((i & ~LO_MASK) | ((i + j) & LO_MASK))
+#define LO_MASK MAKE_MASK(F_SIGN_BIT_POS + 1, 0)
+#define W_ADD_TO_EXP_FIELD(i, j) ((i & ~LO_MASK) | ((i + j) & LO_MASK))
 #endif
 
-#define POW2_INDEX_MASK		    MAKE_MASK(POW2_K, 0)
+#define POW2_INDEX_MASK MAKE_MASK(POW2_K, 0)
 
 #if USE_DIVIDE
-#   define DIV_SELECT(x,y)	x
+#define DIV_SELECT(x, y) x
 #else
-#   define DIV_SELECT(x,y)	y
+#define DIV_SELECT(x, y) y
 #endif
 
 /*
@@ -148,15 +146,16 @@
 */
 
 #if IEEE_FLOATING
-#   define GET_LOW_32_BITS(i,u)	i = (WORD) ( (INT_32) u.B_LO_WORD )
+#define GET_LOW_32_BITS(i, u) i = (WORD)((INT_32)u.B_LO_WORD)
 #else
-#   define GET_LOW_32_BITS(i,u)	{					\
-                U_INT_32 u32;				\
-                u32 = ( U_INT_32) (u.uw[0] >>		\
-                    (BITS_PER_WORD - 32));		\
-                u32 = ((u32 >> 16) | (u32 << 16));	\
-                i = (WORD) ((INT_32) u32);		\
-                } 
+#define GET_LOW_32_BITS(i, u)               \
+  {                                         \
+    U_INT_32 u32;                           \
+    u32 = (U_INT_32)(u.uw[0] >>             \
+                     (BITS_PER_WORD - 32)); \
+    u32 = ((u32 >> 16) | (u32 << 16));      \
+    i = (WORD)((INT_32)u32);                \
+  }
 #endif
 
 #endif

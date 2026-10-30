@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -34,83 +34,82 @@
 
 #if (defined(DOUBLE_EXTENDED_ON) && DOUBLE_EXTENDED_ON)
 
-BID_EXTERN_C BINARY80 SQRT80 (BINARY80);
+BID_EXTERN_C BINARY80 SQRT80(BINARY80);
 
 __BID_INLINE__ BID_UINT64
-short_sqrt128 (BID_UINT128 A10) {
+short_sqrt128(BID_UINT128 A10) {
   BINARY80 lx, ly, l64;
   int_float f64;
 
   // 2^64
   f64.i = 0x5f800000U;
-  l64 = (BINARY80) f64.d;
-  lx = (BINARY80) A10.w[1U] * l64 + (BINARY80) A10.w[0U];
-  ly = SQRT80 (lx);
-  return (BID_UINT64) ly;
+  l64 = (BINARY80)f64.d;
+  lx = (BINARY80)A10.w[1U] * l64 + (BINARY80)A10.w[0U];
+  ly = SQRT80(lx);
+  return (BID_UINT64)ly;
 }
 
-typedef union BID_ALIGN (16)
-     {
-       BID_UINT64 w[2];
-       long double d; 
-     } int_dext;
+typedef union BID_ALIGN(16) {
+  BID_UINT64 w[2];
+  long double d;
+} int_dext;
 
 __BID_INLINE__ void
-bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
+bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
   BID_UINT128 CS;
   BID_UINT64 X;
   BID_SINT64 SE;
   BINARY80 l64, lm64, l128, lxL, lx, lS, lSH, lSL, lE, l3, l2,
-    l1, l0, lp, lCl;
+      l1, l0, lp, lCl;
   int_float f64, fm64;
   int_dext tmp_dext;
 
   // 2^64
   f64.i = 0x5f800000U;
-  l64 = (BINARY80) f64.d;
+  l64 = (BINARY80)f64.d;
 
   l128 = l64 * l64;
-  lx = l3 = (BINARY80) C256.w[3U] * l64 * l128;
-  l2 = (BINARY80) C256.w[2U] * l128;
-  lx = FENCE (lx + l2);
-  l1 = (BINARY80) C256.w[1U] * l64;
-  lx = FENCE (lx + l1);
-  l0 = (BINARY80) C256.w[0U];
-  lx = FENCE (lx + l0);
+  lx = l3 = (BINARY80)C256.w[3U] * l64 * l128;
+  l2 = (BINARY80)C256.w[2U] * l128;
+  lx = FENCE(lx + l2);
+  l1 = (BINARY80)C256.w[1U] * l64;
+  lx = FENCE(lx + l1);
+  l0 = (BINARY80)C256.w[0U];
+  lx = FENCE(lx + l0);
   // sqrt(C256)
-  lS = SQRT80 (lx);
+  lS = SQRT80(lx);
 
   // get coefficient
   // 2^(-64)
   fm64.i = 0x1f800000U;
-  lm64 = (BINARY80) fm64.d;
-  CS.w[1U] = (BID_UINT64) (lS * lm64);
-  CS.w[0U] = (BID_UINT64) (lS - (BINARY80) CS.w[1U] * l64);
+  lm64 = (BINARY80)fm64.d;
+  CS.w[1U] = (BID_UINT64)(lS * lm64);
+  CS.w[0U] = (BID_UINT64)(lS - (BINARY80)CS.w[1U] * l64);
 
-  //printf("C256=%016I64x %016I64x %016I64x %016I64x, CS=%016I64x %016I64x \n",C256.w[3],C256.w[2],C256.w[1],C256.w[0],CS.w[1],CS.w[0]);
+  // printf("C256=%016I64x %016I64x %016I64x %016I64x, CS=%016I64x %016I64x \n",C256.w[3],C256.w[2],C256.w[1],C256.w[0],CS.w[1],CS.w[0]);
 
   ///////////////////////////////////////
   //  CAUTION!
   //  little endian code only
   //  add solution for big endian
   //////////////////////////////////////
-    tmp_dext.d = lS;
+  tmp_dext.d = lS;
 
 #if BID_BIG_ENDIAN
-    tmp_dext.w[0U] &= 0xffffffffffff0000ull;
-    tmp_dext.w[1U] = 0;
+  tmp_dext.w[0U] &= 0xffffffffffff0000ull;
+  tmp_dext.w[1U] = 0;
 #else
-  //lSH = lS;
+  // lSH = lS;
   //*((BID_UINT64 *) & lSH) &= 0xffffffff00000000ull;
-    tmp_dext.w[0U] &= 0xffffffff00000000ull;
+  tmp_dext.w[0U] &= 0xffffffff00000000ull;
 #endif
-    lSH = tmp_dext.d;
+  lSH = tmp_dext.d;
 
   // correction for C256 rounding
-  lCl = FENCE (l3 - lx);
-  lCl = FENCE (lCl + l2);
-  lCl = FENCE (lCl + l1);
-  lCl = FENCE (lCl + l0);
+  lCl = FENCE(l3 - lx);
+  lCl = FENCE(lCl + l2);
+  lCl = FENCE(lCl + l1);
+  lCl = FENCE(lCl + l0);
 
   lSL = lS - lSH;
 
@@ -119,12 +118,12 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   //
   /////////////////////////////////////////
   // C256-S^2
-  lxL = FENCE (lx - lSH * lSH);
+  lxL = FENCE(lx - lSH * lSH);
   lp = lSH * lSL;
   lp += lp;
-  lxL = FENCE (lxL - lp);
+  lxL = FENCE(lxL - lp);
   lSL *= lSL;
-  lxL = FENCE (lxL - lSL);
+  lxL = FENCE(lxL - lSL);
   lCl += lxL;
 
   // correction term
@@ -132,15 +131,15 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
 
   // get low part of coefficient
   X = CS.w[0U];
-  if (lCl >= 0) {
-    SE = (BID_SINT64) (lE);
+  if(lCl >= 0) {
+    SE = (BID_SINT64)(lE);
     CS.w[0U] += SE;
-    if (CS.w[0U] < X)
+    if(CS.w[0U] < X)
       CS.w[1U]++;
   } else {
-    SE = (BID_SINT64) (-lE);
+    SE = (BID_SINT64)(-lE);
     CS.w[0U] -= SE;
-    if (CS.w[0U] > X)
+    if(CS.w[0U] > X)
       CS.w[1U]--;
   }
 
@@ -151,7 +150,7 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
 #else
 
 __BID_INLINE__ BID_UINT64
-short_sqrt128 (BID_UINT128 A10) {
+short_sqrt128(BID_UINT128 A10) {
   BID_UINT256 ARS, ARS0, AE0, AE, S;
 
   BID_UINT64 MY, ES, CY;
@@ -162,67 +161,67 @@ short_sqrt128 (BID_UINT128 A10) {
   // 2^64
   f64.i = 0x43f0000000000000ull;
   l64 = f64.d;
-  lx = (double) A10.w[1U] * l64 + (double) A10.w[0U];
-  ly.d = 1.0 / sqrt (lx);
+  lx = (double)A10.w[1U] * l64 + (double)A10.w[0U];
+  ly.d = 1.0 / sqrt(lx);
 
   MY = (ly.i & 0x000fffffffffffffull) | 0x0010000000000000ull;
   ey = 0x3ffU - (ly.i >> 52);
 
   // A10*RS^2
-  __mul_64x128_to_192 (ARS0, MY, A10);
-  __mul_64x192_to_256 (ARS, MY, ARS0);
+  __mul_64x128_to_192(ARS0, MY, A10);
+  __mul_64x192_to_256(ARS, MY, ARS0);
 
   // shr by 2*ey+40, to get a 64-bit value
   k = (ey << 1) + 104 - 64;
-  if (k >= 128) {
-    if (k > 128)
+  if(k >= 128) {
+    if(k > 128)
       ES = (ARS.w[2U] >> (k - 128)) | (ARS.w[3U] << (192 - k));
     else
       ES = ARS.w[2U];
   } else {
-    if (k >= 64) {
+    if(k >= 64) {
       ARS.w[0U] = ARS.w[1U];
       ARS.w[1U] = ARS.w[2U];
       k -= 64;
     }
-    if (k) {
-      __shr_128 (ARS, ARS, k);
+    if(k) {
+      __shr_128(ARS, ARS, k);
     }
     ES = ARS.w[0U];
   }
 
-  ES = (BID_UINT64)(((BID_SINT64) ES) >> 1);
+  ES = (BID_UINT64)(((BID_SINT64)ES) >> 1);
 
-  if (((BID_SINT64) ES) < 0) {
-    ES = (BID_UINT64)(-((BID_SINT64) ES));
+  if(((BID_SINT64)ES) < 0) {
+    ES = (BID_UINT64)(-((BID_SINT64)ES));
 
     // A*RS*eps (scaled by 2^64)
-    __mul_64x192_to_256 (AE0, ES, ARS0);
+    __mul_64x192_to_256(AE0, ES, ARS0);
 
     AE.w[0U] = AE0.w[1U];
     AE.w[1U] = AE0.w[2U];
     AE.w[2U] = AE0.w[3U];
 
-    __add_carry_out (S.w[0U], CY, ARS0.w[0U], AE.w[0U]);
-    __add_carry_in_out (S.w[1U], CY, ARS0.w[1U], AE.w[1U], CY);
+    __add_carry_out(S.w[0U], CY, ARS0.w[0U], AE.w[0U]);
+    __add_carry_in_out(S.w[1U], CY, ARS0.w[1U], AE.w[1U], CY);
     S.w[2U] = ARS0.w[2U] + AE.w[2U] + CY;
   } else {
     // A*RS*eps (scaled by 2^64)
-    __mul_64x192_to_256 (AE0, ES, ARS0);
+    __mul_64x192_to_256(AE0, ES, ARS0);
 
     AE.w[0U] = AE0.w[1U];
     AE.w[1U] = AE0.w[2U];
     AE.w[2U] = AE0.w[3U];
 
-    __sub_borrow_out (S.w[0U], CY, ARS0.w[0U], AE.w[0U]);
-    __sub_borrow_in_out (S.w[1U], CY, ARS0.w[1U], AE.w[1U], CY);
+    __sub_borrow_out(S.w[0U], CY, ARS0.w[0U], AE.w[0U]);
+    __sub_borrow_in_out(S.w[1U], CY, ARS0.w[1U], AE.w[1U], CY);
     S.w[2U] = ARS0.w[2U] - AE.w[2U] - CY;
   }
 
   k = ey + 51;
 
-  if (k >= 64) {
-    if (k >= 128) {
+  if(k >= 64) {
+    if(k >= 128) {
       S.w[0U] = S.w[2U];
       S.w[1U] = 0;
       k -= 128;
@@ -232,16 +231,15 @@ short_sqrt128 (BID_UINT128 A10) {
     }
     k -= 64;
   }
-  if (k) {
-    __shr_128 (S, S, k);
+  if(k) {
+    __shr_128(S, S, k);
   }
 
-  return (BID_UINT64) ((S.w[0U] + 1) >> 1);
-
+  return (BID_UINT64)((S.w[0U] + 1) >> 1);
 }
 
 __BID_INLINE__ void
-bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
+bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
   BID_UINT512 ARS0, ARS;
   BID_UINT256 ARS00, AE, AE2, S;
   BID_UINT128 ES, ES2, ARS1;
@@ -255,22 +253,22 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   l64 = f64.d;
 
   l128 = l64 * l64;
-  lx = (double) C256.w[3U] * l64 * l128;
-  l2 = (double) C256.w[2U] * l128;
-  lx = FENCE (lx + l2);
-  l1 = (double) C256.w[1U] * l64;
-  lx = FENCE (lx + l1);
-  l0 = (double) C256.w[0U];
-  lx = FENCE (lx + l0);
+  lx = (double)C256.w[3U] * l64 * l128;
+  l2 = (double)C256.w[2U] * l128;
+  lx = FENCE(lx + l2);
+  l1 = (double)C256.w[1U] * l64;
+  lx = FENCE(lx + l1);
+  l0 = (double)C256.w[0U];
+  lx = FENCE(lx + l0);
   // sqrt(C256)
-  ly.d = 1.0 / sqrt (lx);
+  ly.d = 1.0 / sqrt(lx);
 
   MY = (ly.i & 0x000fffffffffffffull) | 0x0010000000000000ull;
   ey = 0x3ffU - (ly.i >> 52);
 
   // A10*RS^2, scaled by 2^(2*ey+104)
-  __mul_64x256_to_320 (ARS0, MY, C256);
-  __mul_64x320_to_384 (ARS, MY, ARS0);
+  __mul_64x256_to_320(ARS0, MY, C256);
+  __mul_64x320_to_384(ARS, MY, ARS0);
 
   // shr by k=(2*ey+104)-128
   // expect k is in the range (192, 256) if result in [10^33, 10^34)
@@ -279,7 +277,7 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   k2 = 64 - k;
   ES.w[0U] = (ARS.w[3U] >> (k + 1)) | (ARS.w[4U] << (k2 - 1));
   ES.w[1U] = (ARS.w[4U] >> k) | (ARS.w[5U] << k2);
-  ES.w[1U] = (BID_UINT64)(((BID_SINT64) ES.w[1U]) >> 1);
+  ES.w[1U] = (BID_UINT64)(((BID_SINT64)ES.w[1U]) >> 1);
 
   // A*RS >> 192 (for error term computation)
   ARS1.w[0U] = ARS0.w[3U];
@@ -291,39 +289,39 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
   ARS00.w[2U] = ARS0.w[3U];
   ARS00.w[3U] = ARS0.w[4U];
 
-  if (((BID_SINT64) ES.w[1U]) < 0) {
-    ES.w[0U] = (BID_UINT64)(-((BID_SINT64) ES.w[0U]));
-    ES.w[1U] = (BID_UINT64)(-((BID_SINT64) ES.w[1U]));
-    if (ES.w[0U])
+  if(((BID_SINT64)ES.w[1U]) < 0) {
+    ES.w[0U] = (BID_UINT64)(-((BID_SINT64)ES.w[0U]));
+    ES.w[1U] = (BID_UINT64)(-((BID_SINT64)ES.w[1U]));
+    if(ES.w[0U])
       ES.w[1U]--;
 
-    // A*RS*eps 
-    __mul_128x128_to_256 (AE, ES, ARS1);
+    // A*RS*eps
+    __mul_128x128_to_256(AE, ES, ARS1);
 
-    __add_carry_out (S.w[0U], CY, ARS00.w[0U], AE.w[0U]);
-    __add_carry_in_out (S.w[1U], CY, ARS00.w[1U], AE.w[1U], CY);
-    __add_carry_in_out (S.w[2U], CY, ARS00.w[2U], AE.w[2U], CY);
+    __add_carry_out(S.w[0U], CY, ARS00.w[0U], AE.w[0U]);
+    __add_carry_in_out(S.w[1U], CY, ARS00.w[1U], AE.w[1U], CY);
+    __add_carry_in_out(S.w[2U], CY, ARS00.w[2U], AE.w[2U], CY);
     S.w[3U] = ARS00.w[3U] + AE.w[3U] + CY;
   } else {
-    // A*RS*eps 
-    __mul_128x128_to_256 (AE, ES, ARS1);
+    // A*RS*eps
+    __mul_128x128_to_256(AE, ES, ARS1);
 
-    __sub_borrow_out (S.w[0U], CY, ARS00.w[0U], AE.w[0U]);
-    __sub_borrow_in_out (S.w[1U], CY, ARS00.w[1U], AE.w[1U], CY);
-    __sub_borrow_in_out (S.w[2U], CY, ARS00.w[2U], AE.w[2U], CY);
+    __sub_borrow_out(S.w[0U], CY, ARS00.w[0U], AE.w[0U]);
+    __sub_borrow_in_out(S.w[1U], CY, ARS00.w[1U], AE.w[1U], CY);
+    __sub_borrow_in_out(S.w[2U], CY, ARS00.w[2U], AE.w[2U], CY);
     S.w[3U] = ARS00.w[3U] - AE.w[3U] - CY;
   }
 
   // 3/2*eps^2, scaled by 2^128
   ES32 = ES.w[1U] + (ES.w[1U] >> 1);
-  __mul_64x64_to_128 (ES2, ES32, ES.w[1U]);
+  __mul_64x64_to_128(ES2, ES32, ES.w[1U]);
   // A*RS*3/2*eps^2
-  __mul_128x128_to_256 (AE2, ES2, ARS1);
+  __mul_128x128_to_256(AE2, ES2, ARS1);
 
   // result, scaled by 2^(ey+52-64)
-  __add_carry_out (S.w[0U], CY, S.w[0U], AE2.w[0U]);
-  __add_carry_in_out (S.w[1U], CY, S.w[1U], AE2.w[1U], CY);
-  __add_carry_in_out (S.w[2U], CY, S.w[2U], AE2.w[2U], CY);
+  __add_carry_out(S.w[0U], CY, S.w[0U], AE2.w[0U]);
+  __add_carry_in_out(S.w[1U], CY, S.w[1U], AE2.w[1U], CY);
+  __add_carry_in_out(S.w[2U], CY, S.w[2U], AE2.w[2U], CY);
   S.w[3U] = S.w[3U] + AE2.w[3U] + CY;
 
   // k in (0, 64)
@@ -334,12 +332,11 @@ bid_long_sqrt128 (BID_UINT128 * pCS, BID_UINT256 C256) {
 
   // round to nearest
   S.w[0U]++;
-  if (!S.w[0U])
+  if(!S.w[0U])
     S.w[1U]++;
 
   pCS->w[0U] = (S.w[1U] << 63) | (S.w[0U] >> 1);
   pCS->w[1U] = S.w[1U] >> 1;
-
 }
 
 #endif

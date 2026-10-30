@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -31,21 +31,20 @@
 
 #if DECIMAL_CALL_BY_REFERENCE
 
-void
-bid32_sub (BID_UINT32 * pres, BID_UINT32 * px,
-       BID_UINT32 *
-       py _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-       _EXC_INFO_PARAM) {
+void bid32_sub(BID_UINT32 *pres, BID_UINT32 *px,
+               BID_UINT32 *
+                   py _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+                       _EXC_INFO_PARAM) {
   BID_UINT32 x, y;
 #else
 DFP_WRAPFN_DFP_DFP(32, bid32_sub, 32, 32)
 BID_UINT32
-bid32_sub (BID_UINT32 x,
-       BID_UINT32 y _RND_MODE_PARAM _EXC_FLAGS_PARAM
-       _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+bid32_sub(BID_UINT32 x,
+          BID_UINT32 y _RND_MODE_PARAM _EXC_FLAGS_PARAM
+              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
 
-    BID_UINT32 r32;
+  BID_UINT32 r32;
 #if DECIMAL_CALL_BY_REFERENCE
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = *prnd_mode;
@@ -54,10 +53,10 @@ bid32_sub (BID_UINT32 x,
   y = *py;
 #endif
 
-  if (((y & NAN_MASK32) != NAN_MASK32))
+  if(((y & NAN_MASK32) != NAN_MASK32))
     y ^= 0x80000000U;
 
-    BIDECIMAL_CALL2 (bid32_add, r32, x, y);
+  BIDECIMAL_CALL2(bid32_add, r32, x, y);
 
-    BID_RETURN(r32);
+  BID_RETURN(r32);
 }

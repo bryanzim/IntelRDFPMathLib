@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -33,37 +33,37 @@
 
 BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(int, bid128_ilogb, x)
 
-  BID_UINT128 CX;
-  BID_UINT64 sign_x;
-  BID_SINT64 D;
-  int_float f64, fx;
-  int exponent_x, bin_expon_cx, digits, res;
+BID_UINT128 cx;
+BID_UINT64 sign_x;
+BID_SINT64 d;
+int_float f64, fx;
+int exponent_x, bin_expon_cx, digits, res;
 
-  BID_OPT_SAVE_BINARY_FLAGS()
+BID_OPT_SAVE_BINARY_FLAGS()
 
-   if (!unpack_BID128_value (&sign_x, &exponent_x, &CX, x)) {
+if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
 #ifdef BID_SET_STATUS_FLAGS
-      __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+  __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-     res =  ((x.w[1U] & 0x7c00000000000000ull) == 0x7800000000000000ull)
-       ? 0x7fffffffU : (int)0x80000000U;
-     BID_RETURN_VAL (res);
-  }
-  // find number of digits in coefficient
-  // 2^64
-  f64.i = 0x5f800000U;
-  // fx ~ CX
-  fx.d = (float) CX.w[1U] * f64.d + (float) CX.w[0U];
-  bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
-  digits = bid_estimate_decimal_digits[bin_expon_cx];
-  // scale = 38-estimate_decimal_digits[bin_expon_cx];
-  D = (BID_SINT64)CX.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
-  if (D > 0 || (!D && CX.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U])) {
-    digits++;
-  }
+  res = ((x.w[1U] & 0x7c00000000000000ull) == 0x7800000000000000ull)
+            ? 0x7fffffffU
+            : (int)0x80000000U;
+  BID_RETURN_VAL(res);
+}
+// find number of digits in coefficient
+// 2^64
+f64.i = 0x5f800000U;
+// fx ~ CX
+fx.d = (float)cx.w[1U] * f64.d + (float)cx.w[0U];
+bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
+digits = bid_estimate_decimal_digits[bin_expon_cx];
+// scale = 38-estimate_decimal_digits[bin_expon_cx];
+d = (BID_SINT64)cx.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
+if(d > 0 || (!d && cx.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U])) {
+  digits++;
+}
 
-  exponent_x = exponent_x - DECIMAL_EXPONENT_BIAS_128 - 1 + digits;
+exponent_x = exponent_x - DECIMAL_EXPONENT_BIAS_128 - 1 + digits;
 
-  BID_RETURN_VAL (exponent_x);
-
+BID_RETURN_VAL(exponent_x);
 }
