@@ -28,11 +28,11 @@
 ******************************************************************************/
 
 #ifndef BASE_NAME
-#   define BASE_NAME EXPM1_BASE_NAME
+#define BASE_NAME EXPM1_BASE_NAME
 #endif
 
 #if !defined F_ENTRY_NAME
-#   define F_ENTRY_NAME	F_EXPM1_NAME
+#define F_ENTRY_NAME F_EXPM1_NAME
 #endif
 
 /*
@@ -42,9 +42,8 @@
 
 #define MAKE_COMMON
 #if !defined(BUILD_FILE_NAME)
-#   define BUILD_FILE_NAME  F_POW_BUILD_FILE_NAME
+#define BUILD_FILE_NAME F_POW_BUILD_FILE_NAME
 #endif
-
 
 /*
 ** Pick up the latest default DPML definitions. however, don't let
@@ -52,12 +51,12 @@
 ** ridden when the constant file was generated.
 */
 
-#define	DONT_DEFAULT_TABLE_NAME		1
-#define NEW_DPML_MACROS			1
+#define DONT_DEFAULT_TABLE_NAME 1
+#define NEW_DPML_MACROS 1
 #include "dpml_private.h"
 
 #if defined(UNDEF_TABLE_NAME)
-#   undef TABLE_NAME
+#undef TABLE_NAME
 #endif
 
 /*
@@ -65,8 +64,8 @@
 ** power constant table file
 */
 
-#define DEFINE_SYMBOLIC_CONSTANTS	1
-#include STR( BUILD_FILE_NAME )
+#define DEFINE_SYMBOLIC_CONSTANTS 1
+#include STR(BUILD_FILE_NAME)
 
 /*
 ** Pick up common compile time constants and definitions
@@ -215,277 +214,265 @@
 **        constant    hi/lo    problem   poly  problem   normal      big
 */
 
-
 /* Select data type function dependent table values */
 
-#define SUFFIX		BACKUP_SELECT(R, F)
-#define EXPM1_HI_CHECK	PASTE( EXPM1_HI_CHECK_,     SUFFIX )
-#define EXPM1_LO_CHECK	PASTE( EXPM1_LO_CHECK_,     SUFFIX )
-#define POLY_CHECK	PASTE( EXPM1_POLY_CHECK_,   SUFFIX )
-#define POW2_MAX_SCALE	PASTE( POW2_MAX_SCALE_,     SUFFIX )
-#define POLY(x)		BACKUP_SELECT( EXPM1_POLY_R(x), EXPM1_POLY_F(x) )
-#define BIG		ACC_BIG         /* 'big' for accurate pow */
+#define SUFFIX BACKUP_SELECT(R, F)
+#define EXPM1_HI_CHECK PASTE(EXPM1_HI_CHECK_, SUFFIX)
+#define EXPM1_LO_CHECK PASTE(EXPM1_LO_CHECK_, SUFFIX)
+#define POLY_CHECK PASTE(EXPM1_POLY_CHECK_, SUFFIX)
+#define POW2_MAX_SCALE PASTE(POW2_MAX_SCALE_, SUFFIX)
+#define POLY(x) BACKUP_SELECT(EXPM1_POLY_R(x), EXPM1_POLY_F(x))
+#define BIG ACC_BIG /* 'big' for accurate pow */
 
 /* Miscellaneous local definitions */
 
-#define	ALIGN_WITH_I(n)    ((WORD) (n) << POW2_K)
+#define ALIGN_WITH_I(n) ((WORD)(n) << POW2_K)
 
 F_TYPE
-F_ENTRY_NAME( F_TYPE x )
-    {
-    EXCEPTION_RECORD_DECLARATION
-    B_TYPE fm, z, w, t, v, one;
-    B_UNION stack_tmp_u;
-    F_UNION stack_tmp_v;
-    U_WORD status_word;
-    WORD   m, i, j;
+F_ENTRY_NAME(F_TYPE x) {
+  EXCEPTION_RECORD_DECLARATION
+  B_TYPE fm, z, w, t, v, one;
+  B_UNION stack_tmp_u;
+  F_UNION stack_tmp_v;
+  U_WORD status_word;
+  WORD m, i, j;
 
-#   if !USE_BACKUP
+#if !USE_BACKUP
 
-         B_TYPE z_hi, z_lo, u, v1;
+  B_TYPE z_hi, z_lo, u, v1;
 
-#   endif
+#endif
 
+  /*
+  ** Weed out: near overflow, certain -1 cases, NaN's, Inf's, denorms and
+  ** polynomial cases.
+  */
 
-    /*
-    ** Weed out: near overflow, certain -1 cases, NaN's, Inf's, denorms and
-    ** polynomial cases.
-    */
+  stack_tmp_v.f = x;
+  i = stack_tmp_v.F_HI_WORD;
+  m = i & MAKE_MASK(F_SIGN_BIT_POS, 0);
+  IF_VAX(i &= MAKE_MASK(F_SIGN_BIT_POS + 1, 0);)
 
-    stack_tmp_v.f = x;
-    i = stack_tmp_v.F_HI_WORD;
-    m = i & MAKE_MASK(F_SIGN_BIT_POS, 0);
-    IF_VAX(i &= MAKE_MASK(F_SIGN_BIT_POS + 1, 0);)
+  /*
+  ** The product x*(1/ln2) is on the critical path of this routine.
+  ** Because the code is structured with a branch prior to the multiply,
+  ** it is difficult for some compilers to schedule the load of
+  ** the constant 1/ln2 early enough to avoid delaying the reduced argument
+  ** computation.  To avoid this delay, we preload (1/ln2)
+  */
 
-    /*
-    ** The product x*(1/ln2) is on the critical path of this routine.
-    ** Because the code is structured with a branch prior to the multiply,
-    ** it is difficult for some compilers to schedule the load of
-    ** the constant 1/ln2 early enough to avoid delaying the reduced argument
-    ** computation.  To avoid this delay, we preload (1/ln2)
-    */
+  t = RECIP_LN2;
+  one = ONE;
 
-    t = RECIP_LN2;
-    one = ONE;
+  /*
+  ** Screen out cases where expm1(x) = -1, or overflow as well as x = NaN
+  ** or infinity.  We also need to screen out denorms and small argument
+  ** (polynomial range).  In order to avoid code schedule issues, pre-compute
+  ** the check for the polynomial range.
+  */
 
-    /*
-    ** Screen out cases where expm1(x) = -1, or overflow as well as x = NaN
-    ** or infinity.  We also need to screen out denorms and small argument
-    ** (polynomial range).  In order to avoid code schedule issues, pre-compute
-    ** the check for the polynomial range. 
-    */
+  j = (m <= POLY_CHECK);
 
-    j = (m <= POLY_CHECK);
+  if(((U_WORD)i >= EXPM1_HI_CHECK) &&
+     ((U_WORD)(i - F_SIGN_BIT_MASK) >= EXPM1_LO_CHECK))
+    goto possible_problems;
 
-    if (((U_WORD) i >= EXPM1_HI_CHECK) &&
-      ((U_WORD) (i - F_SIGN_BIT_MASK) >= EXPM1_LO_CHECK))
-        goto possible_problems;
+  if(j)
+    goto poly_range;
 
-    if (j)
-        goto poly_range;
+  /*
+  ** compute the reduced argument, z.
+  */
 
-    /*
-    ** compute the reduced argument, z.
-    */
+  w = ((B_TYPE)x) * t;
+  INIT_FPU_STATE_AND_ROUND_TO_NEAREST(status_word);
 
-    w = ((B_TYPE) x) * t;
-    INIT_FPU_STATE_AND_ROUND_TO_NEAREST(status_word);
+  t = BIG + w; /* Save for getting m later on */
+  fm = t - BIG;
+  BACKUP_SELECT(
+      z = w - fm;, z_hi = x - fm * LN2_HI;
+      z_lo = fm * LN2_LO;
+      z = z_hi - z_lo;)
 
-    t = BIG + w;		/* Save for getting m later on */
-    fm = t - BIG;
-    BACKUP_SELECT(
-        z = w - fm;, z_hi = x - fm*LN2_HI;
-                     z_lo = fm*LN2_LO;
-                     z = z_hi - z_lo;
-        )
+  /*
+  ** Now get the bits of m as a integer and break it up into I and j
+  */
 
-    /*
-    ** Now get the bits of m as a integer and break it up into I and j
-    */
+  stack_tmp_u.f = t;
+  GET_LOW_32_BITS(m, stack_tmp_u);
+  j = (m & POW2_INDEX_MASK) << POW2_INDEX_POS;
+  i = m & (~POW2_INDEX_MASK);
 
-    stack_tmp_u.f = t;
-    GET_LOW_32_BITS(m, stack_tmp_u);
-    j = (m & POW2_INDEX_MASK) << POW2_INDEX_POS;
-    i = m & (~POW2_INDEX_MASK);
+  BACKUP_SELECT(
+      w = EXPM1_RED_POLY_R(z);, u = POW2_LO_OV_POW2_HI(j) * (one + z);
+      u = EXPM1_RED_POLY_F(u, z);
+      w = u + z;)
 
-    BACKUP_SELECT(
-        w = EXPM1_RED_POLY_R(z);, u = POW2_LO_OV_POW2_HI(j)*(one + z);
-                                  u = EXPM1_RED_POLY_F( u, z );
-                                  w = u + z;
-        )
+  /* Scale 2^(j/2^POW2_K) by 2^I, so that only one multiply is done */
 
-    /* Scale 2^(j/2^POW2_K) by 2^I, so that only one multiply is done */
+  IF_SMALL_WORD(IPOW2_LO(stack_tmp_u, j);)
+  m = IPOW2(j);
+  m = W_ADD_TO_EXP_FIELD(m, ALIGN_SCALE_WITH_EXP(i));
+  stack_tmp_u.B_HI_WORD = m;
+  IF_VAX(m &= MAKE_MASK(F_SIGN_BIT_POS + 1, 0);)
+  v = stack_tmp_u.f;
 
-    IF_SMALL_WORD(IPOW2_LO(stack_tmp_u, j);)
-    m = IPOW2(j);
-    m = W_ADD_TO_EXP_FIELD(m, ALIGN_SCALE_WITH_EXP(i));
-    stack_tmp_u.B_HI_WORD = m;
-    IF_VAX( m &= MAKE_MASK(F_SIGN_BIT_POS + 1, 0); )
-    v = stack_tmp_u.f;
+  /* We no longer care about the rounding mode, so restore it. */
 
-    /* We no longer care about the rounding mode, so restore it. */
+  RESTORE_FPU_STATE(status_word);
 
-    RESTORE_FPU_STATE(status_word);
+#if USE_BACKUP
 
-#   if USE_BACKUP
+  /* Scale polynomial result and check for possible overflow */
 
-        /* Scale polynomial result and check for possible overflow */
+  z = (v - one) + v * w;
+  if(m > POW2_MAX_SCALE)
+    goto boundary_check;
 
-        z = (v - one) + v*w;
-        if (m > POW2_MAX_SCALE)
-            goto boundary_check;
+#else
 
-#   else
+  /*
+  ** Strip out the big case since once thats done, its safe to use
+  ** V(i,j) in arithmetic expressions
+  */
 
-        /*
-        ** Strip out the big case since once thats done, its safe to use
-        ** V(i,j) in arithmetic expressions
-        */
+  if(i >= ALIGN_WITH_I(F_PRECISION))
+    goto big_region;
 
-        if ( i >= ALIGN_WITH_I(F_PRECISION))
-            goto big_region;
+  /*
+   * Normal, problem and hi/lo ranges get here
+   */
 
-        /*
-         * Normal, problem and hi/lo ranges get here
-         */
+  v1 = v - one;
 
-        v1 = v - one;
+  if(i >= ALIGN_WITH_I(1))
+    goto normal_region;
 
-        if (i >= ALIGN_WITH_I(1))
-             goto normal_region;
+  if(i <= ALIGN_WITH_I(-2))
+    goto hi_lo_region;
 
-        if (i <= ALIGN_WITH_I(-2))
-             goto hi_lo_region;
+  /* problem_region: */
 
-    /* problem_region: */
+  t = v1 + z;
+  z_lo = (z_hi - (t - v1)) - z_lo;
+  z = t + (z_lo + (u + v1 * w));
+  goto return_z;
 
-        t = v1 + z;
-        z_lo = (z_hi - (t - v1)) - z_lo;
-        z = t + (z_lo + (u + v1*w));
-        goto return_z;
+hi_lo_region:
 
-    hi_lo_region:
+  z = v1 + ((v - (v1 + one)) + w * v);
+  goto return_z;
 
-        z = v1 + ((v - (v1 + one)) + w*v);
-        goto return_z;
+normal_region:
 
-    normal_region:
+  z = v1 + w * v;
+  goto return_z;
 
-        z = v1 + w*v;
-        goto return_z;
+big_region:
 
-    big_region:
+  /*
+  ** Screen for overflows with moderate care.  If no overflow possible,
+  ** just go ahead and compute the result.  At this point, m is the
+  ** hi bits of V(I,j) = 2^I*T(j)
+  */
 
-        /*
-        ** Screen for overflows with moderate care.  If no overflow possible,
-        ** just go ahead and compute the result.  At this point, m is the
-        ** hi bits of V(I,j) = 2^I*T(j)
-        */
+  if(m > POW2_MAX_SCALE)
+    goto boundary_check;
 
-        if (m > POW2_MAX_SCALE)
-             goto boundary_check;
+  z = v + (v * w - one);
+  /* Fall through */
 
-        z = v + (v*w - one);
-        /* Fall through */
+return_z:
 
-    return_z:
+#endif
 
-#   endif
-
-       return (F_TYPE) z;
-
+  return (F_TYPE)z;
 
 poly_range:
 
-    /*
-    ** At this point x is small and m is the high word of |x|.  If x is
-    ** really tiny (including denorms), we can just return x.  Otherwise
-    ** compute the series evaluation for expm1.
-    */
+  /*
+  ** At this point x is small and m is the high word of |x|.  If x is
+  ** really tiny (including denorms), we can just return x.  Otherwise
+  ** compute the series evaluation for expm1.
+  */
 
-    if (m > ALIGN_W_EXP_FIELD(F_EXP_BIAS - F_PRECISION - F_NORM))
-        x = POLY(x);
-    return x;
-
+  if(m > ALIGN_W_EXP_FIELD(F_EXP_BIAS - F_PRECISION - F_NORM))
+    x = POLY(x);
+  return x;
 
 boundary_check:
 
-    /* 
-    ** Do the "final" multiple.  However, when no backup is available
-    ** the final multiply might involve a NaN or dirty zero, so we need to
-    ** do this scaling carefully
-    */
+  /*
+  ** Do the "final" multiple.  However, when no backup is available
+  ** the final multiply might involve a NaN or dirty zero, so we need to
+  ** do this scaling carefully
+  */
 
-    IF_NO_BACKUP(
-        /* Multiply by table entry */
-        t = POW2_HI(j);
-        z = t + t*w;
-        )
+  IF_NO_BACKUP(
+      /* Multiply by table entry */
+      t = POW2_HI(j);
+      z = t + t * w;)
 
-    stack_tmp_u.f = z;
-    m = stack_tmp_u.B_HI_WORD;
+  stack_tmp_u.f = z;
+  m = stack_tmp_u.B_HI_WORD;
 
-    IF_NO_BACKUP(
-        /* "Multiply" by 2^i */
-        m = W_ADD_TO_EXP_FIELD(m, ALIGN_SCALE_WITH_EXP(i));
-        stack_tmp_u.B_HI_WORD = m;
-        z = stack_tmp_u.f;
-        )
+  IF_NO_BACKUP(
+      /* "Multiply" by 2^i */
+      m = W_ADD_TO_EXP_FIELD(m, ALIGN_SCALE_WITH_EXP(i));
+      stack_tmp_u.B_HI_WORD = m;
+      z = stack_tmp_u.f;)
 
-    /* Isolate exponent field and check for overflow */
+  /* Isolate exponent field and check for overflow */
 
-    j = EXPM1_OVERFLOW;
-    IF_VAX( m &= B_SIGN_EXP_MASK; )
-    if ((U_WORD) m >= ALIGN_WITH_B_TYPE_EXP(F_MAX_BIN_EXP + B_EXP_BIAS + 1))
-       goto do_exception;
-    return (F_TYPE) z;
+  j = EXPM1_OVERFLOW;
+  IF_VAX(m &= B_SIGN_EXP_MASK;)
+  if((U_WORD)m >= ALIGN_WITH_B_TYPE_EXP(F_MAX_BIN_EXP + B_EXP_BIAS + 1))
+    goto do_exception;
+  return (F_TYPE)z;
 
+NaN_or_Inf:
 
-    NaN_or_Inf:
-
-       /*
-        * If we get here, i and m are the high words of x and |x|
-        * respectively.  If m doesn't contain all of the bits of x,
-        * check for non-zero bits in the low word
-        */
-       m <<= (BITS_PER_WORD - F_EXP_POS);
-       IF_SMALL_WORD( m = m OR_LOW_BITS_SET(stack_tmp_v); )
-       if ( m == 0 )
-           { /* x was +/- infinity */
-           j = (i & F_SIGN_BIT_MASK) ? EXPM1_OF_NEG_INF : EXPM1_OF_INF;
-           goto do_exception;
-           }
-       return x;
+  /*
+   * If we get here, i and m are the high words of x and |x|
+   * respectively.  If m doesn't contain all of the bits of x,
+   * check for non-zero bits in the low word
+   */
+  m <<= (BITS_PER_WORD - F_EXP_POS);
+  IF_SMALL_WORD(m = m OR_LOW_BITS_SET(stack_tmp_v);)
+  if(m == 0) { /* x was +/- infinity */
+    j = (i & F_SIGN_BIT_MASK) ? EXPM1_OF_NEG_INF : EXPM1_OF_INF;
+    goto do_exception;
+  }
+  return x;
 
 return_minus_1:
-    return (F_TYPE) -one;
+  return (F_TYPE)-one;
 
 possible_problems:
 
-    /*
-    ** If we get here, x is: large or an IEEE special case (NaN or Inf).
-    ** Start by weeding out NaN and infinities
-    */
+  /*
+  ** If we get here, x is: large or an IEEE special case (NaN or Inf).
+  ** Start by weeding out NaN and infinities
+  */
 
-    IF_IEEE(
-        /* Screen out NaN's and Inf's */    
-        if (m >= F_EXP_MASK) goto NaN_or_Inf;
-        )
+  IF_IEEE(
+      /* Screen out NaN's and Inf's */
+      if(m >= F_EXP_MASK) goto NaN_or_Inf;)
 
-    /*
-    ** If x is negative, expm1(x) = -1 to machine precision.  Otherwise,
-    ** expm1(x) overflows.
-    **
-    **		NOTE: at this point i is the high word of x and m
-    **		is i &= ~F_SIGN_BIT_MASK
-    */
+  /*
+  ** If x is negative, expm1(x) = -1 to machine precision.  Otherwise,
+  ** expm1(x) overflows.
+  **
+  **		NOTE: at this point i is the high word of x and m
+  **		is i &= ~F_SIGN_BIT_MASK
+  */
 
-    if (i & F_SIGN_BIT_MASK)
-        goto return_minus_1;
+  if(i & F_SIGN_BIT_MASK)
+    goto return_minus_1;
 
-    j = EXP_OVERFLOW;
+  j = EXP_OVERFLOW;
 
 do_exception:
-    GET_EXCEPTION_RESULT_1(j, x, x);
-    return x;
-    }
+  GET_EXCEPTION_RESULT_1(j, x, x);
+  return x;
+}

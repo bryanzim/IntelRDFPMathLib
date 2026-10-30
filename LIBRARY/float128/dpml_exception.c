@@ -28,15 +28,15 @@
 ******************************************************************************/
 
 #if !defined(DPML_DO_SIDE_EFFECTS_NAME)
-#    define DPML_DO_SIDE_EFFECTS_NAME	__INTERNAL_NAME(do_side_effects)
+#define DPML_DO_SIDE_EFFECTS_NAME __INTERNAL_NAME(do_side_effects)
 #endif
 
 #if !defined(DPML_GET_ENVIRONMENT_NAME)
-#   define  DPML_GET_ENVIRONMENT_NAME	__INTERNAL_NAME(get_environment)
+#define DPML_GET_ENVIRONMENT_NAME __INTERNAL_NAME(get_environment)
 #endif
 
 #if !defined(DPML_SIGNAL_NAME)
-#   define  DPML_SIGNAL_NAME		__INTERNAL_NAME(signal)
+#define DPML_SIGNAL_NAME __INTERNAL_NAME(signal)
 #endif
 
 #define GLOBAL_TABLE_VALUES
@@ -50,7 +50,7 @@
  */
 
 #if defined(PLATFORM_SPECIFIC_HEADER_FILE)
-#   include PLATFORM_SPECIFIC_HEADER_FILE
+#include PLATFORM_SPECIFIC_HEADER_FILE
 #endif
 
 /*
@@ -73,35 +73,34 @@
  */
 
 #if IEEE_EXCEPTION_BEHAVIOR
-#   if !defined(DPML_GET_FPCSR)
-#       error "DPML_GET_FPCSR must be defined for IEEE exception behavior"
-#   endif
-#   if !defined(DPML_SET_FPCSR)
-#       error "DPML_SET_FPCSR must be defined for IEEE exception behavior"
-#   endif
-
-    /*
-     * The data type of the FPCSR needs to be known.  If not specified,
-     * assume it has the same type as the basic integer type on the platform.
-     */
-
-#   if !defined(FP_CSR_TYPE)
-#       define FP_CSR_TYPE	WORD
-#   endif
-
-    /*
-     * We need to be able to map the five basic DPML exceptions onto the bit
-     * positions of the sticky bits in the FPCSR.  If no mapping function is
-     * provided assume that the DPML exception enumerations match the bit
-     * positions of the sticky bits in the FPCSR
-     */
-
-#   if !defined(DPML_FPCSR_STICKY_BITS)
-#       define DPML_FPCSR_STICKY_BITS(d)	SET_BIT(d)
-#   endif
-
+#if !defined(DPML_GET_FPCSR)
+#error "DPML_GET_FPCSR must be defined for IEEE exception behavior"
+#endif
+#if !defined(DPML_SET_FPCSR)
+#error "DPML_SET_FPCSR must be defined for IEEE exception behavior"
 #endif
 
+/*
+ * The data type of the FPCSR needs to be known.  If not specified,
+ * assume it has the same type as the basic integer type on the platform.
+ */
+
+#if !defined(FP_CSR_TYPE)
+#define FP_CSR_TYPE WORD
+#endif
+
+/*
+ * We need to be able to map the five basic DPML exceptions onto the bit
+ * positions of the sticky bits in the FPCSR.  If no mapping function is
+ * provided assume that the DPML exception enumerations match the bit
+ * positions of the sticky bits in the FPCSR
+ */
+
+#if !defined(DPML_FPCSR_STICKY_BITS)
+#define DPML_FPCSR_STICKY_BITS(d) SET_BIT(d)
+#endif
+
+#endif
 
 /*
  * If no user exception environment is defined, read the enviornment from
@@ -111,17 +110,13 @@
 
 #if !defined(DPML_GET_ENVIRONMENT)
 
-#   if IEEE_EXCEPTION_BEHAVIOR
-#       define DPML_GET_ENVIRONMENT(e) \
-            P_EXCPT_REC_ENVIRONMENT(p, DPML_GET_FPCSR(e))
-#   else
-#       define DPML_GET_ENVIRONMENT(e) \
-            P_EXCPT_REC_ENVIRONMENT(p, ( ENABLE_FLUSH_TO_ZERO \
-                           | ENABLE_SINGULARITY \
-                           | ENABLE_OVERFLOW \
-                           | ENABLE_INVALID \
-                           | ENABLE_LOST_SIGNIFICANCE ))
-#   endif
+#if IEEE_EXCEPTION_BEHAVIOR
+#define DPML_GET_ENVIRONMENT(e) \
+  P_EXCPT_REC_ENVIRONMENT(p, DPML_GET_FPCSR(e))
+#else
+#define DPML_GET_ENVIRONMENT(e) \
+  P_EXCPT_REC_ENVIRONMENT(p, (ENABLE_FLUSH_TO_ZERO | ENABLE_SINGULARITY | ENABLE_OVERFLOW | ENABLE_INVALID | ENABLE_LOST_SIGNIFICANCE))
+#endif
 #endif
 
 /*
@@ -133,15 +128,14 @@ extern int raise(int);
 #if !defined(DPML_SIGNAL) && !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER) && \
     !defined(wnt)
 
-#   include <sys/signal.h>
-#   define DPML_SIGNAL(p)	 raise(SIGFPE)
+#include <sys/signal.h>
+#define DPML_SIGNAL(p) raise(SIGFPE)
 
 #else
 
-#   define DPML_SIGNAL(p)
+#define DPML_SIGNAL(p)
 
 #endif
-
 
 /*
  * If no side effects are specified then set errno, signal if the envirnment
@@ -150,116 +144,112 @@ extern int raise(int);
 
 #if !defined(SET_ERRNO)
 
-#   include  <errno.h>
-#   define SET_ERRNO(p)	errno = ERRNO_VALUE(G_EXCPT_REC_DPML_ECODE(p))
+#include <errno.h>
+#define SET_ERRNO(p) errno = ERRNO_VALUE(G_EXCPT_REC_DPML_ECODE(p))
 
 #endif
 
 #if defined(IEEE_EXCEPTION_BEHAVIOR)
-#   if  !defined(DPML_UPDATE_STICKY_BITS)
+#if !defined(DPML_UPDATE_STICKY_BITS)
 
-#       define DPML_UPDATE_STICKY_BITS(p)	\
-            { \
-            FP_CSR_TYPE fpcsr; \
-            DPML_GET_FPCSR(fpcsr); \
-            fpcsr |= FPCSR_STICKY_BITS(G_EXCPT_REC_DPML_ECODE(p)); \
-            DPML_SET_FPCSR(fpcsr); \
-            }
-#   endif
+#define DPML_UPDATE_STICKY_BITS(p)                         \
+  {                                                        \
+    FP_CSR_TYPE fpcsr;                                     \
+    DPML_GET_FPCSR(fpcsr);                                 \
+    fpcsr |= FPCSR_STICKY_BITS(G_EXCPT_REC_DPML_ECODE(p)); \
+    DPML_SET_FPCSR(fpcsr);                                 \
+  }
+#endif
 #else
-#    define DPML_UPDATE_STICKY_BITS(p)
+#define DPML_UPDATE_STICKY_BITS(p)
 #endif
 
 #if !defined(DPML_DO_SIDE_EFFECTS)
 
-#   define DPML_DO_SIDE_EFFECTS(p)	DPML_DO_SIDE_EFFECTS_NAME(p)
+#define DPML_DO_SIDE_EFFECTS(p) DPML_DO_SIDE_EFFECTS_NAME(p)
 
-    static void
-    DPML_DO_SIDE_EFFECTS_NAME(DPML_EXCEPTION_RECORD *p)
-        {
-        SET_ERRNO(p);
+static void
+DPML_DO_SIDE_EFFECTS_NAME(DPML_EXCEPTION_RECORD *p) {
+  SET_ERRNO(p);
 
-#     if !defined (MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
+#if !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
 
-        /* set ieee sticky bit before signaling exception */
-        DPML_UPDATE_STICKY_BITS(p);
+  /* set ieee sticky bit before signaling exception */
+  DPML_UPDATE_STICKY_BITS(p);
 
-        if ((G_EXCPT_REC_ENVIRONMENT(p) &
-             (WORD)SET_BIT(G_EXCPT_REC_DPML_ECODE(p))))
-            DPML_SIGNAL(p);
-#     endif
-
-        }
+  if((G_EXCPT_REC_ENVIRONMENT(p) &
+      (WORD)SET_BIT(G_EXCPT_REC_DPML_ECODE(p))))
+    DPML_SIGNAL(p);
+#endif
+}
 
 #endif /* !defined(DPML_DO_SIDE_EFFECTS) */
 
-#define RET_VAL(type,val)      GLOBAL_ADDR(type,val)
-
+#define RET_VAL(type, val) GLOBAL_ADDR(type, val)
 
 #if !defined(GET_DPML_EXCEPTION_AND_VALUE)
 
-    /*
-     * NOTE: This should be fixed.  The response table should
-     * have only one set of (err,value) pairs if only one
-     * behavior is supportted.
-     */
+/*
+ * NOTE: This should be fixed.  The response table should
+ * have only one set of (err,value) pairs if only one
+ * behavior is supportted.
+ */
 
-#   if IEEE_EXCEPTION_BEHAVIOR
+#if IEEE_EXCEPTION_BEHAVIOR
 
-#       define	GET_DPML_EXCEPTION_AND_VALUE(p) \
-            { \
-            WORD e, v, t; \
-            e = G_EXCPT_REC_FUNC_ECODE(p); \
-            P_EXCPT_REC_DPML_ECODE(p, (char)GET_IEEE_ERROR(e)); \
-            v = (WORD)GET_IEEE_VALUE(e); \
-            t = G_EXCPT_REC_DATA_TYPE(p); \
-            P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t,v)); \
-            }
-#   else
+#define GET_DPML_EXCEPTION_AND_VALUE(p)                 \
+  {                                                     \
+    WORD e, v, t;                                       \
+    e = G_EXCPT_REC_FUNC_ECODE(p);                      \
+    P_EXCPT_REC_DPML_ECODE(p, (char)GET_IEEE_ERROR(e)); \
+    v = (WORD)GET_IEEE_VALUE(e);                        \
+    t = G_EXCPT_REC_DATA_TYPE(p);                       \
+    P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t, v));          \
+  }
+#else
 
-#       define	GET_DPML_EXCEPTION_AND_VALUE(p) \
-            { \
-            WORD e, v, t; \
-            e = G_EXCPT_REC_FUNC_ECODE(p); \
-            P_EXCPT_REC_DPML_ECODE(p, (char)GET_FAST_ERROR(e)); \
-            v = (WORD)GET_FAST_VALUE(e); \
-            t = G_EXCPT_REC_DATA_TYPE(p); \
-            P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t,v)); \
-            }
-#   endif
+#define GET_DPML_EXCEPTION_AND_VALUE(p)                 \
+  {                                                     \
+    WORD e, v, t;                                       \
+    e = G_EXCPT_REC_FUNC_ECODE(p);                      \
+    P_EXCPT_REC_DPML_ECODE(p, (char)GET_FAST_ERROR(e)); \
+    v = (WORD)GET_FAST_VALUE(e);                        \
+    t = G_EXCPT_REC_DATA_TYPE(p);                       \
+    P_EXCPT_REC_RET_VAL_PTR(p, RET_VAL(t, v));          \
+  }
+#endif
 
 #endif
 
 #if (EXCEPTION_INTERFACE_RECEIVE == receive_exception_record)
-#   define EXCPTN_ARG	DPML_EXCEPTION_RECORD *p
-#   define DECLARATIONS	WORD err = G_EXCPT_REC_FUNC_ECODE(p)
+#define EXCPTN_ARG DPML_EXCEPTION_RECORD *p
+#define DECLARATIONS WORD err = G_EXCPT_REC_FUNC_ECODE(p)
 #else
-#   define EXCPTN_ARG	WORD err
-#   define DECLARATIONS	DPML_EXCEPTION_RECORD __tmp, *p = &__tmp;
+#define EXCPTN_ARG WORD err
+#define DECLARATIONS DPML_EXCEPTION_RECORD __tmp, *p = &__tmp;
 #endif
 
 #if !defined(DPML_EXCEPTION)
 
-    void * DPML_EXCEPTION_NAME(EXCPTN_ARG)
-        {
-        DECLARATIONS;
+void *DPML_EXCEPTION_NAME(EXCPTN_ARG) {
+  DECLARATIONS;
 
-        /* Split input error code into type, and base error */
-        P_EXCPT_REC_DATA_TYPE(p, GET_ERR_CODE_TYPE(err));
-        P_EXCPT_REC_FUNC_ECODE(p,
-            (WORD)((U_WORD)GET_TYPELESS_ERR_CODE((U_WORD)err)));
+  /* Split input error code into type, and base error */
+  P_EXCPT_REC_DATA_TYPE(p, GET_ERR_CODE_TYPE(err));
+  P_EXCPT_REC_FUNC_ECODE(p,
+                         (WORD)((U_WORD)GET_TYPELESS_ERR_CODE((U_WORD)err)));
 
-        DPML_GET_ENVIRONMENT(p);
-        if (err < 0)
-            /* Just a request for info */
-            return (void *) G_EXCPT_REC_ENVIRONMENT(p);
+  DPML_GET_ENVIRONMENT(p);
+  if(err < 0)
+    /* Just a request for info */
+    return (void *)G_EXCPT_REC_ENVIRONMENT(p);
 
-        GET_DPML_EXCEPTION_AND_VALUE(p);
+  GET_DPML_EXCEPTION_AND_VALUE(p);
 
-        if (G_EXCPT_REC_DPML_ECODE(p) != DPML_NO_ERROR)
-            DPML_DO_SIDE_EFFECTS(p);
+  if(G_EXCPT_REC_DPML_ECODE(p) != DPML_NO_ERROR)
+    DPML_DO_SIDE_EFFECTS(p);
 
-        return G_EXCPT_REC_RET_VAL_PTR(p);
-        }
+  return G_EXCPT_REC_RET_VAL_PTR(p);
+}
 
 #endif

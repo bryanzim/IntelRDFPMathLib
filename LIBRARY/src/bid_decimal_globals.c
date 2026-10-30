@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -34,13 +34,11 @@
 BID_THREAD _IDEC_round _IDEC_glbround = BID_ROUNDING_TO_NEAREST;
 
 #if DECIMAL_GLOBAL_ROUNDING_ACCESS_FUNCTIONS
-void
-__dfp_set_round (int mode) {
+void __dfp_set_round(int mode) {
   _IDEC_glbround = mode;
 }
 
-int
-__dfp_get_round (void) {
+int __dfp_get_round(void) {
   return _IDEC_glbround;
 }
 #endif
@@ -52,42 +50,39 @@ BID_THREAD _IDEC_flags _IDEC_glbflags = BID_EXACT_STATUS;
 #if DECIMAL_GLOBAL_EXCEPTION_FLAGS_ACCESS_FUNCTIONS
 #include <fenv.h>
 
-void
-__dfp_clear_except (void) {
+void __dfp_clear_except(void) {
   _IDEC_glbflags &= ~BID_FLAG_MASK;
 }
 
-int
-__dfp_test_except (int mask) {
+int __dfp_test_except(int mask) {
   int flags = 0;
 
-  if ((_IDEC_glbflags & BID_INEXACT_EXCEPTION) != 0)
+  if((_IDEC_glbflags & BID_INEXACT_EXCEPTION) != 0)
     flags |= mask & FE_INEXACT;
-  if ((_IDEC_glbflags & BID_UNDERFLOW_EXCEPTION) != 0)
+  if((_IDEC_glbflags & BID_UNDERFLOW_EXCEPTION) != 0)
     flags |= mask & FE_UNDERFLOW;
-  if ((_IDEC_glbflags & BID_OVERFLOW_EXCEPTION) != 0)
+  if((_IDEC_glbflags & BID_OVERFLOW_EXCEPTION) != 0)
     flags |= mask & FE_OVERFLOW;
-  if ((_IDEC_glbflags & BID_ZERO_DIVIDE_EXCEPTION) != 0)
+  if((_IDEC_glbflags & BID_ZERO_DIVIDE_EXCEPTION) != 0)
     flags |= mask & FE_DIVBYZERO;
-  if ((_IDEC_glbflags & BID_INVALID_EXCEPTION) != 0)
+  if((_IDEC_glbflags & BID_INVALID_EXCEPTION) != 0)
     flags |= mask & FE_INVALID;
 
   return flags;
 }
 
-void
-__dfp_raise_except (int mask) {
+void __dfp_raise_except(int mask) {
   _IDEC_flags flags = 0;
 
-  if ((mask & FE_INEXACT) != 0)
+  if((mask & FE_INEXACT) != 0)
     flags |= BID_INEXACT_EXCEPTION;
-  if ((mask & FE_UNDERFLOW) != 0)
+  if((mask & FE_UNDERFLOW) != 0)
     flags |= BID_UNDERFLOW_EXCEPTION;
-  if ((mask & FE_OVERFLOW) != 0)
+  if((mask & FE_OVERFLOW) != 0)
     flags |= BID_OVERFLOW_EXCEPTION;
-  if ((mask & FE_DIVBYZERO) != 0)
+  if((mask & FE_DIVBYZERO) != 0)
     flags |= BID_ZERO_DIVIDE_EXCEPTION;
-  if ((mask & FE_INVALID) != 0)
+  if((mask & FE_INVALID) != 0)
     flags |= BID_INVALID_EXCEPTION;
 
   _IDEC_glbflags |= flags;
@@ -98,7 +93,7 @@ __dfp_raise_except (int mask) {
 #if DECIMAL_ALTERNATE_EXCEPTION_HANDLING
 #if DECIMAL_GLOBAL_EXCEPTION_MASKS
 BID_THREAD _IDEC_exceptionmasks _IDEC_glbexceptionmasks =
-  _IDEC_allexcmasksset;
+    _IDEC_allexcmasksset;
 #endif
 #if DECIMAL_GLOBAL_EXCEPTION_INFO
 BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;

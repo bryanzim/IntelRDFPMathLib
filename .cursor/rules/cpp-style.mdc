@@ -1,27 +1,25 @@
 ---
-description: C++ style for new code, based on the Google C++ Style Guide
+description: Match C and C++ style already used in this repository
 globs: "**/*.{c,h,cc,cpp,cxx,hpp,hh}"
 alwaysApply: false
 ---
 
-# C++ style
+# C and C++ style
 
-New C++ follows the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html). Formatting is `.clang-format` (`BasedOnStyle: Google`). Lint is `.clang-tidy` (`google-*` plus Google naming).
+Follow the code already in `LIBRARY/src`. `.clang-format` and `.clang-tidy` record that style. Do not reformat untouched files, and do not rename the `bid_*` API or `BID_` / `DEC_` / `DPML_` macros.
 
-- Target C++17. New translation units are `.cc`; headers are `.h`. Filenames are lowercase with underscores.
-- Types, functions, and enums are `PascalCase`. Enumerators and static constants are `kPascalCase`. Variables and parameters are `snake_case`. Class data members end in `_`. Namespaces are lowercase. Macros are `UPPER_SNAKE` with a project prefix.
-- Braces on the same line. Pointers and references bind left (`int* p`). Prefer `using` over `typedef`, `nullptr` over `NULL` or `0`, and `override` on virtual overrides.
-- No `using namespace` in headers. Constructors callable with one argument are `explicit`. Include the headers you use.
+- Indent 2 spaces. Put the opening brace on the function signature line. Write pointers as `type *name`.
+- Prefer `snake_case` for new functions, variables, and parameters. Leave existing names as written, including `unpack_BID64`, `QH`, and `Stemp`.
+- Leave macros as they are written (`UPPER_CASE`, `P_`/`G_` prefixes, lowercase, or a leading underscore).
+- Keep existing typedef spellings such as `BID_UINT64`.
 
-The existing decimal C API is an exception: keep `bid_*` functions and `BID_` / `DEC_` / `DPML_` macros. Do not rename them and do not run clang-format across unmodified BID sources.
+Do not add `Co-authored-by: Cursor` or any Cursor co-author trailer to a commit.
 
-```cpp
-// Good
-class DecimalStatus {
- public:
-  int flag_count() const { return flag_count_; }
-
- private:
-  int flag_count_ = 0;
-};
+```c
+BID_UINT32
+bid32_from_string (char *ps) {
+  if (!ps) {
+    return 0x7c000000ul;
+  }
+}
 ```

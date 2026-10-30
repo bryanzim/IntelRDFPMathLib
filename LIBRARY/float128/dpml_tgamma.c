@@ -30,76 +30,74 @@
 #include "dpml_private.h"
 #include "dpml_special_exp.h"
 
-
 #ifndef BASE_NAME
-#    define BASE_NAME   TGAMMA_BASE_NAME
+#define BASE_NAME TGAMMA_BASE_NAME
 #endif
 
 #if !defined F_ENTRY_NAME
-#   define F_ENTRY_NAME      F_TGAMMA_NAME
+#define F_ENTRY_NAME F_TGAMMA_NAME
 #endif
 
-#if USE_BACKUP 
-#   define LO_PART_DECL
+#if USE_BACKUP
+#define LO_PART_DECL
 #else
-#   define LO_PART           pow2_low 
-#   define LO_PART_DECL      , F_TYPE *LO_PART 
-#endif 
+#define LO_PART pow2_low
+#define LO_PART_DECL , F_TYPE *LO_PART
+#endif
 
-extern F_TYPE F_RT_LGAMMA_NAME(F_TYPE , int *);
-extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME ( F_TYPE , WORD *  LO_PART_DECL );
-extern F_TYPE F_LDEXP_NAME( F_TYPE, int );
+extern F_TYPE F_RT_LGAMMA_NAME(F_TYPE, int *);
+extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME(F_TYPE, WORD *LO_PART_DECL);
+extern F_TYPE F_LDEXP_NAME(F_TYPE, int);
 
 static const U_INT_64 Inf = 0x7ff0000000000000;
 
-#define INF	(((D_UNION *) &Inf)->f)
-
+#define INF (((D_UNION *)&Inf)->f)
 
 F_TYPE
 F_ENTRY_NAME(F_TYPE x) {
 
-    EXCEPTION_RECORD_DECLARATION
+  EXCEPTION_RECORD_DECLARATION
 
-    F_TYPE y;
-    F_TYPE mantissa_lo;
-    WORD pow_of_two, bExp, j;
-    int signgam = 0;
-    F_UNION u;
+  F_TYPE y;
+  F_TYPE mantissa_lo;
+  WORD pow_of_two, bExp, j;
+  int signgam = 0;
+  F_UNION u;
 
-    u.f = x;
-    j = u.F_HI_WORD;
-    if ( j & F_SIGN_BIT_MASK) {
-        // In put is negative
-        if ( (j & F_EXP_MASK) >= 
-                (((WORD) (F_EXP_BIAS + F_PRECISION)) << F_EXP_POS)) {
-            // Argument is a negitive integer
-            return INF;
-         }
-    } else if ( x > 171.6243769563027208124443787857704267196259) {
-        // Large positive value is garanteed to overflow
-        return INF;
-    } else if ( x != x ) {
-        return (x);
+  u.f = x;
+  j = u.F_HI_WORD;
+  if(j & F_SIGN_BIT_MASK) {
+    // In put is negative
+    if((j & F_EXP_MASK) >=
+       (((WORD)(F_EXP_BIAS + F_PRECISION)) << F_EXP_POS)) {
+      // Argument is a negitive integer
+      return INF;
     }
+  } else if(x > 171.6243769563027208124443787857704267196259) {
+    // Large positive value is garanteed to overflow
+    return INF;
+  } else if(x != x) {
+    return (x);
+  }
 
-    // Normal argument, may or may not overflow
-    u.f = F_RT_LGAMMA_NAME(x, &signgam);
-    j = u.F_HI_WORD;
-    bExp = j & F_EXP_MASK;
-    if ( bExp == F_EXP_MASK ) {
-        // Overflow or invalid
-        return (signgam < 0) ? -u.f : u.f;
-    } else if ( u.f < -750 ) {
-        // Certain Underflow
-        return (F_TYPE) 0.0;
-    } else if ( u.f > 710 ) {
-        // Certain overflow
-        return signgam < 0 ? -INF : INF;
-    } else {
-         y = F_EXP_SPECIAL_ENTRY_NAME(u.f, &pow_of_two, &mantissa_lo );
-         y += mantissa_lo;
-         if ( signgam < 0 )
-             y = -y;
-         return F_LDEXP_NAME( y, pow_of_two >> POW2_K );
-    }
+  // Normal argument, may or may not overflow
+  u.f = F_RT_LGAMMA_NAME(x, &signgam);
+  j = u.F_HI_WORD;
+  bExp = j & F_EXP_MASK;
+  if(bExp == F_EXP_MASK) {
+    // Overflow or invalid
+    return (signgam < 0) ? -u.f : u.f;
+  } else if(u.f < -750) {
+    // Certain Underflow
+    return (F_TYPE)0.0;
+  } else if(u.f > 710) {
+    // Certain overflow
+    return signgam < 0 ? -INF : INF;
+  } else {
+    y = F_EXP_SPECIAL_ENTRY_NAME(u.f, &pow_of_two, &mantissa_lo);
+    y += mantissa_lo;
+    if(signgam < 0)
+      y = -y;
+    return F_LDEXP_NAME(y, pow_of_two >> POW2_K);
+  }
 }

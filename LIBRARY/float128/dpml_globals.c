@@ -27,15 +27,15 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-#undef	MAKE_INCLUDE
+#undef MAKE_INCLUDE
 #define MAKE_INCLUDE
 
-#undef	F_FLOAT
+#undef F_FLOAT
 #define F_FLOAT
-#define __F_SUFFIX  DPML_NULL_MACRO_TOKEN
+#define __F_SUFFIX DPML_NULL_MACRO_TOKEN
 
 #ifndef BUILD_FILE_NAME
-#	define BUILD_FILE_NAME dpml_globals.h
+#define BUILD_FILE_NAME dpml_globals.h
 #endif
 
 #include "build.h"
@@ -50,20 +50,19 @@
  * patterns for the indicated values in the following order:
  */
 
-#define	NAN_INDEX		0
-#define	POS_ZERO_INDEX		1
-#define	NEG_ZERO_INDEX		2
-#define	POS_TINY_INDEX		3
-#define	NEG_TINY_INDEX		4
-#define	POS_HUGE_INDEX		5
-#define	NEG_HUGE_INDEX		6
-#define	POS_INFINITY_INDEX	7
-#define	NEG_INFINITY_INDEX	8
-#define	POS_ULP_FACTOR_INDEX	9
-#define	NEG_ULP_FACTOR_INDEX	10
-#define	POS_ONE_INDEX		11
-#define	NEG_ONE_INDEX		12
-
+#define NAN_INDEX 0
+#define POS_ZERO_INDEX 1
+#define NEG_ZERO_INDEX 2
+#define POS_TINY_INDEX 3
+#define NEG_TINY_INDEX 4
+#define POS_HUGE_INDEX 5
+#define NEG_HUGE_INDEX 6
+#define POS_INFINITY_INDEX 7
+#define NEG_INFINITY_INDEX 8
+#define POS_ULP_FACTOR_INDEX 9
+#define NEG_ULP_FACTOR_INDEX 10
+#define POS_ONE_INDEX 11
+#define NEG_ONE_INDEX 12
 
 /*
  *	The globals data is stored in the GLOBALS TABLE as a sequence of
@@ -101,11 +100,11 @@
  * In addition to the actual values, this routine also sets up a table
  * of address that allows type independent accessing of the values.
  * Values are generated only for those data types actually supported by
- * the platform.  The BIT_IS_SET macro is used to determine which 
+ * the platform.  The BIT_IS_SET macro is used to determine which
  * "bits" are set in the FLOAT_TYPES macro
  */
 
-#define	BIT_IS_SET(i,n) (((i) >> (n)) - (((i) >> ((n)+1)) << 1))
+#define BIT_IS_SET(i, n) (((i) >> (n)) - (((i) >> ((n) + 1)) << 1))
 
 /*
  * Along with each set of constants, a symbolic constant for an enumerated
@@ -145,364 +144,359 @@
  *	are little endian, the word containing the exponent comes first.
  */
 
-#    define PR_SINGLE(a)      printf("\t"#a", 0, \n") ;
+#define PR_SINGLE(a) printf("\t" #a ", 0, \n");
 
 #if (ENDIANESS == big_endian)
-#    define PR_DOUBLE(a,b)    printf("\t"#a", "#b", \n") ;
-#    define PR_QUAD(a,b,x,y)  printf("\t"#a", "#b", "#x", "#y", \n") ;
+#define PR_DOUBLE(a, b) printf("\t" #a ", " #b ", \n");
+#define PR_QUAD(a, b, x, y) printf("\t" #a ", " #b ", " #x ", " #y ", \n");
 #else
-#    define PR_DOUBLE(a,b)    printf("\t"#b", "#a", \n") ;
-#    define PR_QUAD(a,b,x,y)  printf("\t"#y", "#x", "#b", "#a", \n") ;
+#define PR_DOUBLE(a, b) printf("\t" #b ", " #a ", \n");
+#define PR_QUAD(a, b, x, y) printf("\t" #y ", " #x ", " #b ", " #a ", \n");
 #endif
 
 #if (BITS_PER_TABLE_WORD != 32)
-#   error "BITS_PER_TABLE_WORD must be 32"
+#error "BITS_PER_TABLE_WORD must be 32"
 #endif
 
 #include "mphoc_macros.h"
 
+#define TMP_FILE ADD_EXTENSION(BUILD_FILE_NAME, tmp)
 
-#   define TMP_FILE		ADD_EXTENSION(BUILD_FILE_NAME,tmp)
+@divert divertText
 
-    @divert divertText
+    printf("#if !defined(GLOBALS_TABLE)\n"
+           "#   define GLOBALS_TABLE	__INTERNAL_NAME(globals_table)\n"
+           "#endif\n\n");
 
-    printf( "#if !defined(GLOBALS_TABLE)\n" 
-            "#   define GLOBALS_TABLE	__INTERNAL_NAME(globals_table)\n"
-            "#endif\n\n" );
-
-    do_f = (BIT_IS_SET(FLOAT_TYPES, f_floating));
-    do_g = (BIT_IS_SET(FLOAT_TYPES, g_floating));
-    do_s = (BIT_IS_SET(FLOAT_TYPES, s_floating));
-    do_t = (BIT_IS_SET(FLOAT_TYPES, t_floating));
-    do_x = (BIT_IS_SET(FLOAT_TYPES, x_floating));
-    do_d = (BIT_IS_SET(FLOAT_TYPES, d_floating));
+do_f = (BIT_IS_SET(FLOAT_TYPES, f_floating));
+do_g = (BIT_IS_SET(FLOAT_TYPES, g_floating));
+do_s = (BIT_IS_SET(FLOAT_TYPES, s_floating));
+do_t = (BIT_IS_SET(FLOAT_TYPES, t_floating));
+do_x = (BIT_IS_SET(FLOAT_TYPES, x_floating));
+do_d = (BIT_IS_SET(FLOAT_TYPES, d_floating));
 
 /*  We assume there are really only 2 different table formats:	{s, t, x}   */
 /*  and {s, t, x, f, g}, which use 32 and 64 bytes respectively.	    */
 
-    bytes_per_table_entry = 0 ;
-    table_padding = 0 ;
-    if ( do_s ) {
-    printf( "#define _s_TYPE 0\n" ) ;
-    bytes_per_table_entry = bytes_per_table_entry + 8 ;
-    }
-    if ( do_t ) {
-    printf( "#define _t_TYPE 1\n" ) ;
-    bytes_per_table_entry = bytes_per_table_entry + 8 ;
-    }
-    if ( do_x ) {
-    printf( "#define _x_TYPE 2\n" ) ;
-    bytes_per_table_entry = bytes_per_table_entry + 16 ;
-    }
-    if ( do_f ) {
-    printf( "#define _f_TYPE 4\n" ) ;
-    bytes_per_table_entry = bytes_per_table_entry + 8 ;
-    }
-    if ( do_g ) {
-    printf( "#define _g_TYPE 5\n" ) ;
-    bytes_per_table_entry = bytes_per_table_entry + 8 ;
-    }
-    if ( do_d ) {
-    printf( "#define _d_TYPE 5\n" ) ;
-    bytes_per_table_entry = bytes_per_table_entry + 8 ;
-    }
-    if ( bytes_per_table_entry <= 32 ) {
-    table_padding = 32 - bytes_per_table_entry ;
-    bytes_per_table_entry  = 32 ;
-    }
-    else {
-    table_padding = 64 - bytes_per_table_entry ;
-    bytes_per_table_entry  = 64 ;
-    }
-    table_padding = table_padding / 4 ;
+bytes_per_table_entry = 0;
+table_padding = 0;
+if(do_s) {
+  printf("#define _s_TYPE 0\n");
+  bytes_per_table_entry = bytes_per_table_entry + 8;
+}
+if(do_t) {
+  printf("#define _t_TYPE 1\n");
+  bytes_per_table_entry = bytes_per_table_entry + 8;
+}
+if(do_x) {
+  printf("#define _x_TYPE 2\n");
+  bytes_per_table_entry = bytes_per_table_entry + 16;
+}
+if(do_f) {
+  printf("#define _f_TYPE 4\n");
+  bytes_per_table_entry = bytes_per_table_entry + 8;
+}
+if(do_g) {
+  printf("#define _g_TYPE 5\n");
+  bytes_per_table_entry = bytes_per_table_entry + 8;
+}
+if(do_d) {
+  printf("#define _d_TYPE 5\n");
+  bytes_per_table_entry = bytes_per_table_entry + 8;
+}
+if(bytes_per_table_entry <= 32) {
+  table_padding = 32 - bytes_per_table_entry;
+  bytes_per_table_entry = 32;
+} else {
+  table_padding = 64 - bytes_per_table_entry;
+  bytes_per_table_entry = 64;
+}
+table_padding = table_padding / 4;
 
-# define PAD_TABLE				\
-    if ( table_padding ) {			\
-    printf( "\t0," ) ;			\
-    for ( i = 1 ; i < table_padding ; i++ )	\
-    printf( " 0," ) ;			\
-    printf( "\n" ) ;			\
-    }					\
+#define PAD_TABLE                      \
+  if(table_padding) {                  \
+    printf("\t0,");                    \
+    for(i = 1; i < table_padding; i++) \
+      printf(" 0,");                   \
+    printf("\n");                      \
+  }
 
-    printf("#ifdef GLOBAL_TABLE_VALUES\n\n");
-    START_GLOBAL_TABLE(GLOBALS_TABLE, offset);
+printf("#ifdef GLOBAL_TABLE_VALUES\n\n");
+START_GLOBAL_TABLE(GLOBALS_TABLE, offset);
 
 /*  NOTE:  the order in which the following statements occur *MUST* match   */
 /*  the enumeration for the _{s,t,x,f,g,d}_TYPE constants above.	    */
 
 /* NaNs and reserved operands */
 
-    if	(do_s)
-    PR_SINGLE(S_NAN_HI) 
-    if	(do_t)	
-    PR_DOUBLE(T_NAN_HI, NAN_LO)
-    if	(do_x)	
-    PR_QUAD(X_NAN_HI, NAN_LO, NAN_LO, NAN_LO)
-    if	(do_f)
-    PR_SINGLE(0x00008000) 
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x00008000)
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x00008000)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(S_NAN_HI)
+if(do_t)
+  PR_DOUBLE(T_NAN_HI, NAN_LO)
+if(do_x)
+  PR_QUAD(X_NAN_HI, NAN_LO, NAN_LO, NAN_LO)
+if(do_f)
+  PR_SINGLE(0x00008000)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x00008000)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x00008000)
+PAD_TABLE;
 
 /* POS ZERO */
 
-    if	(do_s)
-    PR_SINGLE(0x00000000) 
-    if	(do_t)	
-    PR_DOUBLE(0x00000000, 0x00000000) 
-    if	(do_x)	
-    PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000000)
-    if	(do_f)
-    PR_SINGLE(0x00000000) 
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x00000000) 
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x00000000) 
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0x00000000)
+if(do_t)
+  PR_DOUBLE(0x00000000, 0x00000000)
+if(do_x)
+  PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000000)
+if(do_f)
+  PR_SINGLE(0x00000000)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x00000000)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x00000000)
+PAD_TABLE;
 
 /* NEG ZERO */
 
-    if	(do_s)
-    PR_SINGLE(0x80000000)
-    if	(do_t)	
-    PR_DOUBLE(0x80000000, 0x00000000)
-    if	(do_x)	
-    PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000000)
-    if	(do_f)
-    PR_SINGLE(0x00000000)
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x00000000)
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x00000000)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0x80000000)
+if(do_t)
+  PR_DOUBLE(0x80000000, 0x00000000)
+if(do_x)
+  PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000000)
+if(do_f)
+  PR_SINGLE(0x00000000)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x00000000)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x00000000)
+PAD_TABLE;
 
 /* POS TINY */
 
-    if	(do_s)
-    PR_SINGLE(0x00000001)
-    if	(do_t)	
-    PR_DOUBLE(0x00000000, 0x00000001)
-    if	(do_x)	
-    PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000001)
-    if	(do_f)
-    PR_SINGLE(0x00000080)
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x00000010)
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x00000080)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0x00000001)
+if(do_t)
+  PR_DOUBLE(0x00000000, 0x00000001)
+if(do_x)
+  PR_QUAD(0x00000000, 0x00000000, 0x00000000, 0x00000001)
+if(do_f)
+  PR_SINGLE(0x00000080)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x00000010)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x00000080)
+PAD_TABLE;
 
 /* NEG TINY */
 
-    if	(do_s)
-    PR_SINGLE(0x80000001)
-    if	(do_t)	
-    PR_DOUBLE(0x80000000, 0x00000001)
-    if	(do_x)	
-    PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000001)
-    if	(do_f)
-    PR_SINGLE(0x00008080)
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x00008010)
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x00008080)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0x80000001)
+if(do_t)
+  PR_DOUBLE(0x80000000, 0x00000001)
+if(do_x)
+  PR_QUAD(0x80000000, 0x00000000, 0x00000000, 0x00000001)
+if(do_f)
+  PR_SINGLE(0x00008080)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x00008010)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x00008080)
+PAD_TABLE;
 
 /* POS HUGE */
 
-    if	(do_s)
-    PR_SINGLE(0x7f7fffff)
-    if	(do_t)	
-    PR_DOUBLE(0x7fefffff, 0xffffffff) 
-    if	(do_x)	
-    PR_QUAD(0x7ffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
-    if	(do_f)
-    PR_SINGLE(0xffff7fff)
-    if	(do_g)	
-    PR_DOUBLE(0xffffffff, 0xffff7fff) 
-    if	(do_d)	
-    PR_DOUBLE(0xffffffff, 0xffff7fff) 
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0x7f7fffff)
+if(do_t)
+  PR_DOUBLE(0x7fefffff, 0xffffffff)
+if(do_x)
+  PR_QUAD(0x7ffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
+if(do_f)
+  PR_SINGLE(0xffff7fff)
+if(do_g)
+  PR_DOUBLE(0xffffffff, 0xffff7fff)
+if(do_d)
+  PR_DOUBLE(0xffffffff, 0xffff7fff)
+PAD_TABLE;
 
 /* NEG HUGE */
 
-    if	(do_s)
-    PR_SINGLE(0xff7fffff)
-    if	(do_t)	
-    PR_DOUBLE(0xffefffff, 0xffffffff)
-    if	(do_x)	
-    PR_QUAD(0xfffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
-    if	(do_f)
-    PR_SINGLE(0xffffffff)
-    if	(do_g)	
-    PR_DOUBLE(0xffffffff, 0xffffffff)
-    if	(do_d)	
-    PR_DOUBLE(0xffffffff, 0xffffffff)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0xff7fffff)
+if(do_t)
+  PR_DOUBLE(0xffefffff, 0xffffffff)
+if(do_x)
+  PR_QUAD(0xfffeffff, 0xffffffff, 0xffffffff, 0xffffffff)
+if(do_f)
+  PR_SINGLE(0xffffffff)
+if(do_g)
+  PR_DOUBLE(0xffffffff, 0xffffffff)
+if(do_d)
+  PR_DOUBLE(0xffffffff, 0xffffffff)
+PAD_TABLE;
 
 /* POS INFINITY */
 
-    if	(do_s)
-    PR_SINGLE(0x7f800000)
-    if	(do_t)	
-    PR_DOUBLE(0x7ff00000, 0x00000000)
-    if	(do_x)	
-    PR_QUAD(0x7fff0000, 0x00000000, 0x00000000, 0x00000000)
-    if	(do_f)
-    PR_SINGLE(0xffff7fff)
-    if	(do_g)	
-    PR_DOUBLE(0xffffffff, 0xffff7fff)
-    if	(do_d)	
-    PR_DOUBLE(0xffffffff, 0xffff7fff)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0x7f800000)
+if(do_t)
+  PR_DOUBLE(0x7ff00000, 0x00000000)
+if(do_x)
+  PR_QUAD(0x7fff0000, 0x00000000, 0x00000000, 0x00000000)
+if(do_f)
+  PR_SINGLE(0xffff7fff)
+if(do_g)
+  PR_DOUBLE(0xffffffff, 0xffff7fff)
+if(do_d)
+  PR_DOUBLE(0xffffffff, 0xffff7fff)
+PAD_TABLE;
 
 /* NEG INFINITY */
 
-    if	(do_s)
-    PR_SINGLE(0xff800000)
-    if	(do_t)	
-    PR_DOUBLE(0xfff00000, 0x00000000) 
-    if	(do_x)	
-    PR_QUAD(0xffff0000, 0x00000000, 0x00000000, 0x00000000)
-    if	(do_f)
-    PR_SINGLE(0xffffffff)
-    if	(do_g)	
-    PR_DOUBLE(0xffffffff, 0xffffffff) 
-    if	(do_d)	
-    PR_DOUBLE(0xffffffff, 0xffffffff) 
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0xff800000)
+if(do_t)
+  PR_DOUBLE(0xfff00000, 0x00000000)
+if(do_x)
+  PR_QUAD(0xffff0000, 0x00000000, 0x00000000, 0x00000000)
+if(do_f)
+  PR_SINGLE(0xffffffff)
+if(do_g)
+  PR_DOUBLE(0xffffffff, 0xffffffff)
+if(do_d)
+  PR_DOUBLE(0xffffffff, 0xffffffff)
+PAD_TABLE;
 
 /* POS ULP FACTOR */
 
-    if	(do_s)
-    PR_SINGLE(0x34000000) 
-    if	(do_t)	
-    PR_DOUBLE(0x3cb00000, 0x00000000)
-    if	(do_x)	
-    PR_QUAD(0x3f8f0000, 0x00000000, 0x00000000, 0x00000000)
-    if	(do_f)
-    PR_SINGLE(0x00003500) 
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x00003cd0)
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x00002500)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0x34000000)
+if(do_t)
+  PR_DOUBLE(0x3cb00000, 0x00000000)
+if(do_x)
+  PR_QUAD(0x3f8f0000, 0x00000000, 0x00000000, 0x00000000)
+if(do_f)
+  PR_SINGLE(0x00003500)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x00003cd0)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x00002500)
+PAD_TABLE;
 
 /* NEG ULP FACTOR */
 
-    if	(do_s)
-    PR_SINGLE(0xb4000000) 
-    if	(do_t)	
-    PR_DOUBLE(0xbcb00000, 0x00000000)
-    if	(do_x)	
-    PR_QUAD(0xbf8f0000, 0x00000000, 0x00000000, 0x00000000)
-    if	(do_f)
-    PR_SINGLE(0x0000b500) 
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x0000bcd0)
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x0000a500)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0xb4000000)
+if(do_t)
+  PR_DOUBLE(0xbcb00000, 0x00000000)
+if(do_x)
+  PR_QUAD(0xbf8f0000, 0x00000000, 0x00000000, 0x00000000)
+if(do_f)
+  PR_SINGLE(0x0000b500)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x0000bcd0)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x0000a500)
+PAD_TABLE;
 
 /* POS ONE */
 
-    if	(do_s)
-    PR_SINGLE(0x3f800000)
-    if	(do_t)	
-    PR_DOUBLE(0x3ff00000, 0x00000000)
-    if	(do_x)	
-    PR_QUAD(0x3fff0000, 0x00000000, 0x00000000, 0x00000000)
-    if	(do_f)
-    PR_SINGLE(0x00004080)
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x00004010)
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x00004080)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0x3f800000)
+if(do_t)
+  PR_DOUBLE(0x3ff00000, 0x00000000)
+if(do_x)
+  PR_QUAD(0x3fff0000, 0x00000000, 0x00000000, 0x00000000)
+if(do_f)
+  PR_SINGLE(0x00004080)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x00004010)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x00004080)
+PAD_TABLE;
 
 /* NEG ONE */
 
-    if	(do_s)
-    PR_SINGLE(0xbf800000)
-    if	(do_t)	
-    PR_DOUBLE(0xbff00000, 0x00000000)
-    if	(do_x)	
-    PR_QUAD(0xbfff0000, 0x00000000, 0x00000000, 0x00000000)
-    if	(do_f)
-    PR_SINGLE(0x0000c080)
-    if	(do_g)	
-    PR_DOUBLE(0x00000000, 0x0000c010)
-    if	(do_d)	
-    PR_DOUBLE(0x00000000, 0x0000c080)
-    PAD_TABLE ;
+if(do_s)
+  PR_SINGLE(0xbf800000)
+if(do_t)
+  PR_DOUBLE(0xbff00000, 0x00000000)
+if(do_x)
+  PR_QUAD(0xbfff0000, 0x00000000, 0x00000000, 0x00000000)
+if(do_f)
+  PR_SINGLE(0x0000c080)
+if(do_g)
+  PR_DOUBLE(0x00000000, 0x0000c010)
+if(do_d)
+  PR_DOUBLE(0x00000000, 0x0000c080)
+PAD_TABLE;
 
-    END_TABLE;
+END_TABLE;
 
-    printf("#else\n\n");
+printf("#else\n\n");
 
-    printf("	extern TABLE_UNION GLOBALS_TABLE[];\n");
+printf("	extern TABLE_UNION GLOBALS_TABLE[];\n");
 
-    printf("#endif\n\n");
+printf("#endif\n\n");
 
-    /*
-     * Print out defines so that other routines can access the tables
-     * Specifically, for each generic value in the globals table  
-     * generate a type independent symbolic constant (these are only used
-     * by dpml_error_codes.c).
-     */
+/*
+ * Print out defines so that other routines can access the tables
+ * Specifically, for each generic value in the globals table
+ * generate a type independent symbolic constant (these are only used
+ * by dpml_error_codes.c).
+ */
 
-#   define DEFINE_INDEX(n) printf("#define\t" STR(n) "_INDEX\t%i\n", PASTE_2(n, _INDEX))
+#define DEFINE_INDEX(n) printf("#define\t" STR(n) "_INDEX\t%i\n", PASTE_2(n, _INDEX))
 
-    DEFINE_INDEX(NAN);
-    DEFINE_INDEX(POS_ZERO);
-    DEFINE_INDEX(NEG_ZERO);
-    DEFINE_INDEX(POS_TINY);
-    DEFINE_INDEX(NEG_TINY);
-    DEFINE_INDEX(POS_HUGE);
-    DEFINE_INDEX(NEG_HUGE);
-    DEFINE_INDEX(POS_INFINITY);
-    DEFINE_INDEX(NEG_INFINITY);
-    DEFINE_INDEX(POS_ULP_FACTOR);
-    DEFINE_INDEX(NEG_ULP_FACTOR);
-    DEFINE_INDEX(POS_ONE);
-    DEFINE_INDEX(NEG_ONE);
+DEFINE_INDEX(NAN);
+DEFINE_INDEX(POS_ZERO);
+DEFINE_INDEX(NEG_ZERO);
+DEFINE_INDEX(POS_TINY);
+DEFINE_INDEX(NEG_TINY);
+DEFINE_INDEX(POS_HUGE);
+DEFINE_INDEX(NEG_HUGE);
+DEFINE_INDEX(POS_INFINITY);
+DEFINE_INDEX(NEG_INFINITY);
+DEFINE_INDEX(POS_ULP_FACTOR);
+DEFINE_INDEX(NEG_ULP_FACTOR);
+DEFINE_INDEX(POS_ONE);
+DEFINE_INDEX(NEG_ONE);
 
-
-    printf("#define\tF_TYPE_ENUM\tPASTE_3(_, F_CHAR, _TYPE)\n");
-    if ( bytes_per_table_entry == 32 )
-    printf( "#define GLOBALS_OFFSET( t, n ) ( ( t << 3 ) + ( n << 5 ) )\n" ) ;
-    else
-    printf( "#define GLOBALS_OFFSET( t, n ) ( ( t << 3 ) + ( n << 6 ) )\n" ) ;
-    printf("#define\tGLOBAL(n)\t*((F_TYPE *)"
+printf("#define\tF_TYPE_ENUM\tPASTE_3(_, F_CHAR, _TYPE)\n");
+if(bytes_per_table_entry == 32)
+  printf("#define GLOBALS_OFFSET( t, n ) ( ( t << 3 ) + ( n << 5 ) )\n");
+else
+  printf("#define GLOBALS_OFFSET( t, n ) ( ( t << 3 ) + ( n << 6 ) )\n");
+printf("#define\tGLOBAL(n)\t*((F_TYPE *)"
        " ((char *) GLOBALS_TABLE + GLOBALS_OFFSET(F_TYPE_ENUM,n) ))\n");
-    printf("#define\tGLOBAL_ADDR(t,n)\t((void *)"
+printf("#define\tGLOBAL_ADDR(t,n)\t((void *)"
        " ((char *) GLOBALS_TABLE + GLOBALS_OFFSET(t,n) ))\n");
 
-#   define DEFINE_VALUE(n) printf("#define\t" STR(n) \
-    "\tGLOBAL(" STR(n) "_INDEX)\n")
+#define DEFINE_VALUE(n) printf("#define\t" STR(n) "\tGLOBAL(" STR(n) "_INDEX)\n")
 
-    DEFINE_VALUE(NAN);
-    DEFINE_VALUE(POS_ZERO);
-    DEFINE_VALUE(NEG_ZERO);
-    DEFINE_VALUE(POS_TINY);
-    DEFINE_VALUE(NEG_TINY);
-    DEFINE_VALUE(POS_HUGE);
-    DEFINE_VALUE(NEG_HUGE);
-    DEFINE_VALUE(POS_INFINITY);
-    DEFINE_VALUE(NEG_INFINITY);
-    DEFINE_VALUE(POS_ULP_FACTOR);
-    DEFINE_VALUE(NEG_ULP_FACTOR);
-    DEFINE_VALUE(POS_ONE);
-    DEFINE_VALUE(NEG_ONE);
+DEFINE_VALUE(NAN);
+DEFINE_VALUE(POS_ZERO);
+DEFINE_VALUE(NEG_ZERO);
+DEFINE_VALUE(POS_TINY);
+DEFINE_VALUE(NEG_TINY);
+DEFINE_VALUE(POS_HUGE);
+DEFINE_VALUE(NEG_HUGE);
+DEFINE_VALUE(POS_INFINITY);
+DEFINE_VALUE(NEG_INFINITY);
+DEFINE_VALUE(POS_ULP_FACTOR);
+DEFINE_VALUE(NEG_ULP_FACTOR);
+DEFINE_VALUE(POS_ONE);
+DEFINE_VALUE(NEG_ONE);
 
-    @end_divert
-    @eval my $tableText;						\
-          my $outText    = MphocEval( GetStream( "divertText" ) );	\
-          my $defineText = Egrep( "#define", $outText, \$tableText );	\
-             $outText    = "$tableText\n\n$defineText";			\
-          my $headerText = GetHeaderText( STR(BUILD_FILE_NAME),         \
-                           "DPML global constants", __FILE__ );		\
-             print "$headerText\n\n$outText\n";
-
+@end_divert
+    @eval my $tableText;
+my $outText = MphocEval(GetStream("divertText"));
+my $defineText = Egrep("#define", $outText, \$tableText);
+$outText = "$tableText\n\n$defineText";
+my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
+                               "DPML global constants", __FILE__);
+print "$headerText\n\n$outText\n";

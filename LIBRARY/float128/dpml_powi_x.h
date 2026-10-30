@@ -32,45 +32,43 @@
 
 #include "endian.h"
 
-
-
-    static const TABLE_UNION __powi_x_table[] = { 
+static const TABLE_UNION __powi_x_table[] = {
 
     /* powi class-to-action-mapping */
 
     /* ... for n < 0, even and odd */
-    /* 000 */ DATA_1x2( 0x00514408, 0x7eba0000 ),
-    /* 008 */ DATA_1x2( 0x00714408, 0x6efa0000 ),
+    /* 000 */ DATA_1x2(0x00514408, 0x7eba0000),
+    /* 008 */ DATA_1x2(0x00714408, 0x6efa0000),
 
     /* ... for n = 0, 0^0 = 0 */
-    /* 016 */ DATA_1x2( 0x55555408, 0x55145555 ),
+    /* 016 */ DATA_1x2(0x55555408, 0x55145555),
 
     /* ... for n = 0, 0^0 = 1 */
-    /* 024 */ DATA_1x2( 0x55555408, 0x45555555 ),
+    /* 024 */ DATA_1x2(0x55555408, 0x45555555),
 
     /* ... for n = 0, 0^0 = error */
-    /* 032 */ DATA_1x2( 0x55555408, 0x3fff5555 ),
+    /* 032 */ DATA_1x2(0x55555408, 0x3fff5555),
 
     /* ... for n > 0, even and odd */
-    /* 040 */ DATA_1x2( 0x00610408, 0x26100000 ),
-    /* 048 */ DATA_1x2( 0x00410408, 0x14100000 ),
+    /* 040 */ DATA_1x2(0x00610408, 0x26100000),
+    /* 048 */ DATA_1x2(0x00410408, 0x14100000),
 
     /* Data for the above mappings */
-    /* 056 */ DATA_1x2( 0x00000000, 0x00000000 ),
-    /* 064 */ DATA_1x2( 0x00000057, 0x00000000 ),
-    /* 072 */ DATA_1x2( 0x00000058, 0x00000000 ),
-    /* 080 */ DATA_1x2( 0x00000000, 0x00000000 ),
-    /* 088 */ DATA_1x2( 0x00000001, 0x00000000 ),
-    /* 096 */ DATA_1x2( 0x00000009, 0x00000000 ),
-    /* 104 */ DATA_1x2( 0x00000056, 0x00000000 ),
-    };
+    /* 056 */ DATA_1x2(0x00000000, 0x00000000),
+    /* 064 */ DATA_1x2(0x00000057, 0x00000000),
+    /* 072 */ DATA_1x2(0x00000058, 0x00000000),
+    /* 080 */ DATA_1x2(0x00000000, 0x00000000),
+    /* 088 */ DATA_1x2(0x00000001, 0x00000000),
+    /* 096 */ DATA_1x2(0x00000009, 0x00000000),
+    /* 104 */ DATA_1x2(0x00000056, 0x00000000),
+};
 
-#define	POWI_CLASS_TO_ACTION_MAP	((U_WORD const *) ((char *) __powi_x_table + 0))
-#define NEG_EXPONENT_INDEX			0
-#define ZERO_EXPONENT_RETURN_0_INDEX		2
-#define ZERO_EXPONENT_RETURN_1_INDEX		3
-#define ZERO_EXPONENT_RETURN_ERROR_INDEX	4
-#define POS_EXPONENT_INDEX			5
-#define EXPONENT_INDEX_FIELD_WIDTH		3
+#define POWI_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)__powi_x_table + 0))
+#define NEG_EXPONENT_INDEX 0
+#define ZERO_EXPONENT_RETURN_0_INDEX 2
+#define ZERO_EXPONENT_RETURN_1_INDEX 3
+#define ZERO_EXPONENT_RETURN_ERROR_INDEX 4
+#define POS_EXPONENT_INDEX 5
+#define EXPONENT_INDEX_FIELD_WIDTH 3
 
 #endif

@@ -3,7 +3,7 @@
 
 #include "decimal.h"
 
-Decimal128 example_bid128_mul (Decimal128 x, Decimal128 y,
-                               _IDEC_round rnd_mode, _IDEC_flags *fpsf);
+Decimal128 example_bid128_mul(Decimal128 x, Decimal128 y,
+                              _IDEC_round rnd_mode, _IDEC_flags *fpsf);
 
 #endif

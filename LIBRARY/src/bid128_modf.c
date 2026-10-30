@@ -29,50 +29,39 @@
 
 #include "bid_internal.h"
 
-
-
 #if DECIMAL_CALL_BY_REFERENCE
-void
-bid128_modf (BID_UINT128 * pres, BID_UINT128 * px,
-           BID_UINT128 * pint _EXC_FLAGS_PARAM
-               _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+void bid128_modf(BID_UINT128 *pres, BID_UINT128 *px,
+                 BID_UINT128 *pint _EXC_FLAGS_PARAM
+                     _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT128 x = *px;
 #else
 DFP_WRAPFN_DFP_DFP_POINTER(128, bid128_modf, 128, 128)
 BID_UINT128
-bid128_modf (BID_UINT128 x, BID_UINT128 *pint _EXC_FLAGS_PARAM
-               _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+bid128_modf(BID_UINT128 x, BID_UINT128 *pint _EXC_FLAGS_PARAM
+                               _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
 
-BID_UINT128 res, xi;
+  BID_UINT128 res, xi;
 #if !DECIMAL_GLOBAL_ROUNDING
   _IDEC_round rnd_mode = 0;
-#else 
-  rnd_mode=0;
+#else
+  rnd_mode = 0;
 #endif
 
-    BIDECIMAL_CALL1_NORND(bid128_round_integral_zero, xi, x);
+  BIDECIMAL_CALL1_NORND(bid128_round_integral_zero, xi, x);
 
-    // check for Infinity
-    if((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull) {
-        res.w[BID_HIGH_128W]= (x.w[BID_HIGH_128W] & 0x8000000000000000ull)|0x5ffe000000000000ull;
-        res.w[BID_LOW_128W] = 0;
-    }
-    else {
-        BIDECIMAL_CALL2 (bid128_sub, res, x, xi);
-    }
+  // check for Infinity
+  if((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull) {
+    res.w[BID_HIGH_128W] = (x.w[BID_HIGH_128W] & 0x8000000000000000ull) | 0x5ffe000000000000ull;
+    res.w[BID_LOW_128W] = 0;
+  } else {
+    BIDECIMAL_CALL2(bid128_sub, res, x, xi);
+  }
 
-    xi.w[BID_HIGH_128W] |=  (x.w[BID_HIGH_128W] & 0x8000000000000000ull);
-    res.w[BID_HIGH_128W] |=  (x.w[BID_HIGH_128W] & 0x8000000000000000ull);
+  xi.w[BID_HIGH_128W] |= (x.w[BID_HIGH_128W] & 0x8000000000000000ull);
+  res.w[BID_HIGH_128W] |= (x.w[BID_HIGH_128W] & 0x8000000000000000ull);
 
+  *pint = (xi);
 
-    *pint = (xi);
-
-    BID_RETURN (res);
-
+  BID_RETURN(res);
 }
-
-
-
-
-

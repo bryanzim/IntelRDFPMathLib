@@ -31,44 +31,42 @@
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_log, BID_UINT32, x)
 
-  BID_UINT32 res;
-  double xd, rd;
-  int z;
+BID_UINT32 res;
+double xd, rd;
+int z;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-  if ((x & NAN_MASK32) == NAN_MASK32)
-   {
-     #ifdef BID_SET_STATUS_FLAGS
-     if ((x & SNAN_MASK32) == SNAN_MASK32)
-        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-     #endif
-     res = x & 0xfc0ffffful;
-     if ((res & 0x000ffffful) > 999999ul) res &= ~0x000ffffful;
-     BID_RETURN(res);
-   }
+if((x & NAN_MASK32) == NAN_MASK32) {
+#ifdef BID_SET_STATUS_FLAGS
+  if((x & SNAN_MASK32) == SNAN_MASK32)
+    __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+  res = x & 0xfc0ffffful;
+  if((res & 0x000ffffful) > 999999ul)
+    res &= ~0x000ffffful;
+  BID_RETURN(res);
+}
 
-  BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isZero, z, x);
-  if (z)
-   { // -Infinite and Divide by Zero according C99
-     res = 0xf8000000U;
-     #ifdef BID_SET_STATUS_FLAGS
-     __set_status_flags (pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
-     #endif
-     BID_RETURN (res);
-   }
+BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isZero, z, x);
+if(z) { // -Infinite and Divide by Zero according C99
+  res = 0xf8000000U;
+#ifdef BID_SET_STATUS_FLAGS
+  __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
+#endif
+  BID_RETURN(res);
+}
 
-  if (x & MASK_SIGN32)
-   { // QNaN Indefinite
-     res = 0x7c000000U;
-     #ifdef BID_SET_STATUS_FLAGS
-     __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-     #endif
-     BID_RETURN (res);
-   }
+if(x & MASK_SIGN32) { // QNaN Indefinite
+  res = 0x7c000000U;
+#ifdef BID_SET_STATUS_FLAGS
+  __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+  BID_RETURN(res);
+}
 
-  BIDECIMAL_CALL1 (bid32_to_binary64, xd, x);
-  rd = log(xd);
-  BIDECIMAL_CALL1 (binary64_to_bid32, res, rd);
-  BID_RETURN (res);
+BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
+rd = log(xd);
+BIDECIMAL_CALL1(binary64_to_bid32, res, rd);
+BID_RETURN(res);
 }

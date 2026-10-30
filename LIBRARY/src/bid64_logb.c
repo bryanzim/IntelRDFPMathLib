@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -29,36 +29,37 @@
 
 #include "bid_internal.h"
 
-#define MAX_FORMAT_DIGITS     16
+#define MAX_FORMAT_DIGITS 16
 #define DECIMAL_EXPONENT_BIAS 398
 
 BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid64_ilogb, BID_UINT64, x)
 
-  BID_UINT64 sign_x, coefficient_x;
-  int_double dx;
-  int exponent_x, bin_expon_cx, digits, res;
+BID_UINT64 sign_x, coefficient_x;
+int_double dx;
+int exponent_x, bin_expon_cx, digits, res;
 
-  // unpack arguments, check for NaN or Infinity
-  if (!unpack_BID64 (&sign_x, &exponent_x, &coefficient_x, x)) {
-    // x is Inf. or NaN
+// unpack arguments, check for NaN or Infinity
+if(!unpack_BID64(&sign_x, &exponent_x, &coefficient_x, x)) {
+  // x is Inf. or NaN
 #ifdef BID_SET_STATUS_FLAGS
-      __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+  __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
- 	 res = ((x & 0x7c00000000000000ull) == 0x7800000000000000ull)
-       ? 0x7fffffffU : (int)0x80000000U;
-     BID_RETURN (res);
-  }
-  // find number of digits in coefficient
-  if (coefficient_x >= 1000000000000000ull) {
-    digits = 16;
-  } else {
-    dx.d = (double)coefficient_x;   // exact conversion;
-    bin_expon_cx = (int)(dx.i >> 52) - 1023;
-    digits = bid_estimate_decimal_digits[bin_expon_cx];
-    if (coefficient_x >= bid_power10_table_128[digits].w[0U])
-      digits++;
-  }
-  exponent_x = exponent_x - DECIMAL_EXPONENT_BIAS + digits - 1;
+  res = ((x & 0x7c00000000000000ull) == 0x7800000000000000ull)
+            ? 0x7fffffffU
+            : (int)0x80000000U;
+  BID_RETURN(res);
+}
+// find number of digits in coefficient
+if(coefficient_x >= 1000000000000000ull) {
+  digits = 16;
+} else {
+  dx.d = (double)coefficient_x; // exact conversion;
+  bin_expon_cx = (int)(dx.i >> 52) - 1023;
+  digits = bid_estimate_decimal_digits[bin_expon_cx];
+  if(coefficient_x >= bid_power10_table_128[digits].w[0U])
+    digits++;
+}
+exponent_x = exponent_x - DECIMAL_EXPONENT_BIAS + digits - 1;
 
-  BID_RETURN (exponent_x);
+BID_RETURN(exponent_x);
 }

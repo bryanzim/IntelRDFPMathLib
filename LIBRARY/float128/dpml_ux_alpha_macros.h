@@ -30,6 +30,6 @@
 #ifndef DPML_UX_ALPHA_MACROS_H
 #define DPML_UX_ALPHA_MACROS_H
 
-#define EXTENDED_DIGIT_MULTIPLY(a,b,h,l) ((l) = (a)*(b), UMULH(a,b,h))
+#define EXTENDED_DIGIT_MULTIPLY(a, b, h, l) ((l) = (a) * (b), UMULH(a, b, h))
 
 #endif

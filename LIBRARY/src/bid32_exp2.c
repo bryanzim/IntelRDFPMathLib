@@ -33,55 +33,58 @@ BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_exp2, BID_UINT32, x)
 
 // Declare local variables
 
-  BID_UINT32 res;
-  double xd, yd;
-  int z;
+BID_UINT32 res;
+double xd, yd;
+int z;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-  if ((x & NAN_MASK32) == NAN_MASK32)
-   {
-     #ifdef BID_SET_STATUS_FLAGS
-     if ((x & SNAN_MASK32) == SNAN_MASK32)
-        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-     #endif
-     res = x & 0xfc0ffffful;
-     if ((res & 0x000ffffful) > 999999ul) res &= ~0x000ffffful;
-     BID_RETURN(res);
-   }
-
-  BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isZero, z, x);
-  if (z) {
-          // 1 according C99
-          res = 0x32800001U;
-     BID_RETURN (res);
-  }
-  BIDECIMAL_CALL1_NORND_NOSTAT (bid32_isInf, z, x);
-  if (z) {
-          // 0 or Inf according C99
-          if (x & MASK_SIGN32) {
-                  res = 0x32800000U;
-          } else {
-                  res = 0x78000000U;
-          }
+if((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-                *pfpsf = 0;
+  if((x & SNAN_MASK32) == SNAN_MASK32)
+    __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-           BID_RETURN (res);
+  res = x & 0xfc0ffffful;
+  if((res & 0x000ffffful) > 999999ul)
+    res &= ~0x000ffffful;
+  BID_RETURN(res);
+}
+
+BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isZero, z, x);
+if(z) {
+  // 1 according C99
+  res = 0x32800001U;
+  BID_RETURN(res);
+}
+BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isInf, z, x);
+if(z) {
+  // 0 or Inf according C99
+  if(x & MASK_SIGN32) {
+    res = 0x32800000U;
+  } else {
+    res = 0x78000000U;
   }
+#ifdef BID_SET_STATUS_FLAGS
+  *pfpsf = 0;
+#endif
+  BID_RETURN(res);
+}
 
 // Otherwise just do the operation "naively".
 // We inherit the special cases from the binary function,
 // but deal with overflowing finite inputs carefully so
 // things work in directed rounding modes.
 
-  BIDECIMAL_CALL1(bid32_to_binary64,xd,x);
+BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
 
-  if (xd > 1000.0) yd = 1.0e200;
-  else if (xd < -1000.0) yd = 1.0e-200;
-  else  yd = exp2(xd);
+if(xd > 1000.0)
+  yd = 1.0e200;
+else if(xd < -1000.0)
+  yd = 1.0e-200;
+else
+  yd = exp2(xd);
 
-  BIDECIMAL_CALL1(binary64_to_bid32,res,yd);
+BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
 
-  BID_RETURN (res);
+BID_RETURN(res);
 }

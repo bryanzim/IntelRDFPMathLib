@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -29,53 +29,52 @@
 
 #include "bid_trans.h"
 
-BID128_FUNCTION_ARG1 (bid128_cbrt, x)
+BID128_FUNCTION_ARG1(bid128_cbrt, x)
 
-BID_UINT128 CX, res, tmp;
-BID_UINT64  sign_x;
+BID_UINT128 cx, res, tmp;
+BID_UINT64 sign_x;
 int exponent_x, k, j, iexpon;
 BID_F128_TYPE rq, xq;
 
-  // unpack arguments, check for NaN or Infinity
-    if (!unpack_BID128_value_BLE (&sign_x, &exponent_x, &CX, x)) {
-    // test if x is NaN
-if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+// unpack arguments, check for NaN or Infinity
+if(!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
+  // test if x is NaN
+  if((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-  if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull)	// sNaN
-    __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
+    if((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+      __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-    res.w[BID_HIGH_128W] = (CX.w[BID_HIGH_128W]) & QUIET_MASK64;
-    res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
-    BID_RETURN (res);
-}
-    // x is Infinity?
-if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
-      res.w[BID_HIGH_128W] = sign_x | 0x7800000000000000ull;
-      res.w[BID_LOW_128W] = 0;
-    BID_RETURN (res);
+    res.w[BID_HIGH_128W] = (cx.w[BID_HIGH_128W]) & QUIET_MASK64;
+    res.w[BID_LOW_128W] = cx.w[BID_LOW_128W];
+    BID_RETURN(res);
   }
-    // x is 0
-     res.w[BID_HIGH_128W] = sign_x | CX.w[BID_HIGH_128W];
-     res.w[BID_LOW_128W] = CX.w[BID_LOW_128W];
-     BID_RETURN (res);
+  // x is Infinity?
+  if((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+    res.w[BID_HIGH_128W] = sign_x | 0x7800000000000000ull;
+    res.w[BID_LOW_128W] = 0;
+    BID_RETURN(res);
+  }
+  // x is 0
+  res.w[BID_HIGH_128W] = sign_x | cx.w[BID_HIGH_128W];
+  res.w[BID_LOW_128W] = cx.w[BID_LOW_128W];
+  BID_RETURN(res);
 }
 
-    // get exponent/3
-    iexpon = exponent_x+1;
-    k = ((int)iexpon * (int)0x5556U) >> 16;
-    // exponent%3
-    j = iexpon - 3*k;
-    // eliminate bias from k
-    k -= ((1+DECIMAL_EXPONENT_BIAS_128)/3);
+// get exponent/3
+iexpon = exponent_x + 1;
+k = ((int)iexpon * (int)0x5556U) >> 16;
+// exponent%3
+j = iexpon - 3 * k;
+// eliminate bias from k
+k -= ((1 + DECIMAL_EXPONENT_BIAS_128) / 3);
 
-    bid_get_BID128_very_fast_BLE (&tmp, sign_x, j+DECIMAL_EXPONENT_BIAS_128, CX);
+bid_get_BID128_very_fast_BLE(&tmp, sign_x, j + DECIMAL_EXPONENT_BIAS_128, cx);
 
-    BIDECIMAL_CALL1 (bid128_to_binary128, xq, tmp);
-    __bid_f128_cbrt(rq, xq);
-    BIDECIMAL_CALL1 (binary128_to_bid128, res, rq);
+BIDECIMAL_CALL1(bid128_to_binary128, xq, tmp);
+__bid_f128_cbrt(rq, xq);
+BIDECIMAL_CALL1(binary128_to_bid128, res, rq);
 
-    res.w[BID_HIGH_128W] += (BID_UINT64)(((BID_SINT64) k) << 49);
+res.w[BID_HIGH_128W] += (BID_UINT64)(((BID_SINT64)k) << 49);
 
-    BID_RETURN (res);
+BID_RETURN(res);
 }
-

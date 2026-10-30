@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -39,18 +39,17 @@
 
 BID_TYPE0_FUNCTION_ARGTYPE1_NORND(int, bid32_quantexp, BID_UINT32, x)
 
-  int res; // quantum
+int res; // quantum
 
-  if (((x & MASK_INF32) == MASK_INF32) || ((x & MASK_NAN32) == MASK_NAN32)) {
-    // set invalid flag 
-    *pfpsf |= BID_INVALID_EXCEPTION;
-    res = (int)0x80000000U;
-    BID_RETURN (res);
-  }
-  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32)
-    res = ((x >> 21) & 0xffU) - 101;
-  else
-    res = ((x >> 23) & 0xffU) - 101;
-  BID_RETURN (res);
+if(((x & MASK_INF32) == MASK_INF32) || ((x & MASK_NAN32) == MASK_NAN32)) {
+  // set invalid flag
+  *pfpsf |= BID_INVALID_EXCEPTION;
+  res = (int)0x80000000U;
+  BID_RETURN(res);
 }
-
+if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32)
+  res = ((x >> 21) & 0xffU) - 101;
+else
+  res = ((x >> 23) & 0xffU) - 101;
+BID_RETURN(res);
+}

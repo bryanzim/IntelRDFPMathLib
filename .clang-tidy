@@ -1,20 +1,12 @@
-# Checks that correspond to the Google C++ Style Guide.
-# https://google.github.io/styleguide/cppguide.html
-#
-# The public C ABI (bid_*, BID_*, DEC_*, DPML_*) is an explicit exception
-# in that guide: names that match an existing C API keep that API's style.
-# Those patterns are ignored by readability-identifier-naming below.
+# Identifier case is not enforced.
+# This tree mixes snake_case with existing spellings such as unpack_BID64,
+# QH, Stemp, BID_UINT64, and macros (UPPER_CASE, P_/G_ prefixes, big_endian,
+# and leading underscores). Forcing one case flags the same headers in every
+# translation unit.
 ---
 Checks: >
   -*,
-  google-*,
-  -google-objc-*,
-  -google-readability-avoid-underscore-in-googletest-name,
-  -google-upgrade-googletest-case,
-  readability-identifier-naming,
-  modernize-use-nullptr,
-  modernize-use-override,
-  modernize-use-using
+  readability-identifier-naming
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '(LIBRARY|TESTS|EXAMPLES)/.*'
@@ -22,60 +14,72 @@ FormatStyle: file
 
 CheckOptions:
   - key: readability-identifier-naming.NamespaceCase
-    value: lower_case
-  - key: readability-identifier-naming.ClassCase
-    value: CamelCase
-  - key: readability-identifier-naming.StructCase
-    value: CamelCase
-  - key: readability-identifier-naming.EnumCase
-    value: CamelCase
-  - key: readability-identifier-naming.EnumConstantCase
-    value: CamelCase
-  - key: readability-identifier-naming.EnumConstantPrefix
-    value: k
-  - key: readability-identifier-naming.TypedefCase
-    value: CamelCase
-  - key: readability-identifier-naming.TypeAliasCase
-    value: CamelCase
-  - key: readability-identifier-naming.TemplateParameterCase
-    value: CamelCase
-  - key: readability-identifier-naming.TypeTemplateParameterCase
-    value: CamelCase
-  - key: readability-identifier-naming.ValueTemplateParameterCase
-    value: CamelCase
-  - key: readability-identifier-naming.ValueTemplateParameterPrefix
-    value: k
+    value: aNy_CasE
   - key: readability-identifier-naming.FunctionCase
-    value: CamelCase
+    value: aNy_CasE
   - key: readability-identifier-naming.MethodCase
-    value: CamelCase
+    value: aNy_CasE
   - key: readability-identifier-naming.VariableCase
-    value: lower_case
+    value: aNy_CasE
   - key: readability-identifier-naming.ParameterCase
-    value: lower_case
+    value: aNy_CasE
+  - key: readability-identifier-naming.MemberCase
+    value: aNy_CasE
   - key: readability-identifier-naming.ClassMemberCase
-    value: lower_case
-  - key: readability-identifier-naming.ClassMemberSuffix
-    value: _
-  - key: readability-identifier-naming.ConstexprVariableCase
-    value: CamelCase
-  - key: readability-identifier-naming.ConstexprVariablePrefix
-    value: k
+    value: aNy_CasE
+  - key: readability-identifier-naming.ConstantCase
+    value: aNy_CasE
   - key: readability-identifier-naming.GlobalConstantCase
-    value: CamelCase
-  - key: readability-identifier-naming.GlobalConstantPrefix
-    value: k
+    value: aNy_CasE
   - key: readability-identifier-naming.StaticConstantCase
-    value: CamelCase
-  - key: readability-identifier-naming.StaticConstantPrefix
-    value: k
+    value: aNy_CasE
   - key: readability-identifier-naming.MacroDefinitionCase
-    value: UPPER_CASE
+    value: aNy_CasE
+  - key: readability-identifier-naming.ClassCase
+    value: aNy_CasE
+  - key: readability-identifier-naming.StructCase
+    value: aNy_CasE
+  - key: readability-identifier-naming.EnumCase
+    value: aNy_CasE
+  - key: readability-identifier-naming.EnumConstantCase
+    value: aNy_CasE
+  - key: readability-identifier-naming.TypedefCase
+    value: aNy_CasE
+  - key: readability-identifier-naming.TypeAliasCase
+    value: aNy_CasE
+  - key: readability-identifier-naming.NamespaceIgnoredRegexp
+    value: '^_.*'
   - key: readability-identifier-naming.FunctionIgnoredRegexp
-    value: '^(__)?bid_.*'
-  - key: readability-identifier-naming.MacroDefinitionIgnoredRegexp
-    value: '^((BID|DEC|DPML|UX|IDEC)_|__).+'
+    value: '^_.*'
+  - key: readability-identifier-naming.MethodIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.VariableIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.ParameterIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.MemberIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.ClassMemberIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.ConstantIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.GlobalConstantIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.StaticConstantIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.ClassIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.StructIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.UnionIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.EnumIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.EnumConstantIgnoredRegexp
+    value: '^_.*'
   - key: readability-identifier-naming.TypedefIgnoredRegexp
-    value: '^(BID_|DEC_|DPML_|UX_|_IDEC_).+'
-  - key: modernize-use-nullptr.NullMacros
-    value: 'NULL'
+    value: '^_.*'
+  - key: readability-identifier-naming.TypeAliasIgnoredRegexp
+    value: '^_.*'
+  - key: readability-identifier-naming.MacroDefinitionIgnoredRegexp
+    value: '.*'

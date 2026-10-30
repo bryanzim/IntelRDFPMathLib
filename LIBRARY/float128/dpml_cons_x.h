@@ -32,39 +32,37 @@
 
 #include "endian.h"
 
-
-
 #if INSTANTIATE_DEFINES
 
-#   define ZERO			0
-#   define ONE			1
-#   define TWO			2
-#   define PI			3
-#   define PI_OVER_2		4
-#   define PI_OVER_4			5
-#   define THREE_PI_OVER_4		6
-#   define NINETY		7
-#   define ONE_EIGHTY		8
-#   define INF			9
-#   define LAST_CONS_INDEX	10
+#define ZERO 0
+#define ONE 1
+#define TWO 2
+#define PI 3
+#define PI_OVER_2 4
+#define PI_OVER_4 5
+#define THREE_PI_OVER_4 6
+#define NINETY 7
+#define ONE_EIGHTY 8
+#define INF 9
+#define LAST_CONS_INDEX 10
 
 #endif
 
 #if INSTANTIATE_TABLE
 
-    const TABLE_UNION PACKED_CONSTANT_TABLE[] = {
+const TABLE_UNION PACKED_CONSTANT_TABLE[] = {
 
-    /* 00 */ DATA_2x2( 0x00000000, 0x00000000, 0x00000000, 0x00000000 ),
-    /* 01 */ DATA_4R( 0x00000000, 0x00000000, 0x00000000, 0x3fff0000 ),
-    /* 02 */ DATA_4R( 0x00000000, 0x00000000, 0x00000000, 0x40000000 ),
-    /* 03 */ DATA_4R( 0xc51701b8, 0x8469898c, 0xb54442d1, 0x4000921f ),
-    /* 04 */ DATA_4R( 0xc51701b8, 0x8469898c, 0xb54442d1, 0x3fff921f ),
-    /* 05 */ DATA_4R( 0xc51701b8, 0x8469898c, 0xb54442d1, 0x3ffe921f ),
-    /* 06 */ DATA_4R( 0x93d1414a, 0x234f2729, 0xc7f3321d, 0x40002d97 ),
-    /* 07 */ DATA_4R( 0x00000000, 0x00000000, 0x00000000, 0x40056800 ),
-    /* 08 */ DATA_4R( 0x00000000, 0x00000000, 0x00000000, 0x40066800 ),
-    /* 09 */ DATA_4R( 0x00000000, 0x00000000, 0x00000000, 0x7fff0000 ),
-    };
+    /* 00 */ DATA_2x2(0x00000000, 0x00000000, 0x00000000, 0x00000000),
+    /* 01 */ DATA_4R(0x00000000, 0x00000000, 0x00000000, 0x3fff0000),
+    /* 02 */ DATA_4R(0x00000000, 0x00000000, 0x00000000, 0x40000000),
+    /* 03 */ DATA_4R(0xc51701b8, 0x8469898c, 0xb54442d1, 0x4000921f),
+    /* 04 */ DATA_4R(0xc51701b8, 0x8469898c, 0xb54442d1, 0x3fff921f),
+    /* 05 */ DATA_4R(0xc51701b8, 0x8469898c, 0xb54442d1, 0x3ffe921f),
+    /* 06 */ DATA_4R(0x93d1414a, 0x234f2729, 0xc7f3321d, 0x40002d97),
+    /* 07 */ DATA_4R(0x00000000, 0x00000000, 0x00000000, 0x40056800),
+    /* 08 */ DATA_4R(0x00000000, 0x00000000, 0x00000000, 0x40066800),
+    /* 09 */ DATA_4R(0x00000000, 0x00000000, 0x00000000, 0x7fff0000),
+};
 
 #endif
 

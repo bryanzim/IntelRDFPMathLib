@@ -29,58 +29,56 @@
 
 #include "bid_trans.h"
 
-static BID_UINT64 BID64_MINUS_HALF = 0xb1a0000000000005ull;
-static BID_UINT64 BID64_1 = 0x31c0000000000001ull;
-static BID_UINT64 BID64_NAN = 0x7c00000000000000ull;
+static BID_UINT64 bi_d64_minus_half = 0xb1a0000000000005ull;
+static BID_UINT64 bi_d64_1 = 0x31c0000000000001ull;
+static BID_UINT64 bi_d64_nan = 0x7c00000000000000ull;
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_log1p, BID_UINT64, x)
 
 // Declare local variables
 
-  BID_UINT64 res, y;
-  int sm;
-  BID_F80_TYPE xd, yd;
+BID_UINT64 res, y;
+int sm;
+BID_F80_TYPE xd, yd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-  if ((x & NAN_MASK64) == NAN_MASK64)
-   {
-     #ifdef BID_SET_STATUS_FLAGS
-     if ((x & SNAN_MASK64) == SNAN_MASK64)
-        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-     #endif
-     res = x & 0xfc03ffffffffffffull;
-     if ((res & 0x0003ffffffffffffull) > 999999999999999ull)
-        res &= ~0x0003ffffffffffffull;
-     BID_RETURN(res);
-   }
+if((x & NAN_MASK64) == NAN_MASK64) {
+#ifdef BID_SET_STATUS_FLAGS
+  if((x & SNAN_MASK64) == SNAN_MASK64)
+    __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+  res = x & 0xfc03ffffffffffffull;
+  if((res & 0x0003ffffffffffffull) > 999999999999999ull)
+    res &= ~0x0003ffffffffffffull;
+  BID_RETURN(res);
+}
 
 // If x < -1/2 we have condition issues with the naive computation.
 // Instead, do y = 1 + x exactly in decimal and call usual log function.
 
-  BIDECIMAL_CALL2_NORND(bid64_quiet_less,sm,x,BID64_MINUS_HALF);
-  if (sm)
-   { BIDECIMAL_CALL2(bid64_add,y,x,BID64_1);
-     if ((y & SIGNMASK64) == SIGNMASK64)
-      {
-        #ifdef BID_SET_STATUS_FLAGS
-        __set_status_flags (pfpsf, BID_INVALID_EXCEPTION);
-        #endif
-        BID_RETURN(BID64_NAN);
-      }
-     BIDECIMAL_CALL1(bid64_to_binary80,xd,y);
-     __bid_f80_log( yd, xd );
-     BIDECIMAL_CALL1(binary80_to_bid64,res,yd);
-     BID_RETURN(res);
-   }
+BIDECIMAL_CALL2_NORND(bid64_quiet_less, sm, x, bi_d64_minus_half);
+if(sm) {
+  BIDECIMAL_CALL2(bid64_add, y, x, bi_d64_1);
+  if((y & SIGNMASK64) == SIGNMASK64) {
+#ifdef BID_SET_STATUS_FLAGS
+    __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+#endif
+    BID_RETURN(bi_d64_nan);
+  }
+  BIDECIMAL_CALL1(bid64_to_binary80, xd, y);
+  __bid_f80_log(yd, xd);
+  BIDECIMAL_CALL1(binary80_to_bid64, res, yd);
+  BID_RETURN(res);
+}
 
 // Otherwise just do the operation "naively".
 // Inherit all other special cases (infinity, negative,...) from binary.
 
-  else
-   { BIDECIMAL_CALL1(bid64_to_binary80,xd,x);
-     __bid_f80_log1p( yd, xd );
-     BIDECIMAL_CALL1(binary80_to_bid64,res,yd);
-     BID_RETURN (res);
-   }
+else {
+  BIDECIMAL_CALL1(bid64_to_binary80, xd, x);
+  __bid_f80_log1p(yd, xd);
+  BIDECIMAL_CALL1(binary80_to_bid64, res, yd);
+  BID_RETURN(res);
+}
 }

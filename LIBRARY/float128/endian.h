@@ -32,28 +32,27 @@
 
 #include "architecture.h"
 
-#define big_endian	1
-#define little_endian	0
+#define big_endian 1
+#define little_endian 0
 
 #ifndef ENDIANESS
-#   error  ENDIANESS is not defined
+#error ENDIANESS is not defined
 #else
-#   if (ENDIANESS == big_endian)
-#       define DATA_1x2(a,b)              (unsigned)(b), (unsigned)(a)
-#       define DATA_2x2(a,b,c,d)          (unsigned)(b), (unsigned)(a), (unsigned)(d), (unsigned)(c)
-#       define DATA_4(a,b,c,d)            (unsigned)(b), (unsigned)(a), (unsigned)(d), (unsigned)(c)
-#       define DATA_4R(a,b,c,d)           (unsigned)(d), (unsigned)(c), (unsigned)(b), (unsigned)(a)
-#       define DATA_3x2(a,b,c,d,e,f)      (unsigned)(b), (unsigned)(a), (unsigned)(d), (unsigned)(c), (unsigned)(f), (unsigned)(e)
-#       define DATA_4x2(a,b,c,d,e,f,g,h)  (unsigned)(b), (unsigned)(a), (unsigned)(d), (unsigned)(c), (unsigned)(f), (unsigned)(e), (unsigned)(h), (unsigned)(g)
-#   else
-#       define DATA_1x2(a,b)              (unsigned)(a), (unsigned)(b)
-#       define DATA_2x2(a,b,c,d)          (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d)
-#       define DATA_4(a,b,c,d)            (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d)
-#       define DATA_4R(a,b,c,d)           (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d)
-#       define DATA_3x2(a,b,c,d,e,f)      (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d), (unsigned)(e), (unsigned)(f)
-#       define DATA_4x2(a,b,c,d,e,f,g,h)  (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d), (unsigned)(e), (unsigned)(f), (unsigned)(g), (unsigned)(h)
-#   endif
+#if (ENDIANESS == big_endian)
+#define DATA_1x2(a, b) (unsigned)(b), (unsigned)(a)
+#define DATA_2x2(a, b, c, d) (unsigned)(b), (unsigned)(a), (unsigned)(d), (unsigned)(c)
+#define DATA_4(a, b, c, d) (unsigned)(b), (unsigned)(a), (unsigned)(d), (unsigned)(c)
+#define DATA_4R(a, b, c, d) (unsigned)(d), (unsigned)(c), (unsigned)(b), (unsigned)(a)
+#define DATA_3x2(a, b, c, d, e, f) (unsigned)(b), (unsigned)(a), (unsigned)(d), (unsigned)(c), (unsigned)(f), (unsigned)(e)
+#define DATA_4x2(a, b, c, d, e, f, g, h) (unsigned)(b), (unsigned)(a), (unsigned)(d), (unsigned)(c), (unsigned)(f), (unsigned)(e), (unsigned)(h), (unsigned)(g)
+#else
+#define DATA_1x2(a, b) (unsigned)(a), (unsigned)(b)
+#define DATA_2x2(a, b, c, d) (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d)
+#define DATA_4(a, b, c, d) (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d)
+#define DATA_4R(a, b, c, d) (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d)
+#define DATA_3x2(a, b, c, d, e, f) (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d), (unsigned)(e), (unsigned)(f)
+#define DATA_4x2(a, b, c, d, e, f, g, h) (unsigned)(a), (unsigned)(b), (unsigned)(c), (unsigned)(d), (unsigned)(e), (unsigned)(f), (unsigned)(g), (unsigned)(h)
+#endif
 #endif
 
-#endif  /* ENDIAN_H */
-
+#endif /* ENDIAN_H */

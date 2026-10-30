@@ -2,16 +2,16 @@
   Copyright (c) 2007-2025, Intel Corp.
   All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without 
+  Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice, 
+    * Redistributions of source code must retain the above copyright notice,
       this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright 
-      notice, this list of conditions and the following disclaimer in the 
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
       documentation and/or other materials provided with the distribution.
-    * Neither the name of Intel Corporation nor the names of its contributors 
-      may be used to endorse or promote products derived from this software 
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -40,17 +40,17 @@
 
 BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(long long int, bid128_llquantexp, x)
 
-  long long int res; // quantum
+long long int res; // quantum
 
-  if ((x.w[1U] & MASK_SPECIAL) == MASK_SPECIAL) {
-    // set invalid flag 
-    *pfpsf |= BID_INVALID_EXCEPTION;
-    res = (long long int)0x8000000000000000ULL;
-    BID_RETURN_VAL (res);
-  }
-  if ((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS)
-    res = (long long int)((x.w[1U] >> 47) & 0x3fffU) - 6176;
-  else
-    res = (long long int)((x.w[1U] >> 49) & 0x3fffU) - 6176;
-  BID_RETURN_VAL (res);
+if((x.w[1U] & MASK_SPECIAL) == MASK_SPECIAL) {
+  // set invalid flag
+  *pfpsf |= BID_INVALID_EXCEPTION;
+  res = (long long int)0x8000000000000000ULL;
+  BID_RETURN_VAL(res);
+}
+if((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS)
+  res = (long long int)((x.w[1U] >> 47) & 0x3fffU) - 6176;
+else
+  res = (long long int)((x.w[1U] >> 49) & 0x3fffU) - 6176;
+BID_RETURN_VAL(res);
 }

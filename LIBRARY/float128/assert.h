@@ -30,22 +30,20 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-
 #if (defined(DPML_DEBUG) && DPML_DEBUG)
 
-#define ASSERT(x) { \
-    if (!(x)) { \
-        printf("Assertion %s failed: file %s line %d\n", \
-            STR(x), __FILE__, __LINE__); \
-    } \
-}
+#define ASSERT(x)                                      \
+  {                                                    \
+    if(!(x)) {                                         \
+      printf("Assertion %s failed: file %s line %d\n", \
+             STR(x), __FILE__, __LINE__);              \
+    }                                                  \
+  }
 
 #else
 
 #define ASSERT(x)
 
-#endif  /* DPML_DEBUG */
+#endif /* DPML_DEBUG */
 
-
-#endif  /* defined ASSERT */
-
+#endif /* defined ASSERT */
