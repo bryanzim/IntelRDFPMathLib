@@ -38,18 +38,19 @@ int exponent_x;
 
 valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 
-if(!valid_x) {
+if (!valid_x) {
   // test if x is NaN
-  if((x & 0x7c000000U) == 0x7c000000U) {
+  if ((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & 0x7e000000U) == 0x7e000000U) // sNaN
+    if ((x & 0x7e000000U) == 0x7e000000U) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = (coefficient_x)&QUIET_MASK32;
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x & 0x78000000U) == 0x78000000U) {
+  if ((x & 0x78000000U) == 0x78000000U) {
     res = sign_x | 0x78000000U;
     BID_RETURN(res);
   }

@@ -30,13 +30,14 @@
 #include "bid_internal.h"
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_modf(BID_UINT32 *pres, BID_UINT32 *px, BID_UINT32 *iptr _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+void bid32_modf(BID_UINT32* pres, BID_UINT32* px,
+                BID_UINT32* iptr _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+                    _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 DFP_WRAPFN_DFP_DFP_POINTER(32, bid32_modf, 32, 32)
-BID_UINT32 bid32_modf(BID_UINT32 x, BID_UINT32 *iptr
-                                        _EXC_FLAGS_PARAM
-                                            _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+BID_UINT32 bid32_modf(BID_UINT32 x, BID_UINT32* iptr _EXC_FLAGS_PARAM
+                                        _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 
 #endif
 
@@ -50,10 +51,11 @@ BID_UINT32 bid32_modf(BID_UINT32 x, BID_UINT32 *iptr
   BIDECIMAL_CALL1_NORND(bid32_round_integral_zero, xi, x);
 
   // check for Infinity
-  if((x & 0x7c000000U) == 0x78000000U)
+  if ((x & 0x7c000000U) == 0x78000000U) {
     res = (x & 0x80000000U) | 0x5f800000U;
-  else
+  } else {
     BIDECIMAL_CALL2(bid32_sub, res, x, xi);
+  }
 
   *iptr = (xi) | (x & 0x80000000U);
   res |= (x & 0x80000000U);

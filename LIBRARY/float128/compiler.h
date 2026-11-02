@@ -42,15 +42,18 @@
 
 #define __xxx_dec_cc
 
-#elif (defined(mips_cc) || defined(MIPS_CC) || defined(_CFE) || (defined(host_mips) && !defined(__GNUC__)))
+#elif (defined(mips_cc) || defined(MIPS_CC) || defined(_CFE) || \
+       (defined(host_mips) && !defined(__GNUC__)))
 
 #define __xxx_mips_cc
 
-#elif (defined(vax_cc) || defined(VAX_CC) || defined(vaxc) || defined(VAXC) || defined(__VAXC))
+#elif (defined(vax_cc) || defined(VAX_CC) || defined(vaxc) || defined(VAXC) || \
+       defined(__VAXC))
 
 #define __xxx_vax_cc
 
-#elif (defined(msc_cc) || defined(MSC_CC) || defined(_MSC_VER)) && !defined(__ICL)
+#elif (defined(msc_cc) || defined(MSC_CC) || defined(_MSC_VER)) && \
+    !defined(__ICL)
 
 #define __xxx_msc_cc
 
@@ -58,7 +61,8 @@
 
 #define __xxx_hp_cc
 
-#elif ((defined(gnu_cc) || defined(GNU_CC) || defined(__GNUC__)) && !defined(__ecc__))
+#elif ((defined(gnu_cc) || defined(GNU_CC) || defined(__GNUC__)) && \
+       !defined(__ecc__))
 
 #define __xxx_gnu_cc
 
@@ -189,8 +193,10 @@
 #define PASTE_3(a, b, c) PASTE(PASTE(a, b), c)
 #define PASTE_4(a, b, c, d) PASTE(PASTE(PASTE(a, b), c), d)
 #define PASTE_5(a, b, c, d, e) PASTE(PASTE(PASTE(PASTE(a, b), c), d), e)
-#define PASTE_6(a, b, c, d, e, f) PASTE(PASTE(PASTE(PASTE(PASTE(a, b), c), d), e), f)
-#define PASTE_7(a, b, c, d, e, f, g) PASTE(PASTE(PASTE(PASTE(PASTE(PASTE(a, b), c), d), e), f), g)
+#define PASTE_6(a, b, c, d, e, f) \
+  PASTE(PASTE(PASTE(PASTE(PASTE(a, b), c), d), e), f)
+#define PASTE_7(a, b, c, d, e, f, g) \
+  PASTE(PASTE(PASTE(PASTE(PASTE(PASTE(a, b), c), d), e), f), g)
 
 #define QUOTE_IT(s) #s
 
@@ -206,7 +212,8 @@
 // reassociations.
 // =============================================================================
 
-#if (defined(intel_icc) && (COMPILER == intel_icc)) || (defined(intel_icl) && (COMPILER == intel_icl))
+#if (defined(intel_icc) && (COMPILER == intel_icc)) || \
+    (defined(intel_icl) && (COMPILER == intel_icl))
 #define GROUP(x) __fence(x)
 #endif
 
@@ -252,23 +259,20 @@
 
 #pragma linkage complex_linkage = (result(f0, f1))
 
-#pragma use_linkage complex_linkage(                                          \
-    F_sincosd, F_sincosdf,                                                    \
-    F_sincos, F_sincosf, ccos, ccosf, cdiv, cdivf, cexp, cexpf, clog, clogf,  \
-    cmul, cmulf, cpow, cpowf, cpowi, cpowif, csin, csinf, csqrt, csqrtf,      \
-    r_ccos, r_ccosf, r_cexp, r_cexpf, r_clog, r_clogf, r_cmplx, r_cmplxf,     \
-    r_conjg, r_conjgf, r_csin, r_csinf, r_csqrt, r_csqrtf, sincos, sincos_vo, \
-    sincosd, sincosdf, sincosf, sincosf_vo, sinhcosh, sinhcoshf,              \
-    csinh, ctan, ctanh, ccosh, catanh, catan, casin, casinh, cacos,           \
-    cacosh, conj, cproj, ccoshf, catanf, csinhf,                              \
-    ctanf, ctanhf, catanhf, casinf, casinhf, cacosf, cacoshf, conjf, cprojf)
+#pragma use_linkage complex_linkage(                                           \
+    F_sincosd, F_sincosdf, F_sincos, F_sincosf, ccos, ccosf, cdiv, cdivf,      \
+    cexp, cexpf, clog, clogf, cmul, cmulf, cpow, cpowf, cpowi, cpowif, csin,   \
+    csinf, csqrt, csqrtf, r_ccos, r_ccosf, r_cexp, r_cexpf, r_clog, r_clogf,   \
+    r_cmplx, r_cmplxf, r_conjg, r_conjgf, r_csin, r_csinf, r_csqrt, r_csqrtf,  \
+    sincos, sincos_vo, sincosd, sincosdf, sincosf, sincosf_vo, sinhcosh,       \
+    sinhcoshf, csinh, ctan, ctanh, ccosh, catanh, catan, casin, casinh, cacos, \
+    cacosh, conj, cproj, ccoshf, catanf, csinhf, ctanf, ctanhf, catanhf,       \
+    casinf, casinhf, cacosf, cacoshf, conjf, cprojf)
 
 #pragma linkage res_vec_4_linkage = (result(f20, f21, f22, f23))
 
-#pragma use_linkage res_vec_4_linkage( \
-    __F_sqrt4, __F_sqrt4f,             \
-    __rsqrt4, __rsqrt4f,               \
-    __sqrt4, __sqrt4f)
+#pragma use_linkage res_vec_4_linkage(__F_sqrt4, __F_sqrt4f, __rsqrt4, \
+                                      __rsqrt4f, __sqrt4, __sqrt4f)
 
 /*
 **  The trig reduce functions can have a bad effect on routines
@@ -282,38 +286,32 @@
 **  that allows their callers (nearly) maximal freedom in register use.
 **  I.e., specify that they preserve (nearly) all registers.
 */
-#pragma linkage trig_reduce_linkage = (parameters(f0, r0, r1, r2),                               \
-                                       result(r0),                                               \
-                                       preserved(r16, r17, r18, r19, r20, r21), /* Parameters */ \
-                                       preserved(f16, f17, f18, f19, f20, f21), /* Parameters */ \
-                                       preserved(f22, f23, f24, f25, f26, f27),                  \
-                                       preserved(f28, f29, f30),                                 \
-                                       notneeded(ai))
-#pragma linkage trigd_reduce_linkage = (parameters(f0, r0, r1),                                   \
-                                        result(r0),                                               \
-                                        preserved(r16, r17, r18, r19, r20, r21), /* Parameters */ \
-                                        preserved(f16, f17, f18, f19, f20, f21), /* Parameters */ \
-                                        preserved(f22, f23, f24, f25, f26, f27),                  \
-                                        preserved(f28, f29, f30),                                 \
-                                        notneeded(ai))
-#pragma linkage trig_reduce_linkage_l = (parameters(r3, r0, r1, r2),                               \
-                                         result(r0),                                               \
-                                         preserved(r16, r17, r18, r19, r20, r21), /* Parameters */ \
-                                         preserved(f16, f17, f18, f19, f20, f21), /* Parameters */ \
-                                         preserved(f22, f23, f24, f25, f26, f27),                  \
-                                         preserved(f28, f29, f30),                                 \
-                                         notneeded(ai))
+#pragma linkage trig_reduce_linkage =                                   \
+    (parameters(f0, r0, r1, r2), result(r0),                            \
+     preserved(r16, r17, r18, r19, r20, r21), /* Parameters */          \
+     preserved(f16, f17, f18, f19, f20, f21), /* Parameters */          \
+     preserved(f22, f23, f24, f25, f26, f27), preserved(f28, f29, f30), \
+     notneeded(ai))
+#pragma linkage trigd_reduce_linkage =                                  \
+    (parameters(f0, r0, r1), result(r0),                                \
+     preserved(r16, r17, r18, r19, r20, r21), /* Parameters */          \
+     preserved(f16, f17, f18, f19, f20, f21), /* Parameters */          \
+     preserved(f22, f23, f24, f25, f26, f27), preserved(f28, f29, f30), \
+     notneeded(ai))
+#pragma linkage trig_reduce_linkage_l =                                 \
+    (parameters(r3, r0, r1, r2), result(r0),                            \
+     preserved(r16, r17, r18, r19, r20, r21), /* Parameters */          \
+     preserved(f16, f17, f18, f19, f20, f21), /* Parameters */          \
+     preserved(f22, f23, f24, f25, f26, f27), preserved(f28, f29, f30), \
+     notneeded(ai))
 
-#pragma use_linkage trig_reduce_linkage( \
-    __trig_reduce,                       \
-    __trig_reducef)
+#pragma use_linkage trig_reduce_linkage(__trig_reduce, __trig_reducef)
 
-#pragma use_linkage trigd_reduce_linkage( \
-    __trigd_reduce,                       \
-    __trigd_reducef)
+#pragma use_linkage trigd_reduce_linkage(__trigd_reduce, __trigd_reducef)
 
 /* some recent decc compilers can not do this */
-/* #               pragma use_linkage trig_reduce_linkage_l ( __trig_reducel, __trigd_reducel ) */
+/* #               pragma use_linkage trig_reduce_linkage_l ( __trig_reducel,
+ * __trigd_reducel ) */
 
 #endif /* OSF */
 
@@ -337,71 +335,60 @@
 #pragma linkage complex_linkage = (result(f0, f1))
 #endif
 
-#pragma use_linkage complex_linkage(                                            \
-    math$cacos_f, math$cacos_g, math$cacos_s, math$cacos_t,                     \
-    math$cacosh_f, math$cacosh_g, math$cacosh_s, math$cacosh_t,                 \
-    math$casin_f, math$casin_g, math$casin_s, math$casin_t,                     \
-    math$casinh_f, math$casinh_g, math$casinh_s, math$casinh_t,                 \
-    math$catan_f, math$catan_g, math$catan_s, math$catan_t,                     \
-    math$catanh_f, math$catanh_g, math$catanh_s, math$catanh_t,                 \
-    math$ccosh_f, math$ccosh_g, math$ccosh_s, math$ccosh_t,                     \
-    math$ctanh_f, math$ctanh_g, math$ctanh_s, math$ctanh_t,                     \
-    math$csinh_f, math$csinh_g, math$csinh_s, math$csinh_t,                     \
-    math$ctan_f, math$ctan_g, math$ctan_s, math$ctan_t,                         \
-    math$conj_f, math$conj_g, math$conj_s, math$conj_t,                         \
-    math$cproj_f, math$cproj_g, math$cproj_s, math$cproj_t,                     \
-    math$F_sincosd_f, math$F_sincosd_g, math$F_sincosd_s, math$F_sincosd_t,     \
-    math$F_sincos_f, math$F_sincos_g, math$F_sincos_s, math$F_sincos_t,         \
-    math$ccos_f, math$ccos_g, math$ccos_s, math$ccos_t, math$cdiv_f,            \
-    math$cdiv_g, math$cdiv_s, math$cdiv_t, math$cexp_f, math$cexp_g,            \
-    math$cexp_s, math$cexp_t, math$clog_f, math$clog_g, math$clog_s,            \
-    math$clog_t, math$cmul_f, math$cmul_g, math$cmul_s, math$cmul_t,            \
-    math$cpow_f, math$cpow_g, math$cpow_s, math$cpow_t, math$cpow_fq,           \
-    math$cpow_gq, math$cpow_sq, math$cpow_tq, math$cpowi_f, math$cpowi_g,       \
-    math$cpowi_s, math$cpowi_t, math$csin_f, math$csin_g, math$csin_s,          \
-    math$csin_t, math$csqrt_f, math$csqrt_g, math$csqrt_s, math$csqrt_t,        \
-    math$sincos_f, math$sincos_g, math$sincos_s, math$sincos_t,                 \
-    math$sincos_vo_f, math$sincos_vo_g, math$sincos_vo_s, math$sincos_vo_t,     \
-    math$sincosd_f, math$sincosd_g, math$sincosd_s, math$sincosd_t,             \
-    math$sinhcosh_f, math$sinhcosh_g, math$sinhcosh_s, math$sinhcosh_t,         \
-    mth$ccos, mth$cdcos, mth$cdexp, mth$cdlog, mth$cdsin, mth$cdsqrt, mth$cexp, \
-    mth$cgcos, mth$cgexp, mth$cglog, mth$cgsin, mth$cgsqrt, mth$clog,           \
-    mth$cmplx, mth$conjg, mth$cscos, mth$csexp, mth$csin, mth$cslog, mth$csqrt, \
-    mth$cssin, mth$cssqrt, mth$ctcos, mth$ctexp, mth$ctlog, mth$ctsin,          \
-    mth$ctsqrt, mth$dcmplx, mth$dconjg, mth$gcmplx, mth$gconjg, mth$scmplx,     \
-    mth$sconjg, mth$tcmplx, mth$tconjg, ots$divc, ots$divcd_r3, ots$divcg_r3,   \
-    ots$mulc, ots$mulcd_r3, ots$mulcg_r3, ots$powcc, ots$powcc_r3,              \
+#pragma use_linkage complex_linkage(                                          \
+    math$cacos_f, math$cacos_g, math$cacos_s, math$cacos_t, math$cacosh_f,    \
+    math$cacosh_g, math$cacosh_s, math$cacosh_t, math$casin_f, math$casin_g,  \
+    math$casin_s, math$casin_t, math$casinh_f, math$casinh_g, math$casinh_s,  \
+    math$casinh_t, math$catan_f, math$catan_g, math$catan_s, math$catan_t,    \
+    math$catanh_f, math$catanh_g, math$catanh_s, math$catanh_t, math$ccosh_f, \
+    math$ccosh_g, math$ccosh_s, math$ccosh_t, math$ctanh_f, math$ctanh_g,     \
+    math$ctanh_s, math$ctanh_t, math$csinh_f, math$csinh_g, math$csinh_s,     \
+    math$csinh_t, math$ctan_f, math$ctan_g, math$ctan_s, math$ctan_t,         \
+    math$conj_f, math$conj_g, math$conj_s, math$conj_t, math$cproj_f,         \
+    math$cproj_g, math$cproj_s, math$cproj_t, math$F_sincosd_f,               \
+    math$F_sincosd_g, math$F_sincosd_s, math$F_sincosd_t, math$F_sincos_f,    \
+    math$F_sincos_g, math$F_sincos_s, math$F_sincos_t, math$ccos_f,           \
+    math$ccos_g, math$ccos_s, math$ccos_t, math$cdiv_f, math$cdiv_g,          \
+    math$cdiv_s, math$cdiv_t, math$cexp_f, math$cexp_g, math$cexp_s,          \
+    math$cexp_t, math$clog_f, math$clog_g, math$clog_s, math$clog_t,          \
+    math$cmul_f, math$cmul_g, math$cmul_s, math$cmul_t, math$cpow_f,          \
+    math$cpow_g, math$cpow_s, math$cpow_t, math$cpow_fq, math$cpow_gq,        \
+    math$cpow_sq, math$cpow_tq, math$cpowi_f, math$cpowi_g, math$cpowi_s,     \
+    math$cpowi_t, math$csin_f, math$csin_g, math$csin_s, math$csin_t,         \
+    math$csqrt_f, math$csqrt_g, math$csqrt_s, math$csqrt_t, math$sincos_f,    \
+    math$sincos_g, math$sincos_s, math$sincos_t, math$sincos_vo_f,            \
+    math$sincos_vo_g, math$sincos_vo_s, math$sincos_vo_t, math$sincosd_f,     \
+    math$sincosd_g, math$sincosd_s, math$sincosd_t, math$sinhcosh_f,          \
+    math$sinhcosh_g, math$sinhcosh_s, math$sinhcosh_t, mth$ccos, mth$cdcos,   \
+    mth$cdexp, mth$cdlog, mth$cdsin, mth$cdsqrt, mth$cexp, mth$cgcos,         \
+    mth$cgexp, mth$cglog, mth$cgsin, mth$cgsqrt, mth$clog, mth$cmplx,         \
+    mth$conjg, mth$cscos, mth$csexp, mth$csin, mth$cslog, mth$csqrt,          \
+    mth$cssin, mth$cssqrt, mth$ctcos, mth$ctexp, mth$ctlog, mth$ctsin,        \
+    mth$ctsqrt, mth$dcmplx, mth$dconjg, mth$gcmplx, mth$gconjg, mth$scmplx,   \
+    mth$sconjg, mth$tcmplx, mth$tconjg, ots$divc, ots$divcd_r3, ots$divcg_r3, \
+    ots$mulc, ots$mulcd_r3, ots$mulcg_r3, ots$powcc, ots$powcc_r3,            \
     ots$powcdcd_r3, ots$powcdj, ots$powcgcg_r3, ots$powcgj, ots$powcj)
 
-#define PRESERVED_REGISTERS preserved(                \
-    r1,                                               \
-    r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, \
-    f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, \
-    f20, f21, f22, f23, f24, f25, f26, f27, f28, f29, \
-    f30)
+#define PRESERVED_REGISTERS                                                  \
+  preserved(r1, r16, r17, r18, r19, r20, r21, r22, r23, r24, r25, f10, f11,  \
+            f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23, f24, \
+            f25, f26, f27, f28, f29, f30)
 
 #if !__ia64__ || __IEEE_FLOAT
 
-#pragma linkage trig_reduce_linkage = (parameters(f0, r0, r1, r16), \
-                                       result(r0),                  \
-                                       PRESERVED_REGISTERS,         \
-                                       notneeded(ai))
+#pragma linkage trig_reduce_linkage =                              \
+    (parameters(f0, r0, r1, r16), result(r0), PRESERVED_REGISTERS, \
+     notneeded(ai))
 
-#pragma use_linkage trig_reduce_linkage( \
-    math$trig_reduce_f,                  \
-    math$trig_reduce_g,                  \
-    math$trig_reduce_s,                  \
+#pragma use_linkage trig_reduce_linkage(                        \
+    math$trig_reduce_f, math$trig_reduce_g, math$trig_reduce_s, \
     math$trig_reduce_t)
 
-#pragma linkage trigd_reduce_linkage = (parameters(f0, r0, r1), \
-                                        result(r0),             \
-                                        PRESERVED_REGISTERS,    \
-                                        notneeded(ai))
+#pragma linkage trigd_reduce_linkage = \
+    (parameters(f0, r0, r1), result(r0), PRESERVED_REGISTERS, notneeded(ai))
 
-#pragma use_linkage trigd_reduce_linkage( \
-    math$trigd_reduce_f,                  \
-    math$trigd_reduce_g,                  \
-    math$trigd_reduce_s,                  \
+#pragma use_linkage trigd_reduce_linkage(                          \
+    math$trigd_reduce_f, math$trigd_reduce_g, math$trigd_reduce_s, \
     math$trigd_reduce_t)
 #endif
 

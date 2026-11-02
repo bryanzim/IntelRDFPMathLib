@@ -31,23 +31,26 @@
 
 // 2-part conversion.
 
-BID_EXTERN_C void bid128_to_binary128_2part(BID_F128_TYPE *, BID_F128_TYPE *, BID_UINT128);
+BID_EXTERN_C void bid128_to_binary128_2part(BID_F128_TYPE*, BID_F128_TYPE*,
+                                            BID_UINT128);
 
 // +Infinity
-static BID_UINT128 bi_d128_inf =
-    {BID128_LH_INIT(0x0000000000000000ull, 0x7800000000000000ull)};
+static BID_UINT128 bi_d128_inf = {
+    BID128_LH_INIT(0x0000000000000000ull, 0x7800000000000000ull)};
 
 // 1/2
-static BID_UINT128 bi_d128_half =
-    {BID128_LH_INIT(0x0000000000000005ull, 0x303e000000000000ull)};
+static BID_UINT128 bi_d128_half = {
+    BID128_LH_INIT(0x0000000000000005ull, 0x303e000000000000ull)};
 
 // log(2 pi) / 2
-static BID_UINT128 bi_d128_log_2_pi_over_2 =
-    {BID128_LH_INIT(0x8512e0b1f71b1870ull, 0x2ffdc512596bf2beull)};
+static BID_UINT128 bi_d128_log_2_pi_over_2 = {
+    BID128_LH_INIT(0x8512e0b1f71b1870ull, 0x2ffdc512596bf2beull)};
 
-BID_F128_CONST_DEF(c_m1e34, c06fed09defd561e, 75b290c510000000);      // -1.000001e34Q
-BID_F128_CONST_DEF(c_1e34, 406fed09defd561e, 75b290c510000000);       // 1.000001e34Q
-BID_F128_CONST_DEF(c_1_plus_eps, 3fff250d048e7a1b, 0000000000000034); // 1+1e-34
+BID_F128_CONST_DEF(c_m1e34, c06fed09defd561e,
+                   75b290c510000000);  // -1.000001e34Q
+BID_F128_CONST_DEF(c_1e34, 406fed09defd561e, 75b290c510000000);  // 1.000001e34Q
+BID_F128_CONST_DEF(c_1_plus_eps, 3fff250d048e7a1b,
+                   0000000000000034);                                 // 1+1e-34
 BID_F128_CONST_DEF(c_log_pi, 3fff250d048e7a1b, d0bd5f956c6a843f);     // log(pi)
 BID_F128_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);        // 1.
 BID_F128_CONST_DEF(c_minus_one, bfff000000000000, 0000000000000000);  // -1.
@@ -60,23 +63,25 @@ BID128_FUNCTION_ARG1(bid128_lgamma, x)
 // Declare local variables
 
 BID_UINT128 res, x_int, x_frac;
-BID_F128_TYPE xd_hi, xd_up, xd_lo, yd, zd, fd, xd_tmp, xd_rem, rd, rt, abs_xd_hi;
+BID_F128_TYPE xd_hi, xd_up, xd_lo, yd, zd, fd, xd_tmp, xd_rem, rd, rt,
+    abs_xd_hi;
 int cmp_res;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
+if ((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if(((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64))
+  if (((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64)) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-  if(((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
-      0x0000314dc6448d93ull) ||
-     (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
-       0x0000314dc6448d93ull) &&
-      res.w[0U] >= 0x38c15b0a00000000ull)) {
+  if (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
+       0x0000314dc6448d93ull) ||
+      (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
+        0x0000314dc6448d93ull) &&
+       res.w[0U] >= 0x38c15b0a00000000ull)) {
     res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
     res.w[BID_LOW_128W] = 0ull;
   }
@@ -86,7 +91,7 @@ if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 // If the input is 0, return +infinity
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero, cmp_res, x);
-if(cmp_res) {
+if (cmp_res) {
   res = bi_d128_inf;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
@@ -97,7 +102,7 @@ if(cmp_res) {
 // For infinite inputs, return +infinity
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isInf, cmp_res, x);
-if(cmp_res) {
+if (cmp_res) {
   res = bi_d128_inf;
   BID_RETURN(res);
 }
@@ -109,7 +114,7 @@ bid128_to_binary128_2part(&xd_hi, &xd_lo, x);
 // If x <= -10^34 then it's a nonnegative integer so return NaN
 // Leave a little slop in comparison just in case.
 
-if(__bid_f128_le(xd_hi, c_m1e34.v)) {
+if (__bid_f128_le(xd_hi, c_m1e34.v)) {
   res = bi_d128_inf;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
@@ -127,7 +132,7 @@ if(__bid_f128_le(xd_hi, c_m1e34.v)) {
 // well-conditioned at that point, except that we need also to
 // worry about overflow. So we basically do it all in decimal.
 
-if(__bid_f128_ge(xd_hi, c_1e34.v)) {
+if (__bid_f128_ge(xd_hi, c_1e34.v)) {
   BID_UINT128 lg1, lg2, lg3;
   BIDECIMAL_CALL2(bid128_sub, lg1, x, bi_d128_half);
   BIDECIMAL_CALL1(bid128_log, lg2, x);
@@ -139,10 +144,10 @@ if(__bid_f128_ge(xd_hi, c_1e34.v)) {
 // Check that the input is not exactly a nonpositive integer.
 // If it is, then return +infinity as usual.
 
-if(__bid_f128_le(xd_hi, c_half.v)) {
+if (__bid_f128_le(xd_hi, c_half.v)) {
   BIDECIMAL_CALL1_NORND(bid128_round_integral_nearest_even, x_int, x);
   BIDECIMAL_CALL2_NORND(bid128_quiet_equal, cmp_res, x_int, x);
-  if(cmp_res) {
+  if (cmp_res) {
     res = bi_d128_inf;
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
@@ -162,7 +167,7 @@ if(__bid_f128_le(xd_hi, c_half.v)) {
 // Otherwise, if x >= 0.5, use the binary function but make a
 // simple interpolating correction for the low part of the conversion
 
-if(__bid_f128_ge(xd_hi, c_half.v)) {
+if (__bid_f128_ge(xd_hi, c_half.v)) {
   __bid_f128_lgamma(yd, xd_hi);
   __bid_f128_mul(xd_up, c_1_plus_eps.v, xd_hi);
   __bid_f128_nextafter(xd_up, xd_hi, xd_up);
@@ -183,7 +188,7 @@ if(__bid_f128_ge(xd_hi, c_half.v)) {
 // Gamma(e) = pi/(sin(pi e) * Gamma(1 - e)) =~= 1/e
 // so return -log|e|.
 __bid_f128_fabs(abs_xd_hi, xd_hi);
-if(__bid_f128_le(abs_xd_hi, c_1em100.v)) {
+if (__bid_f128_le(abs_xd_hi, c_1em100.v)) {
   x.w[BID_HIGH_128W] &= ~SIGNMASK64;
   BIDECIMAL_CALL1(bid128_log, res, x);
   res.w[BID_HIGH_128W] ^= SIGNMASK64;
@@ -222,7 +227,7 @@ BIDECIMAL_CALL2(bid128_sub, x_frac, x, x_int);
 
 __bid_f128_sub(xd_tmp, c_one.v, xd_hi);
 
-if(__bid_f128_le(xd_hi, c_minus_one.v)) {
+if (__bid_f128_le(xd_hi, c_minus_one.v)) {
   __bid_f128_add(xd_rem, xd_tmp, xd_hi);
   __bid_f128_sub(xd_rem, c_one.v, xd_rem);
 } else {

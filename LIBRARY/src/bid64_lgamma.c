@@ -29,7 +29,7 @@
 
 #include "bid_trans.h"
 
-BID_F80_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000); // 0.5
+BID_F80_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000);  // 0.5
 
 #define BID64_INF 0x7800000000000000ull
 
@@ -43,14 +43,16 @@ int cmp_res;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK64) == NAN_MASK64) {
+if ((x & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK64) == SNAN_MASK64)
+  if ((x & SNAN_MASK64) == SNAN_MASK64) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res = x & 0xfc03ffffffffffffull;
-  if((res & 0x0003ffffffffffffull) > 999999999999999ull)
+  if ((res & 0x0003ffffffffffffull) > 999999999999999ull) {
     res &= ~0x0003ffffffffffffull;
+  }
   BID_RETURN(res);
 }
 
@@ -62,7 +64,7 @@ BIDECIMAL_CALL1(bid64_to_binary128, xd, x);
 // the condition at the top is a bit marginal but within reasonable bounds.
 // This applies even to the case x = +inf where lgamma(x) = +inf
 
-if(__bid_f128_ge(xd, c_half.v)) {
+if (__bid_f128_ge(xd, c_half.v)) {
   __bid_f128_lgamma(yd, xd);
   BIDECIMAL_CALL1(binary128_to_bid64, res, yd);
   BID_RETURN(res);
@@ -71,7 +73,7 @@ if(__bid_f128_ge(xd, c_half.v)) {
 // Filter out the case of negative infinity, where we return +inf
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid64_isInf, cmp_res, x);
-if(cmp_res) {
+if (cmp_res) {
   res = BID64_INF;
   BID_RETURN(res);
 }
@@ -92,7 +94,7 @@ BIDECIMAL_CALL2(bid64_sub, x_frac, x, x_int);
 // If the fractional part is 0, return +inf
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid64_isZero, cmp_res, x_frac);
-if(cmp_res) {
+if (cmp_res) {
   res = BID64_INF;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);

@@ -31,7 +31,7 @@
   {                                         \
     BID_UINT64 L0_tmp;                      \
     L0_tmp = (X_lo) + bid_Twoto60_m_10to18; \
-    if(L0_tmp & bid_Twoto60) {              \
+    if (L0_tmp & bid_Twoto60) {             \
       (X_hi) = (X_hi) + 1;                  \
       (X_lo) = ((L0_tmp << 4) >> 4);        \
     }                                       \
@@ -41,7 +41,7 @@
   {                                        \
     BID_UINT32 L0_tmp;                     \
     L0_tmp = (X_lo) + bid_Twoto30_m_10to9; \
-    if(L0_tmp & 0x40000000) {              \
+    if (L0_tmp & 0x40000000) {             \
       (X_hi) = (X_hi) + 1;                 \
       (X_lo) = ((L0_tmp << 2) >> 2);       \
     }                                      \
@@ -55,7 +55,7 @@
     L0_tmp = (L0_tail) >> 10;                                       \
     L0_head += L0_tmp;                                              \
     L0_tail = (L0_tail & (0x03FF)) + (L0_tmp << 5) - (L0_tmp << 3); \
-    if(L0_tail > 999) {                                             \
+    if (L0_tail > 999) {                                            \
       L0_tail -= 1000;                                              \
       L0_head += 1;                                                 \
     }                                                               \
@@ -69,7 +69,7 @@
     L0_X = (BID_UINT32)((X));                                      \
     L0_head = ((L0_X >> 17) * 34359) >> 18;                        \
     L0_X -= L0_head * 1000000;                                     \
-    if(L0_X >= 1000000) {                                          \
+    if (L0_X >= 1000000) {                                         \
       L0_X -= 1000000;                                             \
       L0_head += 1;                                                \
     }                                                              \
@@ -78,7 +78,7 @@
     L0_tmp = (L0_tail) >> 10;                                      \
     L0_mid += L0_tmp;                                              \
     L0_tail = (L0_tail & (0x3FF)) + (L0_tmp << 5) - (L0_tmp << 3); \
-    if(L0_tail > 999) {                                            \
+    if (L0_tail > 999) {                                           \
       L0_tail -= 1000;                                             \
       L0_mid += 1;                                                 \
     }                                                              \
@@ -93,7 +93,7 @@
     BID_UINT64 L1_Xhi_64, L1_Xlo_64;                      \
     L1_Xhi_64 = (((X) >> 28) * bid_Inv_Tento9) >> 33;     \
     L1_Xlo_64 = (X) - L1_Xhi_64 * (BID_UINT64)bid_Tento9; \
-    if(L1_Xlo_64 >= (BID_UINT64)bid_Tento9) {             \
+    if (L1_Xlo_64 >= (BID_UINT64)bid_Tento9) {            \
       L1_Xlo_64 -= (BID_UINT64)bid_Tento9;                \
       L1_Xhi_64 += 1;                                     \
     }                                                     \
@@ -107,19 +107,19 @@
   {                                                         \
     BID_UINT32 L1_X_hi, L1_X_lo;                            \
     BID_UINT64 L1_Xhi_64, L1_Xlo_64;                        \
-    if((X) >= (BID_UINT64)bid_Tento9) {                     \
+    if ((X) >= (BID_UINT64)bid_Tento9) {                    \
       L1_Xhi_64 = (((X) >> 28) * bid_Inv_Tento9) >> 33;     \
       L1_Xlo_64 = (X) - L1_Xhi_64 * (BID_UINT64)bid_Tento9; \
-      if(L1_Xlo_64 >= (BID_UINT64)bid_Tento9) {             \
+      if (L1_Xlo_64 >= (BID_UINT64)bid_Tento9) {            \
         L1_Xlo_64 -= (BID_UINT64)bid_Tento9;                \
         L1_Xhi_64 += 1;                                     \
       }                                                     \
       L1_X_hi = (BID_UINT32)L1_Xhi_64;                      \
       L1_X_lo = (BID_UINT32)L1_Xlo_64;                      \
-      if(L1_X_hi >= bid_Tento6) {                           \
+      if (L1_X_hi >= bid_Tento6) {                          \
         __L0_Split_MiDi_3(L1_X_hi, (ptr));                  \
         __L0_Split_MiDi_3(L1_X_lo, (ptr));                  \
-      } else if(L1_X_hi >= bid_Tento3) {                    \
+      } else if (L1_X_hi >= bid_Tento3) {                   \
         __L0_Split_MiDi_2(L1_X_hi, (ptr));                  \
         __L0_Split_MiDi_3(L1_X_lo, (ptr));                  \
       } else {                                              \
@@ -128,9 +128,9 @@
       }                                                     \
     } else {                                                \
       L1_X_lo = (BID_UINT32)(X);                            \
-      if(L1_X_lo >= bid_Tento6) {                           \
+      if (L1_X_lo >= bid_Tento6) {                          \
         __L0_Split_MiDi_3(L1_X_lo, (ptr));                  \
-      } else if(L1_X_lo >= bid_Tento3) {                    \
+      } else if (L1_X_lo >= bid_Tento3) {                   \
         __L0_Split_MiDi_2(L1_X_lo, (ptr));                  \
       } else {                                              \
         *((ptr)++) = L1_X_lo;                               \
@@ -140,7 +140,7 @@
 
 #define __L0_MiDi2Str(X, c_ptr) \
   {                             \
-    const char *L0_src;         \
+    const char* L0_src;         \
     L0_src = bid_midi_tbl[(X)]; \
     *((c_ptr)++) = *(L0_src++); \
     *((c_ptr)++) = *(L0_src++); \
@@ -149,13 +149,13 @@
 
 #define __L0_MiDi2Str_Lead(X, c_ptr) \
   {                                  \
-    const char *L0_src;              \
+    const char* L0_src;              \
     L0_src = bid_midi_tbl[(X)];      \
-    if((X) >= 100) {                 \
+    if ((X) >= 100) {                \
       *((c_ptr)++) = *(L0_src++);    \
       *((c_ptr)++) = *(L0_src++);    \
       *((c_ptr)++) = *(L0_src);      \
-    } else if((X) >= 10) {           \
+    } else if ((X) >= 10) {          \
       L0_src++;                      \
       *((c_ptr)++) = *(L0_src++);    \
       *((c_ptr)++) = *(L0_src);      \

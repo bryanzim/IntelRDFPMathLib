@@ -46,29 +46,30 @@
  */
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid128_llrint(long long int *pres, BID_UINT128 *px
-                                            _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+void bid128_llrint(long long int* pres,
+                   BID_UINT128* px _RND_MODE_PARAM _EXC_FLAGS_PARAM
+                       _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT128 x = *px;
 #if !DECIMAL_GLOBAL_ROUNDING
   unsigned int rnd_mode = *prnd_mode;
 #endif
 #else
 RES_WRAPFN_DFP(long long int, bid128_llrint, 128);
-long long int
-bid128_llrint(BID_UINT128 x _RND_MODE_PARAM _EXC_FLAGS_PARAM
-                  _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+long long int bid128_llrint(BID_UINT128 x _RND_MODE_PARAM _EXC_FLAGS_PARAM
+                                _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
-  long long int res; // assume sizeof (long long) = 8
+  long long int res;  // assume sizeof (long long) = 8
 
-  if(rnd_mode == BID_ROUNDING_TO_NEAREST)
+  if (rnd_mode == BID_ROUNDING_TO_NEAREST) {
     BIDECIMAL_CALL1_NORND(bid128_to_int64_xrnint, res, x);
-  else if(rnd_mode == BID_ROUNDING_TIES_AWAY)
+  } else if (rnd_mode == BID_ROUNDING_TIES_AWAY) {
     BIDECIMAL_CALL1_NORND(bid128_to_int64_xrninta, res, x);
-  else if(rnd_mode == BID_ROUNDING_DOWN)
+  } else if (rnd_mode == BID_ROUNDING_DOWN) {
     BIDECIMAL_CALL1_NORND(bid128_to_int64_xfloor, res, x);
-  else if(rnd_mode == BID_ROUNDING_UP)
+  } else if (rnd_mode == BID_ROUNDING_UP) {
     BIDECIMAL_CALL1_NORND(bid128_to_int64_xceil, res, x);
-  else // if (rnd_mode == BID_ROUNDING_TO_ZERO)
+  } else {  // if (rnd_mode == BID_ROUNDING_TO_ZERO)
     BIDECIMAL_CALL1_NORND(bid128_to_int64_xint, res, x);
+  }
   BID_RETURN(res);
 }

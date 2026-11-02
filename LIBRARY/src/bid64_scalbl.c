@@ -29,19 +29,22 @@
 
 #include "bid_internal.h"
 
-BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT64, bid64_scalbln, BID_UINT64, x, long int, n)
+BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT64, bid64_scalbln,
+                                           BID_UINT64, x, long int, n)
 BID_UINT64 res;
 
 int n1;
 n1 = (int)n;
-n1 = n1 < n ? (int)0x7fffffffU : n1 > n ? (int)0x80000000U
-                                        : n1; /* treat overflow/underflow */
+n1 = n1 < n   ? (int)0x7fffffffU
+     : n1 > n ? (int)0x80000000U
+              : n1; /* treat overflow/underflow */
 
 #if DECIMAL_CALL_BY_REFERENCE
-bid64_scalbn(&res, &x, &n1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+bid64_scalbn(&res, &x,
+             &n1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #else
-res = bid64_scalbn(x, n1
-                          _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+res = bid64_scalbn(
+    x, n1 _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #endif
 BID_RETURN(res);
 }

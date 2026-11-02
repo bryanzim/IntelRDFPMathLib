@@ -84,18 +84,18 @@ static const TABLE_UNION __mod_x_table[] = {
     /* 304 */ DATA_1x2(0x00000000, 0x47e00000),
 };
 
-#define MOD_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)__mod_x_table + 0))
-#define REM_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)__mod_x_table + 72))
-#define REMQUO_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)__mod_x_table + 144))
-#define UX_HALF ((UX_FLOAT *)((char *)__mod_x_table + 216))
-#define D_RECIP_TWO_POW_64 *((double *)((char *)__mod_x_table + 240))
-#define D_RECIP_TWO_POW_26 *((double *)((char *)__mod_x_table + 248))
-#define D_RECIP_TWO_POW_23 *((double *)((char *)__mod_x_table + 256))
-#define D_ONE *((double *)((char *)__mod_x_table + 264))
-#define D_TWO_POW_23 *((double *)((char *)__mod_x_table + 272))
-#define D_TWO_POW_53 *((double *)((char *)__mod_x_table + 280))
-#define D_TWO_POW_78 *((double *)((char *)__mod_x_table + 288))
-#define D_TWO_POW_Km53 *((double *)((char *)__mod_x_table + 296))
-#define D_TWO_POW_2Km1 *((double *)((char *)__mod_x_table + 304))
+#define MOD_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)__mod_x_table + 0))
+#define REM_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)__mod_x_table + 72))
+#define REMQUO_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)__mod_x_table + 144))
+#define UX_HALF ((UX_FLOAT*)((char*)__mod_x_table + 216))
+#define D_RECIP_TWO_POW_64 *((double*)((char*)__mod_x_table + 240))
+#define D_RECIP_TWO_POW_26 *((double*)((char*)__mod_x_table + 248))
+#define D_RECIP_TWO_POW_23 *((double*)((char*)__mod_x_table + 256))
+#define D_ONE *((double*)((char*)__mod_x_table + 264))
+#define D_TWO_POW_23 *((double*)((char*)__mod_x_table + 272))
+#define D_TWO_POW_53 *((double*)((char*)__mod_x_table + 280))
+#define D_TWO_POW_78 *((double*)((char*)__mod_x_table + 288))
+#define D_TWO_POW_Km53 *((double*)((char*)__mod_x_table + 296))
+#define D_TWO_POW_2Km1 *((double*)((char*)__mod_x_table + 304))
 
 #endif

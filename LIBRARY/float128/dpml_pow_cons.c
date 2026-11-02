@@ -256,7 +256,6 @@
 */
 
 @divert divertText
-
 /*
 ** GENERATING POLYNOMIAL COEFFICIENTS:
 ** -----------------------------------
@@ -297,7 +296,7 @@
   print_array(deg)
 
     procedure print_array(n) {
-  for(i = 0; i <= n; i++) {
+  for (i = 0; i <= n; i++) {
     PRINT_TBL_ITEM(coefs[i]);
   }
 }
@@ -408,13 +407,14 @@ START_TABLE;
 ** only T(j) is stored.
 */
 
-#define __PRINT_TABLE_VALUE(tchar, value)     \
-  printf("\t/* %4i */ %#.4" STR(tchar) ",\n", \
-         BYTES(MP_BIT_OFFSET), value);        \
+#define __PRINT_TABLE_VALUE(tchar, value)                                   \
+  printf("\t/* %4i */ %#.4" STR(tchar) ",\n", BYTES(MP_BIT_OFFSET), value); \
   MP_BIT_OFFSET += CHAR_TO_BITS(tchar)
 
-#define __PRINT_TABLE_DEF(name, tchar, disp)                                                                                   \
-  printf("#define " name "\t*((" STR(CHAR_TO_TYPE(tchar)) " *) ((char *) " STR(MP_TABLE_NAME) " + %i + (j)))\n", BYTES(disp)); \
+#define __PRINT_TABLE_DEF(name, tchar, disp)                                \
+  printf("#define " name "\t*((" STR(CHAR_TO_TYPE(                          \
+             tchar)) " *) ((char *) " STR(MP_TABLE_NAME) " + %i + (j)))\n", \
+         BYTES(disp));                                                      \
   disp += CHAR_TO_BITS(tchar)
 
 #if (USE_BACKUP)
@@ -430,9 +430,9 @@ START_TABLE;
 
 #define POW2_INDEX_POS (__LOG2(BITS_PER_B_TYPE) - 3)
 
-#define PRINT_POW2_TABLE_ENTRY(j, Pj)                   \
-  printf("\t/* %4i */ %#.4" STR(B_CHAR), ", /* %3i */", \
-         BYTES(MP_BIT_OFFSET), Pj, j);                  \
+#define PRINT_POW2_TABLE_ENTRY(j, Pj)                                         \
+  printf("\t/* %4i */ %#.4" STR(B_CHAR), ", /* %3i */", BYTES(MP_BIT_OFFSET), \
+         Pj, j);                                                              \
   MP_BIT_OFFSET += BITS_PER_B_TYPE
 
 #else /* USE_BACKUP */
@@ -449,11 +449,11 @@ START_TABLE;
 
 #define POW2_INDEX_POS (__LOG2(BITS_PER_F_TYPE) - 2)
 
-#define PRINT_POW2_TABLE_ENTRY(j, Pj)                    \
-  Pj_hi = bround(Pj, F_PRECISION);                       \
-  printf("\t/* %4i */ %#.4" STR(F_CHAR) ", /* %3i */\n", \
-         BYTES(MP_BIT_OFFSET), Pj, j);                   \
-  MP_BIT_OFFSET += BITS_PER_F_TYPE;                      \
+#define PRINT_POW2_TABLE_ENTRY(j, Pj)                                          \
+  Pj_hi = bround(Pj, F_PRECISION);                                             \
+  printf("\t/* %4i */ %#.4" STR(F_CHAR) ", /* %3i */\n", BYTES(MP_BIT_OFFSET), \
+         Pj, j);                                                               \
+  MP_BIT_OFFSET += BITS_PER_F_TYPE;                                            \
   __PRINT_TABLE_VALUE(F_CHAR, (Pj - Pj_hi) / Pj)
 
 #endif
@@ -470,12 +470,13 @@ PRINT_POW2_TABLE_ACCESS_MACROS(disp);
 ** "endianess"
 */
 
-if(BITS_PER_WORD < BITS_PER_F_TYPE) {
+if (BITS_PER_WORD < BITS_PER_F_TYPE) {
   disp_lo = root_disp;
-  if((VAX_FLOATING) || (ENDIANESS == big_endian))
+  if ((VAX_FLOATING) || (ENDIANESS == big_endian)) {
     disp_lo = root_disp + (BITS_PER_F_TYPE - BITS_PER_WORD);
-  else
+  } else {
     root_disp += (BITS_PER_F_TYPE - BITS_PER_WORD);
+  }
 
   /*
   ** If the word size is verfy small relative to the floating point
@@ -483,13 +484,15 @@ if(BITS_PER_WORD < BITS_PER_F_TYPE) {
   ** floating point type.  Otherwise, just load the low word
   */
 
-  if(BITS_PER_WORD * 2 < BITS_PER_F_TYPE) {
-    printf("#define IPOW2_LO(u,j)\t\tu.f = "
-           "*((B_TYPE *) ((char *) " STR(MP_TABLE_NAME) " + (j)))\n");
+  if (BITS_PER_WORD * 2 < BITS_PER_F_TYPE) {
+    printf(
+        "#define IPOW2_LO(u,j)\t\tu.f = "
+        "*((B_TYPE *) ((char *) " STR(MP_TABLE_NAME) " + (j)))\n");
   } else {
-    printf("#define IPOW2_LO(u,j)\t\tu.B_LO_WORD = "
-           "*((WORD *) ((char *) " STR(MP_TABLE_NAME) " + %i + (j)))\n",
-           BYTES(disp_lo));
+    printf(
+        "#define IPOW2_LO(u,j)\t\tu.B_LO_WORD = "
+        "*((WORD *) ((char *) " STR(MP_TABLE_NAME) " + %i + (j)))\n",
+        BYTES(disp_lo));
   }
 }
 
@@ -500,7 +503,7 @@ printf("#define POW2_INDEX_POS\t\t%i \n", POW2_INDEX_POS);
 TABLE_COMMENT(POW2_TABLE_BANNER);
 
 pow2_table_size = 2 ^ POW2_K;
-for(j = 0; j < pow2_table_size; j++) {
+for (j = 0; j < pow2_table_size; j++) {
   Pj = 2 ^ (j / pow2_table_size);
   PRINT_POW2_TABLE_ENTRY(j, Pj);
 }
@@ -533,7 +536,7 @@ PRINT_U_TBL_COM_VDEF_ITEM("F_PRECISION acc pow2 result range check",
 PRINT_U_TBL_VDEF_ITEM("POW2_HI_CHECK_F\t", hi - lo);
 PRINT_U_TBL_VDEF_ITEM("POW2_MAX_SCALE_F\t", hi);
 
-if(!ONE_TYPE) {
+if (!ONE_TYPE) {
   lo = F_HI_BITS_RND(2 ^ (R_MIN_BIN_EXP + R_NORM + R_PRECISION + POW2_K) * c,
                      MP_RP);
   hi = F_HI_BITS_RND(2 ^ (R_MAX_BIN_EXP + R_NORM + 1) / c, MP_RM);
@@ -616,16 +619,17 @@ function e_to_x_poly(x) {
 
   s = first_term_value;
 
-  if(x != 0) {
+  if (x != 0) {
     k = first_term;
     z = x * x_scale;
     t = first_term_value;
 
-    while(1) {
+    while (1) {
       k++;
       t = (t * z) / k;
-      if((bexp(s) - bexp(t)) > bit_precision)
+      if ((bexp(s) - bexp(t)) > bit_precision) {
         break;
+      }
       s += t;
     }
   }
@@ -638,13 +642,11 @@ function e_to_x_poly(x) {
 ** the same form, so we make the corresponding code a macro.
 */
 
-#define GEN_EXP_COEFS(max_x, prec, deg, com, tag)         \
-  {                                                       \
-    remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + \
-              REMES_LINEAR_ARG,                           \
-          -max_x, max_x, e_to_x_poly, prec,               \
-          &deg, &coefs);                                  \
-    PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);              \
+#define GEN_EXP_COEFS(max_x, prec, deg, com, tag)                           \
+  {                                                                         \
+    remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG, \
+          -max_x, max_x, e_to_x_poly, prec, &deg, &coefs);                  \
+    PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);                                \
   }
 
 /*
@@ -679,14 +681,13 @@ scale_down = 2 ^ -F_EXP_WIDTH;
 fast_big = 3 * 2 ^ (B_PRECISION - POW2_K - 2 - F_EXP_WIDTH);
 printf("#define SCALE_DOWN_EXP\t%i \n", F_EXP_WIDTH);
 
-if(!NO_FAST) {
+if (!NO_FAST) {
   PRINT_TBL_COM_VDEF_ITEM("'big' for fast pow/exp rint computation",
                           "FAST_BIG\t", fast_big);
 
   c = scale_down * recip_ln2;
-  if(ONE_TYPE) {
-    PRINT_TBL_COM_VDEF_ITEM("2^-F_EXP_WIDTH/ln2",
-                            "SCALE_DOWN_OVER_LN2\t", c);
+  if (ONE_TYPE) {
+    PRINT_TBL_COM_VDEF_ITEM("2^-F_EXP_WIDTH/ln2", "SCALE_DOWN_OVER_LN2\t", c);
   } else {
     TABLE_COMMENT("2^-F_EXP_WIDTH/log(2) in full, hi, lo");
 
@@ -707,10 +708,11 @@ if(!NO_FAST) {
   PRINT_U_TBL_COM_VDEF_ITEM("Fast exp F_PRECISION arg range check",
                             "FAST_EXP_RANGE_CHECK_F", F_HI_BITS_RND(c, MP_RP));
 
-  if(!ONE_TYPE) {
+  if (!ONE_TYPE) {
     c = ln2 * max(-(R_MIN_BIN_EXP + R_NORM), R_MAX_BIN_EXP + 1 + R_NORM);
     PRINT_U_TBL_COM_VDEF_ITEM("Fast exp R_PRECISION arg range check",
-                              "FAST_EXP_RANGE_CHECK_R", F_HI_BITS_RND(c, MP_RP));
+                              "FAST_EXP_RANGE_CHECK_R",
+                              F_HI_BITS_RND(c, MP_RP));
   }
   ENDIF
 
@@ -724,7 +726,7 @@ if(!NO_FAST) {
   ** for 2^x otherwise we use one for 2^x - 1
   */
 
-  if(USE_BACKUP) {
+  if (USE_BACKUP) {
     SET_POLY_GLOBALS(0, 1, ln2, 1);
     GEN_EXP_COEFS(max_pow2_x, F_PRECISION + 1, fast_pow2_deg_f,
                   "F_PRECISION fast pow2 poly coeffs", "FAST_POW2_F\t")
@@ -738,7 +740,7 @@ if(!NO_FAST) {
                   "F_PRECISION fast pow2 poly coeffs", "FAST_POW2_F\t")
     GENPOLY(FAST_POW2_F[% % d], FAST_POW2_POLY_F(x), fast_pow2_deg_f);
 
-    if(!ONE_TYPE) {
+    if (!ONE_TYPE) {
       SET_POLY_GLOBALS(0, 1, ln2, 1);
       GEN_EXP_COEFS(max_pow2_x, R_PRECISION + 1, fast_pow2_deg_r,
                     "R_PRECISION fast pow2 poly coeffs", "FAST_POW2_R\t")
@@ -784,10 +786,9 @@ ENDIF
 
 acc_big = 3 * 2 ^ (B_PRECISION - POW2_K - 2);
 
-if(!NO_FAST) {
-  PRINT_TBL_COM_VDEF_ITEM(
-      "Power of 2 to scale down y: 2^-F_EXP_WIDTH",
-      "SCALE_DOWN\t", scale_down);
+if (!NO_FAST) {
+  PRINT_TBL_COM_VDEF_ITEM("Power of 2 to scale down y: 2^-F_EXP_WIDTH",
+                          "SCALE_DOWN\t", scale_down);
 
   tmp = as_int(acc_big, 32, F_EXP_WIDTH, MP_F_EXP_BIAS, MP_RZ);
   printf("#define ACC_BIG_HI_32\t\t0x%8.8.16i \n", tmp + 1);
@@ -809,7 +810,7 @@ ENDIF
 ** available.
 */
 
-if(!USE_BACKUP) { /* ln2_<hi,lo> are also used in the log2 part of pow */
+if (!USE_BACKUP) { /* ln2_<hi,lo> are also used in the log2 part of pow */
   c_hi = bround(ln2, R_PRECISION);
   PRINT_TBL_COM_VDEF_ITEM("ln2 in hi/lo", "LN2_HI\t\t", c_hi);
   PRINT_TBL_VDEF_ITEM("LN2_LO\t\t", ln2 - c_hi);
@@ -819,8 +820,8 @@ if(!USE_BACKUP) { /* ln2_<hi,lo> are also used in the log2 part of pow */
   PRINT_TBL_VDEF_ITEM("LN2_OV_LN10_LO\t\t", ln2_ov_ln10 - c_hi);
 }
 
-if(!NO_ACC) {
-  if(USE_BACKUP) { /* Approximate 2^x to extra precision */
+if (!NO_ACC) {
+  if (USE_BACKUP) { /* Approximate 2^x to extra precision */
     SET_POLY_GLOBALS(0, 1, ln2, 1);
     GEN_EXP_COEFS(max_pow2_x, F_PRECISION + POW2_K + 1, acc_pow2_deg_f,
                   "F_PRECISION acc pow2 poly coeffs", "ACC_POW2_F\t")
@@ -832,11 +833,10 @@ if(!NO_ACC) {
     _GENPOLY(ACC_POW2_F[% % d], ACC_POW2_POLY_F(t, x), -1, c0 = t,
              acc_pow2_deg_f + 1);
 
-    if(!ONE_TYPE) {
+    if (!ONE_TYPE) {
       SET_POLY_GLOBALS(0, 1, ln2, 1);
-      GEN_EXP_COEFS(max_pow2_x, R_PRECISION + POW2_K + 1,
-                    acc_pow2_deg_r, "R_PRECISION acc pow2 poly coeffs",
-                    "ACC_POW2_R\t")
+      GEN_EXP_COEFS(max_pow2_x, R_PRECISION + POW2_K + 1, acc_pow2_deg_r,
+                    "R_PRECISION acc pow2 poly coeffs", "ACC_POW2_R\t")
       GENPOLY(ACC_POW2_R[% % d], ACC_POW2_POLY_R(x), acc_pow2_deg_r);
     }
   }
@@ -853,7 +853,7 @@ ENDIF
 ** polynomial coefficients also don't require any scaling
 */
 
-if(!NO_ACC) {
+if (!NO_ACC) {
   PRINT_TBL_COM_VDEF_ITEM("'big' for accurate pow/exp rint computation",
                           "ACC_BIG\t\t", acc_big);
 
@@ -863,10 +863,11 @@ if(!NO_ACC) {
   ** small arguements (for which the final result is 1.)
   */
 
-  if(IEEE_FLOATING)
+  if (IEEE_FLOATING) {
     lo = (F_MIN_BIN_EXP + F_NORM - F_PRECISION) * ln2;
-  else
+  } else {
     lo = (F_MIN_BIN_EXP + F_NORM) * ln2;
+  }
   hi = (F_MAX_BIN_EXP + F_NORM) * ln2 + log((2 - 2 ^ -F_PRECISION));
 
   lo_check = F_HI_BITS_RND(2 ^ -(F_PRECISION + 1), MP_RM);
@@ -877,18 +878,18 @@ if(!NO_ACC) {
   PRINT_U_TBL_VDEF_ITEM("EXP_LO_CHECK_F\t", lo_check);
   PRINT_U_TBL_VDEF_ITEM("EXP_HI_CHECK_F\t", hi_check - lo_check);
 
-  if(!ONE_TYPE) {
-    if(IEEE_FLOATING)
+  if (!ONE_TYPE) {
+    if (IEEE_FLOATING) {
       lo = (R_MIN_BIN_EXP - R_NORM - R_PRECISION) * ln2;
-    else
+    } else {
       lo = (R_MIN_BIN_EXP - R_NORM) * ln2;
+    }
     hi = (R_MAX_BIN_EXP - R_NORM) * ln2 + log((2 - 2 ^ -R_PRECISION));
 
     lo_check = R_HI_BITS_RND(2 ^ -(R_PRECISION + 1), MP_RM);
     hi_check = R_HI_BITS_RND(max(-lo, hi), MP_RP);
 
-    TABLE_COMMENT(
-        "R_PRECISION argument and result sreening values");
+    TABLE_COMMENT("R_PRECISION argument and result sreening values");
 
     PRINT_U_TBL_VDEF_ITEM("EXP_LO_CHECK_R\t", lo_check);
     PRINT_U_TBL_VDEF_ITEM("EXP_HI_CHECK_R\t", hi_check - lo_check);
@@ -900,10 +901,11 @@ if(!NO_ACC) {
   ** (guaranteed overflow or underflow), NaNs and Infinities.
   */
 
-  if(IEEE_FLOATING)
+  if (IEEE_FLOATING) {
     lo = (F_MIN_BIN_EXP + F_NORM - F_PRECISION);
-  else
+  } else {
     lo = (F_MIN_BIN_EXP + F_NORM);
+  }
   hi = (F_MAX_BIN_EXP + F_NORM) + log2((2 - 2 ^ -F_PRECISION));
 
   hi_check = F_HI_BITS_RND(max(-lo, hi), MP_RP);
@@ -913,18 +915,18 @@ if(!NO_ACC) {
 
   PRINT_U_TBL_VDEF_ITEM("EXP2_HI_CHECK_F\t", hi_check - lo_check);
 
-  if(!ONE_TYPE) {
-    if(IEEE_FLOATING)
+  if (!ONE_TYPE) {
+    if (IEEE_FLOATING) {
       lo = (R_MIN_BIN_EXP - R_NORM - R_PRECISION);
-    else
+    } else {
       lo = (R_MIN_BIN_EXP - R_NORM);
+    }
     hi = (R_MAX_BIN_EXP - R_NORM) + log2((2 - 2 ^ -R_PRECISION));
 
     hi_check = R_HI_BITS_RND(max(-lo, hi), MP_RP);
     lo_check = R_HI_BITS_RND(2 ^ -(R_PRECISION + 1), MP_RM);
 
-    TABLE_COMMENT(
-        "R_PRECISION argument and result sreening values");
+    TABLE_COMMENT("R_PRECISION argument and result sreening values");
 
     PRINT_U_TBL_VDEF_ITEM("EXP2_HI_CHECK_R\t", hi_check - lo_check);
   }
@@ -934,10 +936,11 @@ if(!NO_ACC) {
   ** Once again for the 10^x case
   */
 
-  if(IEEE_FLOATING)
+  if (IEEE_FLOATING) {
     lo = (F_MIN_BIN_EXP + F_NORM - F_PRECISION) * ln2_ov_ln10;
-  else
+  } else {
     lo = (F_MIN_BIN_EXP + F_NORM) * ln2_ov_ln10;
+  }
   hi = (F_MAX_BIN_EXP + F_NORM) * ln2_ov_ln10 + log((2 - 2 ^ -F_PRECISION));
 
   lo_check = F_HI_BITS_RND(2 ^ -(F_PRECISION + 1), MP_RM);
@@ -948,18 +951,18 @@ if(!NO_ACC) {
   PRINT_U_TBL_VDEF_ITEM("EXP10_LO_CHECK_F\t", lo_check);
   PRINT_U_TBL_VDEF_ITEM("EXP10_HI_CHECK_F\t", hi_check - lo_check);
 
-  if(!ONE_TYPE) {
-    if(IEEE_FLOATING)
+  if (!ONE_TYPE) {
+    if (IEEE_FLOATING) {
       lo = (R_MIN_BIN_EXP - R_NORM - R_PRECISION) * ln2_ov_ln10;
-    else
+    } else {
       lo = (R_MIN_BIN_EXP - R_NORM) * ln2_ov_ln10;
+    }
     hi = (R_MAX_BIN_EXP - R_NORM) * ln2_ov_ln10 + log((2 - 2 ^ -R_PRECISION));
 
     lo_check = R_HI_BITS_RND(2 ^ -(R_PRECISION + 1), MP_RM);
     hi_check = R_HI_BITS_RND(max(-lo, hi), MP_RP);
 
-    TABLE_COMMENT(
-        "R_PRECISION argument and result sreening values for 10^x");
+    TABLE_COMMENT("R_PRECISION argument and result sreening values for 10^x");
 
     PRINT_U_TBL_VDEF_ITEM("EXP10_LO_CHECK_R\t", lo_check);
     PRINT_U_TBL_VDEF_ITEM("EXP10_HI_CHECK_R\t", hi_check - lo_check);
@@ -971,7 +974,7 @@ if(!NO_ACC) {
   ** for 2^x otherwise it uses one for e^x.
   **/
 
-  if(USE_BACKUP) {
+  if (USE_BACKUP) {
     SET_POLY_GLOBALS(0, 1, ln2, 1);
     GEN_EXP_COEFS(max_exp_x, F_PRECISION + POW2_K + 1, acc_exp_deg_f,
                   "F_PRECISION acc exp poly coeffs", "ACC_EXP_F\t");
@@ -1026,26 +1029,23 @@ PRINT_U_TBL_COM_VDEF_ITEM("F_PRECISION expm1 initial screening constants",
 PRINT_U_TBL_VDEF_ITEM("EXPM1_HI_CHECK_F", hi);
 PRINT_U_TBL_VDEF_ITEM("EXPM1_LO_CHECK_F", lo);
 
-if(!ONE_TYPE) {
+if (!ONE_TYPE) {
   poly = R_HI_BITS_RND(expm1_max_poly_arg, MP_RM);
   lo = R_HI_BITS_RND((R_PRECISION + 1) * ln2, MP_RM);
   hi = R_HI_BITS_RND((R_MAX_BIN_EXP + R_NORM + 1) * ln2, MP_RP);
-  PRINT_U_TBL_COM_VDEF_ITEM(
-      "R_PRECISION expm1 initial screening constants",
-      "EXPM1_POLY_CHECK_R", poly);
+  PRINT_U_TBL_COM_VDEF_ITEM("R_PRECISION expm1 initial screening constants",
+                            "EXPM1_POLY_CHECK_R", poly);
   PRINT_U_TBL_VDEF_ITEM("EXPM1_HI_CHECK_R", hi);
   PRINT_U_TBL_VDEF_ITEM("EXPM1_LO_CHECK_R", lo);
 }
 ENDIF
 
 expm1_max_red_arg = 2 / 2 ^ POW2_K;
-if(USE_BACKUP) {
+if (USE_BACKUP) {
   SET_POLY_GLOBALS(1, 1, 1, 1);
-  GEN_EXP_COEFS(expm1_max_poly_arg, F_PRECISION + POW2_K,
-                expm1_poly_deg_f, "F_PRECISION expm1 poly range poly coeffs",
-                "EXPM1_F\t\t");
-  _GENPOLY(EXPM1_F[% % d], EXPM1_POLY_F(x), -1, c0 = 0,
-           expm1_poly_deg_f + 1);
+  GEN_EXP_COEFS(expm1_max_poly_arg, F_PRECISION + POW2_K, expm1_poly_deg_f,
+                "F_PRECISION expm1 poly range poly coeffs", "EXPM1_F\t\t");
+  _GENPOLY(EXPM1_F[% % d], EXPM1_POLY_F(x), -1, c0 = 0, expm1_poly_deg_f + 1);
 
   SET_POLY_GLOBALS(1, 1, ln2, ln2);
   GEN_EXP_COEFS(expm1_max_red_arg, F_PRECISION + POW2_K, expm1_red_deg_f,
@@ -1065,17 +1065,15 @@ if(USE_BACKUP) {
   _GENPOLY(EXPM1_RED_F[% % d], EXPM1_RED_POLY_F(t, x), -2, c0 = t c1 = 0,
            expm1_red_deg_f + 2);
 
-  if(!ONE_TYPE) {
+  if (!ONE_TYPE) {
     SET_POLY_GLOBALS(1, 1, 1, 1);
-    GEN_EXP_COEFS(expm1_max_poly_arg, R_PRECISION + POW2_K,
-                  expm1_poly_deg_r, "R_PRECISION expm1 poly range poly coeffs",
-                  "EXPM1_R\t\t");
-    _GENPOLY(EXPM1_R[% % d], EXPM1_POLY_R(x), -1, c0 = 0,
-             expm1_poly_deg_r + 1);
+    GEN_EXP_COEFS(expm1_max_poly_arg, R_PRECISION + POW2_K, expm1_poly_deg_r,
+                  "R_PRECISION expm1 poly range poly coeffs", "EXPM1_R\t\t");
+    _GENPOLY(EXPM1_R[% % d], EXPM1_POLY_R(x), -1, c0 = 0, expm1_poly_deg_r + 1);
 
     SET_POLY_GLOBALS(1, 1, ln2, ln2);
-    GEN_EXP_COEFS(expm1_max_red_arg, R_PRECISION + POW2_K,
-                  expm1_red_deg_r, "R_PRECISION expm1 reduce range poly coeffs",
+    GEN_EXP_COEFS(expm1_max_red_arg, R_PRECISION + POW2_K, expm1_red_deg_r,
+                  "R_PRECISION expm1 reduce range poly coeffs",
                   "EXPM1_RED_R\t");
     _GENPOLY(EXPM1_RED_R[% % d], EXPM1_RED_POLY_R(x), -1, c0 = 0,
              expm1_red_deg_r + 1);
@@ -1100,9 +1098,9 @@ if(USE_BACKUP) {
 
 sinhcosh_max_poly_arg = sqrt(8 / pow2_table_size);
 
-hi = F_HI_BITS_RND((F_MAX_BIN_EXP + 1 + F_NORM) * ln2 +
-                       log((2 - 2 ^ -(F_PRECISION - 1))),
-                   MP_RP);
+hi = F_HI_BITS_RND(
+    (F_MAX_BIN_EXP + 1 + F_NORM) * ln2 + log((2 - 2 ^ -(F_PRECISION - 1))),
+    MP_RP);
 lo = F_HI_BITS_RND(sinhcosh_max_poly_arg, MP_RM);
 
 TABLE_COMMENT("F_PRECISION sinh/cosh argument screening constants");
@@ -1110,10 +1108,10 @@ PRINT_U_TBL_VDEF_ITEM("SINHCOSH_OVERFLOW_CHECK_F", hi);
 PRINT_U_TBL_VDEF_ITEM("SINHCOSH_BIG_CHECK_F", hi - lo);
 PRINT_U_TBL_VDEF_ITEM("SINHCOSH_POLY_CHECK_F", lo);
 
-if(!ONE_TYPE) {
-  hi = R_HI_BITS_RND((R_MAX_BIN_EXP + 1 - R_NORM) * ln2 +
-                         log((2 - 2 ^ -(R_PRECISION - 1))),
-                     MP_RP);
+if (!ONE_TYPE) {
+  hi = R_HI_BITS_RND(
+      (R_MAX_BIN_EXP + 1 - R_NORM) * ln2 + log((2 - 2 ^ -(R_PRECISION - 1))),
+      MP_RP);
   lo = R_HI_BITS_RND(sinhcosh_max_poly_arg, MP_RM);
 
   TABLE_COMMENT("R_PRECISION sinh/cosh argument screening constants");
@@ -1148,16 +1146,17 @@ function sinh_cosh_poly(x) {
 
   s = first_term_value;
 
-  if(x != 0) {
+  if (x != 0) {
     k = first_term;
     z = (x * x) * x_scale;
     t = first_term_value;
 
-    while(1) {
+    while (1) {
       k += 2;
       t = (t * z) / (k * k - k);
-      if((bexp(s) - bexp(t)) > bit_precision)
+      if ((bexp(s) - bexp(t)) > bit_precision) {
         break;
+      }
       s += t;
     }
   }
@@ -1165,46 +1164,40 @@ function sinh_cosh_poly(x) {
   return s * final_scale;
 }
 
-#define GEN_SINH_COSH_COEFS(max_x, prec, deg, com, tag)   \
-  {                                                       \
-    remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + \
-              REMES_SQUARE_ARG,                           \
-          0, max_x, sinh_cosh_poly,                       \
-          prec, &deg, &coefs);                            \
-    PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);              \
+#define GEN_SINH_COSH_COEFS(max_x, prec, deg, com, tag)                        \
+  {                                                                            \
+    remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0, \
+          max_x, sinh_cosh_poly, prec, &deg, &coefs);                          \
+    PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);                                   \
   }
 
-if(USE_BACKUP) {
+if (USE_BACKUP) {
   SET_POLY_GLOBALS(1, 1, 1, 1);
   GEN_SINH_COSH_COEFS(sinhcosh_max_poly_arg, F_PRECISION + POW2_K,
-                      sinh_poly_deg_f, "F_PRECISION sinh poly range poly coeffs",
-                      "SINH_F\t\t");
+                      sinh_poly_deg_f,
+                      "F_PRECISION sinh poly range poly coeffs", "SINH_F\t\t");
   _GENPOLY(SINH_F[% % d], SINH_POLY_F(x), -1, odd stride = 2,
            2 * sinh_poly_deg_f + 1);
 
   SET_POLY_GLOBALS(0, 1, 1, 1);
   GEN_SINH_COSH_COEFS(sinhcosh_max_poly_arg, F_PRECISION + POW2_K,
-                      cosh_poly_deg_f, "F_PRECISION cosh poly range poly coeffs",
-                      "COSH_F\t\t");
+                      cosh_poly_deg_f,
+                      "F_PRECISION cosh poly range poly coeffs", "COSH_F\t\t");
   _GENPOLY(COSH_F[% % d], COSH_POLY_F(x), -1, even stride = 2,
            2 * cosh_poly_deg_f);
 
-  _GENPOLY(ACC_POW2_F[% % d], SINHCOSH_ODD_POLY_F(x), 0, odd,
-           acc_pow2_deg_f);
-  _GENPOLY(ACC_POW2_F[% % d], SINHCOSH_EVEN_POLY_F(x), 0, even,
-           acc_pow2_deg_f);
+  _GENPOLY(ACC_POW2_F[% % d], SINHCOSH_ODD_POLY_F(x), 0, odd, acc_pow2_deg_f);
+  _GENPOLY(ACC_POW2_F[% % d], SINHCOSH_EVEN_POLY_F(x), 0, even, acc_pow2_deg_f);
 } else {
   SET_POLY_GLOBALS(3, 1 / 6, 1, 1);
-  GEN_SINH_COSH_COEFS(sinhcosh_max_poly_arg, F_PRECISION + 1,
-                      sinh_poly_deg_f, "F_PRECISION sinh poly range poly coeffs",
-                      "SINH_F\t\t");
+  GEN_SINH_COSH_COEFS(sinhcosh_max_poly_arg, F_PRECISION + 1, sinh_poly_deg_f,
+                      "F_PRECISION sinh poly range poly coeffs", "SINH_F\t\t");
   _GENPOLY(SINH_F[% % d], SINH_POLY_F(x)(x) +, -3, odd stride = 2 c1 = 0,
            2 * sinh_poly_deg_f + 3);
 
   SET_POLY_GLOBALS(2, .5, 1, 1);
-  GEN_SINH_COSH_COEFS(sinhcosh_max_poly_arg, F_PRECISION + 1,
-                      cosh_poly_deg_f, "F_PRECISION cosh poly range poly coeffs",
-                      "COSH_F\t\t");
+  GEN_SINH_COSH_COEFS(sinhcosh_max_poly_arg, F_PRECISION + 1, cosh_poly_deg_f,
+                      "F_PRECISION cosh poly range poly coeffs", "COSH_F\t\t");
   _GENPOLY(COSH_F[% % d], COSH_POLY_F(x) ONE +, -2, even stride = 2 c0 = 0,
            2 * cosh_poly_deg_f + 2);
 
@@ -1213,23 +1206,22 @@ if(USE_BACKUP) {
   _GENPOLY(ACC_EXP_F[% % d], SINHCOSH_EVEN_POLY_F(x), -1, even c0 = 0,
            acc_exp_deg_f + 1);
 
-  if(!ONE_TYPE) {
+  if (!ONE_TYPE) {
     SET_POLY_GLOBALS(1, 1, 1, 1);
-    GEN_SINH_COSH_COEFS(sinhcosh_max_poly_arg, R_PRECISION + POW2_K,
-                        sinh_poly_deg_r, "R_PRECISION sinh poly range poly coeffs",
-                        "SINH_R\t\t");
+    GEN_SINH_COSH_COEFS(
+        sinhcosh_max_poly_arg, R_PRECISION + POW2_K, sinh_poly_deg_r,
+        "R_PRECISION sinh poly range poly coeffs", "SINH_R\t\t");
     _GENPOLY(SINH_R[% % d], SINH_POLY_R(x), -1, odd stride = 2,
              2 * sinh_poly_deg_r + 1);
 
     SET_POLY_GLOBALS(0, 1, 1, 1);
-    GEN_SINH_COSH_COEFS(sinhcosh_max_poly_arg, R_PRECISION + POW2_K,
-                        cosh_poly_deg_r, "R_PRECISION cosh poly range poly coeffs",
-                        "COSH_R\t\t");
+    GEN_SINH_COSH_COEFS(
+        sinhcosh_max_poly_arg, R_PRECISION + POW2_K, cosh_poly_deg_r,
+        "R_PRECISION cosh poly range poly coeffs", "COSH_R\t\t");
     _GENPOLY(COSH_R[% % d], COSH_POLY_R(x), 0, even stride = 2,
              2 * cosh_poly_deg_r);
 
-    _GENPOLY(ACC_POW2_R[% % d], SINHCOSH_ODD_POLY_R(x), 0, odd,
-             acc_pow2_deg_r);
+    _GENPOLY(ACC_POW2_R[% % d], SINHCOSH_ODD_POLY_R(x), 0, odd, acc_pow2_deg_r);
     _GENPOLY(ACC_POW2_R[% % d], SINHCOSH_EVEN_POLY_R(x), 0, even,
              acc_pow2_deg_r);
   }
@@ -1263,8 +1255,7 @@ PRINT_TBL_COM_VDEF_ITEM("B_PRECISION .5, 1.0 and 2.0", "HALF\t\t", .5);
 PRINT_TBL_VDEF_ITEM("ONE\t\t", 1.0);
 PRINT_TBL_VDEF_ITEM("TWO\t\t", 2.0);
 
-PRINT_TBL_COM_VDEF_ITEM("B_PRECISION max float", "MAX_FLOAT\t",
-                        MP_MAX_FLOAT);
+PRINT_TBL_COM_VDEF_ITEM("B_PRECISION max float", "MAX_FLOAT\t", MP_MAX_FLOAT);
 
 PRINT_TBL_COM_VDEF_ITEM("1/ln2 in B_PRECISION", "RECIP_LN2\t", recip_ln2);
 
@@ -1429,17 +1420,16 @@ PRINT_TBL_COM_VDEF_ITEM("1/ln2 in B_PRECISION", "RECIP_LN2\t", recip_ln2);
 ** and lo pieces, depending on whether divide is used or not.
 */
 
-if(!USE_BACKUP) {
-  if(USE_DIVIDE) {
+if (!USE_BACKUP) {
+  if (USE_DIVIDE) {
     c = 2 * recip_ln2;
-    PRINT_TBL_COM_VDEF_ITEM("2/ln2 in F_PRECISION and hi/lo",
-                            "TWO_OVER_LN2\t", c);
+    PRINT_TBL_COM_VDEF_ITEM("2/ln2 in F_PRECISION and hi/lo", "TWO_OVER_LN2\t",
+                            c);
     c_hi = bround(c, R_PRECISION);
     PRINT_TBL_VDEF_ITEM("TWO_OVER_LN2_HI\t", c_hi);
     PRINT_TBL_VDEF_ITEM("TWO_OVER_LN2_LO\t", c - c_hi);
   } else {
-    PRINT_TBL_COM_VDEF_ITEM("ln2/2 in F_PRECISION",
-                            "LN2_OVER_TWO\t", .5 * ln2);
+    PRINT_TBL_COM_VDEF_ITEM("ln2/2 in F_PRECISION", "LN2_OVER_TWO\t", .5 * ln2);
   }
 }
 ENDIF
@@ -1466,16 +1456,17 @@ function divide_log2_poly(x) {
 
   s = first_term_value;
 
-  if(x != 0) {
+  if (x != 0) {
     k = 2 * first_term + 1;
     z = (x * x) * x_scale;
     t = z;
 
-    while(1) {
+    while (1) {
       k += 2;
       u = t / k;
-      if((bexp(s) - bexp(u)) > bit_precision)
+      if ((bexp(s) - bexp(u)) > bit_precision) {
         break;
+      }
       s += u;
       t *= z;
     }
@@ -1515,14 +1506,15 @@ function no_divide_log2_poly(x) {
   auto s, z, k, u, t;
 
   s = first_term_value;
-  if(x != 0) {
+  if (x != 0) {
     k = first_term + 2;
     z = x * x_scale;
     t = z;
-    while(1) {
+    while (1) {
       u = t / k;
-      if(bexp(s) - bexp(u) > bit_precision)
+      if (bexp(s) - bexp(u) > bit_precision) {
         break;
+      }
       s += u;
       t *= z;
       k++;
@@ -1532,31 +1524,30 @@ function no_divide_log2_poly(x) {
   return s * final_scale;
 }
 
-#define __GEN_LOG_COEFS(term, min, max, func, prec, deg, com, tag) \
-  {                                                                \
-    remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT +          \
-              (term),                                              \
-          min, max, func, prec, &deg, &coefs);                     \
-    PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);                       \
+#define __GEN_LOG_COEFS(term, min, max, func, prec, deg, com, tag)          \
+  {                                                                         \
+    remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + (term), min, max, \
+          func, prec, &deg, &coefs);                                        \
+    PRINT_TBL_COM_ADEF_ARRAY(com, tag, deg);                                \
   }
 
-#define GEN_DIV_LOG_COEFS(max, prec, deg, com, tag) \
-  __GEN_LOG_COEFS(REMES_SQUARE_ARG, 0., max,        \
-                  divide_log2_poly, prec, deg, com, tag)
+#define GEN_DIV_LOG_COEFS(max, prec, deg, com, tag)                            \
+  __GEN_LOG_COEFS(REMES_SQUARE_ARG, 0., max, divide_log2_poly, prec, deg, com, \
+                  tag)
 
-#define GEN_NO_DIV_LOG_COEFS(min, max, prec, deg, com, tag) \
-  __GEN_LOG_COEFS(REMES_LINEAR_ARG, min, max,               \
-                  no_divide_log2_poly, prec, deg, com, tag)
+#define GEN_NO_DIV_LOG_COEFS(min, max, prec, deg, com, tag)                   \
+  __GEN_LOG_COEFS(REMES_LINEAR_ARG, min, max, no_divide_log2_poly, prec, deg, \
+                  com, tag)
 
 log2_table_size = 2 ^ LOG2_K;
 min_arg = -1 / ((2 * log2_table_size + 2) * ln2);
 max_arg = 1 / (2 * log2_table_size * ln2);
 
-if(!NO_ACC) {
-  if(USE_DIVIDE) {
+if (!NO_ACC) {
+  if (USE_DIVIDE) {
     c = ln2 / 2;
     max_div_arg = 2 / ((4 * log2_table_size + 1) * ln2);
-    if(USE_BACKUP) {
+    if (USE_BACKUP) {
       SET_POLY_GLOBALS(0, 1, c * c, 1);
       GEN_DIV_LOG_COEFS(max_div_arg, F_PRECISION + 2 * LOG2_K + 3,
                         acc_log2_deg_f, "F_PRECISION acc log2 poly coeffs",
@@ -1570,7 +1561,7 @@ if(!NO_ACC) {
       _GENPOLY(ACC_LOG2_F[% % d], ACC_LOG2_POLY_F(t, x), -3,
                odd stride = 2 c0 = t c1 = 0, 2 * acc_log2_deg_f + 3);
 
-      if(!ONE_TYPE) {
+      if (!ONE_TYPE) {
         /* Get R_PRECISION coefficients - backup prec assumed. */
         SET_POLY_GLOBALS(0, 1, c * c, 1);
         GEN_DIV_LOG_COEFS(max_div_arg, R_PRECISION + 2 * LOG2_K + 3,
@@ -1583,7 +1574,7 @@ if(!NO_ACC) {
     }
   } else /* !USE_DIVIDE */
   {
-    if(USE_BACKUP) {
+    if (USE_BACKUP) {
       SET_POLY_GLOBALS(0, 1, -c, 1);
       GEN_NO_DIV_LOG_COEFS(min_arg, max_arg, F_PRECISION + LOG2_K + 3,
                            acc_log2_deg_f, "F_PRECISION acc log2 poly coeffs",
@@ -1592,14 +1583,13 @@ if(!NO_ACC) {
                acc_log2_deg_f);
     } else {
       SET_POLY_GLOBALS(2, 1 / 3, -ln2, ln2 * ln2);
-      GEN_NO_DIV_LOG_COEFS(min_arg, max_arg, F_PRECISION + 1,
-                           acc_log2_deg_f, "F_PRECISION acc log2 poly coeffs",
-                           "ACC_LOG2_F\t");
+      GEN_NO_DIV_LOG_COEFS(min_arg, max_arg, F_PRECISION + 1, acc_log2_deg_f,
+                           "F_PRECISION acc log2 poly coeffs", "ACC_LOG2_F\t");
       _GENPOLY(ACC_LOG2_F[% % d], ACC_LOG2_POLY_F(t, x), -3,
                c0 = t c1 = 0 c2 = 0, acc_log2_deg_f + 3);
     }
 
-    if(!ONE_TYPE) {
+    if (!ONE_TYPE) {
       /*
       ** backup precision is assumed. Also, we can combine the
       ** addition of the hi bits of log2(x) with the polynomial
@@ -1618,7 +1608,7 @@ if(!NO_ACC) {
 }
 ENDIF
 
-if(!NO_FAST) {
+if (!NO_FAST) {
   /*
   ** We assume that we are not using the divide reduction for the
   ** fast case.  Additionally, we assume that if backup precision
@@ -1627,17 +1617,16 @@ if(!NO_FAST) {
   ** separately and added in afterwards.
   */
 
-  if(USE_BACKUP)
+  if (USE_BACKUP) {
     printf("#define FAST_LOG2_POLY_F\t\tACC_LOG2_POLY_F\n");
-  else {
+  } else {
     SET_POLY_GLOBALS(1, 1 / 2, -ln2, -ln2);
-    GEN_NO_DIV_LOG_COEFS(min_arg, max_arg, F_PRECISION + 1,
-                         fast_log2_deg_f, "F_PRECISION fast log2 poly coeffs",
-                         "FAST_LOG2_F\t");
+    GEN_NO_DIV_LOG_COEFS(min_arg, max_arg, F_PRECISION + 1, fast_log2_deg_f,
+                         "F_PRECISION fast log2 poly coeffs", "FAST_LOG2_F\t");
     _GENPOLY(FAST_LOG2_F[% % d], FAST_LOG2_POLY_F(t, x), -2,
              c0 = t c1 = 0 c2 = 0, fast_log2_deg_f + 2);
 
-    if(!ONE_TYPE) {
+    if (!ONE_TYPE) {
       _GENPOLY(ACC_LOG2_R[% % d], FAST_LOG2_POLY_R(t, x), -1,
                c0 = t c1 = 0 c2 = 0, acc_log2_deg_r + 1);
     }
@@ -1701,12 +1690,12 @@ ENDIF
 #define LOG_INDEX_BASE_POS (__LOG2(BITS_PER_F_TYPE) - 3)
 #define LOG_INDEX_SCALE 3
 
-#define PRINT_LOG_TABLE_ENTRY(j, Fj, Rj, Lj)             \
-  printf("\t/* %4i */ %#.4" STR(F_CHAR) ", /* %3i */\n", \
-         BYTES(MP_BIT_OFFSET), Fj, j);                   \
-  MP_BIT_OFFSET += BITS_PER_F_TYPE;                      \
-  Lj_hi = bround(Lj, F_HI_HALF_PRECISION);               \
-  __PRINT_TABLE_VALUE(F_CHAR, Lj_hi);                    \
+#define PRINT_LOG_TABLE_ENTRY(j, Fj, Rj, Lj)                                   \
+  printf("\t/* %4i */ %#.4" STR(F_CHAR) ", /* %3i */\n", BYTES(MP_BIT_OFFSET), \
+         Fj, j);                                                               \
+  MP_BIT_OFFSET += BITS_PER_F_TYPE;                                            \
+  Lj_hi = bround(Lj, F_HI_HALF_PRECISION);                                     \
+  __PRINT_TABLE_VALUE(F_CHAR, Lj_hi);                                          \
   __PRINT_TABLE_VALUE(F_CHAR, Lj - Lj_hi)
 
 #elif !(ONE_TYPE || NO_FAST || NO_ACC || USE_DIVIDE)
@@ -1736,13 +1725,13 @@ ENDIF
 #define LOG_INDEX_BASE_POS (__LOG2(BITS_PER_F_TYPE) - 1)
 #define LOG_INDEX_SCALE 1
 
-#define PRINT_LOG_TABLE_ENTRY(j, Fj, Rj, Lj)                                                        \
-  Lj_hi = bround(Lj, R_PRECISION);                                                                  \
-  printf("\t/* %4i */ %#.4" STR(R_CHAR) ", %#.4" STR(R_CHAR) ", /* %3i */\n", BYTES(MP_BIT_OFFSET), \
-         Fj, Lj_hi, j);                                                                             \
-  MP_BIT_OFFSET += 2 * BITS_PER_R_TYPE;                                                             \
-  __PRINT_TABLE_VALUE(F_CHAR, Rj);                                                                  \
-  __PRINT_TABLE_VALUE(F_CHAR, Rj - bround(Rj, LOG2_K));                                             \
+#define PRINT_LOG_TABLE_ENTRY(j, Fj, Rj, Lj)                                  \
+  Lj_hi = bround(Lj, R_PRECISION);                                            \
+  printf("\t/* %4i */ %#.4" STR(R_CHAR) ", %#.4" STR(R_CHAR) ", /* %3i */\n", \
+         BYTES(MP_BIT_OFFSET), Fj, Lj_hi, j);                                 \
+  MP_BIT_OFFSET += 2 * BITS_PER_R_TYPE;                                       \
+  __PRINT_TABLE_VALUE(F_CHAR, Rj);                                            \
+  __PRINT_TABLE_VALUE(F_CHAR, Rj - bround(Rj, LOG2_K));                       \
   __PRINT_TABLE_VALUE(F_CHAR, Lj - Lj_hi)
 #else
 
@@ -1758,7 +1747,7 @@ printf("#define LOG_INDEX_SCALE\t\t%i \n", LOG_INDEX_SCALE);
 
 TABLE_COMMENT(LOG_TABLE_BANNER);
 
-for(i = 0; i <= log2_table_size; i++) {
+for (i = 0; i <= log2_table_size; i++) {
   Fj = 1 + (i / log2_table_size);
   Rj = 1 / (Fj * ln2);
   Lj = log2(Fj);
@@ -1772,15 +1761,15 @@ printf("#else\n"
                                                                 "\n#endif\n\n",
        MP_BIT_OFFSET / BITS_PER_F_TYPE - 1);
 
-@end_divert
-    @eval my $outText = MphocEval(GetStream("divertText"));
+@end_divert @eval my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 my $polyText = Egrep(STR(GENPOLY_EXECUTABLE), $tableText, 	\
                               \$tableText);
 $polyText = GenPoly($polyText);
 $outText = "$tableText\n\n$defineText\n\n$polyText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for "."power and related functions", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants for "."power and related functions", __FILE__);
 print "$headerText\n\n$outText";
 
 /*  end of the MAKE_INCLUDE mphoc code section */

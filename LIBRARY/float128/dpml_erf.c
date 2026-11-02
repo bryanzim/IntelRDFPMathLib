@@ -101,7 +101,7 @@
 #endif
 
 #if defined(PRECISION_BACKUP_AVAILABLE)
-#define EXP_OTHER_ARGS EXP_WORD_TYPE *pow_of_two
+#define EXP_OTHER_ARGS EXP_WORD_TYPE* pow_of_two
 #else
 #define EXP_OTHER_ARGS EXP_WORD_TYPE *pow_of_two, F_TYPE *pow2_low
 #endif
@@ -207,7 +207,6 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME(F_TYPE x, EXP_OTHER_ARGS);
 #if defined(MAKE_INCLUDE)
 
 @divert divertText
-
 /*
  * The following subroutine "purifies" a floating point number by
  * zeroing out low order bits that will not appear when the floating
@@ -243,11 +242,10 @@ extern B_TYPE F_EXP_SPECIAL_ENTRY_NAME(F_TYPE x, EXP_OTHER_ARGS);
   x2 = (b);                                                  \
   f1 = F(x1);                                                \
   f2 = F(x2);                                                \
-  while(1) {                                                 \
+  while (1) {                                                \
     r = ((x1 * f2 - x2 * f1) + (c) * (x2 - x1)) / (f2 - f1); \
     err = 2 * abs((r - x2) / (r + x2));                      \
-    if(err < (t))                                            \
-      break;                                                 \
+    if (err < (t)) break;                                    \
     x1 = x2;                                                 \
     x2 = r;                                                  \
     f1 = f2;                                                 \
@@ -412,15 +410,16 @@ old_precision = precision;
 precision = ceil(2 * F_PRECISION / MP_RADIX_BITS) + 4;
 
 function erf_x_over_x() {
-  if($1 == 0)
+  if ($1 == 0) {
     return mu;
-  else
+  } else {
     return erf($1) / $1;
+  }
 }
 
-remes(REMES_FIND_POLYNOMIAL + REMES_SQUARE_ARG + REMES_RELATIVE_WEIGHT,
-      0, largest_poly_arg, erf_x_over_x, F_PRECISION + 1 + 3,
-      &erf_poly_degree, &erf_poly_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_SQUARE_ARG + REMES_RELATIVE_WEIGHT, 0,
+      largest_poly_arg, erf_x_over_x, F_PRECISION + 1 + 3, &erf_poly_degree,
+      &erf_poly_coefs);
 
 precision = old_precision;
 
@@ -487,8 +486,7 @@ FIND_ROOT(a, b, rho, tol, 3 * F_PRECISION, erfc_min_x);
  * erfc(x) is normalized.
  */
 
-min_bin_exp =
-    IEEE_FLOATING ? (F_MIN_BIN_EXP - F_PRECISION + 1) : F_MIN_BIN_EXP;
+min_bin_exp = IEEE_FLOATING ? (F_MIN_BIN_EXP - F_PRECISION + 1) : F_MIN_BIN_EXP;
 
 /* use erfc(x) ~ exp(-x^2)/(x*sqrt(pi)) to get a and b */
 
@@ -500,7 +498,7 @@ c = 2 ^ (min_bin_exp - 1);
 #define F(x) (erfc(x))
 FIND_ROOT(a, b, c, tol, 3 * F_PRECISION, erfc_underflow_x);
 
-if(IEEE_FLOATING) { /* Compute denorm threshold */
+if (IEEE_FLOATING) { /* Compute denorm threshold */
   a = sqrt(-((F_MIN_BIN_EXP - 1) * log(2) + log(pi) / 2));
   b = sqrt(-((F_MIN_BIN_EXP - 1) * log(2) + log(pi) / 2) + log(a));
   c = 2 ^ F_MIN_BIN_EXP;
@@ -540,17 +538,14 @@ if(IEEE_FLOATING) { /* Compute denorm threshold */
 old_precision = precision;
 precision = ceil(2 * F_PRECISION / MP_RADIX_BITS) + 4;
 
-function x_exp_x2_erfc_x() {
-  return ($1)*exp($1 * $1) * erfc($1);
-}
+function x_exp_x2_erfc_x() { return ($1)*exp($1 * $1) * erfc($1); }
 
 erf_max_x = purify(erf_max_x);
 erfc_underflow_x = purify(erfc_underflow_x);
 
-remes(
-    REMES_FIND_POLYNOMIAL + REMES_RECIP_SQUARE_ARG + REMES_RELATIVE_WEIGHT,
-    erf_max_x, erfc_underflow_x, x_exp_x2_erfc_x, F_PRECISION + 1 + 3,
-    &erfc_poly_degree, &erfc_poly_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RECIP_SQUARE_ARG + REMES_RELATIVE_WEIGHT,
+      erf_max_x, erfc_underflow_x, x_exp_x2_erfc_x, F_PRECISION + 1 + 3,
+      &erfc_poly_degree, &erfc_poly_coefs);
 
 precision = old_precision;
 
@@ -592,24 +587,25 @@ function exp_x2_erfc_x() { return exp($1 * $1) * erfc($1); }
 
 erf_max_x = purify(erf_max_x);
 
-remes(
-    REMES_FIND_RATIONAL + REMES_LINEAR_ARG +
-        REMES_RELATIVE_WEIGHT + REMES_INIT_LEFT_CHEBY,
-    largest_poly_arg, erf_max_x, exp_x2_erfc_x, F_PRECISION + 1 + 3,
-    &erfc_num_degree, &erfc_den_degree, &erfc_rational_coefs);
+remes(REMES_FIND_RATIONAL + REMES_LINEAR_ARG + REMES_RELATIVE_WEIGHT +
+          REMES_INIT_LEFT_CHEBY,
+      largest_poly_arg, erf_max_x, exp_x2_erfc_x, F_PRECISION + 1 + 3,
+      &erfc_num_degree, &erfc_den_degree, &erfc_rational_coefs);
 
 precision = old_precision;
 
 /* Copy numerator coefficients and pad out to same number as denominator */
 first_den_coef = erfc_num_degree + 1;
-for(i = 0; i <= erfc_num_degree; i++)
+for (i = 0; i <= erfc_num_degree; i++) {
   erfc_num_coefs[i] = erfc_rational_coefs[i];
+}
 
-while(erfc_num_degree < erfc_den_degree)
+while (erfc_num_degree < erfc_den_degree) {
   erfc_num_coefs[++erfc_num_degree] = 0;
+}
 
 /* Copy denominator coefficients and subtract from numerator */
-for(i = 0; i <= erfc_den_degree; i++) {
+for (i = 0; i <= erfc_den_degree; i++) {
   erfc_den_coefs[i] = erfc_rational_coefs[i + first_den_coef];
   erfc_num_coefs[i] = 8 * erfc_num_coefs[i] - erfc_den_coefs[i];
 }
@@ -658,8 +654,9 @@ for(i = 0; i <= erfc_den_degree; i++) {
 
 /* Adjust erfc coefficients */
 
-for(i = 0; i <= erfc_poly_degree; i++)
+for (i = 0; i <= erfc_poly_degree; i++) {
   erfc_poly_coefs[i] = 2 * erfc_poly_coefs[i];
+}
 
 erfc_poly_coefs[0] = erfc_poly_coefs[0] - 1;
 
@@ -760,17 +757,18 @@ erfc_poly_coefs[0] = erfc_poly_coefs[0] - 1;
 
 #define EXP_SCALE_MASK ((WORD)~MAKE_MASK(POW2_K, 0))
 #if (F_EXP_POS >= POW2_K)
-#define ADJUST_AND_ALIGN_SCALE(s) (((s) & EXP_SCALE_MASK) \
-                                   << (F_EXP_POS - POW2_K));
+#define ADJUST_AND_ALIGN_SCALE(s) \
+  (((s) & EXP_SCALE_MASK) << (F_EXP_POS - POW2_K));
 #else
-#define ADJUST_AND_ALIGN_SCALE(s) (((s) & EXP_SCALE_MASK) >> (POW2_K - F_EXP_POS));
+#define ADJUST_AND_ALIGN_SCALE(s) \
+  (((s) & EXP_SCALE_MASK) >> (POW2_K - F_EXP_POS));
 #endif
 
 #if defined(MAKE_INCLUDE)
     @divert -
     append divertText
 
-    if(PRECISION_BACKUP_AVAILABLE) {
+    if (PRECISION_BACKUP_AVAILABLE) {
   t = bround(erfc_underflow_x * erfc_underflow_x, F_PRECISION);
   n = bexp(t);
   max_x_sqr_lo = bldexp(1., n - F_PRECISION);
@@ -788,27 +786,28 @@ old_precision = precision;
 precision = ceil(2 * F_PRECISION / MP_RADIX_BITS) + 8;
 
 function exp_m1_ov_x() {
-  if($1 == 0)
+  if ($1 == 0) {
     return 1;
-  else
+  } else {
     return expm1(-$1) / (-$1);
+  }
 }
 
-remes(REMES_FIND_POLYNOMIAL + REMES_LINEAR_ARG + REMES_RELATIVE_WEIGHT,
-      0, max_x_sqr_lo, exp_m1_ov_x, F_PRECISION + 1, &exp_poly_degree,
+remes(REMES_FIND_POLYNOMIAL + REMES_LINEAR_ARG + REMES_RELATIVE_WEIGHT, 0,
+      max_x_sqr_lo, exp_m1_ov_x, F_PRECISION + 1, &exp_poly_degree,
       &exp_poly_coefs);
 
 precision = old_precision;
 
-#define F_PRINT_A_DEFINE(name) PRINT_TABLE_ADDRESS_DEFINE(name, \
-                                                          TABLE_NAME, offset, F_TYPE)
-#define F_PRINT_V_DEFINE(name) PRINT_TABLE_VALUE_DEFINE(name, \
-                                                        TABLE_NAME, offset, F_TYPE)
+#define F_PRINT_A_DEFINE(name) \
+  PRINT_TABLE_ADDRESS_DEFINE(name, TABLE_NAME, offset, F_TYPE)
+#define F_PRINT_V_DEFINE(name) \
+  PRINT_TABLE_VALUE_DEFINE(name, TABLE_NAME, offset, F_TYPE)
 #define F_PRINT_ENTRY(value) PRINT_1_F_TYPE_ENTRY(value, offset)
 #define PRINT_COEFS(a, n, d) \
   F_PRINT_A_DEFINE(d);       \
   TABLE_COMMENT(STR(a));     \
-  for(i = 0; i <= n; i++) {  \
+  for (i = 0; i <= n; i++) { \
     F_PRINT_ENTRY(a[i]);     \
   }
 
@@ -838,10 +837,9 @@ PRINT_COEFS(erfc_den_coefs, erfc_den_degree, ERFC_DEN_COEFS);
 
 END_TABLE;
 
-IF_MAKE_COMMON(
-    printf("\n#else\n\n");
-    printf("    extern const " STR(F_TYPE) " " STR(TABLE_NAME) "[];\n");
-    printf("\n#endif\n\n");)
+IF_MAKE_COMMON(printf("\n#else\n\n"); printf(
+                   "    extern const " STR(F_TYPE) " " STR(TABLE_NAME) "[];\n");
+               printf("\n#endif\n\n");)
 
 printf("#define ERF_POLY(t,z)\t\tPOLY_%i_ALL(t, ERF_POLY_COEFS, z)\n",
        erf_poly_degree);
@@ -881,8 +879,9 @@ printf("#define ERFC_DEN_POLY(t,z)\tPOLY_%i_ALL(t, ERFC_DEN_COEFS, z)\n",
 
 function as_int() {
   _sign = 0;
-  if($1 < 0)
+  if ($1 < 0) {
     _sign = 1;
+  }
   exponent = bexp($1);
 
   _y = trunc(bldexp($1, _F_EXP_POS + 1 - exponent));
@@ -896,19 +895,20 @@ printf("#define MIN_ERF_POLY_ARG\t" HEX_FMT "\n",
        as_int(smallest_erf_poly_arg));
 printf("#define MIN_ERFC_POLY_ARG\t" HEX_FMT "\n",
        as_int(smallest_erfc_poly_arg));
-printf("#define ERFC_MAX_CONSTANT_ARG\t(" HEX_FMT " - (U_WORD) " HEX_FMT ")\n", as_int(-erfc_min_x), bldexp(1, _F_SIGN_BIT_POS));
+printf("#define ERFC_MAX_CONSTANT_ARG\t(" HEX_FMT " - (U_WORD) " HEX_FMT ")\n",
+       as_int(-erfc_min_x), bldexp(1, _F_SIGN_BIT_POS));
 printf("#define ERF_MIN_CONSTANT_ARG\t" HEX_FMT "\n", as_int(erf_max_x));
 printf("#define MIN_ASYMTOTIC_ARG\t" HEX_FMT "\n", as_int(erf_max_x));
-printf("#define MIN_UNDERFLOW_ARG\t" HEX_FMT "\n",
-       as_int(erfc_underflow_x));
+printf("#define MIN_UNDERFLOW_ARG\t" HEX_FMT "\n", as_int(erfc_underflow_x));
 
 @end_divert
 
 #define TMP_FILE ADD_EXTENSION(BUILD_FILE_NAME, tmp)
     @eval my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for "."erf and erfc functions", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants for "."erf and erfc functions", __FILE__);
 print "$headerText\n\n$tableText\n\n$defineText\n";
 
 #endif
@@ -920,8 +920,8 @@ print "$headerText\n\n$tableText\n\n$defineText\n";
 #define EXP_INC SET_BIT(F_EXP_POS)
 
 #if IEEE_FLOATING
-#define HAS_ABNORMAL_EXP(e) ((((e) + EXP_INC) & \
-                              MAKE_MASK(F_EXP_WIDTH - 1, F_EXP_POS + 1)) == 0)
+#define HAS_ABNORMAL_EXP(e) \
+  ((((e) + EXP_INC) & MAKE_MASK(F_EXP_WIDTH - 1, F_EXP_POS + 1)) == 0)
 #define _F_SIGN_BIT_MASK F_SIGN_BIT_MASK
 #else
 #if (BITS_PER_WORD <= BITS_PER_F_TYPE)
@@ -943,8 +943,7 @@ print "$headerText\n\n$tableText\n\n$defineText\n";
   z += u
 #else
 #define ADD_IN_ERFC_CONST(i, x, u, z) \
-  if((i) < 0)                         \
-  z += (F_TYPE)2.0
+  if ((i) < 0) z += (F_TYPE)2.0
 #endif
 
 #if !defined F_ENTRY_NAME
@@ -973,16 +972,18 @@ F_TYPE F_ENTRY_NAME(F_TYPE x) {
   IF_VAX(s_exp_word = _u_.F_HI_WORD;
          s_exp_word = SIGN_EXTENDED_PDP_SHUFFLE(s_exp_word);)
 
-  IF_IEEE(if(HAS_ABNORMAL_EXP(s_exp_word)) goto ieee_abnormal_arguments;)
+  IF_IEEE(if (HAS_ABNORMAL_EXP(s_exp_word)) goto ieee_abnormal_arguments;)
 
   /* Get "|x|" and branch to the right code for the size of x */
   exp_word = s_exp_word & (~(-_F_SIGN_BIT_MASK));
 
-  if(exp_word > MAX_POLY_ARG)
+  if (exp_word > MAX_POLY_ARG) {
     goto not_a_poly_argument;
+  }
 
-  if(exp_word <= SELECT(MIN_ERF_POLY_ARG, MIN_ERFC_POLY_ARG))
+  if (exp_word <= SELECT(MIN_ERF_POLY_ARG, MIN_ERFC_POLY_ARG)) {
     goto identity_range;
+  }
 
   /* Just need to do a polynomial evaluation for these arguments */
   w = x * x;
@@ -994,8 +995,7 @@ F_TYPE F_ENTRY_NAME(F_TYPE x) {
    * 1 - x
    */
 
-  SELECT(z = x + z;, y = (F_TYPE)1. - x;
-         w = x - ((F_TYPE)1. - y);
+  SELECT(z = x + z;, y = (F_TYPE)1. - x; w = x - ((F_TYPE)1. - y);
          z = y - (w + z);)
 
   return z;
@@ -1007,14 +1007,14 @@ not_a_poly_argument:
    * then we can just return a constant
    */
 
-  if(
-      SELECT(exp_word > ERF_MIN_CONSTANT_ARG,
-             s_exp_word >= ERFC_MAX_CONSTANT_ARG))
+  if (SELECT(exp_word > ERF_MIN_CONSTANT_ARG,
+             s_exp_word >= ERFC_MAX_CONSTANT_ARG)) {
     goto return_constant;
+  }
 
   /* If x is a large positive number, erfc will underflow */
 
-  IF_ERFC(if(exp_word > MIN_UNDERFLOW_ARG) goto underflow;)
+  IF_ERFC(if (exp_word > MIN_UNDERFLOW_ARG) goto underflow;)
 
   /*
    * To approximate erf or erfc for arguments in this range, we need to
@@ -1032,7 +1032,7 @@ not_a_poly_argument:
    * For erfc, if x is really big, we need to use an asymtotic approximation
    */
 
-  IF_ERFC(if(exp_word > MIN_ASYMTOTIC_ARG) goto needs_asymtotic;)
+  IF_ERFC(if (exp_word > MIN_ASYMTOTIC_ARG) goto needs_asymtotic;)
 
   /*
    * In the medium range, we use approximation (4) in the form
@@ -1056,8 +1056,9 @@ not_a_poly_argument:
   _u_.F_HI_WORD += (scale - 3 * EXP_INC);
   z = _u_.f;
   IF_ERF(z = (F_TYPE)1.0 - z;)
-  if(s_exp_word >= 0)
+  if (s_exp_word >= 0) {
     goto return_z;
+  }
 
   /* Negate for erf, subtract from 2 for erfc */
   z = SELECT(-z, (F_TYPE)2.0 - z);
@@ -1084,8 +1085,9 @@ needs_asymtotic:
   s_exp_word = _u_.F_HI_WORD;
   _u_.F_HI_WORD = s_exp_word + scale;
   scale = (s_exp_word & F_EXP_MASK) + scale;
-  if(scale <= 0)
+  if (scale <= 0) {
     goto denorm_or_underflow;
+  }
   z = _u_.f;
   return z;
 
@@ -1093,15 +1095,14 @@ denorm_or_underflow:
 
 #if IEEE_FLOATING
 
-  if((WORD)(scale + ALIGN_W_EXP_FIELD(F_PRECISION - 1)) >= 0) {
-
+  if ((WORD)(scale + ALIGN_W_EXP_FIELD(F_PRECISION - 1)) >= 0) {
     /*
     ** At this point, we have z = 2^n*f is in the denormalized range.
     ** Redefine z to be 2^0*f.
     */
 
-    s_exp_word = (s_exp_word & ~F_SIGN_EXP_MASK) |
-                 ALIGN_W_EXP_FIELD(F_EXP_BIAS);
+    s_exp_word =
+        (s_exp_word & ~F_SIGN_EXP_MASK) | ALIGN_W_EXP_FIELD(F_EXP_BIAS);
     _u_.F_HI_WORD = s_exp_word;
     z = _u_.f;
 
@@ -1120,8 +1121,9 @@ denorm_or_underflow:
     _u_.F_HI_WORD -= (s_exp_word & F_EXP_MASK);
     z = _u_.f;
 
-    if((z != (F_TYPE)0.) && PROCESS_DENORMS)
+    if ((z != (F_TYPE)0.) && PROCESS_DENORMS) {
       return z;
+    }
   }
 
 #endif
@@ -1143,8 +1145,9 @@ identity_range:
 
 ieee_abnormal_arguments:
 
-  if((s_exp_word & F_EXP_MASK) == F_EXP_MASK)
+  if ((s_exp_word & F_EXP_MASK) == F_EXP_MASK) {
     goto nan_or_inf;
+  }
 
   /* If we get here, x is either 0 or denorm. */
 
@@ -1165,8 +1168,9 @@ ieee_abnormal_arguments:
   exp_field = exp_word & F_EXP_MASK;
   exp_word ^= exp_field;
   index = exp_field - __LOG2_DENORM_SCALE_ALIGNED_W_EXP;
-  if(index <= 0)
+  if (index <= 0) {
     goto erf_denorm;
+  }
   _u_.F_HI_WORD = exp_word | index;
   z = _u_.f;
   return z;
@@ -1186,8 +1190,9 @@ nan_or_inf:
 
   /* If x is a NaN, return it. */
 
-  if((s_exp_word & F_MANTISSA_MASK) OR_LOW_BITS_SET(_u_))
+  if ((s_exp_word & F_MANTISSA_MASK) OR_LOW_BITS_SET(_u_)) {
     return x;
+  }
 
   /* Otherwise, x is an infinity. Fall through to return_constant. */
 
@@ -1195,9 +1200,10 @@ nan_or_inf:
 
 return_constant:
 
-  if(s_exp_word & _F_SIGN_BIT_MASK)
+  if (s_exp_word & _F_SIGN_BIT_MASK) {
     z = (F_TYPE)SELECT(-1.0, 2.0);
-  else
+  } else {
     z = (F_TYPE)SELECT(1.0, 0.0);
+  }
   return z;
 }

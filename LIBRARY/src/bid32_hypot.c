@@ -38,50 +38,55 @@ int exponent_x, exponent_y;
 valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 valid_y = unpack_BID32(&sign_y, &exponent_y, &coefficient_y, y);
 
-if(!valid_x) {
-  if((x & 0x7c000000U) == 0x7c000000U) {
+if (!valid_x) {
+  if ((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & 0x7e000000U) == 0x7e000000U || // sNaN
-       (y & 0x7e000000U) == 0x7e000000U)
+    if ((x & 0x7e000000U) == 0x7e000000U ||  // sNaN
+        (y & 0x7e000000U) == 0x7e000000U) {
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
-    if(((x & 0x7e000000U) == 0x7e000000U) || ((y & 0x7c000000U) != 0x78000000U))
+    if (((x & 0x7e000000U) == 0x7e000000U) ||
+        ((y & 0x7c000000U) != 0x78000000U)) {
       res = (coefficient_x)&QUIET_MASK32;
-    else
+    } else {
       res = 0x78000000U;
+    }
     BID_RETURN(res);
   }
   // x is Infinity?
-  if(((x & 0x78000000U) == 0x78000000U) && ((y & 0x7e000000U) != 0x7e000000U)) {
+  if (((x & 0x78000000U) == 0x78000000U) &&
+      ((y & 0x7e000000U) != 0x7e000000U)) {
     res = 0x78000000U;
     BID_RETURN(res);
   }
   // x is 0
-  if(valid_y) {
+  if (valid_y) {
     res = y & 0x7fffffffU;
     BID_RETURN(res);
   }
 }
 
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y & 0x7c000000U) == 0x7c000000U) {
+  if ((y & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((y & 0x7e000000U) == 0x7e000000U) // sNaN
+    if ((y & 0x7e000000U) == 0x7e000000U) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = coefficient_y & QUIET_MASK32;
     BID_RETURN(res);
   }
 
-  if((y & 0x78000000U) == 0x78000000U) {
+  if ((y & 0x78000000U) == 0x78000000U) {
     res = 0x78000000U;
     BID_RETURN(res);
   }
   // y is 0
-  if(valid_x) {
+  if (valid_x) {
     res = x & 0x7fffffffU;
     BID_RETURN(res);
   }

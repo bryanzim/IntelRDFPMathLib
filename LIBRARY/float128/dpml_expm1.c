@@ -273,12 +273,14 @@ F_ENTRY_NAME(F_TYPE x) {
 
   j = (m <= POLY_CHECK);
 
-  if(((U_WORD)i >= EXPM1_HI_CHECK) &&
-     ((U_WORD)(i - F_SIGN_BIT_MASK) >= EXPM1_LO_CHECK))
+  if (((U_WORD)i >= EXPM1_HI_CHECK) &&
+      ((U_WORD)(i - F_SIGN_BIT_MASK) >= EXPM1_LO_CHECK)) {
     goto possible_problems;
+  }
 
-  if(j)
+  if (j) {
     goto poly_range;
+  }
 
   /*
   ** compute the reduced argument, z.
@@ -289,10 +291,8 @@ F_ENTRY_NAME(F_TYPE x) {
 
   t = BIG + w; /* Save for getting m later on */
   fm = t - BIG;
-  BACKUP_SELECT(
-      z = w - fm;, z_hi = x - fm * LN2_HI;
-      z_lo = fm * LN2_LO;
-      z = z_hi - z_lo;)
+  BACKUP_SELECT(z = w - fm;, z_hi = x - fm * LN2_HI; z_lo = fm * LN2_LO;
+                z = z_hi - z_lo;)
 
   /*
   ** Now get the bits of m as a integer and break it up into I and j
@@ -303,10 +303,8 @@ F_ENTRY_NAME(F_TYPE x) {
   j = (m & POW2_INDEX_MASK) << POW2_INDEX_POS;
   i = m & (~POW2_INDEX_MASK);
 
-  BACKUP_SELECT(
-      w = EXPM1_RED_POLY_R(z);, u = POW2_LO_OV_POW2_HI(j) * (one + z);
-      u = EXPM1_RED_POLY_F(u, z);
-      w = u + z;)
+  BACKUP_SELECT(w = EXPM1_RED_POLY_R(z);, u = POW2_LO_OV_POW2_HI(j) * (one + z);
+                u = EXPM1_RED_POLY_F(u, z); w = u + z;)
 
   /* Scale 2^(j/2^POW2_K) by 2^I, so that only one multiply is done */
 
@@ -326,8 +324,9 @@ F_ENTRY_NAME(F_TYPE x) {
   /* Scale polynomial result and check for possible overflow */
 
   z = (v - one) + v * w;
-  if(m > POW2_MAX_SCALE)
+  if (m > POW2_MAX_SCALE) {
     goto boundary_check;
+  }
 
 #else
 
@@ -336,8 +335,9 @@ F_ENTRY_NAME(F_TYPE x) {
   ** V(i,j) in arithmetic expressions
   */
 
-  if(i >= ALIGN_WITH_I(F_PRECISION))
+  if (i >= ALIGN_WITH_I(F_PRECISION)) {
     goto big_region;
+  }
 
   /*
    * Normal, problem and hi/lo ranges get here
@@ -345,11 +345,13 @@ F_ENTRY_NAME(F_TYPE x) {
 
   v1 = v - one;
 
-  if(i >= ALIGN_WITH_I(1))
+  if (i >= ALIGN_WITH_I(1)) {
     goto normal_region;
+  }
 
-  if(i <= ALIGN_WITH_I(-2))
+  if (i <= ALIGN_WITH_I(-2)) {
     goto hi_lo_region;
+  }
 
   /* problem_region: */
 
@@ -376,8 +378,9 @@ big_region:
   ** hi bits of V(I,j) = 2^I*T(j)
   */
 
-  if(m > POW2_MAX_SCALE)
+  if (m > POW2_MAX_SCALE) {
     goto boundary_check;
+  }
 
   z = v + (v * w - one);
   /* Fall through */
@@ -396,8 +399,9 @@ poly_range:
   ** compute the series evaluation for expm1.
   */
 
-  if(m > ALIGN_W_EXP_FIELD(F_EXP_BIAS - F_PRECISION - F_NORM))
+  if (m > ALIGN_W_EXP_FIELD(F_EXP_BIAS - F_PRECISION - F_NORM)) {
     x = POLY(x);
+  }
   return x;
 
 boundary_check:
@@ -410,8 +414,7 @@ boundary_check:
 
   IF_NO_BACKUP(
       /* Multiply by table entry */
-      t = POW2_HI(j);
-      z = t + t * w;)
+      t = POW2_HI(j); z = t + t * w;)
 
   stack_tmp_u.f = z;
   m = stack_tmp_u.B_HI_WORD;
@@ -419,15 +422,15 @@ boundary_check:
   IF_NO_BACKUP(
       /* "Multiply" by 2^i */
       m = W_ADD_TO_EXP_FIELD(m, ALIGN_SCALE_WITH_EXP(i));
-      stack_tmp_u.B_HI_WORD = m;
-      z = stack_tmp_u.f;)
+      stack_tmp_u.B_HI_WORD = m; z = stack_tmp_u.f;)
 
   /* Isolate exponent field and check for overflow */
 
   j = EXPM1_OVERFLOW;
   IF_VAX(m &= B_SIGN_EXP_MASK;)
-  if((U_WORD)m >= ALIGN_WITH_B_TYPE_EXP(F_MAX_BIN_EXP + B_EXP_BIAS + 1))
+  if ((U_WORD)m >= ALIGN_WITH_B_TYPE_EXP(F_MAX_BIN_EXP + B_EXP_BIAS + 1)) {
     goto do_exception;
+  }
   return (F_TYPE)z;
 
 NaN_or_Inf:
@@ -439,7 +442,7 @@ NaN_or_Inf:
    */
   m <<= (BITS_PER_WORD - F_EXP_POS);
   IF_SMALL_WORD(m = m OR_LOW_BITS_SET(stack_tmp_v);)
-  if(m == 0) { /* x was +/- infinity */
+  if (m == 0) { /* x was +/- infinity */
     j = (i & F_SIGN_BIT_MASK) ? EXPM1_OF_NEG_INF : EXPM1_OF_INF;
     goto do_exception;
   }
@@ -457,7 +460,7 @@ possible_problems:
 
   IF_IEEE(
       /* Screen out NaN's and Inf's */
-      if(m >= F_EXP_MASK) goto NaN_or_Inf;)
+      if (m >= F_EXP_MASK) goto NaN_or_Inf;)
 
   /*
   ** If x is negative, expm1(x) = -1 to machine precision.  Otherwise,
@@ -467,8 +470,9 @@ possible_problems:
   **		is i &= ~F_SIGN_BIT_MASK
   */
 
-  if(i & F_SIGN_BIT_MASK)
+  if (i & F_SIGN_BIT_MASK) {
     goto return_minus_1;
+  }
 
   j = EXP_OVERFLOW;
 

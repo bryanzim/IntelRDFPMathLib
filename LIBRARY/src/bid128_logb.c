@@ -41,7 +41,7 @@ int exponent_x, bin_expon_cx, digits, res;
 
 BID_OPT_SAVE_BINARY_FLAGS()
 
-if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
+if (!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -58,8 +58,10 @@ fx.d = (float)cx.w[1U] * f64.d + (float)cx.w[0U];
 bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
 digits = bid_estimate_decimal_digits[bin_expon_cx];
 // scale = 38-estimate_decimal_digits[bin_expon_cx];
-d = (BID_SINT64)cx.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
-if(d > 0 || (!d && cx.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U])) {
+d = (BID_SINT64)cx.w[1U] -
+    (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
+if (d > 0 ||
+    (!d && cx.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U])) {
   digits++;
 }
 

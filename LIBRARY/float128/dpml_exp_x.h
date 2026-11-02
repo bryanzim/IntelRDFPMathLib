@@ -170,17 +170,19 @@ static const TABLE_UNION TABLE_NAME[] = {
     /* 1344 */ DATA_1x2(0x00000001, 0x00000000),
 };
 
-#define EXP_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define EXPM1_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 8))
-#define SINH_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 16))
-#define COSH_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 24))
-#define TANH_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 32))
-#define EXP_CONSTANT_TABLE_ADDRESS ((UX_FRACTION_DIGIT_TYPE *)((char *)TABLE_NAME + 64))
+#define EXP_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define EXPM1_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 8))
+#define SINH_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 16))
+#define COSH_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 24))
+#define TANH_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 32))
+#define EXP_CONSTANT_TABLE_ADDRESS \
+  ((UX_FRACTION_DIGIT_TYPE*)((char*)TABLE_NAME + 64))
 #define EXP_DEGREE_INDEX 6
 #define EXP_COEF_INDEX 7
-#define UX_ONE ((UX_FLOAT *)((char *)TABLE_NAME + 496))
-#define EXP10_CONSTANT_TABLE_ADDRESS ((UX_FRACTION_DIGIT_TYPE *)((char *)TABLE_NAME + 520))
-#define SINHCOSH_COEF_ARRAY ((FIXED_128 *)((char *)TABLE_NAME + 952))
+#define UX_ONE ((UX_FLOAT*)((char*)TABLE_NAME + 496))
+#define EXP10_CONSTANT_TABLE_ADDRESS \
+  ((UX_FRACTION_DIGIT_TYPE*)((char*)TABLE_NAME + 520))
+#define SINHCOSH_COEF_ARRAY ((FIXED_128*)((char*)TABLE_NAME + 952))
 #define SINHCOSH_COEF_ARRAY_DEGREE ((signed __int64)0x000000000000000b)
 
 #endif

@@ -67,18 +67,15 @@
 ** and automatically multiplies by ln2.
 */
 
-void UX_LOG_POLY(UX_FLOAT *unpacked_argument, UX_FLOAT *unpacked_result) {
-  EVALUATE_RATIONAL(
-      unpacked_argument,
-      LOG2_COEF_ARRAY,
-      LOG2_COEF_ARRAY_DEGREE,
-      NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY),
-      unpacked_result);
+void UX_LOG_POLY(UX_FLOAT* unpacked_argument, UX_FLOAT* unpacked_result) {
+  EVALUATE_RATIONAL(unpacked_argument, LOG2_COEF_ARRAY, LOG2_COEF_ARRAY_DEGREE,
+                    NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY),
+                    unpacked_result);
   MULTIPLY(unpacked_result, LN_2, unpacked_result);
 }
 
-void UX_LOG(UX_FLOAT *unpacked_argument, UX_FLOAT *scale,
-            UX_FLOAT *unpacked_result) {
+void UX_LOG(UX_FLOAT* unpacked_argument, UX_FLOAT* scale,
+            UX_FLOAT* unpacked_result) {
   UX_FLOAT tmp[2];
   UX_EXPONENT_TYPE m;
   UX_FRACTION_DIGIT_TYPE f_hi;
@@ -91,43 +88,43 @@ void UX_LOG(UX_FLOAT *unpacked_argument, UX_FLOAT *scale,
 
   m = G_UX_EXPONENT(unpacked_argument);
   f_hi = G_UX_MSD(unpacked_argument);
-  if(f_hi <= ONE_OVER_SQRT_2)
+  if (f_hi <= ONE_OVER_SQRT_2) {
     m--;
+  }
   UX_DECR_EXPONENT(unpacked_argument, m);
   ADDSUB(unpacked_argument, UX_ONE, ADD_SUB | MAGNITUDE_ONLY, &tmp[0]);
   UX_INCR_EXPONENT(unpacked_argument, m);
   DIVIDE(&tmp[1], &tmp[0], FULL_PRECISION, unpacked_result);
-  /*printf("UX_LOG:  tmp1=(%x %x) %llx %llx, tmp0=(%x %x) %llx %llx, r=(%x %x) %llx %llx\n",
+  /*printf("UX_LOG:  tmp1=(%x %x) %llx %llx, tmp0=(%x %x) %llx %llx, r=(%x %x)
+     %llx %llx\n",
       tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1],
       tmp[0].sign,tmp[0].exponent,tmp[0].fraction[0],tmp[0].fraction[1],
       unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);*/
 
   /* Evaluate z*p(z^2) */
 
-  EVALUATE_RATIONAL(
-      unpacked_result,
-      LOG2_COEF_ARRAY,
-      LOG2_COEF_ARRAY_DEGREE,
-      NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY),
-      &tmp[0]);
+  EVALUATE_RATIONAL(unpacked_result, LOG2_COEF_ARRAY, LOG2_COEF_ARRAY_DEGREE,
+                    NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY), &tmp[0]);
 
   /* Get m as a packed value and add to polynomial */
 
-  /*printf("UX_LOG:  tmp1=(%x %x) %llx %llx, tmp0=(%x %x) %llx %llx, u_res=(%x %x) %llx %llx\n",
+  /*printf("UX_LOG:  tmp1=(%x %x) %llx %llx, tmp0=(%x %x) %llx %llx, u_res=(%x
+     %x) %llx %llx\n",
       tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1],
       tmp[0].sign,tmp[0].exponent,tmp[0].fraction[0],tmp[0].fraction[1],
       unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);*/
   WORD_TO_UX(UX_TO_DIGIT(m), unpacked_result);
   // printf("m=%llx\n",(long long)m);
-  ADDSUB(unpacked_result, &tmp[0], ADD | NO_NORMALIZATION,
-         unpacked_result);
+  ADDSUB(unpacked_result, &tmp[0], ADD | NO_NORMALIZATION, unpacked_result);
 
   /* multiply by scale */
 
-  // printf("u_res= (%x %x) %llx %llx\n",unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);
+  // printf("u_res= (%x %x) %llx
+  // %llx\n",unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1]);
 
-  if(scale)
+  if (scale) {
     MULTIPLY(unpacked_result, scale, unpacked_result);
+  }
 
   return;
 }
@@ -136,35 +133,26 @@ void UX_LOG(UX_FLOAT *unpacked_argument, UX_FLOAT *scale,
 #define C_UX_LOG __INTERNAL_NAME(C_ux_log__)
 #endif
 
-static void
-C_UX_LOG(_X_FLOAT *packed_argument, U_WORD const *class_to_action_map,
-         UX_FLOAT *scale, _X_FLOAT *packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_LOG(_X_FLOAT* packed_argument,
+                     U_WORD const* class_to_action_map, UX_FLOAT* scale,
+                     _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class;
   UX_FLOAT unpacked_argument, unpacked_result;
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      class_to_action_map,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class = UNPACK(packed_argument, &unpacked_argument, class_to_action_map,
+                    packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  // printf("UX_LOG:  packed arg=%llx %llx, unpacked_arg=(%x %x) %llx %llx\n",packed_argument->digit[0],packed_argument->digit[1],unpacked_argument.sign,unpacked_argument.exponent,unpacked_argument.fraction[0],unpacked_argument.fraction[1]);
+  // printf("UX_LOG:  packed arg=%llx %llx, unpacked_arg=(%x %x) %llx
+  // %llx\n",packed_argument->digit[0],packed_argument->digit[1],unpacked_argument.sign,unpacked_argument.exponent,unpacked_argument.fraction[0],unpacked_argument.fraction[1]);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     return;
+  }
 
-  UX_LOG(
-      &unpacked_argument,
-      scale,
-      &unpacked_result);
+  UX_LOG(&unpacked_argument, scale, &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      packed_result,
-      NOT_USED,
-      NOT_USED
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&unpacked_result, packed_result, NOT_USED,
+       NOT_USED OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 #undef F_ENTRY_NAME
@@ -203,7 +191,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_LOG(PASS_ARG_X_FLOAT(packed_argument), LOG10_CLASS_TO_ACTION_MAP, LOG10_2, PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
+  C_UX_LOG(PASS_ARG_X_FLOAT(packed_argument), LOG10_CLASS_TO_ACTION_MAP,
+           LOG10_2, PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -261,14 +250,13 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
   INIT_EXCEPTION_INFO;
 
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &unpacked_argument,
-      LOG1P_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), &unpacked_argument,
+                    LOG1P_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   /*
   ** Screen out negative values <= -1.  For values less than
@@ -280,28 +268,29 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   sign = G_UX_SIGN(&unpacked_argument);
   f_hi = G_UX_MSD(&unpacked_argument);
 
-  if(exponent >= 0) { /* |arg| >= 1/2.  */
+  if (exponent >= 0) { /* |arg| >= 1/2.  */
 
-    if(exponent >= 1) { /* |arg| >= 1.  Check for arg <= -1 */
-      if(sign) {        /* arg <= -1, start by forcing overflow */
+    if (exponent >= 1) { /* |arg| >= 1.  Check for arg <= -1 */
+      if (sign) {        /* arg <= -1, start by forcing overflow */
 
         P_UX_MSD(&unpacked_result, UX_MSB);
         P_UX_EXPONENT(&unpacked_result, UX_OVERFLOW_EXPONENT);
 
-        if((exponent == 1) && (f_hi == UX_MSB) &&
-           UX_LOW_FRACTION_IS_ZERO(&unpacked_argument))
-
+        if ((exponent == 1) && (f_hi == UX_MSB) &&
+            UX_LOW_FRACTION_IS_ZERO(&unpacked_argument)) {
           /* This is -1.  Force underflow */
           P_UX_EXPONENT(&unpacked_result, UX_UNDERFLOW_EXPONENT);
+        }
         goto pack_it;
       }
     }
     goto big_argument;
   }
 
-  else if(exponent <= -2)
+  else if (exponent <= -2) {
     /* |arg| <= 1/4. */
     goto small_argument;
+  }
 
   /*
   ** If we get here, 1/4 < |arg| < 1/2.  We need to check see if
@@ -312,9 +301,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   f_hi = (sign) ? UX_TO_DIGIT(-UX_TO_SDIGIT(f_hi)) : f_hi;
   f_hi += UX_MSB;
 
-  if((UX_FRACTION_DIGIT_TYPE)(f_hi - I_RECIP_SQRT_2) >=
-     (I_SQRT_2 - I_RECIP_SQRT_2))
+  if ((f_hi - I_RECIP_SQRT_2) >= (I_SQRT_2 - I_RECIP_SQRT_2)) {
     goto big_argument;
+  }
 
 small_argument:
 
@@ -327,12 +316,9 @@ small_argument:
   ADDSUB(UX_TWO, &unpacked_argument, ADD, &tmp);
   DIVIDE(&unpacked_argument, &tmp, FULL_PRECISION, &tmp);
 
-  EVALUATE_RATIONAL(
-      &tmp,
-      LOG2_COEF_ARRAY,
-      LOG2_COEF_ARRAY_DEGREE,
-      NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY),
-      &unpacked_result);
+  EVALUATE_RATIONAL(&tmp, LOG2_COEF_ARRAY, LOG2_COEF_ARRAY_DEGREE,
+                    NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY),
+                    &unpacked_result);
 
   MULTIPLY(&unpacked_result, LN_2, &unpacked_result);
   goto pack_it;
@@ -346,12 +332,8 @@ big_argument:
   UX_LOG(&unpacked_result, LN_2, &unpacked_result);
 
 pack_it:
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      LOG_OF_ZERO,
-      LOG_OF_NEGATIVE
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result), LOG_OF_ZERO,
+       LOG_OF_NEGATIVE OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -401,16 +383,15 @@ PRINT_U_TBL_ITEM(/* data 2 */ LOG2_OF_ZERO);
 TABLE_COMMENT("log10 class-to-action-mapping");
 PRINT_CLASS_TO_ACTION_TBL_DEF("LOG10_CLASS_TO_ACTION_MAP");
 
-PRINT_64_TBL_ITEM(
-    CLASS_TO_ACTION_DISP(1) +
-    CLASS_TO_ACTION(F_C_SIG_NAN, RETURN_QUIET_NAN, 0) +
-    CLASS_TO_ACTION(F_C_QUIET_NAN, RETURN_VALUE, 0) +
-    CLASS_TO_ACTION(F_C_POS_INF, RETURN_VALUE, 0) +
-    CLASS_TO_ACTION(F_C_NEG_INF, RETURN_ERROR, 1) +
-    CLASS_TO_ACTION(F_C_NEG_NORM, RETURN_ERROR, 1) +
-    CLASS_TO_ACTION(F_C_NEG_DENORM, RETURN_ERROR, 1) +
-    CLASS_TO_ACTION(F_C_POS_ZERO, RETURN_ERROR, 2) +
-    CLASS_TO_ACTION(F_C_NEG_ZERO, RETURN_ERROR, 1));
+PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(1) +
+                  CLASS_TO_ACTION(F_C_SIG_NAN, RETURN_QUIET_NAN, 0) +
+                  CLASS_TO_ACTION(F_C_QUIET_NAN, RETURN_VALUE, 0) +
+                  CLASS_TO_ACTION(F_C_POS_INF, RETURN_VALUE, 0) +
+                  CLASS_TO_ACTION(F_C_NEG_INF, RETURN_ERROR, 1) +
+                  CLASS_TO_ACTION(F_C_NEG_NORM, RETURN_ERROR, 1) +
+                  CLASS_TO_ACTION(F_C_NEG_DENORM, RETURN_ERROR, 1) +
+                  CLASS_TO_ACTION(F_C_POS_ZERO, RETURN_ERROR, 2) +
+                  CLASS_TO_ACTION(F_C_NEG_ZERO, RETURN_ERROR, 1));
 
 PRINT_U_TBL_ITEM(/* data 1 */ LOG10_OF_NEGATIVE);
 PRINT_U_TBL_ITEM(/* data 2 */ LOG10_OF_ZERO);
@@ -448,10 +429,11 @@ PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM("I_RECIP_SQRT_2\t\t", trunc(tmp / 2));
 
 zero_value = 2 / log(2);
 function __log2(x) {
-  if(x == 0)
+  if (x == 0) {
     return zero_value;
-  else
+  } else {
     return atanh(x) * zero_value / x;
+  }
 }
 
 save_precision = precision;
@@ -460,8 +442,8 @@ precision = ceil(UX_PRECISION / 8) + 8;
 max_arg = (sqrt(2) - 1) ^ 2;
 
 TABLE_COMMENT("Fixed point coefficients for log2 evaluation");
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __log2, UX_PRECISION, &degree, &ux_rational_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __log2, UX_PRECISION, &degree, &ux_rational_coefs);
 
 precision = save_precision;
 
@@ -478,12 +460,12 @@ PRINT_UX_TBL_ADEF_ITEM("LOG10_2", log10(2));
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants logarithmic"." routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME), "Definitions and constants logarithmic"." routines",
+    __FILE__);
 print "$headerText\n\n$outText\n";
 #endif

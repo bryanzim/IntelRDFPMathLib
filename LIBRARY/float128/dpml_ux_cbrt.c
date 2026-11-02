@@ -110,14 +110,11 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   EXCEPTION_INFO_DECL
 
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &unpacked_argument,
-      CBRT_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), &unpacked_argument,
+                    CBRT_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 >= fp_class) {
+  if (0 >= fp_class) {
     RETURN_X_FLOAT(packed_result);
   }
 
@@ -132,7 +129,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 #if (BITS_PER_UX_FRACTION_DIGIT_TYPE == 32)
 
   tmp_digit = G_UX_2nd_MSD(&unpacked_argument);
-  u.F_LO_WORD = (msd << (BITS_PER_UX_FRACTION_DIGIT_TYPE - D_EXP_WIDTH)) | (lsd >> D_EXP_WIDTH);
+  u.F_LO_WORD = (msd << (BITS_PER_UX_FRACTION_DIGIT_TYPE - D_EXP_WIDTH)) |
+                (lsd >> D_EXP_WIDTH);
 
 #endif
 
@@ -154,14 +152,17 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   z2 = z * z;
   z4 = z2 * z2;
   f2 = f * f;
-  y = POW_CBRT_2_TABLE[i] * ((((FOURTEEN_NINTHS * f) * z) - z4 * ((SEVEN_NINTHS * f) * f2)) + (z4 * (z2 * z)) * ((TWO_NINTHS * f) * (f2 * f2)));
+  y = POW_CBRT_2_TABLE[i] *
+      ((((FOURTEEN_NINTHS * f) * z) - z4 * ((SEVEN_NINTHS * f) * f2)) +
+       (z4 * (z2 * z)) * ((TWO_NINTHS * f) * (f2 * f2)));
 
   /* Convert the double precision result to unpacked x_float */
 
   u.f = y;
   msd = u.D_HI_WORD;
 
-  P_UX_EXPONENT(&unpacked_result, (msd >> D_EXP_POS) + m - (D_EXP_BIAS + SUB_ADJUST - 1));
+  P_UX_EXPONENT(&unpacked_result,
+                (msd >> D_EXP_POS) + m - (D_EXP_BIAS + SUB_ADJUST - 1));
   P_UX_SIGN(&unpacked_result, G_UX_SIGN(&unpacked_argument));
   msd = (msd << D_EXP_WIDTH) | UX_MSB;
 
@@ -192,12 +193,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   MULTIPLY(&unpacked_result, &tmp[0], &unpacked_result);
   UX_DECR_EXPONENT(&unpacked_result, 1);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED,
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result), NOT_USED,
+       NOT_USED OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -234,9 +231,9 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(1) +
 /* Generate coefficients and polynomial form for 1/cbrt(f)^2 */
 
 PRINT_R_TBL_COM_ADEF("coefs to approx 1/cbrt(f)^2", "COEFS\t\t\t");
-remes(REMES_FIND_POLYNOMIAL + REMES_ABSOLUTE_WEIGHT + REMES_LINEAR_ARG,
-      1.0, 2.0, recip_cbrt, 15, &degree, &poly_coefs);
-for(i = 0; i <= degree; i++) {
+remes(REMES_FIND_POLYNOMIAL + REMES_ABSOLUTE_WEIGHT + REMES_LINEAR_ARG, 1.0,
+      2.0, recip_cbrt, 15, &degree, &poly_coefs);
+for (i = 0; i <= degree; i++) {
   PRINT_R_TBL_ITEM(poly_coefs[i]);
 }
 GENPOLY(COEFS[% % d], RECIP_CBRT_POLY(x), degree);
@@ -246,7 +243,7 @@ GENPOLY(COEFS[% % d], RECIP_CBRT_POLY(x), degree);
 PRINT_R_TBL_COM_ADEF("cube roots of 2^i, i = 0, 1, 2", "POW_CBRT_2_TABLE\t");
 
 c = cbrt(2);
-for(i = 0; i <= 2; i++) {
+for (i = 0; i <= 2; i++) {
   PRINT_R_TBL_ITEM(c ^ i);
 }
 
@@ -260,8 +257,7 @@ PRINT_R_TBL_VDEF_ITEM("TWO_NINTHS\t\t", 2 / 9);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 my $polyText = Egrep(STR(GENPOLY_EXECUTABLE), $tableText,	\
@@ -269,8 +265,7 @@ my $polyText = Egrep(STR(GENPOLY_EXECUTABLE), $tableText,	\
 $polyText = GenPoly($polyText);
 $outText = "$tableText\n\n$defineText\n\n$polyText";
 my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants cbrt",
-                               __FILE__);
+                               "Definitions and constants cbrt", __FILE__);
 print "$headerText\n$outText";
 
 #endif

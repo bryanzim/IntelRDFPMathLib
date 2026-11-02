@@ -128,7 +128,7 @@
 #define C_FF_PROTO(name) extern F_COMPLEX name(F_TYPE, F_TYPE)
 #define C_FI_PROTO(name) extern F_COMPLEX name(F_TYPE, WORD)
 #define C_FFFF_PROTO(name) extern F_COMPLEX name(F_TYPE, F_TYPE, F_TYPE, F_TYPE)
-#define C_p_PROTO(name) extern F_COMPLEX name(F_COMPLEX *)
+#define C_p_PROTO(name) extern F_COMPLEX name(F_COMPLEX*)
 #define C_s_PROTO(name) extern F_COMPLEX name(F_COMPLEX)
 
 #define C_B_PROTO(name) extern B_COMPLEX name(B_TYPE)
@@ -138,24 +138,24 @@
 #define F_F_PROTO(name) extern F_TYPE name(F_TYPE)
 #define F_FF_PROTO(name) extern F_TYPE name(F_TYPE, F_TYPE)
 #define F_FI_PROTO(name) extern F_TYPE name(F_TYPE, WORD)
-#define F_FpI_PROTO(name) extern F_TYPE name(F_TYPE, WORD *)
+#define F_FpI_PROTO(name) extern F_TYPE name(F_TYPE, WORD*)
 #define F_IF_PROTO(name) extern F_TYPE name(WORD, F_TYPE)
 
 #define B_B_PROTO(name) extern B_TYPE name(B_TYPE)
 #define B_BB_PROTO(name) extern B_TYPE name(B_TYPE, B_TYPE)
 #define B_BI_PROTO(name) extern B_TYPE name(B_TYPE, WORD)
-#define B_BpI_PROTO(name) extern B_TYPE name(B_TYPE, WORD *)
+#define B_BpI_PROTO(name) extern B_TYPE name(B_TYPE, WORD*)
 #define B_IB_PROTO(name) extern B_TYPE name(WORD, B_TYPE)
 
 #define I_F_PROTO(name) extern WORD name(F_TYPE)
-#define I_FpF_PROTO(name) extern WORD name(F_TYPE, F_TYPE *)
-#define I_FIpF_PROTO(name) extern WORD name(F_TYPE, WORD, F_TYPE *)
-#define I_FIpFpF_PROTO(name) extern WORD name(F_TYPE, WORD, F_TYPE *, F_TYPE *)
+#define I_FpF_PROTO(name) extern WORD name(F_TYPE, F_TYPE*)
+#define I_FIpF_PROTO(name) extern WORD name(F_TYPE, WORD, F_TYPE*)
+#define I_FIpFpF_PROTO(name) extern WORD name(F_TYPE, WORD, F_TYPE*, F_TYPE*)
 
 #define I_B_PROTO(name) extern WORD name(B_TYPE)
-#define I_BpB_PROTO(name) extern WORD name(B_TYPE, B_TYPE *)
-#define I_BIpB_PROTO(name) extern WORD name(B_TYPE, WORD, B_TYPE *)
-#define I_BIpBpB_PROTO(name) extern WORD name(B_TYPE, WORD, B_TYPE *, B_TYPE *)
+#define I_BpB_PROTO(name) extern WORD name(B_TYPE, B_TYPE*)
+#define I_BIpB_PROTO(name) extern WORD name(B_TYPE, WORD, B_TYPE*)
+#define I_BIpBpB_PROTO(name) extern WORD name(B_TYPE, WORD, B_TYPE*, B_TYPE*)
 
 #define I_II_PROTO(name) extern WORD name(WORD, WORD)
 
@@ -187,15 +187,15 @@
 #define F_C_NUM_CLASSES 10
 #define F_C_CLASS_BIT_WIDTH 4
 
-#define AS_WORD(p) (*(WORD *)&(p))
-#define AS_CHAR(p) (*(char *)&(p))
-#define AS_SHORT(p) (*(short *)&(p))
-#define AS_INT(p) (*(int *)&(p))
-#define AS_LONG(p) (*(long *)&(p))
-#define AS_FLOAT(p) (*(float *)&(p))
-#define AS_DOUBLE(p) (*(double *)&(p))
-#define AS_F_TYPE(p) (*(F_TYPE *)&(p))
-#define AS_B_TYPE(p) (*(B_TYPE *)&(p))
+#define AS_WORD(p) (*(WORD*)&(p))
+#define AS_CHAR(p) (*(char*)&(p))
+#define AS_SHORT(p) (*(short*)&(p))
+#define AS_INT(p) (*(int*)&(p))
+#define AS_LONG(p) (*(long*)&(p))
+#define AS_FLOAT(p) (*(float*)&(p))
+#define AS_DOUBLE(p) (*(double*)&(p))
+#define AS_F_TYPE(p) (*(F_TYPE*)&(p))
+#define AS_B_TYPE(p) (*(B_TYPE*)&(p))
 
 /* Environment specific macro definitions that pre-empt the generic
 (and perhaps slow) definitions below are in include files per
@@ -247,7 +247,8 @@ versions until we need them. ] */
 
 #endif
 
-#if (defined(_WIN32) && defined(_M_IX86)) || (defined(merced) && !defined(HPUX_OS))
+#if (defined(_WIN32) && defined(_M_IX86)) || \
+    (defined(merced) && !defined(HPUX_OS))
 
 /*  Disallow use of intrinsic math functions on Windows NT on Intel  */
 
@@ -458,7 +459,7 @@ specific macro definitions included above.  */
     u.f = (x);                                                 \
     (class) = (((U_WORD)u.F_HI_WORD >> F_SIGN_BIT_POS) & 0x1); \
     exp = (u.F_HI_WORD & F_EXP_MASK);                          \
-    if(exp)                                                    \
+    if (exp)                                                   \
       (class) += F_C_POS_NORM;                                 \
     else                                                       \
       (class) = ((class) ? F_C_SIG_NAN : F_C_POS_ZERO);        \
@@ -474,7 +475,7 @@ specific macro definitions included above.  */
     exp_word = u.F_HI_WORD;                                    \
     (class) = (((U_WORD)u.F_HI_WORD >> F_SIGN_BIT_POS) & 0x1); \
     exp = (u.F_HI_WORD & F_EXP_MASK);                          \
-    if(exp)                                                    \
+    if (exp)                                                   \
       (class) += F_C_POS_NORM;                                 \
     else                                                       \
       (class) = ((class) ? F_C_SIG_NAN : F_C_POS_ZERO);        \
@@ -484,17 +485,20 @@ specific macro definitions included above.  */
 #elif (defined(IEEE_FLOATING) && IEEE_FLOATING)
 
 #ifndef F_EXP_WORD_IS_ABNORMAL
-#define F_EXP_WORD_IS_ABNORMAL(exp_word) \
-  (((exp_word) & F_EXP_MASK) - ((U_WORD)1 << F_EXP_POS) >= MAKE_MASK(F_EXP_WIDTH - 1, F_EXP_POS + 1))
+#define F_EXP_WORD_IS_ABNORMAL(exp_word)                   \
+  (((exp_word) & F_EXP_MASK) - ((U_WORD)1 << F_EXP_POS) >= \
+   MAKE_MASK(F_EXP_WIDTH - 1, F_EXP_POS + 1))
 #endif
 
 #ifndef F_EXP_WORD_IS_ABNORMAL_OR_NEG
 #define F_EXP_WORD_IS_ABNORMAL_OR_NEG(exp_word) \
-  ((exp_word) - ((U_WORD)1 << F_EXP_POS) >= MAKE_MASK(F_EXP_WIDTH - 1, F_EXP_POS + 1))
+  ((exp_word) - ((U_WORD)1 << F_EXP_POS) >=     \
+   MAKE_MASK(F_EXP_WIDTH - 1, F_EXP_POS + 1))
 #endif
 #ifndef B_EXP_WORD_IS_ABNORMAL_OR_NEG
 #define B_EXP_WORD_IS_ABNORMAL_OR_NEG(exp_word) \
-  ((exp_word) - ((U_WORD)1 << B_EXP_POS) >= MAKE_MASK(B_EXP_WIDTH - 1, B_EXP_POS + 1))
+  ((exp_word) - ((U_WORD)1 << B_EXP_POS) >=     \
+   MAKE_MASK(B_EXP_WIDTH - 1, B_EXP_POS + 1))
 #endif
 
 #ifndef F_EXP_WORD_IS_INFINITE_OR_NAN
@@ -512,20 +516,22 @@ specific macro definitions included above.  */
 #endif
 
 #ifndef F_SET_FLAG_IF_DENORM
-#define F_SET_FLAG_IF_DENORM(x, flag)                                                             \
-  {                                                                                               \
-    F_UNION u;                                                                                    \
-    u.f = (x);                                                                                    \
-    flag = (!(u.F_HI_WORD & F_EXP_MASK) && ((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u))); \
+#define F_SET_FLAG_IF_DENORM(x, flag)                              \
+  {                                                                \
+    F_UNION u;                                                     \
+    u.f = (x);                                                     \
+    flag = (!(u.F_HI_WORD & F_EXP_MASK) &&                         \
+            ((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u))); \
   }
 #endif
 
 #ifndef F_SET_FLAG_IF_INF
-#define F_SET_FLAG_IF_INF(x, flag)                                                                                    \
-  {                                                                                                                   \
-    F_UNION u;                                                                                                        \
-    u.f = (x);                                                                                                        \
-    (flag) = (((u.F_HI_WORD & F_EXP_MASK) == F_EXP_MASK) && (!((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u)))); \
+#define F_SET_FLAG_IF_INF(x, flag)                                      \
+  {                                                                     \
+    F_UNION u;                                                          \
+    u.f = (x);                                                          \
+    (flag) = (((u.F_HI_WORD & F_EXP_MASK) == F_EXP_MASK) &&             \
+              (!((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u)))); \
   }
 #endif
 
@@ -539,11 +545,12 @@ specific macro definitions included above.  */
 #endif
 
 #ifndef F_SET_FLAG_IF_NAN
-#define F_SET_FLAG_IF_NAN(x, flag)                                                                                 \
-  {                                                                                                                \
-    F_UNION u;                                                                                                     \
-    u.f = (x);                                                                                                     \
-    (flag) = (((u.F_HI_WORD & F_EXP_MASK) == F_EXP_MASK) && ((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u))); \
+#define F_SET_FLAG_IF_NAN(x, flag)                                   \
+  {                                                                  \
+    F_UNION u;                                                       \
+    u.f = (x);                                                       \
+    (flag) = (((u.F_HI_WORD & F_EXP_MASK) == F_EXP_MASK) &&          \
+              ((u.F_HI_WORD & F_MANTISSA_MASK) OR_LOW_BITS_SET(u))); \
   }
 #endif
 
@@ -574,12 +581,12 @@ specific macro definitions included above.  */
     u.f = (x);                                                                \
     (class) = (((U_WORD)u.F_HI_WORD >> F_SIGN_BIT_POS) & 0x1);                \
     exp = (u.F_HI_WORD & F_EXP_MASK);                                         \
-    if(exp) {                                                                 \
-      if(exp < F_EXP_MASK)                                                    \
+    if (exp) {                                                                \
+      if (exp < F_EXP_MASK)                                                   \
         (class) += F_C_POS_NORM;                                              \
       else {                                                                  \
         u.F_HI_WORD &= F_MANTISSA_MASK;                                       \
-        if(u.F_HI_WORD OR_LOW_BITS_SET(u)) {                                  \
+        if (u.F_HI_WORD OR_LOW_BITS_SET(u)) {                                 \
           (class) = (((U_WORD)u.F_HI_WORD >> F_MSB_POS) & 0x1);               \
         } else                                                                \
           (class) += F_C_POS_INF;                                             \
@@ -601,12 +608,12 @@ specific macro definitions included above.  */
     exp_word = u.F_HI_WORD;                                                   \
     (class) = (((U_WORD)u.F_HI_WORD >> F_SIGN_BIT_POS) & 0x1);                \
     exp = (u.F_HI_WORD & F_EXP_MASK);                                         \
-    if(exp) {                                                                 \
-      if(exp < F_EXP_MASK)                                                    \
+    if (exp) {                                                                \
+      if (exp < F_EXP_MASK)                                                   \
         (class) += F_C_POS_NORM;                                              \
       else {                                                                  \
         u.F_HI_WORD &= F_MANTISSA_MASK;                                       \
-        if(u.F_HI_WORD OR_LOW_BITS_SET(u)) {                                  \
+        if (u.F_HI_WORD OR_LOW_BITS_SET(u)) {                                 \
           (class) = (((U_WORD)u.F_HI_WORD >> F_MSB_POS) & 0x1);               \
         } else                                                                \
           (class) += F_C_POS_INF;                                             \
@@ -631,28 +638,23 @@ specific macro definitions included above.  */
 #endif
 
 #ifndef F_EXP_WORD_IS_ZERO_OR_DENORM
-#define F_EXP_WORD_IS_ZERO_OR_DENORM(exp_word) \
-  (!((exp_word) & F_EXP_MASK))
+#define F_EXP_WORD_IS_ZERO_OR_DENORM(exp_word) (!((exp_word) & F_EXP_MASK))
 #endif
 
 #ifndef B_EXP_WORD_IS_ZERO_OR_DENORM
-#define B_EXP_WORD_IS_ZERO_OR_DENORM(exp_word) \
-  (!((exp_word) & B_EXP_MASK))
+#define B_EXP_WORD_IS_ZERO_OR_DENORM(exp_word) (!((exp_word) & B_EXP_MASK))
 #endif
 
 #ifndef F_EXP_WORD_IS_NEG
-#define F_EXP_WORD_IS_NEG(exp_word) \
-  ((exp_word) & F_SIGN_BIT_MASK)
+#define F_EXP_WORD_IS_NEG(exp_word) ((exp_word) & F_SIGN_BIT_MASK)
 #endif
 
 #ifndef B_EXP_WORD_IS_NEG
-#define B_EXP_WORD_IS_NEG(exp_word) \
-  ((exp_word) & B_SIGN_BIT_MASK)
+#define B_EXP_WORD_IS_NEG(exp_word) ((exp_word) & B_SIGN_BIT_MASK)
 #endif
 
 #ifndef F_EXP_WORD_IS_POS
-#define F_EXP_WORD_IS_POS(exp_word) \
-  (!((exp_word) & F_SIGN_BIT_MASK))
+#define F_EXP_WORD_IS_POS(exp_word) (!((exp_word) & F_SIGN_BIT_MASK))
 #endif
 
 #ifndef SET_BIT
@@ -766,17 +768,14 @@ them down will make the combination faster, go ahead and do it. */
     (sign) = ((abs_x) != save_x);               \
   }
 
-#define F_CHANGE_SIGN(sign) \
-  (sign) = !(sign)
+#define F_CHANGE_SIGN(sign) (sign) = !(sign)
 
 #define F_RESTORE_SIGN(sign, x) \
   ASSERT((x) >= 0.0);           \
-  if(sign)                      \
-    F_NEGATE(x);
+  if (sign) F_NEGATE(x);
 
 #define F_NEGATE_IF_SIGN_NEG(sign, x) \
-  if(sign)                            \
-    F_NEGATE(x);
+  if (sign) F_NEGATE(x);
 
 #endif
 
@@ -798,50 +797,42 @@ them down will make the combination faster, go ahead and do it. */
 
 #ifndef S_SET_NEG_BIT
 #define S_SET_NEG_BIT(x) \
-  if((x) > 0.0)          \
-    S_NEGATE(x);
+  if ((x) > 0.0) S_NEGATE(x);
 #endif
 
 #ifndef D_SET_NEG_BIT
 #define D_SET_NEG_BIT(x) \
-  if((x) > 0.0)          \
-    D_NEGATE(x);
+  if ((x) > 0.0) D_NEGATE(x);
 #endif
 
 #ifndef F_SET_NEG_BIT
 #define F_SET_NEG_BIT(x) \
-  if((x) > 0.0)          \
-    F_NEGATE(x);
+  if ((x) > 0.0) F_NEGATE(x);
 #endif
 
 #ifndef B_SET_NEG_BIT
 #define B_SET_NEG_BIT(x) \
-  if((x) > 0.0)          \
-    B_NEGATE(x);
+  if ((x) > 0.0) B_NEGATE(x);
 #endif
 
 #ifndef S_CLEAR_NEG_BIT
 #define S_CLEAR_NEG_BIT(x) \
-  if((x) < 0.0)            \
-    S_NEGATE(x);
+  if ((x) < 0.0) S_NEGATE(x);
 #endif
 
 #ifndef D_CLEAR_NEG_BIT
 #define D_CLEAR_NEG_BIT(x) \
-  if((x) < 0.0)            \
-    D_NEGATE(x);
+  if ((x) < 0.0) D_NEGATE(x);
 #endif
 
 #ifndef F_CLEAR_NEG_BIT
 #define F_CLEAR_NEG_BIT(x) \
-  if((x) < 0.0)            \
-    F_NEGATE(x);
+  if ((x) < 0.0) F_NEGATE(x);
 #endif
 
 #ifndef B_CLEAR_NEG_BIT
 #define B_CLEAR_NEG_BIT(x) \
-  if((x) < 0.0)            \
-    B_NEGATE(x);
+  if ((x) < 0.0) B_NEGATE(x);
 #endif
 
 #ifndef S_ABS
@@ -882,7 +873,7 @@ them down will make the combination faster, go ahead and do it. */
 #undef S_COPY_SIGN_IS_FAST
 #define S_COPY_SIGN(value, sign, result) \
   {                                      \
-    if((sign) < 0.0) {                   \
+    if ((sign) < 0.0) {                  \
       S_ABS((value), (result));          \
       S_NEGATE(result);                  \
     } else                               \
@@ -894,7 +885,7 @@ them down will make the combination faster, go ahead and do it. */
 #undef D_COPY_SIGN_IS_FAST
 #define D_COPY_SIGN(value, sign, result) \
   {                                      \
-    if((sign) < 0.0) {                   \
+    if ((sign) < 0.0) {                  \
       D_ABS((value), (result));          \
       D_NEGATE(result);                  \
     } else                               \
@@ -906,7 +897,7 @@ them down will make the combination faster, go ahead and do it. */
 #undef F_COPY_SIGN_IS_FAST
 #define F_COPY_SIGN(value, sign, result) \
   {                                      \
-    if((sign) < 0.0) {                   \
+    if ((sign) < 0.0) {                  \
       F_ABS((value), (result));          \
       F_NEGATE(result);                  \
     } else                               \
@@ -918,7 +909,7 @@ them down will make the combination faster, go ahead and do it. */
 #undef B_COPY_SIGN_IS_FAST
 #define B_COPY_SIGN(value, sign, result) \
   {                                      \
-    if((sign) < 0.0) {                   \
+    if ((sign) < 0.0) {                  \
       B_ABS((value), (result));          \
       B_NEGATE(result);                  \
     } else                               \
@@ -1005,15 +996,15 @@ result will = value. */
 #define F_COPY_NEG_SIGN(sign, abs_sign, value) \
   {                                            \
     ASSERT((value) >= 0.0);                    \
-    if((abs_sign) != (sign))                   \
-      F_NEGATE(value);                         \
+    if ((abs_sign) != (sign)) F_NEGATE(value); \
   }
 
 #endif
 
 #endif
 
-#if (defined(F_MAX_BIN_EXP) && defined(F_PRECISION) && (F_MAX_BIN_EXP > 2 * F_PRECISION))
+#if (defined(F_MAX_BIN_EXP) && defined(F_PRECISION) && \
+     (F_MAX_BIN_EXP > 2 * F_PRECISION))
 
 #define GOTO_CLEANUP_IF_POTENTIAL_OVERFLOW(x, t)
 
@@ -1023,8 +1014,7 @@ result will = value. */
   {                                              \
     F_TYPE abs_x;                                \
     F_ABS(x, abs_x);                             \
-    if(abs_x >= t)                               \
-      goto cleanup;                              \
+    if (abs_x >= t) goto cleanup;                \
   }
 
 #endif
@@ -1153,8 +1143,7 @@ result will = value. */
     ASSERT((x) < t);                     \
     (y) = x + t;                         \
     (y) -= t;                            \
-    if((y) > orig_x)                     \
-      (y) -= 1.0;                        \
+    if ((y) > orig_x) (y) -= 1.0;        \
   }
 #endif
 
@@ -1168,8 +1157,7 @@ result will = value. */
     ASSERT((x) > -t);                    \
     (y) = x - t;                         \
     (y) += t;                            \
-    if((y) < orig_x)                     \
-      (y) += 1.0;                        \
+    if ((y) < orig_x) (y) += 1.0;        \
   }
 #endif
 
@@ -1184,10 +1172,8 @@ result will = value. */
     ASSERT(abs_x < t);                          \
     (y) = abs_x + t;                            \
     (y) -= t;                                   \
-    if((y) > abs_x)                             \
-      (y) -= 1.0;                               \
-    if(abs_x != orig_x)                         \
-      F_NEGATE(y);                              \
+    if ((y) > abs_x) (y) -= 1.0;                \
+    if (abs_x != orig_x) F_NEGATE(y);           \
   }
 #endif
 
@@ -1226,8 +1212,7 @@ result will = value. */
     F_COPY_SIGN(t, (x), t);            \
     y = (x) + t;                       \
     y -= t;                            \
-    if(y < x)                          \
-      y += 1.0;                        \
+    if (y < x) y += 1.0;               \
     (i) = (WORD)y;                     \
   }
 #endif
@@ -1243,8 +1228,7 @@ result will = value. */
     F_COPY_SIGN(t, (x), t);              \
     y = (x) + t;                         \
     y -= t;                              \
-    if(y > x)                            \
-      y -= 1.0;                          \
+    if (y > x) y -= 1.0;                 \
     (i) = (WORD)y;                       \
   }
 #endif
@@ -1271,18 +1255,18 @@ These do not yet have generic definitions:
     U_WORD sign, i_neg, j_neg;                   \
     i_neg = (I < 0);                             \
     sign = i_neg;                                \
-    if(i_neg) {                                  \
+    if (i_neg) {                                 \
       I = ~((U_WORD)(I)) + 1;                    \
       i_neg = (I < 0);                           \
     }                                            \
     j_neg = (J < 0);                             \
-    if(j_neg) {                                  \
+    if (j_neg) {                                 \
       sign ^= 1;                                 \
       J = ~((U_WORD)J) + 1;                      \
       j_neg = (J < 0);                           \
     }                                            \
-    if(i_neg | j_neg) {                          \
-      if(i_neg) {                                \
+    if (i_neg | j_neg) {                         \
+      if (i_neg) {                               \
         (lo) = (U_WORD)J << (BITS_PER_WORD - 1); \
         (hi) = (U_WORD)J >> 1;                   \
       } else {                                   \
@@ -1292,11 +1276,10 @@ These do not yet have generic definitions:
     } else {                                     \
       EXT_UMUL(I, J, (lo), (hi));                \
     }                                            \
-    if(sign) {                                   \
+    if (sign) {                                  \
       (lo) = ~((U_WORD)(lo)) + 1;                \
       (hi) = ~((U_WORD)(hi));                    \
-      if(!lo)                                    \
-        (hi) += 1;                               \
+      if (!lo) (hi) += 1;                        \
     }                                            \
   }
 #endif
@@ -1539,7 +1522,7 @@ These do not yet have generic definitions:
 #define LEFT_NORMALIZE_WORD(i, j) \
   {                               \
     (j) = 0;                      \
-    while((WORD)(i) > 0) {        \
+    while ((WORD)(i) > 0) {       \
       (i) <<= 1;                  \
       (j) += 1;                   \
     }                             \
@@ -1993,14 +1976,15 @@ These do not yet have generic definitions:
     LO(y) = (x) - HI(y);                                            \
   }
 #else
-#define SPLIT_TO_HI_LO_BY_INT(x, y)                                                    \
-  {                                                                                    \
-    F_UNION u;                                                                         \
-    u.f = (x);                                                                         \
-    u.F_LO3_WORD = 0;                                                                  \
-    u.F_LO2_WORD &= ~(PDP_SHUFFLE(MAKE_MASK(((F_PRECISION / 2) - BITS_PER_WORD), 0))); \
-    HI(y) = u.f;                                                                       \
-    LO(y) = (x) - HI(y);                                                               \
+#define SPLIT_TO_HI_LO_BY_INT(x, y)                                        \
+  {                                                                        \
+    F_UNION u;                                                             \
+    u.f = (x);                                                             \
+    u.F_LO3_WORD = 0;                                                      \
+    u.F_LO2_WORD &=                                                        \
+        ~(PDP_SHUFFLE(MAKE_MASK(((F_PRECISION / 2) - BITS_PER_WORD), 0))); \
+    HI(y) = u.f;                                                           \
+    LO(y) = (x) - HI(y);                                                   \
   }
 #endif
 #endif
@@ -2024,9 +2008,10 @@ These do not yet have generic definitions:
 #else /* no PRECISION_BACKUP_AVAILABLE */
 
 #ifndef EXTENDED_MUL_SUB
-#define EXTENDED_MUL_SUB(a, b, c, y)                                               \
-  {                                                                                \
-    y = ((((a - HI(b) * HI(c)) - HI(b) * LO(c)) - LO(b) * HI(c)) - LO(b) * LO(c)); \
+#define EXTENDED_MUL_SUB(a, b, c, y)                               \
+  {                                                                \
+    y = ((((a - HI(b) * HI(c)) - HI(b) * LO(c)) - LO(b) * HI(c)) - \
+         LO(b) * LO(c));                                           \
   }
 #endif
 
@@ -2039,14 +2024,15 @@ These do not yet have generic definitions:
 
 #endif /* PRECISION_BACKUP_AVAILABLE */
 
-#if (defined(QUAD_PRECISION) && QUAD_PRECISION) && !(defined(merced) && !defined(VMS))
+#if (defined(QUAD_PRECISION) && QUAD_PRECISION) && \
+    !(defined(merced) && !defined(VMS))
 #define C_C_PROTO(n) C_p_PROTO(n)
 #define COMPLEX_QUAD_DECL(n) F_COMPLEX n
 #define COMPLEX_ARGS_INIT(x) F_TYPE PASTE(r, x) = x -> r, PASTE(i, x) = x->i
-#define COMPLEX_ARGS(x) F_COMPLEX *x
+#define COMPLEX_ARGS(x) F_COMPLEX* x
 #define PASS_CMPLX(a, b, p) (p.r = a, p.i = b, (&p))
-#define COMPLEX_PROTOTYPE F_COMPLEX *
-#define COMPLEX_B_PROTOTYPE B_COMPLEX *
+#define COMPLEX_PROTOTYPE F_COMPLEX*
+#define COMPLEX_B_PROTOTYPE B_COMPLEX*
 #elif defined(merced) && !defined(VMS)
 #define C_C_PROTO(n) C_s_PROTO(n)
 #define COMPLEX_QUAD_DECL(n) F_COMPLEX n
@@ -2144,13 +2130,11 @@ These do not yet have generic definitions:
 #endif
 
 #ifndef SHORTEN_VIA_CASTS
-#define SHORTEN_VIA_CASTS(in, out) \
-  (out) = (F_TYPE)((R_TYPE)(in))
+#define SHORTEN_VIA_CASTS(in, out) (out) = (F_TYPE)((R_TYPE)(in))
 #endif
 
 #ifndef ASSIGN_WITH_F_TYPE_PRECISION
-#define ASSIGN_WITH_F_TYPE_PRECISION(x, y) \
-  (y) = (F_TYPE)(x)
+#define ASSIGN_WITH_F_TYPE_PRECISION(x, y) (y) = (F_TYPE)(x)
 #endif
 
 /*
@@ -2213,17 +2197,18 @@ These do not yet have generic definitions:
 #endif
 
 #undef __DENORM_SCALE_UNBIASED_EXP
-#define __DENORM_SCALE_UNBIASED_EXP ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE - F_NORM)
+#define __DENORM_SCALE_UNBIASED_EXP \
+  ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE - F_NORM)
 #undef __DENORM_SCALE_BIASED_EXP
-#define __DENORM_SCALE_BIASED_EXP ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE - F_NORM + F_EXP_BIAS)
+#define __DENORM_SCALE_BIASED_EXP \
+  ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE - F_NORM + F_EXP_BIAS)
 
 #undef __LOG2_DENORM_SCALE_ALIGNED_W_EXP
-#define __LOG2_DENORM_SCALE_ALIGNED_W_EXP \
-  ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE)
+#define __LOG2_DENORM_SCALE_ALIGNED_W_EXP ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE)
 
-#define __LOG2_DENORM_CONST (__LOG2_DENORM_SCALE + F_NORM + \
-                             F_MIN_BIN_EXP)
-#define __DENORM_CONST_BIASED_EXP ALIGN_W_EXP_FIELD(__LOG2_DENORM_CONST - F_NORM + F_EXP_BIAS)
+#define __LOG2_DENORM_CONST (__LOG2_DENORM_SCALE + F_NORM + F_MIN_BIN_EXP)
+#define __DENORM_CONST_BIASED_EXP \
+  ALIGN_W_EXP_FIELD(__LOG2_DENORM_CONST - F_NORM + F_EXP_BIAS)
 
 #if (defined(F_COPY_SIGN_AND_EXP_IS_FAST) && F_COPY_SIGN_AND_EXP_IS_FAST) && \
     (__LOG2_DENORM_CONST >= 0) && (__LOG2_DENORM_CONST <= __MAX_F_POW_2_EXP)
@@ -2255,16 +2240,15 @@ These do not yet have generic definitions:
 
 #else
 
-#define __DENORM_TO_NORM_EXP ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE + \
-                                               F_NORM + F_EXP_BIAS + F_MIN_BIN_EXP)
-#define __DENORM_TO_NORM(p, q)                \
-  F_UNION u;                                  \
-  u.f = p;                                    \
-  u.F_HI_WORD = (u.F_HI_WORD & ~F_EXP_MASK) | \
-                __DENORM_TO_NORM_EXP;         \
-  q = u.f;                                    \
-  u.F_HI_WORD &= F_SIGN_EXP_MASK;             \
-  CLEAR_LOW_BITS(u);                          \
+#define __DENORM_TO_NORM_EXP \
+  ALIGN_W_EXP_FIELD(__LOG2_DENORM_SCALE + F_NORM + F_EXP_BIAS + F_MIN_BIN_EXP)
+#define __DENORM_TO_NORM(p, q)                                      \
+  F_UNION u;                                                        \
+  u.f = p;                                                          \
+  u.F_HI_WORD = (u.F_HI_WORD & ~F_EXP_MASK) | __DENORM_TO_NORM_EXP; \
+  q = u.f;                                                          \
+  u.F_HI_WORD &= F_SIGN_EXP_MASK;                                   \
+  CLEAR_LOW_BITS(u);                                                \
   q -= u.f
 
 #define DENORM_TO_NORM(p, q) \

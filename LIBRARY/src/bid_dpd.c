@@ -27,13 +27,13 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-#define DECNUMDIGITS 34 // work with up to 34 digits
+#define DECNUMDIGITS 34  // work with up to 34 digits
 
 #include "bid_internal.h"
 #include "bid_b2d.h"
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid_to_dpd32(BID_UINT32 *pres, BID_UINT32 *pba) {
+void bid_to_dpd32(BID_UINT32* pres, BID_UINT32* pba) {
   BID_UINT32 ba = *pba;
 #else
 DFP_WRAPFN_DFP(32, bid_to_dpd32, 32)
@@ -52,18 +52,19 @@ bid_to_dpd32(BID_UINT32 ba) {
   trailing = (ba & 0xfffff);
 
   // Detect infinity, and return canonical infinity
-  if((comb & 0x7c0) == 0x780) {
+  if ((comb & 0x7c0) == 0x780) {
     res = sign | 0x78000000;
     BID_RETURN(res);
     // Detect NaN, and canonicalize trailing
-  } else if((comb & 0x7c0) == 0x7c0) {
-    if(trailing > 999999)
+  } else if ((comb & 0x7c0) == 0x7c0) {
+    if (trailing > 999999) {
       trailing = 0;
+    }
     nanb = ba & 0xfe000000;
     exp = 0;
     bcoeff = trailing;
-  } else {                        // Normal number
-    if((comb & 0x600) == 0x600) { // G0..G1 = 11 -> exp is G2..G11
+  } else {                          // Normal number
+    if ((comb & 0x600) == 0x600) {  // G0..G1 = 11 -> exp is G2..G11
       exp = (comb >> 1) & 0xff;
       bcoeff = ((8 + (comb & 1)) << 20) | trailing;
     } else {
@@ -71,8 +72,9 @@ bid_to_dpd32(BID_UINT32 ba) {
       bcoeff = ((comb & 7) << 20) | trailing;
     }
     // Zero the coefficient if non-canonical (>= 10^7)
-    if(bcoeff >= 10000000)
+    if (bcoeff >= 10000000) {
       bcoeff = 0;
+    }
   }
 
   b0 = bcoeff / 1000000;
@@ -80,14 +82,14 @@ bid_to_dpd32(BID_UINT32 ba) {
   b2 = bcoeff % 1000;
   dcoeff = (BID_UINT32)((bid_b2d[b1] << 10) | bid_b2d[b2]);
 
-  if(b0 >= 8) // is b0 8 or 9?
+  if (b0 >= 8) {  // is b0 8 or 9?
+    res = sign |
+          ((0x600 | ((exp >> 6) << 7) | ((b0 & 1) << 6) | (exp & 0x3f)) << 20) |
+          dcoeff;
+  } else {  // else b0 is 0..7
     res =
-        sign |
-        ((0x600 | ((exp >> 6) << 7) | ((b0 & 1) << 6) | (exp & 0x3f)) << 20) | dcoeff;
-  else // else b0 is 0..7
-    res =
-        sign | ((((exp >> 6) << 9) | (b0 << 6) | (exp & 0x3f)) << 20) |
-        dcoeff;
+        sign | ((((exp >> 6) << 9) | (b0 << 6) | (exp & 0x3f)) << 20) | dcoeff;
+  }
 
   res |= nanb;
 
@@ -95,7 +97,7 @@ bid_to_dpd32(BID_UINT32 ba) {
 }
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid_to_dpd64(BID_UINT64 *pres, BID_UINT64 *pba) {
+void bid_to_dpd64(BID_UINT64* pres, BID_UINT64* pba) {
   BID_UINT64 ba = *pba;
 #else
 DFP_WRAPFN_DFP(64, bid_to_dpd64, 64)
@@ -118,18 +120,19 @@ bid_to_dpd64(BID_UINT64 ba) {
   trailing = (ba & 0x0003ffffffffffffull);
 
   // Detect infinity, and return canonical infinity
-  if((comb & 0x1f00) == 0x1e00) {
+  if ((comb & 0x1f00) == 0x1e00) {
     res = sign | 0x7800000000000000ull;
     BID_RETURN(res);
     // Detect NaN, and canonicalize trailing
-  } else if((comb & 0x1e00) == 0x1e00) {
-    if(trailing > 999999999999999ull)
+  } else if ((comb & 0x1e00) == 0x1e00) {
+    if (trailing > 999999999999999ull) {
       trailing = 0;
+    }
     nanb = ba & 0xfe00000000000000ull;
     exp = 0;
     bcoeff = trailing;
-  } else {                          // Normal number
-    if((comb & 0x1800) == 0x1800) { // G0..G1 = 11 -> exp is G2..G11
+  } else {                            // Normal number
+    if ((comb & 0x1800) == 0x1800) {  // G0..G1 = 11 -> exp is G2..G11
       exp = (comb >> 1) & 0x3ff;
       bcoeff = ((8 + (comb & 1)) << 50) | trailing;
     } else {
@@ -138,8 +141,9 @@ bid_to_dpd64(BID_UINT64 ba) {
     }
 
     // Zero the coefficient if it is non-canonical (>= 10^16)
-    if(bcoeff >= 10000000000000000ull)
+    if (bcoeff >= 10000000000000000ull) {
       bcoeff = 0;
+    }
   }
 
 // Floor(2^61 / 10^9)
@@ -150,11 +154,10 @@ bid_to_dpd64(BID_UINT64 ba) {
 
 #if 1
   yhi =
-      ((BID_UINT64)D61 *
-       (BID_UINT64)(BID_UINT32)(bcoeff >> (BID_UINT64)27)) >>
+      ((BID_UINT64)D61 * (BID_UINT64)(BID_UINT32)(bcoeff >> (BID_UINT64)27)) >>
       (BID_UINT64)34;
   ylo = (BID_UINT32)(bcoeff - 1000000000ull * yhi);
-  if(ylo >= 1000000000) {
+  if (ylo >= 1000000000) {
     ylo = ylo - 1000000000;
     yhi = yhi + 1;
   }
@@ -164,23 +167,25 @@ bid_to_dpd64(BID_UINT64 ba) {
 #endif
 
   // yhi = ABBBCCC ylo = DDDEEEFFF
-  b5 = ylo % 1000;                 // b5 = FFF
-  b3 = ylo / 1000000;              // b3 = DDD
-  b4 = (ylo / 1000) - (1000 * b3); // b4 = EEE
-  b2 = yhi % 1000;                 // b2 = CCC
-  b0 = yhi / 1000000;              // b0 = A
-  b1 = (yhi / 1000) - (1000 * b0); // b1 = BBB
+  b5 = ylo % 1000;                  // b5 = FFF
+  b3 = ylo / 1000000;               // b3 = DDD
+  b4 = (ylo / 1000) - (1000 * b3);  // b4 = EEE
+  b2 = yhi % 1000;                  // b2 = CCC
+  b0 = yhi / 1000000;               // b0 = A
+  b1 = (yhi / 1000) - (1000 * b0);  // b1 = BBB
 
-  dcoeff = bid_b2d[b5] | bid_b2d2[b4] | bid_b2d3[b3] | bid_b2d4[b2] | bid_b2d5[b1];
+  dcoeff =
+      bid_b2d[b5] | bid_b2d2[b4] | bid_b2d3[b3] | bid_b2d4[b2] | bid_b2d5[b1];
 
-  if(b0 >= 8) // is b0 8 or 9?
+  if (b0 >= 8) {  // is b0 8 or 9?
     res =
         sign |
-        ((0x1800 | ((exp >> 8) << 9) | ((b0 & 1) << 8) | (exp & 0xff)) << 50) | dcoeff;
-  else // else b0 is 0..7
-    res =
-        sign | ((((exp >> 8) << 11) | (b0 << 8) | (exp & 0xff)) << 50) |
+        ((0x1800 | ((exp >> 8) << 9) | ((b0 & 1) << 8) | (exp & 0xff)) << 50) |
         dcoeff;
+  } else {  // else b0 is 0..7
+    res =
+        sign | ((((exp >> 8) << 11) | (b0 << 8) | (exp & 0xff)) << 50) | dcoeff;
+  }
 
   res |= nanb;
 
@@ -188,14 +193,14 @@ bid_to_dpd64(BID_UINT64 ba) {
 }
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid_dpd_to_bid32(BID_UINT32 *pres, BID_UINT32 *pda) {
+void bid_dpd_to_bid32(BID_UINT32* pres, BID_UINT32* pda) {
   BID_UINT32 da = *pda;
 #else
 DFP_WRAPFN_DFP(32, bid_dpd_to_bid32, 32)
 BID_UINT32
 bid_dpd_to_bid32(BID_UINT32 da) {
 #endif
-  BID_UINT32 in = *(BID_UINT32 *)&da;
+  BID_UINT32 in = *&da;
   BID_UINT32 res;
 
   BID_UINT32 sign, comb, exp;
@@ -208,14 +213,14 @@ bid_dpd_to_bid32(BID_UINT32 da) {
   comb = (in & 0x7ff00000) >> 20;
   trailing = (in & 0x000fffff);
 
-  if((comb & 0x7c0) == 0x780) { // G0..G4 = 11110 -> Inf
+  if ((comb & 0x7c0) == 0x780) {  // G0..G4 = 11110 -> Inf
     res = in & 0xf8000000;
     BID_RETURN(res);
-  } else if((comb & 0x7c0) == 0x7c0) { // G0..G5 = 11111 -> NaN
+  } else if ((comb & 0x7c0) == 0x7c0) {  // G0..G5 = 11111 -> NaN
     nanb = in & 0xfe000000;
     exp = 0;
-  } else {                        // Normal number
-    if((comb & 0x600) == 0x600) { // G0..G1 = 11 -> d0 = 8 + G4
+  } else {                          // Normal number
+    if ((comb & 0x600) == 0x600) {  // G0..G1 = 11 -> d0 = 8 + G4
       d0 = ((comb >> 6) & 1) | 8;
       exp = ((comb & 0x180) >> 1) | (comb & 0x3f);
     } else {
@@ -227,7 +232,7 @@ bid_dpd_to_bid32(BID_UINT32 da) {
   d2 = (BID_UINT32)bid_d2b[(trailing) & 0x3ff];
 
   bcoeff = d2 + d1 + (1000000 * d0);
-  if(bcoeff < 0x800000) {
+  if (bcoeff < 0x800000) {
     res = (BID_UINT32)((exp << 23) | bcoeff | sign);
   } else {
     res = (exp << 21) | sign | 0x60000000 | (bcoeff & 0x1fffff);
@@ -239,14 +244,14 @@ bid_dpd_to_bid32(BID_UINT32 da) {
 }
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid_dpd_to_bid64(BID_UINT64 *pres, BID_UINT64 *pda) {
+void bid_dpd_to_bid64(BID_UINT64* pres, BID_UINT64* pda) {
   BID_UINT64 da = *pda;
 #else
 DFP_WRAPFN_DFP(64, bid_dpd_to_bid64, 64)
 BID_UINT64
 bid_dpd_to_bid64(BID_UINT64 da) {
 #endif
-  BID_UINT64 in = *(BID_UINT64 *)&da;
+  BID_UINT64 in = *&da;
   BID_UINT64 res;
 
   BID_UINT64 sign, comb, exp;
@@ -263,23 +268,25 @@ bid_dpd_to_bid64(BID_UINT64 da) {
   comb = (in & 0x7ffc000000000000ull) >> 50;
   trailing = (in & 0x0003ffffffffffffull);
 
-  if((comb & 0x1f00) == 0x1e00) { // G0..G4 = 11110 -> Inf
+  if ((comb & 0x1f00) == 0x1e00) {  // G0..G4 = 11110 -> Inf
     res = in & 0xf800000000000000ull;
     BID_RETURN(res);
-  } else if((comb & 0x1f00) == 0x1f00) { // G0..G5 = 11111 -> NaN
+  } else if ((comb & 0x1f00) == 0x1f00) {  // G0..G5 = 11111 -> NaN
     nanb = in & 0xfe00000000000000ull;
     exp = 0;
     d0 = 0;
-  } else {                          // Normal number
-    if((comb & 0x1800) == 0x1800) { // G0..G1 = 11 -> d0 = 8 + G4
+  } else {                            // Normal number
+    if ((comb & 0x1800) == 0x1800) {  // G0..G1 = 11 -> d0 = 8 + G4
       d0 = ((comb >> 8) & 1) | 8;
       // d0 = (comb & 0x0100 ? 9 : 8);
       exp = (comb & 0x600) >> 1;
-      // exp = (comb & 0x0400 ? 1 : 0) * 0x200 + (comb & 0x0200 ? 1 : 0) * 0x100; // exp leading bits are G2..G3
+      // exp = (comb & 0x0400 ? 1 : 0) * 0x200 + (comb & 0x0200 ? 1 : 0) *
+      // 0x100; // exp leading bits are G2..G3
     } else {
       d0 = (comb >> 8) & 0x7;
       exp = (comb & 0x1800) >> 3;
-      // exp = (comb & 0x1000 ? 1 : 0) * 0x200 + (comb & 0x0800 ? 1 : 0) * 0x100; // exp loading bits are G0..G1
+      // exp = (comb & 0x1000 ? 1 : 0) * 0x200 + (comb & 0x0800 ? 1 : 0) *
+      // 0x100; // exp loading bits are G0..G1
     }
   }
   d1 = bid_d2b5[(trailing >> 40) & 0x3ff];
@@ -298,7 +305,7 @@ bid_dpd_to_bid64(BID_UINT64 da) {
 }
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid_to_dpd128(BID_UINT128 *pres, BID_UINT128 *pba) {
+void bid_to_dpd128(BID_UINT128* pres, BID_UINT128* pba) {
   BID_UINT128 ba = *pba;
 #else
 DFP_WRAPFN_DFP(128, bid_to_dpd128, 128)
@@ -322,15 +329,17 @@ bid_to_dpd128(BID_UINT128 ba) {
   trailing.w[0] = ba.w[BID_LOW_128W];
   exp = 0;
 
-  if((comb & 0x1f000) == 0x1e000) { // G0..G4 = 11110 -> Inf
+  if ((comb & 0x1f000) == 0x1e000) {  // G0..G4 = 11110 -> Inf
     res.w[BID_HIGH_128W] = ba.w[BID_HIGH_128W] & 0xf800000000000000ull;
     res.w[BID_LOW_128W] = 0;
     BID_RETURN(res);
     // Detect NaN, and canonicalize trailing
-  } else if((comb & 0x1f000) == 0x1f000) {
-    if((trailing.w[1] > 0x0000314dc6448d93ULL) || // significand is non-canonical
-       ((trailing.w[1] == 0x0000314dc6448d93ULL) && (trailing.w[0] >= 0x38c15b0a00000000ULL))
-       // significand is non-canonical
+  } else if ((comb & 0x1f000) == 0x1f000) {
+    if ((trailing.w[1] >
+         0x0000314dc6448d93ULL) ||  // significand is non-canonical
+        ((trailing.w[1] == 0x0000314dc6448d93ULL) &&
+         (trailing.w[0] >= 0x38c15b0a00000000ULL))
+        // significand is non-canonical
     ) {
       trailing.w[1] = trailing.w[0] = 0ull;
     }
@@ -338,21 +347,21 @@ bid_to_dpd128(BID_UINT128 ba) {
     bcoeff.w[0] = trailing.w[0];
     nanb = ba.w[BID_HIGH_128W] & 0xfe00000000000000ull;
     exp = 0;
-  } else {                            // Normal number
-    if((comb & 0x18000) == 0x18000) { // G0..G1 = 11 -> exp is G2..G11
+  } else {                              // Normal number
+    if ((comb & 0x18000) == 0x18000) {  // G0..G1 = 11 -> exp is G2..G11
       exp = (comb >> 1) & 0x3fff;
       bcoeff.w[1] =
           ((BID_UINT64)(8 + (comb & 1)) << (BID_UINT64)46) | trailing.w[1];
       bcoeff.w[0] = trailing.w[0];
     } else {
       exp = (comb >> 3) & 0x3fff;
-      bcoeff.w[1] =
-          ((BID_UINT64)(comb & 7) << (BID_UINT64)46) | trailing.w[1];
+      bcoeff.w[1] = ((BID_UINT64)(comb & 7) << (BID_UINT64)46) | trailing.w[1];
       bcoeff.w[0] = trailing.w[0];
     }
     // Zero the coefficient if non-canonical (>= 10^34)
-    if(bcoeff.w[1] > 0x1ed09bead87c0ull ||
-       (bcoeff.w[1] == 0x1ed09bead87c0ull && bcoeff.w[0] >= 0x378D8E6400000000ull)) {
+    if (bcoeff.w[1] > 0x1ed09bead87c0ull ||
+        (bcoeff.w[1] == 0x1ed09bead87c0ull &&
+         bcoeff.w[0] >= 0x378D8E6400000000ull)) {
       bcoeff.w[0] = bcoeff.w[1] = 0;
     }
   }
@@ -403,23 +412,24 @@ bid_to_dpd128(BID_UINT128 ba) {
   }
 
   dcoeff.w[0] = bid_b2d[d11.w[0]] | (bid_b2d[d10.w[0]] << 10) |
-                (bid_b2d[d9.w[0]] << 20) | (bid_b2d[d8.w[0]] << 30) | (bid_b2d[d7.w[0]] << 40) |
-                (bid_b2d[d6.w[0]] << 50) | (bid_b2d[d5.w[0]] << 60);
-  dcoeff.w[1] =
-      (bid_b2d[d5.w[0]] >> 4) | (bid_b2d[d4.w[0]] << 6) | (bid_b2d[d3.w[0]] << 16) |
-      (bid_b2d[d2.w[0]] << 26) | (bid_b2d[d1.w[0]] << 36);
+                (bid_b2d[d9.w[0]] << 20) | (bid_b2d[d8.w[0]] << 30) |
+                (bid_b2d[d7.w[0]] << 40) | (bid_b2d[d6.w[0]] << 50) |
+                (bid_b2d[d5.w[0]] << 60);
+  dcoeff.w[1] = (bid_b2d[d5.w[0]] >> 4) | (bid_b2d[d4.w[0]] << 6) |
+                (bid_b2d[d3.w[0]] << 16) | (bid_b2d[d2.w[0]] << 26) |
+                (bid_b2d[d1.w[0]] << 36);
 
   res.w[0] = dcoeff.w[0];
-  if(d0.w[0] >= 8) {
+  if (d0.w[0] >= 8) {
     res.w[1] =
         sign.w[1] |
-        ((0x18000 | ((exp >> 12) << 13) | ((d0.w[0] & 1) << 12) |
-          (exp & 0xfff))
+        ((0x18000 | ((exp >> 12) << 13) | ((d0.w[0] & 1) << 12) | (exp & 0xfff))
          << 46) |
         dcoeff.w[1];
   } else {
-    res.w[1] =
-        sign.w[1] | ((((exp >> 12) << 15) | (d0.w[0] << 12) | (exp & 0xfff)) << 46) | dcoeff.w[1];
+    res.w[1] = sign.w[1] |
+               ((((exp >> 12) << 15) | (d0.w[0] << 12) | (exp & 0xfff)) << 46) |
+               dcoeff.w[1];
   }
 
   res.w[1] |= nanb;
@@ -429,14 +439,14 @@ bid_to_dpd128(BID_UINT128 ba) {
 }
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid_dpd_to_bid128(BID_UINT128 *pres, BID_UINT128 *pda) {
+void bid_dpd_to_bid128(BID_UINT128* pres, BID_UINT128* pda) {
   BID_UINT128 da = *pda;
 #else
 DFP_WRAPFN_DFP(128, bid_dpd_to_bid128, 128)
 BID_UINT128
 bid_dpd_to_bid128(BID_UINT128 da) {
 #endif
-  BID_UINT128 in = *(BID_UINT128 *)&da;
+  BID_UINT128 in = *&da;
   BID_UINT128 res;
 
   BID_UINT128 sign;
@@ -454,28 +464,25 @@ bid_dpd_to_bid128(BID_UINT128 da) {
   trailing.w[0] = in.w[BID_LOW_128W];
   exp = 0;
 
-  if((comb & 0x1f000) == 0x1e000) { // G0..G4 = 11110 -> Inf
+  if ((comb & 0x1f000) == 0x1e000) {  // G0..G4 = 11110 -> Inf
     res.w[BID_HIGH_128W] = in.w[BID_HIGH_128W] & 0xf800000000000000ull;
     res.w[BID_LOW_128W] = 0ull;
     BID_RETURN(res);
-  } else if((comb & 0x1f000) == 0x1f000) { // G0..G4 = 11111 -> NaN
+  } else if ((comb & 0x1f000) == 0x1f000) {  // G0..G4 = 11111 -> NaN
     nanb = in.w[BID_HIGH_128W] & 0xfe00000000000000ull;
     exp = 0;
     d0 = 0;
-  } else {                            // Normal number
-    if((comb & 0x18000) == 0x18000) { // G0..G1 = 11 -> d0 = 8 + G4
+  } else {                              // Normal number
+    if ((comb & 0x18000) == 0x18000) {  // G0..G1 = 11 -> d0 = 8 + G4
       d0 = 8 + (comb & 0x01000 ? 1 : 0);
       exp =
-          (comb & 0x04000 ? 1 : 0) * 0x2000 +
-          (comb & 0x02000 ? 1 : 0) * 0x1000;
+          (comb & 0x04000 ? 1 : 0) * 0x2000 + (comb & 0x02000 ? 1 : 0) * 0x1000;
       // exp leading bits are G2..G3
     } else {
-      d0 =
-          4 * (comb & 0x04000 ? 1 : 0) + 2 * (comb & 0x2000 ? 1 : 0) +
-          (comb & 0x1000 ? 1 : 0);
+      d0 = 4 * (comb & 0x04000 ? 1 : 0) + 2 * (comb & 0x2000 ? 1 : 0) +
+           (comb & 0x1000 ? 1 : 0);
       exp =
-          (comb & 0x10000 ? 1 : 0) * 0x2000 +
-          (comb & 0x08000 ? 1 : 0) * 0x1000;
+          (comb & 0x10000 ? 1 : 0) * 0x2000 + (comb & 0x08000 ? 1 : 0) * 0x1000;
       // exp loading bits are G0..G1
     }
   }
@@ -492,17 +499,16 @@ bid_dpd_to_bid128(BID_UINT128 da) {
   d2 = bid_d2b[(trailing.w[1] >> 26) & 0x3ff];
   d1 = bid_d2b[(trailing.w[1] >> 36) & 0x3ff];
 
-  tl =
-      d11 + (d10 * 1000ull) + (d9 * 1000000ull) + (d8 * 1000000000ull) +
-      (d7 * 1000000000000ull) + (d6 * 1000000000000000ull);
-  th =
-      d5 + (d4 * 1000ull) + (d3 * 1000000ull) + (d2 * 1000000000ull) +
-      (d1 * 1000000000000ull) + (d0 * 1000000000000000ull);
+  tl = d11 + (d10 * 1000ull) + (d9 * 1000000ull) + (d8 * 1000000000ull) +
+       (d7 * 1000000000000ull) + (d6 * 1000000000000000ull);
+  th = d5 + (d4 * 1000ull) + (d3 * 1000000ull) + (d2 * 1000000000ull) +
+       (d1 * 1000000000000ull) + (d0 * 1000000000000000ull);
   __mul_64x64_to_128(bcoeff, th, 1000000000000000000ull);
   __add_128_64(bcoeff, bcoeff, tl);
 
-  if(!nanb)
+  if (!nanb) {
     exp += (comb & 0xfff);
+  }
 
   res.w[0] = bcoeff.w[0];
   res.w[1] = (exp << 49) | sign.w[1] | bcoeff.w[1];

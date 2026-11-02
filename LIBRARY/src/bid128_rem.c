@@ -40,14 +40,13 @@ BID_UINT128 cx, cy, c_x2, cq, cr, t, cxs, p128, res;
 BID_UINT64 sign_x, sign_y, valid_y;
 BID_SINT64 d;
 int_float f64, fx;
-int exponent_x, exponent_y, diff_expon, bin_expon_cx, scale,
-    scale0;
+int exponent_x, exponent_y, diff_expon, bin_expon_cx, scale, scale0;
 int old_rm, rm_changed = 0;
 
 BID_OPT_SAVE_BINARY_FLAGS()
 
 // Set it to round-to-nearest (if different)
-if((old_rm = fegetround()) != FE_TONEAREST) {
+if ((old_rm = fegetround()) != FE_TONEAREST) {
   rm_changed = 1;
   fesetround(FE_TONEAREST);
 }
@@ -56,28 +55,31 @@ if((old_rm = fegetround()) != FE_TONEAREST) {
 
 valid_y = unpack_BID128_value(&sign_y, &exponent_y, &cy, y);
 
-if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
+if (!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((y.w[1U] & SNAN_MASK64) == SNAN_MASK64) // y is sNaN
+  if ((y.w[1U] & SNAN_MASK64) == SNAN_MASK64) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   // test if x is NaN
-  if((x.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((x.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x.w[1U] & SNAN_MASK64) == SNAN_MASK64) // y is sNaN
+    if ((x.w[1U] & SNAN_MASK64) == SNAN_MASK64) {  // y is sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res.w[1U] = cx.w[1U] & QUIET_MASK64;
     res.w[0U] = cx.w[0U];
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((x.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // check if y is Inf.
-    if(((y.w[1U] & 0x7c00000000000000ull) != 0x7c00000000000000ull))
+    if (((y.w[1U] & 0x7c00000000000000ull) != 0x7c00000000000000ull))
     // return NaN
     {
 #ifdef BID_SET_STATUS_FLAGS
@@ -87,13 +89,14 @@ if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
       res.w[1U] = 0x7c00000000000000ull;
       res.w[0U] = 0;
       // restore the rounding mode back if it has been changed
-      if(rm_changed)
+      if (rm_changed) {
         fesetround(old_rm);
+      }
       BID_RETURN(res);
     }
   }
   // x is 0
-  if((!cy.w[1U]) && (!cy.w[0U])) {
+  if ((!cy.w[1U]) && (!cy.w[0U])) {
 #ifdef BID_SET_STATUS_FLAGS
     // set status flags
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -102,47 +105,54 @@ if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
     res.w[1U] = 0x7c00000000000000ull;
     res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
-  if(valid_y || ((y.w[1U] & NAN_MASK64) == INFINITY_MASK64)) {
+  if (valid_y || ((y.w[1U] & NAN_MASK64) == INFINITY_MASK64)) {
     // return 0
-    if((exponent_x > exponent_y) && ((y.w[1U] & NAN_MASK64) != INFINITY_MASK64))
+    if ((exponent_x > exponent_y) &&
+        ((y.w[1U] & NAN_MASK64) != INFINITY_MASK64)) {
       exponent_x = exponent_y;
+    }
 
     res.w[1U] = sign_x | (((BID_UINT64)exponent_x) << 49);
     res.w[0U] = 0;
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
 }
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((y.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((y.w[1U] & SNAN_MASK64) == SNAN_MASK64) // y is sNaN
+    if ((y.w[1U] & SNAN_MASK64) == SNAN_MASK64) {  // y is sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res.w[1U] = cy.w[1U] & QUIET_MASK64;
     res.w[0U] = cy.w[0U];
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
   // y is Infinity?
-  if((y.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((y.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // return x
     res.w[1U] = x.w[1U];
     res.w[0U] = x.w[0U];
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
   // y is 0
@@ -153,45 +163,49 @@ if(!valid_y) {
   res.w[1U] = 0x7c00000000000000ull;
   res.w[0U] = 0;
   // restore the rounding mode back if it has been changed
-  if(rm_changed)
+  if (rm_changed) {
     fesetround(old_rm);
+  }
   BID_RETURN(res);
 }
 
 diff_expon = exponent_x - exponent_y;
 
-if(diff_expon <= 0) {
+if (diff_expon <= 0) {
   diff_expon = -diff_expon;
 
-  if(diff_expon > 34) {
+  if (diff_expon > 34) {
     // |x|<|y| in this case
     res = x;
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
   // set exponent of y to exponent_x, scale coefficient_y
   t = bid_power10_table_128[diff_expon];
   __mul_128x128_to_256(p256, cy, t);
 
-  if(p256.w[2U] || p256.w[3U]) {
+  if (p256.w[2U] || p256.w[3U]) {
     // |x|<|y| in this case
     res = x;
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
 
   c_x2.w[1U] = (cx.w[1U] << 1) | (cx.w[0U] >> 63);
   c_x2.w[0U] = cx.w[0U] << 1;
-  if(__unsigned_compare_ge_128(p256, c_x2)) {
+  if (__unsigned_compare_ge_128(p256, c_x2)) {
     // |x|<|y| in this case
     res = x;
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
 
@@ -201,38 +215,45 @@ if(diff_expon <= 0) {
 
   c_x2.w[1U] = (cr.w[1U] << 1) | (cr.w[0U] >> 63);
   c_x2.w[0U] = cr.w[0U] << 1;
-  if((__unsigned_compare_gt_128(c_x2, p256)) || (c_x2.w[1U] == p256.w[1U] && c_x2.w[0U] == p256.w[0U] && (cq.w[0U] & 1))) {
+  if ((__unsigned_compare_gt_128(c_x2, p256)) ||
+      (c_x2.w[1U] == p256.w[1U] && c_x2.w[0U] == p256.w[0U] &&
+       (cq.w[0U] & 1))) {
     __sub_128_128(cr, p256, cr);
     sign_x ^= 0x8000000000000000ull;
   }
 
   bid_get_BID128_very_fast(&res, sign_x, exponent_x, cr);
   // restore the rounding mode back if it has been changed
-  if(rm_changed)
+  if (rm_changed) {
     fesetround(old_rm);
+  }
   BID_RETURN(res);
 }
 // 2^64
 f64.i = 0x5f800000U;
 
 scale0 = 38;
-if(!cy.w[1U])
+if (!cy.w[1U]) {
   scale0 = 34;
+}
 
-while(diff_expon > 0) {
+while (diff_expon > 0) {
   // get number of digits in CX and scale=38-digits
   // fx ~ CX
   fx.d = (float)cx.w[1U] * f64.d + (float)cx.w[0U];
   bin_expon_cx = ((fx.i >> 23) & 0xffU) - 0x7fU;
   scale = scale0 - bid_estimate_decimal_digits[bin_expon_cx];
   // scale = 38-estimate_decimal_digits[bin_expon_cx];
-  d = (BID_SINT64)cx.w[1U] - (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
-  if(d > 0 || (!d && cx.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U]))
+  d = (BID_SINT64)cx.w[1U] -
+      (BID_SINT64)bid_power10_index_binexp_128[bin_expon_cx].w[1U];
+  if (d > 0 ||
+      (!d && cx.w[0U] >= bid_power10_index_binexp_128[bin_expon_cx].w[0U])) {
     scale--;
+  }
 
-  if(diff_expon >= scale)
+  if (diff_expon >= scale) {
     diff_expon -= scale;
-  else {
+  } else {
     scale = diff_expon;
     diff_expon = 0;
   }
@@ -243,25 +264,28 @@ while(diff_expon > 0) {
   bid___div_128_by_128(&cq, &cx, cxs, cy);
 
   // check for remainder == 0
-  if(!cx.w[1U] && !cx.w[0U]) {
+  if (!cx.w[1U] && !cx.w[0U]) {
     bid_get_BID128_very_fast(&res, sign_x, exponent_y, cx);
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res);
   }
 }
 
 c_x2.w[1U] = (cx.w[1U] << 1) | (cx.w[0U] >> 63);
 c_x2.w[0U] = cx.w[0U] << 1;
-if((__unsigned_compare_gt_128(c_x2, cy)) || (c_x2.w[1U] == cy.w[1U] && c_x2.w[0U] == cy.w[0U] && (cq.w[0U] & 1))) {
+if ((__unsigned_compare_gt_128(c_x2, cy)) ||
+    (c_x2.w[1U] == cy.w[1U] && c_x2.w[0U] == cy.w[0U] && (cq.w[0U] & 1))) {
   __sub_128_128(cx, cy, cx);
   sign_x ^= 0x8000000000000000ull;
 }
 
 bid_get_BID128_very_fast(&res, sign_x, exponent_y, cx);
 // restore the rounding mode back if it has been changed
-if(rm_changed)
+if (rm_changed) {
   fesetround(old_rm);
+}
 BID_RETURN(res);
 }

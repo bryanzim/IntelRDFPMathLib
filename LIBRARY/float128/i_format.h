@@ -82,7 +82,8 @@
 
 #else
 
-#if ((defined(DECC) && DECC) || (defined(__decc) && __decc) || (defined(dec_cc) && dec_cc))
+#if ((defined(DECC) && DECC) || (defined(__decc) && __decc) || \
+     (defined(dec_cc) && dec_cc))
 #define I_TYPE INT_64
 #else
 #define I_TYPE WORD

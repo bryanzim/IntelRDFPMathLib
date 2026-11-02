@@ -111,21 +111,22 @@ static const TABLE_UNION TABLE_NAME[] = {
     DATA_2x2(0x00000000, 0xc0000000, 0x00000000, 0x00000000),
 };
 
-#define NEGATE_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define FABS_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 8))
-#define NEXTAFTER_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 16))
-#define MUL_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 40))
-#define DIV_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 96))
-#define ADDITION_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 184))
-#define SUBTRACTION_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 240))
-#define D_SQRT_TWO *((double *)((char *)TABLE_NAME + 296))
-#define D_ONE *((double *)((char *)TABLE_NAME + 304))
-#define D_TWO_POW_24 *((double *)((char *)TABLE_NAME + 312))
-#define D_TWO_POW_75 *((double *)((char *)TABLE_NAME + 320))
-#define D_RECIP_TWO_POW_24 *((double *)((char *)TABLE_NAME + 328))
-#define D_RECIP_TWO_POW_77 *((double *)((char *)TABLE_NAME + 336))
-#define D_SEVEN_EIGHTS *((double *)((char *)TABLE_NAME + 344))
-#define D_THREE_EIGHTS *((double *)((char *)TABLE_NAME + 352))
-#define UX_THREE ((UX_FLOAT *)((char *)TABLE_NAME + 360))
+#define NEGATE_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define FABS_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 8))
+#define NEXTAFTER_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 16))
+#define MUL_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 40))
+#define DIV_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 96))
+#define ADDITION_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 184))
+#define SUBTRACTION_CLASS_TO_ACTION_MAP \
+  ((U_WORD const*)((char*)TABLE_NAME + 240))
+#define D_SQRT_TWO *((double*)((char*)TABLE_NAME + 296))
+#define D_ONE *((double*)((char*)TABLE_NAME + 304))
+#define D_TWO_POW_24 *((double*)((char*)TABLE_NAME + 312))
+#define D_TWO_POW_75 *((double*)((char*)TABLE_NAME + 320))
+#define D_RECIP_TWO_POW_24 *((double*)((char*)TABLE_NAME + 328))
+#define D_RECIP_TWO_POW_77 *((double*)((char*)TABLE_NAME + 336))
+#define D_SEVEN_EIGHTS *((double*)((char*)TABLE_NAME + 344))
+#define D_THREE_EIGHTS *((double*)((char*)TABLE_NAME + 352))
+#define UX_THREE ((UX_FLOAT*)((char*)TABLE_NAME + 360))
 
 #endif

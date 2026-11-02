@@ -43,14 +43,16 @@ int cmp_res, e;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK32) == NAN_MASK32) {
+if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK32) == SNAN_MASK32)
+  if ((x & SNAN_MASK32) == SNAN_MASK32) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res = x & 0xfc0ffffful;
-  if((res & 0x000ffffful) > 999999ul)
+  if ((res & 0x000ffffful) > 999999ul) {
     res &= ~0x000ffffful;
+  }
   BID_RETURN(res);
 }
 
@@ -58,7 +60,7 @@ if((x & NAN_MASK32) == NAN_MASK32) {
 // and raise division by zero
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isZero, cmp_res, x);
-if(cmp_res) {
+if (cmp_res) {
   res = BID32_INF ^ (x & SIGNMASK32);
   *pfpsf |= BID_ZERO_DIVIDE_EXCEPTION;
   BID_RETURN(res);
@@ -67,14 +69,15 @@ if(cmp_res) {
 // For infinite inputs, return NaN or infinity
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isInf, cmp_res, x);
-if(cmp_res) {
-  if((x & SIGNMASK32) != 0) {
+if (cmp_res) {
+  if ((x & SIGNMASK32) != 0) {
     res = BID32_NAN;
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  } else
+  } else {
     res = BID32_INF;
+  }
   BID_RETURN(res);
 }
 
@@ -86,11 +89,12 @@ BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
 // However, separate out very large inputs for appropriate
 // clamping in directed rounding modes.
 
-if(xd >= 0.5) {
-  if(xd >= 700.0)
+if (xd >= 0.5) {
+  if (xd >= 700.0) {
     yd = 1e200;
-  else
+  } else {
     yd = tgamma(xd);
+  }
   BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
   BID_RETURN(res);
 }
@@ -110,7 +114,7 @@ BIDECIMAL_CALL2(bid32_sub, x_frac, x, x_int);
 // If the fractional part is 0, return a NaN
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isZero, cmp_res, x_frac);
-if(cmp_res) {
+if (cmp_res) {
   res = BID32_NAN;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -122,8 +126,7 @@ if(cmp_res) {
 
 BIDECIMAL_CALL1(bid32_to_binary64, fd, x_frac);
 yd = 3.14159265358979323846 /
-     (sin(3.14159265358979323846 * fd) *
-      tgamma(1.0 - xd));
+     (sin(3.14159265358979323846 * fd) * tgamma(1.0 - xd));
 
 // If the integer part is odd, negate the result since
 // sin(pi * x) = -sin(pi * xf)
@@ -135,13 +138,14 @@ yd = 3.14159265358979323846 /
 
 e = (((x_int & (3ull << 29)) == (3ull << 29)) ? (x_int >> 21) : (x_int >> 23)) &
     ((1ull << 8) - 1);
-if(e <= 101) {
-  if(e < 101) {
+if (e <= 101) {
+  if (e < 101) {
     BID_UINT32 localshifter = BID32_SHIFTER;
     BIDECIMAL_CALL2(bid32_add, x_int, localshifter, x_int);
   }
-  if(x_int & 1)
+  if (x_int & 1) {
     yd = -yd;
+  }
 }
 
 // Convert back and return

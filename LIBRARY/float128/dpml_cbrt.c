@@ -270,22 +270,19 @@
   return cbrt(z);
 }
 
-function
-recip_cbrt(z) {
+function recip_cbrt(z) {
   auto t;
 
   t = cbrt(z);
   return 1 / (t * t);
 }
 
-function
-cbrt_approx_poly(remes_bits_of_accuracy) {
+function cbrt_approx_poly(remes_bits_of_accuracy) {
+  remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG, 1.0,
+        2.0, do_cbrt, remes_bits_of_accuracy, &remes_degree_numer,
+        &remes_coeff_numer);
 
-  remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG,
-        1.0, 2.0, do_cbrt, remes_bits_of_accuracy,
-        &remes_degree_numer, &remes_coeff_numer);
-
-  for(i = 0; i <= remes_degree_numer; i++) {
+  for (i = 0; i <= remes_degree_numer; i++) {
     y = remes_coeff_numer[i];
     PRINT_D_ITEM(y);
   }
@@ -293,14 +290,12 @@ cbrt_approx_poly(remes_bits_of_accuracy) {
   return (remes_degree_numer);
 }
 
-function
-recip_cbrt_poly(remes_bits_of_accuracy) {
+function recip_cbrt_poly(remes_bits_of_accuracy) {
+  remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG, 1.0,
+        2.0, recip_cbrt, remes_bits_of_accuracy, &remes_degree_numer,
+        &remes_coeff_numer);
 
-  remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG,
-        1.0, 2.0, recip_cbrt, remes_bits_of_accuracy,
-        &remes_degree_numer, &remes_coeff_numer);
-
-  for(i = 0; i <= remes_degree_numer; i++) {
+  for (i = 0; i <= remes_degree_numer; i++) {
     y = remes_coeff_numer[i];
     PRINT_D_ITEM(y);
   }
@@ -315,17 +310,16 @@ recip_cbrt_poly(remes_bits_of_accuracy) {
  *  (sign + exp) to it.
  */
 
-procedure
-generate_root_table() {
-
-  for(i = 0; i <= 2; i++) {
+procedure generate_root_table() {
+  for (i = 0; i <= 2; i++) {
     c = cbrt(2 ^ i);
     PRINT_D_ITEM(c);
 
     c_hi = bchop(c, D_PRECISION - NUM_Y_BITS);
     c = c - c_hi;
-    if(c == 0)
+    if (c == 0) {
       c = 2 ^ (D_MIN_BIN_EXP / 2);
+    }
     PRINT_D_ITEM(c);
   }
 }
@@ -351,8 +345,7 @@ PRINT_D_ITEM(x);
 
 TABLE_COMMENT("coeffs to approx cbrt(f)");
 
-PRINT_TABLE_ADDRESS_DEFINE(CBRT_POLY_ADDR, CBRT_TABLE_NAME,
-                           offset, D_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(CBRT_POLY_ADDR, CBRT_TABLE_NAME, offset, D_TYPE);
 
 num_bits = S_PRECISION + 5;
 
@@ -368,8 +361,7 @@ GENPOLY(CBRT_POLY_ADDR[% % d], CBRT_POLY(x), cbrt_deg);
 
 TABLE_COMMENT("coeffs to approx 1/cbrt(f)^2");
 
-PRINT_TABLE_ADDRESS_DEFINE(REC_CBRT_POLY_ADDR, CBRT_TABLE_NAME,
-                           offset, D_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(REC_CBRT_POLY_ADDR, CBRT_TABLE_NAME, offset, D_TYPE);
 
 num_bits = 2 * D_PRECISION / 5;
 
@@ -438,8 +430,9 @@ my $defineText = Egrep("#define", $outText, \$tableText);
 my $polyText = Egrep(STR(GENPOLY_EXECUTABLE), $tableText,	\
                               \$tableText);
 $polyText = GenPoly($polyText);
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for ".STR(F_ENTRY_NAME), __FILE__);
+my $headerText =
+    GetHeaderText(STR(BUILD_FILE_NAME),
+                  "Definitions and constants for ".STR(F_ENTRY_NAME), __FILE__);
 print "$headerText\n\n$tableText\n\n$defineText\n\n$polyText";
 
 /*
@@ -591,8 +584,7 @@ print "$headerText\n\n$tableText\n\n$defineText\n\n$polyText";
 #define ROOT_LO(index, which, utmp) \
   utmp.D_LO_WORD = ((WORD)root->which.D_LO_WORD);
 
-#define GET_ROOT_AS_FLOAT(index, flt) \
-  flt = ((D_TYPE)root->full.f);
+#define GET_ROOT_AS_FLOAT(index, flt) flt = ((D_TYPE)root->full.f);
 
 #define ROOT_TO_FLOAT(hiword, utmp, floating) \
   utmp.D_HI_WORD = hiword;                    \
@@ -637,7 +629,7 @@ F_ENTRY_NAME(F_TYPE x) {
 
   D_UNION stk_tmp_u, stk_tmp_v;
 
-  CUBE_ROOT_TABLE_ITEM *root;
+  CUBE_ROOT_TABLE_ITEM* root;
 
   /*
    *  First, reduce x to f, where 1 <= f < 2.  f will be the variable for
@@ -665,17 +657,17 @@ F_ENTRY_NAME(F_TYPE x) {
 
   i = MAKE_MASK((F_EXP_WIDTH - 1), (F_EXP_POS + 1));
 
-  if((WORD)((j + LSB_OF_EXPON) & i) == 0)
-
+  if ((WORD)((j + LSB_OF_EXPON) & i) == 0) {
     goto special;
+  }
 
 #else
 
   i = F_EXP_MASK;
 
-  if((j & i) == 0)
-
+  if ((j & i) == 0) {
     return x;
+  }
 
 #endif
 
@@ -770,8 +762,8 @@ normal_path:
 
   m = (WORD)(um - SUB_ADJUST);
 
-  root = (CUBE_ROOT_TABLE_ITEM *)((char *)CBRT_TABLE_NAME +
-                                  OFFSET_OF_CBRTS_OF_2 + (i * sizeof(CUBE_ROOT_TABLE_ITEM)));
+  root = (CUBE_ROOT_TABLE_ITEM*)((char*)CBRT_TABLE_NAME + OFFSET_OF_CBRTS_OF_2 +
+                                 (i * sizeof(CUBE_ROOT_TABLE_ITEM)));
 
   m <<= (B_EXP_POS);
 
@@ -797,9 +789,9 @@ normal_path:
    *  For quad precision, we'll fix up m and the sign much later.  Just fetch
    *  T(i) in full precision, as a floating point number.
    *
-   *  If only the hi 32 bits of T(i) fit into an integer register (IF_SMALL_WORD)
-   *  we also fetch the lo 32 bits of T(i) from the table and put it into the
-   *  D_UNION that we'll use to create the floating point number.
+   *  If only the hi 32 bits of T(i) fit into an integer register
+   * (IF_SMALL_WORD) we also fetch the lo 32 bits of T(i) from the table and put
+   * it into the D_UNION that we'll use to create the floating point number.
    */
 
 #if SINGLE_PRECISION
@@ -924,9 +916,9 @@ normal_path:
 
 special:
 
-  if((j & F_EXP_MASK) == F_EXP_MASK)
-
+  if ((j & F_EXP_MASK) == F_EXP_MASK) {
     return x;
+  }
 
   work_u.f = (F_TYPE)(f - one);
 
@@ -934,8 +926,9 @@ special:
 
   k &= F_EXP_MASK;
 
-  if(k == 0)
+  if (k == 0) {
     return x;
+  }
 
   B_COPY_SIGN_AND_EXP((B_TYPE)work_u.f, one, f);
 

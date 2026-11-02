@@ -57,13 +57,13 @@ static const TABLE_UNION TABLE_NAME[] = {
     DATA_2x2(0xd1cf79ab, 0xb17217f7, 0x03f2f6af, 0xc9e3b398),
 };
 
-#define ASINH_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define ACOSH_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 8))
-#define ATANH_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 24))
-#define SQRT_2_OV_4 *((UX_FRACTION_DIGIT_TYPE *)((char *)TABLE_NAME + 40))
-#define THREE_SQRT_2_OV_4 *((UX_FRACTION_DIGIT_TYPE *)((char *)TABLE_NAME + 48))
-#define SQRT_2_M1_SQR *((UX_FRACTION_DIGIT_TYPE *)((char *)TABLE_NAME + 56))
-#define UX_ONE ((UX_FLOAT *)((char *)TABLE_NAME + 64))
-#define UX_LN2 ((UX_FLOAT *)((char *)TABLE_NAME + 88))
+#define ASINH_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define ACOSH_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 8))
+#define ATANH_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 24))
+#define SQRT_2_OV_4 *((UX_FRACTION_DIGIT_TYPE*)((char*)TABLE_NAME + 40))
+#define THREE_SQRT_2_OV_4 *((UX_FRACTION_DIGIT_TYPE*)((char*)TABLE_NAME + 48))
+#define SQRT_2_M1_SQR *((UX_FRACTION_DIGIT_TYPE*)((char*)TABLE_NAME + 56))
+#define UX_ONE ((UX_FLOAT*)((char*)TABLE_NAME + 64))
+#define UX_LN2 ((UX_FLOAT*)((char*)TABLE_NAME + 88))
 
 #endif

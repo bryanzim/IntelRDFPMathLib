@@ -41,14 +41,16 @@ int cmp_res;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK32) == NAN_MASK32) {
+if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK32) == SNAN_MASK32)
+  if ((x & SNAN_MASK32) == SNAN_MASK32) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res = x & 0xfc0ffffful;
-  if((res & 0x000ffffful) > 999999ul)
+  if ((res & 0x000ffffful) > 999999ul) {
     res &= ~0x000ffffful;
+  }
   BID_RETURN(res);
 }
 
@@ -59,7 +61,7 @@ BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
 // If x >= 1/2 then we're very safe doing the operation naively.
 // This applies even to the case x = +inf where lgamma(x) = +inf
 
-if(xd >= 0.5) {
+if (xd >= 0.5) {
   yd = lgamma(xd);
   BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
   BID_RETURN(res);
@@ -68,7 +70,7 @@ if(xd >= 0.5) {
 // Filter out the case of negative infinity, where we return +inf
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isInf, cmp_res, x);
-if(cmp_res) {
+if (cmp_res) {
   res = BID32_INF;
   BID_RETURN(res);
 }
@@ -88,7 +90,7 @@ BIDECIMAL_CALL2(bid32_sub, x_frac, x, x_int);
 // If the fractional part is 0, return +inf
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isZero, cmp_res, x_frac);
-if(cmp_res) {
+if (cmp_res) {
   res = BID32_INF;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
@@ -99,8 +101,7 @@ if(cmp_res) {
 // Otherwise do the main computation in double.
 
 BIDECIMAL_CALL1(bid32_to_binary64, fd, x_frac);
-yd = 1.144729885849400174143 -
-     log(fabs(sin(3.14159265358979323846 * fd))) -
+yd = 1.144729885849400174143 - log(fabs(sin(3.14159265358979323846 * fd))) -
      lgamma(1.0 - xd);
 BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
 BID_RETURN(res);

@@ -35,33 +35,35 @@ BID_UINT128 tmp;
 BID_UINT64 p, q, r;
 BID_UINT32 sign_x, sign_y, coefficient_x, coefficient_y, res;
 BID_UINT32 valid_x, valid_y;
-int exponent_x, exponent_y, bin_expon_p, amount, n_digits, extra_digits, status, rmode;
+int exponent_x, exponent_y, bin_expon_p, amount, n_digits, extra_digits, status,
+    rmode;
 int_double tempx;
 
 valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 valid_y = unpack_BID32(&sign_y, &exponent_y, &coefficient_y, y);
 
 // unpack arguments, check for NaN or Infinity
-if(!valid_x) {
-
+if (!valid_x) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((y & SNAN_MASK32) == SNAN_MASK32) // y is sNaN
+  if ((y & SNAN_MASK32) == SNAN_MASK32) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   // x is Inf. or NaN
 
   // test if x is NaN
-  if((x & NAN_MASK32) == NAN_MASK32) {
+  if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & SNAN_MASK32) == SNAN_MASK32) // sNaN
+    if ((x & SNAN_MASK32) == SNAN_MASK32) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     BID_RETURN(coefficient_x & QUIET_MASK32);
   }
   // x is Infinity?
-  if((x & INFINITY_MASK32) == INFINITY_MASK32) {
+  if ((x & INFINITY_MASK32) == INFINITY_MASK32) {
     // check if y is 0
-    if(((y & INFINITY_MASK32) != INFINITY_MASK32) && !coefficient_y) {
+    if (((y & INFINITY_MASK32) != INFINITY_MASK32) && !coefficient_y) {
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -69,43 +71,48 @@ if(!valid_x) {
       BID_RETURN(NAN_MASK32);
     }
     // check if y is NaN
-    if((y & NAN_MASK32) == NAN_MASK32)
+    if ((y & NAN_MASK32) == NAN_MASK32) {
       // y==NaN , return NaN
       BID_RETURN(coefficient_y & QUIET_MASK32);
+    }
     // otherwise return +/-Inf
     BID_RETURN(((x ^ y) & 0x80000000U) | INFINITY_MASK32);
   }
   // x is 0
-  if(((y & INFINITY_MASK32) != INFINITY_MASK32)) {
-    if((y & SPECIAL_ENCODING_MASK32) == SPECIAL_ENCODING_MASK32)
-      exponent_y = ((BID_UINT32)(y >> 21)) & 0xffU;
-    else
-      exponent_y = ((BID_UINT32)(y >> 23)) & 0xffU;
+  if (((y & INFINITY_MASK32) != INFINITY_MASK32)) {
+    if ((y & SPECIAL_ENCODING_MASK32) == SPECIAL_ENCODING_MASK32) {
+      exponent_y = ((y >> 21)) & 0xffU;
+    } else {
+      exponent_y = ((y >> 23)) & 0xffU;
+    }
     sign_y = y & 0x80000000U;
 
     exponent_x += exponent_y - DECIMAL_EXPONENT_BIAS_32;
-    if(exponent_x > DECIMAL_MAX_EXPON_32)
+    if (exponent_x > DECIMAL_MAX_EXPON_32) {
       exponent_x = DECIMAL_MAX_EXPON_32;
-    else if(exponent_x < 0)
+    } else if (exponent_x < 0) {
       exponent_x = 0;
-    BID_RETURN((BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64)exponent_x) << 23)));
+    }
+    BID_RETURN(
+        (BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64)exponent_x) << 23)));
   }
 }
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y & NAN_MASK32) == NAN_MASK32) {
+  if ((y & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((y & SNAN_MASK32) == SNAN_MASK32) // sNaN
+    if ((y & SNAN_MASK32) == SNAN_MASK32) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     BID_RETURN(coefficient_y & QUIET_MASK32);
   }
   // y is Infinity?
-  if((y & INFINITY_MASK32) == INFINITY_MASK32) {
+  if ((y & INFINITY_MASK32) == INFINITY_MASK32) {
     // check if x is 0
-    if(!coefficient_x) {
+    if (!coefficient_x) {
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
       // x==0, return NaN
       BID_RETURN(NAN_MASK32);
@@ -115,11 +122,13 @@ if(!valid_y) {
   }
   // y is 0
   exponent_x += exponent_y - DECIMAL_EXPONENT_BIAS_32;
-  if(exponent_x > DECIMAL_MAX_EXPON_32)
+  if (exponent_x > DECIMAL_MAX_EXPON_32) {
     exponent_x = DECIMAL_MAX_EXPON_32;
-  else if(exponent_x < 0)
+  } else if (exponent_x < 0) {
     exponent_x = 0;
-  BID_RETURN((BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64)exponent_x) << 23)));
+  }
+  BID_RETURN(
+      (BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64)exponent_x) << 23)));
 }
 
 p = (BID_UINT64)coefficient_x * (BID_UINT64)coefficient_y;
@@ -129,8 +138,9 @@ p = (BID_UINT64)coefficient_x * (BID_UINT64)coefficient_y;
 tempx.d = (double)p;
 bin_expon_p = ((tempx.i & MASK_BINARY_EXPONENT) >> 52) - 0x3ffU;
 n_digits = bid_estimate_decimal_digits[bin_expon_p];
-if(p >= bid_power10_table_128[n_digits].w[0U])
+if (p >= bid_power10_table_128[n_digits].w[0U]) {
   n_digits++;
+}
 
 exponent_x += exponent_y - DECIMAL_EXPONENT_BIAS_32;
 
@@ -138,17 +148,17 @@ extra_digits = (n_digits <= 7) ? 0 : (n_digits - 7);
 
 exponent_x += extra_digits;
 
-if(!extra_digits) {
-  res = get_BID32(sign_x ^ sign_y, exponent_x, p, (int)rnd_mode,
-                  pfpsf);
+if (!extra_digits) {
+  res = get_BID32(sign_x ^ sign_y, exponent_x, p, (int)rnd_mode, pfpsf);
   BID_RETURN(res);
 }
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
 rmode = (int)rnd_mode;
-if((sign_x ^ sign_y) && (unsigned)(rmode - 1) < 2)
+if ((sign_x ^ sign_y) && (unsigned)(rmode - 1) < 2) {
   rmode = 3 - rmode;
+}
 #else
 rmode = 0;
 #endif
@@ -156,8 +166,9 @@ rmode = 0;
 rmode = 0;
 #endif
 
-if(exponent_x < 0)
-  rmode = 3; // RZ
+if (exponent_x < 0) {
+  rmode = 3;  // RZ
+}
 
 // add a constant to P, depending on rounding mode
 // 0.5*10^(digits_p - 16) for round-to-nearest
@@ -171,10 +182,11 @@ q = tmp.w[1U] >> amount;
 // remainder
 r = p - q * bid_power10_table_128[extra_digits].w[0U];
 
-if(r == bid_round_const_table[rmode][extra_digits])
+if (r == bid_round_const_table[rmode][extra_digits]) {
   status = 0;
-else
+} else {
   status = BID_INEXACT_EXCEPTION;
+}
 
 #ifdef BID_SET_STATUS_FLAGS
 __set_status_flags(pfpsf, status);
@@ -182,20 +194,23 @@ __set_status_flags(pfpsf, status);
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-if(rmode == 0) // BID_ROUNDING_TO_NEAREST
+if (rmode == 0)  // BID_ROUNDING_TO_NEAREST
 #endif
-  if(r == 0)
+  if (r == 0) {
     q &= 0xfffffffeU;
+  }
 #endif
 
 #if DECIMAL_TINY_DETECTION_AFTER_ROUNDING
-if((exponent_x == -1) && (Q == 9999999) && (rnd_mode != BID_ROUNDING_TO_ZERO)) {
+if ((exponent_x == -1) && (Q == 9999999) &&
+    (rnd_mode != BID_ROUNDING_TO_ZERO)) {
   rmode = (int)rnd_mode;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
   rmode = (int)rnd_mode;
-  if((sign_x ^ sign_y) && (unsigned)(rmode - 1) < 2)
+  if ((sign_x ^ sign_y) && (unsigned)(rmode - 1) < 2) {
     rmode = 3 - rmode;
+  }
 #else
   rmode = 0;
 #endif
@@ -203,14 +218,17 @@ if((exponent_x == -1) && (Q == 9999999) && (rnd_mode != BID_ROUNDING_TO_ZERO)) {
   rmode = 0;
 #endif
 
-  if((R && (rmode == BID_ROUNDING_UP)) || ((!(rmode & 3)) && (R + R >= bid_power10_table_128[extra_digits].w[0U]))) {
+  if ((R && (rmode == BID_ROUNDING_UP)) ||
+      ((!(rmode & 3)) &&
+       (R + R >= bid_power10_table_128[extra_digits].w[0U]))) {
     res = very_fast_get_BID32(sign_x ^ sign_y, 0, 1000000);
     BID_RETURN(res);
   }
 }
 #endif
 
-res = get_BID32_UF(sign_x ^ sign_y, exponent_x, q, (BID_UINT32)r, (int)rnd_mode, pfpsf);
+res = get_BID32_UF(sign_x ^ sign_y, exponent_x, q, (BID_UINT32)r, (int)rnd_mode,
+                   pfpsf);
 
 BID_RETURN(res);
 }

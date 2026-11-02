@@ -29,7 +29,7 @@
 
 #include "bid_trans.h"
 
-BID_F128_CONST_DEF(c_log10, 400026bb1bbb5551, 582dd4adac5705a6); // ln(10)
+BID_F128_CONST_DEF(c_log10, 400026bb1bbb5551, 582dd4adac5705a6);  // ln(10)
 
 BID128_FUNCTION_ARG1(bid128_asinh, x)
 
@@ -39,19 +39,21 @@ int exponent_x;
 BID_F128_TYPE rq, xq, yq, rt;
 
 // unpack arguments, check for NaN or Infinity
-if(!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
+if (!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
   // test if x is NaN
-  if((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+    if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) ==
+        0x7e00000000000000ull) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res.w[BID_HIGH_128W] = (cx.w[BID_HIGH_128W]) & QUIET_MASK64;
     res.w[BID_LOW_128W] = cx.w[BID_LOW_128W];
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     res.w[BID_HIGH_128W] = sign_x | 0x7800000000000000ull;
     res.w[BID_LOW_128W] = 0;
     BID_RETURN(res);
@@ -62,7 +64,7 @@ if(!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
   BID_RETURN(res);
 }
 
-if(exponent_x > (DECIMAL_EXPONENT_BIAS_128 + 34)) {
+if (exponent_x > (DECIMAL_EXPONENT_BIAS_128 + 34)) {
   bid_get_BID128_very_fast_BLE(&xn, 0, DECIMAL_EXPONENT_BIAS_128, cx);
   BIDECIMAL_CALL1(bid128_to_binary128, xq, xn);
   __bid_f128_add(xq, xq, xq);

@@ -161,16 +161,11 @@
 
 #define MAP_BIT_WIDTH 0x2
 #define MAP_MASK MAKE_MASK(MAP_BIT_WIDTH, 0)
-#define MAP_IT(a, b, c, s)      \
-  ((a << (7 * MAP_BIT_WIDTH)) | \
-   (a << (6 * MAP_BIT_WIDTH)) | \
-   (a << (5 * MAP_BIT_WIDTH)) | \
-   (b << (4 * MAP_BIT_WIDTH)) | \
-   (c << (3 * MAP_BIT_WIDTH)) | \
-   (c << (2 * MAP_BIT_WIDTH)) | \
-   (c << (1 * MAP_BIT_WIDTH)) | \
-   (b << (0 * MAP_BIT_WIDTH)) | \
-   s)
+#define MAP_IT(a, b, c, s)                                   \
+  ((a << (7 * MAP_BIT_WIDTH)) | (a << (6 * MAP_BIT_WIDTH)) | \
+   (a << (5 * MAP_BIT_WIDTH)) | (b << (4 * MAP_BIT_WIDTH)) | \
+   (c << (3 * MAP_BIT_WIDTH)) | (c << (2 * MAP_BIT_WIDTH)) | \
+   (c << (1 * MAP_BIT_WIDTH)) | (b << (0 * MAP_BIT_WIDTH)) | s)
 
 #define ERFC_INTERVAL_TO_CONSTANT_MAP ((U_WORD)MAP_IT(3, 2, 1, UX_SIGN_BIT))
 #define ERF_INTERVAL_TO_CONSTANT_MAP ((U_WORD)MAP_IT(0, 1, 2, 0))
@@ -194,7 +189,8 @@
 ** that has these characteristics, the special evaluation code for this case
 ** is included here.
 **
-** The solution to the problem is to use a special (less efficient) packed format for
+** The solution to the problem is to use a special (less efficient) packed
+* format for
 ** the evaluation.  See dpml_ux_ops.c for at description of the format.
 */
 
@@ -206,36 +202,33 @@
 #define C_UX_ERF __INTERNAL_NAME(C_ux_erf__)
 #endif
 
-static void
-C_UX_ERF(
-    _X_FLOAT *packed_argument,
-    U_WORD interval_to_constant_map,
-    _X_FLOAT *packed_result
-        OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_ERF(_X_FLOAT* packed_argument, U_WORD interval_to_constant_map,
+                     _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class, index;
   UX_SIGN_TYPE sign;
   UX_EXPONENT_TYPE exponent;
   UX_FLOAT unpacked_argument, tmp[3], *eval_result;
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      IS_ERF_EVALUATION(interval_to_constant_map) ? ERF_CLASS_TO_ACTION_MAP : ERFC_CLASS_TO_ACTION_MAP,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class = UNPACK(packed_argument, &unpacked_argument,
+                    IS_ERF_EVALUATION(interval_to_constant_map)
+                        ? ERF_CLASS_TO_ACTION_MAP
+                        : ERFC_CLASS_TO_ACTION_MAP,
+                    packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     return;
+  }
 
   /* Determine interval */
 
   exponent = G_UX_EXPONENT(&unpacked_argument);
-  if(exponent < 4)
+  if (exponent < 4) {
     index = (exponent <= 0) ? 0 : 1;
-  else if(exponent > 4)
+  } else if (exponent > 4) {
     index = (exponent < 8) ? 2 : 3;
-  else
+  } else {
     index = (G_UX_MSD(&unpacked_argument) < HI_WORD_OF_8_PT_75) ? 1 : 2;
+  }
 
   index += G_UX_SIGN(&unpacked_argument) ? 4 : 0;
   P_UX_SIGN(&unpacked_argument, 0);
@@ -246,84 +239,84 @@ C_UX_ERF(
 
   sign = (UX_SIGN_TYPE)((U_WORD)UX_SIGN_BIT & interval_to_constant_map);
   eval_result = &tmp[0];
-  switch(index) {
-  case INTERVAL(4):
-    sign ^= UX_SIGN_BIT;
-    DPML_FALLTHROUGH;
+  switch (index) {
+    case INTERVAL(4):
+      sign ^= UX_SIGN_BIT;
+      DPML_FALLTHROUGH;
 
-  case INTERVAL(0):
-    EVALUATE_RATIONAL(
-        &unpacked_argument,
-        ERF_COEF_ARRAY,
-        ERF_COEF_ARRAY_DEGREE,
-        NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) | DENOMINATOR_FLAGS(SQUARE_TERM),
-        eval_result);
-    break;
-
-  case INTERVAL(1):
-    sign ^= UX_SIGN_BIT;
-    DPML_FALLTHROUGH;
-
-  case INTERVAL(5):
-    EVALUATE_PACKED_POLY(&unpacked_argument,
-                         MID_NUM_COEF_ARRAY_DEGREE, MID_NUM_COEF_ARRAY,
-                         MID_NUM_SCALE_MASK, MID_NUM_SCALE_BIAS, &tmp[1]);
-    EVALUATE_PACKED_POLY(&unpacked_argument,
-                         MID_DEN_COEF_ARRAY_DEGREE, MID_DEN_COEF_ARRAY,
-                         MID_DEN_SCALE_MASK, MID_DEN_SCALE_BIAS, &tmp[2]);
-    DIVIDE(&tmp[1], &tmp[2], FULL_PRECISION, eval_result);
-    goto multiply_by_exp_m_x_sqr;
-    break;
-
-  case INTERVAL(2):
-    if(IS_ERF_EVALUATION(interval_to_constant_map))
-      goto default_label;
-
-    /* Compute z*T(z^2) for z = 8/x */
-
-    sign = 0;
-    DIVIDE(NOT_USED, &unpacked_argument, FULL_PRECISION, &tmp[2]);
-    EVALUATE_RATIONAL(
-        &tmp[2],
-        ERFC_COEF_ARRAY,
-        ERFC_COEF_ARRAY_DEGREE,
-        NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) | DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(3),
-        eval_result);
-    goto multiply_by_exp_m_x_sqr;
-
-  multiply_by_exp_m_x_sqr:
-
-    /*
-    ** In order to avoid excessive errors in the final result, we
-    ** compute exp(-x^2) as
-    **
-    **		exp(-x^2) = exp(-(hi + lo))
-    **		          = exp(-hi)*exp(-lo)
-    **		          ~ exp(-hi)*(1 - lo)
-    **		          = exp(-hi) - lo*exp(-hi)
-    */
-
-    EXTENDED_MULTIPLY(&unpacked_argument, &unpacked_argument, &tmp[1],
-                      &tmp[2]);
-    P_UX_SIGN(&tmp[1], UX_SIGN_BIT);
-    UX_EXP(&tmp[1], &tmp[1]);
-    MULTIPLY(&tmp[2], &tmp[1], &tmp[2]);
-    ADDSUB(&tmp[1], &tmp[2], SUB | NO_NORMALIZATION, &tmp[1]);
-
-    MULTIPLY(&tmp[1], eval_result, eval_result);
-    break;
-
-  case INTERVAL(3):
-    if(IS_ERFC_EVALUATION(interval_to_constant_map)) { /* Dummy up underflow result and "zero" index */
-      UX_SET_SIGN_EXP_MSD(&tmp[0], 0, UX_UNDERFLOW_EXPONENT, UX_MSB);
+    case INTERVAL(0):
+      EVALUATE_RATIONAL(&unpacked_argument, ERF_COEF_ARRAY,
+                        ERF_COEF_ARRAY_DEGREE,
+                        NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) |
+                            DENOMINATOR_FLAGS(SQUARE_TERM),
+                        eval_result);
       break;
-    }
-    DPML_FALLTHROUGH;
 
-  default:
-  default_label:
-    eval_result = UX_ZERO;
-    break;
+    case INTERVAL(1):
+      sign ^= UX_SIGN_BIT;
+      DPML_FALLTHROUGH;
+
+    case INTERVAL(5):
+      EVALUATE_PACKED_POLY(&unpacked_argument, MID_NUM_COEF_ARRAY_DEGREE,
+                           MID_NUM_COEF_ARRAY, MID_NUM_SCALE_MASK,
+                           MID_NUM_SCALE_BIAS, &tmp[1]);
+      EVALUATE_PACKED_POLY(&unpacked_argument, MID_DEN_COEF_ARRAY_DEGREE,
+                           MID_DEN_COEF_ARRAY, MID_DEN_SCALE_MASK,
+                           MID_DEN_SCALE_BIAS, &tmp[2]);
+      DIVIDE(&tmp[1], &tmp[2], FULL_PRECISION, eval_result);
+      goto multiply_by_exp_m_x_sqr;
+      break;
+
+    case INTERVAL(2):
+      if (IS_ERF_EVALUATION(interval_to_constant_map)) {
+        goto default_label;
+      }
+
+      /* Compute z*T(z^2) for z = 8/x */
+
+      sign = 0;
+      DIVIDE(NOT_USED, &unpacked_argument, FULL_PRECISION, &tmp[2]);
+      EVALUATE_RATIONAL(&tmp[2], ERFC_COEF_ARRAY, ERFC_COEF_ARRAY_DEGREE,
+                        NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) |
+                            DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(3),
+                        eval_result);
+      goto multiply_by_exp_m_x_sqr;
+
+    multiply_by_exp_m_x_sqr:
+
+      /*
+      ** In order to avoid excessive errors in the final result, we
+      ** compute exp(-x^2) as
+      **
+      **		exp(-x^2) = exp(-(hi + lo))
+      **		          = exp(-hi)*exp(-lo)
+      **		          ~ exp(-hi)*(1 - lo)
+      **		          = exp(-hi) - lo*exp(-hi)
+      */
+
+      EXTENDED_MULTIPLY(&unpacked_argument, &unpacked_argument, &tmp[1],
+                        &tmp[2]);
+      P_UX_SIGN(&tmp[1], UX_SIGN_BIT);
+      UX_EXP(&tmp[1], &tmp[1]);
+      MULTIPLY(&tmp[2], &tmp[1], &tmp[2]);
+      ADDSUB(&tmp[1], &tmp[2], SUB | NO_NORMALIZATION, &tmp[1]);
+
+      MULTIPLY(&tmp[1], eval_result, eval_result);
+      break;
+
+    case INTERVAL(3):
+      if (IS_ERFC_EVALUATION(
+              interval_to_constant_map)) { /* Dummy up underflow result and
+                                              "zero" index */
+        UX_SET_SIGN_EXP_MSD(&tmp[0], 0, UX_UNDERFLOW_EXPONENT, UX_MSB);
+        break;
+      }
+      DPML_FALLTHROUGH;
+
+    default:
+    default_label:
+      eval_result = UX_ZERO;
+      break;
   }
 
   /* Adjust sign of the evaluation and add in constant */
@@ -333,12 +326,8 @@ C_UX_ERF(
   WORD_TO_UX(UX_TO_DIGIT(index - 1), &tmp[1]);
   ADDSUB(eval_result, &tmp[1], ADD | NO_NORMALIZATION, &tmp[0]);
 
-  PACK(
-      &tmp[0],
-      packed_result,
-      ERFC_UNDERFLOW,
-      NOT_USED
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&tmp[0], packed_result, ERFC_UNDERFLOW,
+       NOT_USED OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 /*
@@ -354,11 +343,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_ERF(
-      PASS_ARG_X_FLOAT(packed_argument),
-      ERF_INTERVAL_TO_CONSTANT_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_ERF(PASS_ARG_X_FLOAT(packed_argument), ERF_INTERVAL_TO_CONSTANT_MAP,
+           PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -371,11 +357,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_ERF(
-      PASS_ARG_X_FLOAT(packed_argument),
-      ERFC_INTERVAL_TO_CONSTANT_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_ERF(PASS_ARG_X_FLOAT(packed_argument), ERFC_INTERVAL_TO_CONSTANT_MAP,
+           PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -446,10 +429,11 @@ PRINT_UX_TBL_ADEF_ITEM("UX_ZERO\t\t\t", 0);
 
 zero_value = 2 / sqrt(pi);
 function __erf(x) {
-  if(x == 0)
+  if (x == 0) {
     return zero_value;
-  else
+  } else {
     return erf(x) / x;
+  }
 }
 
 save_precision = precision;
@@ -459,8 +443,8 @@ max_arg = 1;
 num_degree = 10;
 den_degree = 10;
 TABLE_COMMENT("Fixed point coefficients for erf(x) evaluation");
-remes(REMES_STATIC + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __erf, num_degree, den_degree, &ux_rational_coefs);
+remes(REMES_STATIC + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0, max_arg,
+      __erf, num_degree, den_degree, &ux_rational_coefs);
 
 precision = save_precision;
 
@@ -477,8 +461,9 @@ zero_value = 1 / sqrt(pi);
 function __erfc(z) {
   auto x;
 
-  if(z == 0)
+  if (z == 0) {
     return zero_value;
+  }
 
   x = 8 / z;
   return exp(x * x) * x * erfc(x);
@@ -492,8 +477,8 @@ max_arg = 8 / 8.75;
 num_degree = 10;
 den_degree = 10;
 TABLE_COMMENT("Fixed point coefficients for erfc(x) evaluation");
-remes(REMES_STATIC + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      min_arg, max_arg, __erfc, num_degree, den_degree, &ux_rational_coefs);
+remes(REMES_STATIC + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, min_arg, max_arg,
+      __erfc, num_degree, den_degree, &ux_rational_coefs);
 
 precision = save_precision;
 
@@ -516,8 +501,7 @@ num_degree = 16;
 den_degree = 17;
 remes(REMES_STATIC + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG +
           REMES_INIT_LEFT_CHEBY,
-      min_arg, max_arg, __mid, num_degree, den_degree,
-      &ux_rational_coefs);
+      min_arg, max_arg, __mid, num_degree, den_degree, &ux_rational_coefs);
 
 precision = save_precision;
 
@@ -548,14 +532,12 @@ PRINT_WORD_DEF("MID_DEN_SCALE_MASK\t", (1 << packed_exponent_width) - 1);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants erf and erfc",
-                               __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME), "Definitions and constants erf and erfc", __FILE__);
 print "$headerText\n\n$outText\n";
 
 #endif

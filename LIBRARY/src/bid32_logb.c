@@ -36,7 +36,7 @@ int_float dx;
 int exponent_x, bin_expon_cx, digits, res;
 
 // unpack arguments, check for NaN or Infinity
-if(!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
+if (!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
   // x is Inf. or NaN
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -46,14 +46,15 @@ if(!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
   BID_RETURN(res);
 }
 // find number of digits in coefficient
-if(coefficient_x >= 1000000ull) {
+if (coefficient_x >= 1000000ull) {
   digits = 7;
 } else {
-  dx.d = (float)coefficient_x; // exact conversion;
+  dx.d = (float)coefficient_x;  // exact conversion;
   bin_expon_cx = (int)(dx.i >> 23) - 127;
   digits = bid_estimate_decimal_digits[bin_expon_cx];
-  if(coefficient_x >= bid_power10_table_128[digits].w[0U])
+  if (coefficient_x >= bid_power10_table_128[digits].w[0U]) {
     digits++;
+  }
 }
 exponent_x = exponent_x - DECIMAL_EXPONENT_BIAS_32 + digits - 1;
 

@@ -94,19 +94,21 @@
   ieee_ret[i] = iv;
 #define INIT_COUNTER DEFAULT_RESPONSE(LAST, ERROR_CODE, 0)
 #define LAST_ENUM_ENTRY
-#define PRINT_RESPONSE_INFO(i) printf("    /* %i */ "                  \
-                                      "{%i, %i, %i, %i, %i},\n",       \
-                                      i, func_code[i],                 \
-                                      fast_error_code[i], fast_ret[i], \
-                                      ieee_error_code[i], ieee_ret[i])
+#define PRINT_RESPONSE_INFO(i)                                              \
+  printf(                                                                   \
+      "    /* %i */ "                                                       \
+      "{%i, %i, %i, %i, %i},\n",                                            \
+      i, func_code[i], fast_error_code[i], fast_ret[i], ieee_error_code[i], \
+      ieee_ret[i])
 #endif
 
-#define DEFAULT_RESPONSE(a, b, c) DEFINE_RESPONSE(a, b, c, default_fast_ret[c], \
-                                                  c, default_ieee_ret[c])
-#define DEFAULT_NO_ERROR(a, b, c) DEFINE_RESPONSE(a, b, DPML_NO_ERROR, c##_INDEX, \
-                                                  DPML_NO_ERROR, c##_INDEX);
-#define DEFAULT_NAN(a, b) DEFINE_RESPONSE(a, b, DPML_NO_ERROR, POS_ZERO_INDEX, \
-                                          DPML_NO_ERROR, NAN_INDEX);
+#define DEFAULT_RESPONSE(a, b, c) \
+  DEFINE_RESPONSE(a, b, c, default_fast_ret[c], c, default_ieee_ret[c])
+#define DEFAULT_NO_ERROR(a, b, c) \
+  DEFINE_RESPONSE(a, b, DPML_NO_ERROR, c##_INDEX, DPML_NO_ERROR, c##_INDEX);
+#define DEFAULT_NAN(a, b)                                             \
+  DEFINE_RESPONSE(a, b, DPML_NO_ERROR, POS_ZERO_INDEX, DPML_NO_ERROR, \
+                  NAN_INDEX);
 
 #include "dpml_private.h"
 
@@ -482,15 +484,14 @@ default_fast_ret[INVALID_ARGUMENT] = save_index;
 
 printf("#define RESPONSE_TABLE      " STR(RESPONSE_TABLE_NAME) "\n");
 printf("static const DPML_EXCEPTION_RESPONSE RESPONSE_TABLE[] = {\n");
-for(i = 0; i < LAST_ERROR_CODE; i++)
+for (i = 0; i < LAST_ERROR_CODE; i++) {
   PRINT_RESPONSE_INFO(i);
+}
 printf("    };\n");
 
 #endif
 
-@end_divert
-    @eval my $outText = MphocEval GetStream("divertText");
+@end_divert @eval my $outText = MphocEval GetStream("divertText");
 my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Dpml error code enumerations",
-                               __FILE__);
+                               "Dpml error code enumerations", __FILE__);
 print "$headerText\n\n$outText";

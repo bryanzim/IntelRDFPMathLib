@@ -36,18 +36,21 @@ BID_UINT64 sign_x;
 BID_UINT128 res, cx;
 
 BID_SWAP128(x);
-if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
+if (!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
   // test if x is NaN/Inf
   BID_SWAP128(x);
-  if((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+    if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) ==
+        0x7e00000000000000ull) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res.w[BID_HIGH_128W] = (cx.w[1U]) & QUIET_MASK64;
     res.w[BID_LOW_128W] = cx.w[0U];
-    if((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull)
+    if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7800000000000000ull) {
       res.w[BID_HIGH_128W] &= 0x7fffffffffffffffull;
+    }
     BID_RETURN(res);
   }
 
@@ -62,7 +65,7 @@ if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
 
 BID_SWAP128(x);
 BIDECIMAL_CALL1_NORND(bid128_ilogb, ires, x);
-if((BID_UINT32)ires & 0x80000000U) {
+if ((BID_UINT32)ires & 0x80000000U) {
   res.w[BID_HIGH_128W] = 0xb040000000000000ull;
   res.w[BID_LOW_128W] = (BID_UINT64)(-ires);
 } else {

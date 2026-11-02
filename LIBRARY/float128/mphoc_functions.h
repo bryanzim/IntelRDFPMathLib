@@ -39,7 +39,7 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode) {
   auto t, sign_bit, scale, biased_exp_minus_1;
 
   sign_bit = 0;
-  if(value < 0) {
+  if (value < 0) {
     sign_bit = bldexp(1, exp_width);
     rnd_mode = complementary_rnd_mode[rnd_mode];
     value = -value;
@@ -48,7 +48,7 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode) {
   shift = 1 - bexp(value);
   biased_exp_minus_1 = exp_bias - shift;
 
-  if(biased_exp_minus_1 < 0) { /* Arg was a denormalized value */
+  if (biased_exp_minus_1 < 0) { /* Arg was a denormalized value */
     biased_exp_minus_1 = 0;
     shift = 1 - exp_bias;
   }
@@ -56,14 +56,15 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode) {
   num_bits -= (exp_width + 1);
   t = bldexp(value, shift + num_bits);
 
-  if(rnd_mode == MP_RZ)
+  if (rnd_mode == MP_RZ) {
     t = trunc(t);
-  else if(rnd_mode == MP_RM)
+  } else if (rnd_mode == MP_RM) {
     t = floor(t);
-  else if(rnd_mode == MP_RP)
+  } else if (rnd_mode == MP_RP) {
     t = ceil(t);
-  else
+  } else {
     t = rint(t);
+  }
 
   t = bldexp(sign_bit + biased_exp_minus_1, num_bits) + t;
   return t;
@@ -80,12 +81,12 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode) {
 #define MP_F_EXP_BIAS (F_EXP_BIAS - F_NORM - 1)
 #define MP_B_EXP_BIAS (B_EXP_BIAS - B_NORM - 1)
 
-#define R_INDEX_RND(v, n, r) as_int(v, n + R_EXP_WIDTH + 1, R_EXP_WIDTH, \
-                                    MP_R_EXP_BIAS, r)
-#define F_INDEX_RND(v, n, r) as_int(v, n + F_EXP_WIDTH + 1, F_EXP_WIDTH, \
-                                    MP_F_EXP_BIAS, r)
-#define B_INDEX_RND(v, n, r) as_int(v, n + B_EXP_WIDTH + 1, B_EXP_WIDTH, \
-                                    MP_B_EXP_BIAS, r)
+#define R_INDEX_RND(v, n, r) \
+  as_int(v, n + R_EXP_WIDTH + 1, R_EXP_WIDTH, MP_R_EXP_BIAS, r)
+#define F_INDEX_RND(v, n, r) \
+  as_int(v, n + F_EXP_WIDTH + 1, F_EXP_WIDTH, MP_F_EXP_BIAS, r)
+#define B_INDEX_RND(v, n, r) \
+  as_int(v, n + B_EXP_WIDTH + 1, B_EXP_WIDTH, MP_B_EXP_BIAS, r)
 
 #define R_INDEX(v, n) R_INDEX_RND(v, n, MP_RZ)
 #define F_INDEX(v, n) F_INDEX_RND(v, n, MP_RZ)
@@ -113,12 +114,9 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode) {
 #define R_TOT_BITS BITS_PER_WORD
 #endif
 
-#define R_AS_RND_WORD(v, r) as_int(v, R_TOT_BITS, R_EXP_WIDTH, \
-                                   MP_R_EXP_BIAS, r)
-#define F_AS_RND_WORD(v, r) as_int(v, F_TOT_BITS, F_EXP_WIDTH, \
-                                   MP_F_EXP_BIAS, r)
-#define B_AS_RND_WORD(v, r) as_int(v, B_TOT_BITS, B_EXP_WIDTH, \
-                                   MP_B_EXP_BIAS, r)
+#define R_AS_RND_WORD(v, r) as_int(v, R_TOT_BITS, R_EXP_WIDTH, MP_R_EXP_BIAS, r)
+#define F_AS_RND_WORD(v, r) as_int(v, F_TOT_BITS, F_EXP_WIDTH, MP_F_EXP_BIAS, r)
+#define B_AS_RND_WORD(v, r) as_int(v, B_TOT_BITS, B_EXP_WIDTH, MP_B_EXP_BIAS, r)
 
 #define R_AS_WORD(v) R_AS_RND_WORD(v, MP_RN)
 #define F_AS_WORD(v) F_AS_RND_WORD(v, MP_RN)
@@ -143,19 +141,22 @@ function as_int(value, num_bits, exp_width, exp_bias, rnd_mode) {
 function print_packed_array(array_length, density, bit_offset, bit_size) {
   auto m, n, max_length;
 
-  if(array_length == 0)
+  if (array_length == 0) {
     return bit_offset;
+  }
   m_max = ceil(array_length / density) * density;
 
-  while(array_length < m_max)
+  while (array_length < m_max) {
     /* pad to a full multiple of density */
     tmp_val[array_length++] = 0;
+  }
 
   printf("\n\t/* %3i */", BYTES(bit_offset));
-  for(m = 0; m < array_length; m += density) {
+  for (m = 0; m < array_length; m += density) {
     printf(" PACK(%i", tmp_val[m]);
-    for(n = 1; n < density; n++)
+    for (n = 1; n < density; n++) {
       printf(", %i", tmp_val[m + n]);
+    }
     printf("),");
   }
   return (bit_offset + m_max * bit_size);
@@ -173,16 +174,17 @@ function msb(x, p) { return (x == 0) ? 0 : bldexp(.5, bexp(x)); }
 function ffs(x) {
   auto i, n;
 
-  if(trunc(x) != x) {
+  if (trunc(x) != x) {
     printf("\tERROR: x not an integer in call to ffs\n");
     exit;
   }
 
   i = 0;
-  while(1) {
+  while (1) {
     z = bldexp(x, i);
-    if(z != trunc(z))
+    if (z != trunc(z)) {
       break;
+    }
     i--;
   }
   return 1 - i;

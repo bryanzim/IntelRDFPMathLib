@@ -41,20 +41,23 @@ BID_UINT64 sign_x;
 int exponent_x, rmode;
 
 // unpack arguments, check for NaN or Infinity
-if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
+if (!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
   // x is Inf. or NaN or 0
 #ifdef BID_SET_STATUS_FLAGS
-  if((x.w[1U] & SNAN_MASK64) == SNAN_MASK64) // y is sNaN
+  if ((x.w[1U] & SNAN_MASK64) == SNAN_MASK64) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[1U] = cx.w[1U] & QUIET_MASK64;
   res.w[0U] = cx.w[0U];
-  if(!cx.w[1U]) {
+  if (!cx.w[1U]) {
     exp64 = (BID_SINT64)exponent_x + (BID_SINT64)n;
-    if(exp64 < 0)
+    if (exp64 < 0) {
       exp64 = 0;
-    if(exp64 > MAX_DECIMAL_EXPONENT_128)
+    }
+    if (exp64 > MAX_DECIMAL_EXPONENT_128) {
       exp64 = MAX_DECIMAL_EXPONENT_128;
+    }
     exponent_x = (int)exp64;
     bid_get_BID128_very_fast(&res, sign_x, exponent_x, cx);
   }
@@ -64,13 +67,13 @@ if(!unpack_BID128_value(&sign_x, &exponent_x, &cx, x)) {
 exp64 = (BID_SINT64)exponent_x + (BID_SINT64)n;
 exponent_x = (int)exp64;
 
-if((BID_UINT32)exponent_x <= MAX_DECIMAL_EXPONENT_128) {
+if ((BID_UINT32)exponent_x <= MAX_DECIMAL_EXPONENT_128) {
   bid_get_BID128_very_fast(&res, sign_x, exponent_x, cx);
   BID_RETURN(res);
 }
 // check for overflow
-if(exp64 > MAX_DECIMAL_EXPONENT_128) {
-  if(cx.w[1U] < 0x314dc6448d93ull) {
+if (exp64 > MAX_DECIMAL_EXPONENT_128) {
+  if (cx.w[1U] < 0x314dc6448d93ull) {
     // try to normalize coefficient
     do {
       cbid_x8.w[1U] = (cx.w[1U] << 3) | (cx.w[0U] >> 61);
@@ -81,18 +84,18 @@ if(exp64 > MAX_DECIMAL_EXPONENT_128) {
 
       exponent_x--;
       exp64--;
-    } while(cx.w[1U] < 0x314dc6448d93ull && exp64 > MAX_DECIMAL_EXPONENT_128);
+    } while (cx.w[1U] < 0x314dc6448d93ull && exp64 > MAX_DECIMAL_EXPONENT_128);
   }
-  if(exp64 <= MAX_DECIMAL_EXPONENT_128) {
+  if (exp64 <= MAX_DECIMAL_EXPONENT_128) {
     bid_get_BID128_very_fast(&res, sign_x, exponent_x, cx);
     BID_RETURN(res);
-  } else
-    exponent_x = 0x7fffffffU; // overflow
+  } else {
+    exponent_x = 0x7fffffffU;  // overflow
+  }
 }
 // exponent < 0
 // the BID pack routine will round the coefficient
 rmode = (int)rnd_mode;
-bid_get_BID128(&res, sign_x, exponent_x, cx, (unsigned int *)&rmode,
-               pfpsf);
+bid_get_BID128(&res, sign_x, exponent_x, cx, (unsigned int*)&rmode, pfpsf);
 BID_RETURN(res);
 }

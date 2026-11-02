@@ -46,22 +46,23 @@ BID_OPT_SAVE_BINARY_FLAGS()
 valid_x = unpack_BID128_value(&sign_x, &exponent_x, &cx, x);
 
 // unpack arguments, check for NaN or Infinity
-if(!unpack_BID128_value(&sign_y, &exponent_y, &cy, y)) {
+if (!unpack_BID128_value(&sign_y, &exponent_y, &cy, y)) {
   // y is Inf. or NaN
 #ifdef BID_SET_STATUS_FLAGS
-  if((x.w[1U] & SNAN_MASK64) == SNAN_MASK64) // y is sNaN
+  if ((x.w[1U] & SNAN_MASK64) == SNAN_MASK64) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
 
   // test if y is NaN
-  if((y.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((y.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((y.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull) {
+    if ((y.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull) {
       // set status flags
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
     }
 #endif
-    if((x.w[1U] & 0x7c00000000000000ull) != 0x7c00000000000000ull) {
+    if ((x.w[1U] & 0x7c00000000000000ull) != 0x7c00000000000000ull) {
       res.w[1U] = cy.w[1U] & QUIET_MASK64;
       res.w[0U] = cy.w[0U];
     } else {
@@ -71,9 +72,9 @@ if(!unpack_BID128_value(&sign_y, &exponent_y, &cy, y)) {
     BID_RETURN(res);
   }
   // y is Infinity?
-  if((y.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((y.w[1U] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     // check if x is not Inf.
-    if(((x.w[1U] & 0x7c00000000000000ull) < 0x7800000000000000ull)) {
+    if (((x.w[1U] & 0x7c00000000000000ull) < 0x7800000000000000ull)) {
       // return NaN
 #ifdef BID_SET_STATUS_FLAGS
       // set status flags
@@ -82,7 +83,7 @@ if(!unpack_BID128_value(&sign_y, &exponent_y, &cy, y)) {
       res.w[1U] = 0x7c00000000000000ull;
       res.w[0U] = 0;
       BID_RETURN(res);
-    } else if(((x.w[1U] & 0x7c00000000000000ull) <= 0x7800000000000000ull)) {
+    } else if (((x.w[1U] & 0x7c00000000000000ull) <= 0x7800000000000000ull)) {
       res.w[1U] = cx.w[1U] & QUIET_MASK64;
       res.w[0U] = cx.w[0U];
       BID_RETURN(res);
@@ -90,9 +91,9 @@ if(!unpack_BID128_value(&sign_y, &exponent_y, &cy, y)) {
   }
 }
 
-if(!valid_x) {
+if (!valid_x) {
   // test if x is NaN or Inf
-  if((x.w[1U] & 0x7c00000000000000ull) == 0x7800000000000000ull) {
+  if ((x.w[1U] & 0x7c00000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
     // set status flags
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -100,8 +101,8 @@ if(!valid_x) {
     res.w[1U] = 0x7c00000000000000ull;
     res.w[0U] = 0;
     BID_RETURN(res);
-  } else if((x.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
-    if((x.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull) {
+  } else if ((x.w[1U] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+    if ((x.w[1U] & 0x7e00000000000000ull) == 0x7e00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
       // set status flags
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -111,13 +112,13 @@ if(!valid_x) {
     res.w[0U] = cx.w[0U];
     BID_RETURN(res);
   }
-  if(!cx.w[1U] && !cx.w[0U]) {
+  if (!cx.w[1U] && !cx.w[0U]) {
     bid_get_BID128_very_fast(&res, sign_x, exponent_y, cx);
     BID_RETURN(res);
   }
 }
 // get number of decimal digits in coefficient_x
-if(cx.w[1U]) {
+if (cx.w[1U]) {
   tempx.d = (float)cx.w[1U];
   bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU + 64;
 } else {
@@ -126,14 +127,17 @@ if(cx.w[1U]) {
 }
 
 digits_x = bid_estimate_decimal_digits[bin_expon_cx];
-if(cx.w[1U] > bid_power10_table_128[digits_x].w[1U] || (cx.w[1U] == bid_power10_table_128[digits_x].w[1U] && cx.w[0U] >= bid_power10_table_128[digits_x].w[0U]))
+if (cx.w[1U] > bid_power10_table_128[digits_x].w[1U] ||
+    (cx.w[1U] == bid_power10_table_128[digits_x].w[1U] &&
+     cx.w[0U] >= bid_power10_table_128[digits_x].w[0U])) {
   digits_x++;
+}
 
 expon_diff = exponent_x - exponent_y;
 total_digits = digits_x + expon_diff;
 
-if((BID_UINT32)total_digits <= 34) {
-  if(expon_diff >= 0) {
+if ((BID_UINT32)total_digits <= 34) {
+  if (expon_diff >= 0) {
     t = bid_power10_table_128[expon_diff];
     __mul_128x128_low(c_x2, t, cx);
     bid_get_BID128_very_fast(&res, sign_x, exponent_y, c_x2);
@@ -142,8 +146,9 @@ if((BID_UINT32)total_digits <= 34) {
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
   rmode = (unsigned int)rnd_mode;
-  if(sign_x && (unsigned)(rmode - 1) < 2)
+  if (sign_x && (rmode - 1) < 2) {
     rmode = 3 - rmode;
+  }
 #else
   rmode = 0;
 #endif
@@ -161,7 +166,7 @@ if((BID_UINT32)total_digits <= 34) {
   amount = bid_recip_scale[extra_digits];
   c_x2.w[0U] = ct.w[2U];
   c_x2.w[1U] = ct.w[3U];
-  if(amount >= 64) {
+  if (amount >= 64) {
     cr.w[1U] = 0;
     cr.w[0U] = c_x2.w[1U] >> (amount - 64);
   } else {
@@ -170,21 +175,25 @@ if((BID_UINT32)total_digits <= 34) {
 
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
-  if(rnd_mode == 0)
+  if (rnd_mode == 0)
 #endif
-    if(cr.w[0U] & 1) {
+    if (cr.w[0U] & 1) {
       // check whether fractional part of initial_P/10^extra_digits is
       // exactly .5 this is the same as fractional part of
       // (initial_P + 0.5*10^extra_digits)/10^extra_digits is exactly zero
 
       // get remainder
-      if(amount >= 64) {
+      if (amount >= 64) {
         remainder_h = c_x2.w[0U] | (c_x2.w[1U] << (128 - amount));
-      } else
+      } else {
         remainder_h = c_x2.w[0U] << (64 - amount);
+      }
 
       // test whether fractional part is 0
-      if(!remainder_h && (ct.w[1U] < bid_reciprocals10_128[extra_digits].w[1U] || (ct.w[1U] == bid_reciprocals10_128[extra_digits].w[1U] && ct.w[0U] < bid_reciprocals10_128[extra_digits].w[0U]))) {
+      if (!remainder_h &&
+          (ct.w[1U] < bid_reciprocals10_128[extra_digits].w[1U] ||
+           (ct.w[1U] == bid_reciprocals10_128[extra_digits].w[1U] &&
+            ct.w[0U] < bid_reciprocals10_128[extra_digits].w[0U]))) {
         cr.w[0U]--;
       }
     }
@@ -194,7 +203,7 @@ if((BID_UINT32)total_digits <= 34) {
   status = BID_INEXACT_EXCEPTION;
 
   // get remainder
-  if(amount >= 64) {
+  if (amount >= 64) {
     rem_h.w[1U] = (c_x2.w[1U] << (128 - amount));
     rem_h.w[0U] = c_x2.w[0U];
   } else {
@@ -202,39 +211,49 @@ if((BID_UINT32)total_digits <= 34) {
     rem_h.w[0U] = 0;
   }
 
-  switch(rmode) {
-  case BID_ROUNDING_TO_NEAREST:
-  case BID_ROUNDING_TIES_AWAY:
-    // test whether fractional part is 0
-    if(rem_h.w[1U] == 0x8000000000000000ull && !rem_h.w[0U] && (ct.w[1U] < bid_reciprocals10_128[extra_digits].w[1U] || (ct.w[1U] == bid_reciprocals10_128[extra_digits].w[1U] && ct.w[0U] < bid_reciprocals10_128[extra_digits].w[0U])))
-      status = BID_EXACT_STATUS;
-    break;
-  case BID_ROUNDING_DOWN:
-  case BID_ROUNDING_TO_ZERO:
-    if(!(rem_h.w[1U] | rem_h.w[0U]) && (ct.w[1U] < bid_reciprocals10_128[extra_digits].w[1U] || (ct.w[1U] == bid_reciprocals10_128[extra_digits].w[1U] && ct.w[0U] < bid_reciprocals10_128[extra_digits].w[0U])))
-      status = BID_EXACT_STATUS;
-    break;
-  default:
-    // round up
-    __add_carry_out(stemp.w[0U], c_y64, ct.w[0U],
-                    bid_reciprocals10_128[extra_digits].w[0U]);
-    __add_carry_in_out(stemp.w[1U], carry, ct.w[1U],
-                       bid_reciprocals10_128[extra_digits].w[1U], c_y64);
-    if(amount < 64) {
-      c2_n.w[1U] = 0;
-      c2_n.w[0U] = ((BID_UINT64)1) << amount;
-      rem_h.w[0U] = rem_h.w[1U] >> (64 - amount);
-      rem_h.w[1U] = 0;
-    } else {
-      c2_n.w[1U] = ((BID_UINT64)1) << (amount - 64);
-      c2_n.w[0U] = 0;
-      rem_h.w[1U] >>= (128 - amount);
-    }
-    rem_h.w[0U] += carry;
-    if(rem_h.w[0U] < carry)
-      rem_h.w[1U]++;
-    if(__unsigned_compare_ge_128(rem_h, c2_n))
-      status = BID_EXACT_STATUS;
+  switch (rmode) {
+    case BID_ROUNDING_TO_NEAREST:
+    case BID_ROUNDING_TIES_AWAY:
+      // test whether fractional part is 0
+      if (rem_h.w[1U] == 0x8000000000000000ull && !rem_h.w[0U] &&
+          (ct.w[1U] < bid_reciprocals10_128[extra_digits].w[1U] ||
+           (ct.w[1U] == bid_reciprocals10_128[extra_digits].w[1U] &&
+            ct.w[0U] < bid_reciprocals10_128[extra_digits].w[0U]))) {
+        status = BID_EXACT_STATUS;
+      }
+      break;
+    case BID_ROUNDING_DOWN:
+    case BID_ROUNDING_TO_ZERO:
+      if (!(rem_h.w[1U] | rem_h.w[0U]) &&
+          (ct.w[1U] < bid_reciprocals10_128[extra_digits].w[1U] ||
+           (ct.w[1U] == bid_reciprocals10_128[extra_digits].w[1U] &&
+            ct.w[0U] < bid_reciprocals10_128[extra_digits].w[0U]))) {
+        status = BID_EXACT_STATUS;
+      }
+      break;
+    default:
+      // round up
+      __add_carry_out(stemp.w[0U], c_y64, ct.w[0U],
+                      bid_reciprocals10_128[extra_digits].w[0U]);
+      __add_carry_in_out(stemp.w[1U], carry, ct.w[1U],
+                         bid_reciprocals10_128[extra_digits].w[1U], c_y64);
+      if (amount < 64) {
+        c2_n.w[1U] = 0;
+        c2_n.w[0U] = ((BID_UINT64)1) << amount;
+        rem_h.w[0U] = rem_h.w[1U] >> (64 - amount);
+        rem_h.w[1U] = 0;
+      } else {
+        c2_n.w[1U] = ((BID_UINT64)1) << (amount - 64);
+        c2_n.w[0U] = 0;
+        rem_h.w[1U] >>= (128 - amount);
+      }
+      rem_h.w[0U] += carry;
+      if (rem_h.w[0U] < carry) {
+        rem_h.w[1U]++;
+      }
+      if (__unsigned_compare_ge_128(rem_h, c2_n)) {
+        status = BID_EXACT_STATUS;
+      }
   }
 
   __set_status_flags(pfpsf, status);
@@ -243,15 +262,17 @@ if((BID_UINT32)total_digits <= 34) {
   bid_get_BID128_very_fast(&res, sign_x, exponent_y, cr);
   BID_RETURN(res);
 }
-if(total_digits < 0) {
+if (total_digits < 0) {
   cr.w[1U] = cr.w[0U] = 0;
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
 #ifndef IEEE_ROUND_NEAREST
   rmode = (unsigned int)rnd_mode;
-  if(sign_x && (unsigned)(rmode - 1) < 2)
+  if (sign_x && (rmode - 1) < 2) {
     rmode = 3 - rmode;
-  if(rmode == BID_ROUNDING_UP)
+  }
+  if (rmode == BID_ROUNDING_UP) {
     cr.w[0U] = 1;
+  }
 #endif
 #endif
 #ifdef BID_SET_STATUS_FLAGS

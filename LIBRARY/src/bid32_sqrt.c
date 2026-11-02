@@ -64,17 +64,17 @@ int old_rm, rm_changed = 0;
 BID_OPT_SAVE_BINARY_FLAGS()
 
 // Set it to round-to-nearest (if different)
-if((old_rm = fegetround()) != FE_TONEAREST) {
+if ((old_rm = fegetround()) != FE_TONEAREST) {
   rm_changed = 1;
   fesetround(FE_TONEAREST);
 }
 
 // unpack arguments, check for NaN or Infinity
-if(!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
+if (!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
   // x is Inf. or NaN or 0
-  if((x & INFINITY_MASK32) == INFINITY_MASK32) {
+  if ((x & INFINITY_MASK32) == INFINITY_MASK32) {
     res = coefficient_x;
-    if((coefficient_x & SSNAN_MASK32) == SINFINITY_MASK32) // -Infinity
+    if ((coefficient_x & SSNAN_MASK32) == SINFINITY_MASK32)  // -Infinity
     {
       res = NAN_MASK32;
 #ifdef BID_SET_STATUS_FLAGS
@@ -82,31 +82,35 @@ if(!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
 #endif
     }
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & SNAN_MASK32) == SNAN_MASK32) // sNaN
+    if ((x & SNAN_MASK32) == SNAN_MASK32) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     // restore the rounding mode back if it has been changed
-    if(rm_changed)
+    if (rm_changed) {
       fesetround(old_rm);
+    }
     BID_RETURN(res & QUIET_MASK32);
   }
   // x is 0
   exponent_x = (exponent_x + DECIMAL_EXPONENT_BIAS_32) >> 1;
   res = sign_x | ((BID_UINT32)exponent_x << 23U);
   // restore the rounding mode back if it has been changed
-  if(rm_changed)
+  if (rm_changed) {
     fesetround(old_rm);
+  }
   BID_RETURN(res);
 }
 // x<0?
-if(sign_x && coefficient_x) {
+if (sign_x && coefficient_x) {
   res = NAN_MASK32;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
   // restore the rounding mode back if it has been changed
-  if(rm_changed)
+  if (rm_changed) {
     fesetround(old_rm);
+  }
   BID_RETURN(res);
 }
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
@@ -118,33 +122,34 @@ tempx.d = (float)coefficient_x;
 bin_expon_cx = ((tempx.i >> 23) & 0xffU) - 0x7fU;
 digits_x = bid_estimate_decimal_digits[bin_expon_cx];
 // add test for range
-if(coefficient_x >= bid_power10_index_binexp[bin_expon_cx])
+if (coefficient_x >= bid_power10_index_binexp[bin_expon_cx]) {
   digits_x++;
+}
 
 a10 = coefficient_x;
-if(!(exponent_x & 1)) {
+if (!(exponent_x & 1)) {
   a10 = (a10 << 2) + a10;
   a10 += a10;
 }
 
 dqe = sqrt((double)a10);
 qe = (BID_UINT32)dqe;
-if(qe * qe == a10) {
+if (qe * qe == a10) {
   res =
-      very_fast_get_BID32(0, (exponent_x + DECIMAL_EXPONENT_BIAS_32) >> 1,
-                          qe);
+      very_fast_get_BID32(0, (exponent_x + DECIMAL_EXPONENT_BIAS_32) >> 1, qe);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
   // restore the rounding mode back if it has been changed
-  if(rm_changed)
+  if (rm_changed) {
     fesetround(old_rm);
+  }
   BID_RETURN(res);
 }
 // if exponent is odd, scale coefficient by 10
 scale = 13 - digits_x;
 exponent_q = exponent_x + DECIMAL_EXPONENT_BIAS_32 - scale;
-scale += (exponent_q & 1); // exp. bias is even
+scale += (exponent_q & 1);  // exp. bias is even
 
 ct = bid_power10_table_128[scale].w[0U];
 ca = coefficient_x * ct;
@@ -159,7 +164,7 @@ __set_status_flags(pfpsf, BID_INEXACT_EXCEPTION);
 
 #ifndef IEEE_ROUND_NEAREST
 #ifndef IEEE_ROUND_NEAREST_TIES_AWAY
-if(!((rnd_mode) & 3)) {
+if (!((rnd_mode) & 3)) {
 #endif
 #endif
   q = (BID_UINT32)(dq + 0.5);
@@ -178,8 +183,9 @@ if(!((rnd_mode) & 3)) {
   Q += D;
   if ((BID_SINT32) (Q * Q - C4) > 0)
     Q--;*/
-  if(rnd_mode == BID_ROUNDING_UP)
+  if (rnd_mode == BID_ROUNDING_UP) {
     q++;
+  }
 }
 #endif
 #endif
@@ -189,7 +195,8 @@ res = fast_get_BID32(0, exponent_q, q);
 // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
 // restore the rounding mode back if it has been changed
-if(rm_changed)
+if (rm_changed) {
   fesetround(old_rm);
+}
 BID_RETURN(res);
 }

@@ -50,7 +50,8 @@
 
 #include "bid_internal.h"
 
-BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x, BID_UINT32, y)
+BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT32, bid32_rem, BID_UINT32, x,
+                                           BID_UINT32, y)
 
 BID_UINT64 cx, cyl;
 BID_UINT64 q64 = 0;
@@ -66,26 +67,28 @@ valid_y = unpack_BID32(&sign_y, &exponent_y, &coefficient_y, y);
 valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 
 // unpack arguments, check for NaN or Infinity
-if(!valid_x) {
+if (!valid_x) {
   // x is Inf. or NaN or 0
 #ifdef BID_SET_STATUS_FLAGS
-  if((y & SNAN_MASK32) == SNAN_MASK32) // y is sNaN
+  if ((y & SNAN_MASK32) == SNAN_MASK32) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
 
   // test if x is NaN
-  if((x & 0x7c000000U) == 0x7c000000U) {
+  if ((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-    if(((x & SNAN_MASK32) == SNAN_MASK32))
+    if (((x & SNAN_MASK32) == SNAN_MASK32)) {
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = coefficient_x & QUIET_MASK32;
     ;
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x & 0x78000000U) == 0x78000000U) {
-    if(((y & NAN_MASK32) != NAN_MASK32)) {
+  if ((x & 0x78000000U) == 0x78000000U) {
+    if (((y & NAN_MASK32) != NAN_MASK32)) {
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -96,15 +99,16 @@ if(!valid_x) {
   }
   // x is 0
   // return x if y != 0
-  if(((y & 0x78000000U) < 0x78000000U) &&
-     coefficient_y) {
-    if((y & 0x60000000U) == 0x60000000U)
+  if (((y & 0x78000000U) < 0x78000000U) && coefficient_y) {
+    if ((y & 0x60000000U) == 0x60000000U) {
       exponent_y = (y >> 21) & 0xffU;
-    else
+    } else {
       exponent_y = (y >> 23) & 0xffU;
+    }
 
-    if(exponent_y < exponent_x)
+    if (exponent_y < exponent_x) {
       exponent_x = exponent_y;
+    }
 
     x = (BID_UINT32)exponent_x;
     x <<= 23U;
@@ -113,21 +117,22 @@ if(!valid_x) {
     BID_RETURN(res);
   }
 }
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y & 0x7c000000U) == 0x7c000000U) {
+  if ((y & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-    if(((y & SNAN_MASK32) == SNAN_MASK32))
+    if (((y & SNAN_MASK32) == SNAN_MASK32)) {
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = coefficient_y & QUIET_MASK32;
     ;
     BID_RETURN(res);
   }
   // y is Infinity?
-  if((y & 0x78000000U) == 0x78000000U) {
+  if ((y & 0x78000000U) == 0x78000000U) {
     res = very_fast_get_BID32(sign_x, exponent_x, coefficient_x);
     BID_RETURN(res);
   }
@@ -142,10 +147,10 @@ if(!valid_y) {
 }
 
 diff_expon = exponent_x - exponent_y;
-if(diff_expon <= 0) {
+if (diff_expon <= 0) {
   diff_expon = -diff_expon;
 
-  if(diff_expon > 7) {
+  if (diff_expon > 7) {
     // |x|<|y| in this case
     res = x;
     BID_RETURN(res);
@@ -153,7 +158,7 @@ if(diff_expon <= 0) {
   // set exponent of y to exponent_x, scale coefficient_y
   t = (BID_UINT32)(bid_power10_table_128[diff_expon].w[0U]);
   cyl = ((BID_UINT64)coefficient_y) * t;
-  if(cyl > (BID_UINT64)(coefficient_x << 1)) {
+  if (cyl > (BID_UINT64)(coefficient_x << 1)) {
     res = x;
     BID_RETURN(res);
   }
@@ -163,7 +168,7 @@ if(diff_expon <= 0) {
   r = coefficient_x - q * cy;
 
   r2 = r + r;
-  if(r2 > cy || (r2 == cy && (q & 1))) {
+  if (r2 > cy || (r2 == cy && (q & 1))) {
     r = cy - r;
     sign_x ^= 0x80000000U;
   }
@@ -173,7 +178,7 @@ if(diff_expon <= 0) {
 }
 
 cx = coefficient_x;
-while(diff_expon > 0) {
+while (diff_expon > 0) {
   // get number of digits in coeff_x
   tempx.d = (float)cx;
   bin_expon = ((tempx.i >> 23) & 0xffU) - 0x7fU;
@@ -183,7 +188,7 @@ while(diff_expon > 0) {
   //      digits_x++;
 
   e_scale = 18 - digits_x;
-  if(diff_expon >= e_scale) {
+  if (diff_expon >= e_scale) {
     diff_expon -= e_scale;
   } else {
     e_scale = diff_expon;
@@ -199,7 +204,7 @@ while(diff_expon > 0) {
   cx -= q64 * (BID_UINT64)coefficient_y;
 
   // check for remainder == 0
-  if(!cx) {
+  if (!cx) {
     res = very_fast_get_BID32(sign_x, exponent_y, 0);
     BID_RETURN(res);
   }
@@ -207,7 +212,7 @@ while(diff_expon > 0) {
 
 coefficient_x = (BID_UINT32)cx;
 r2 = coefficient_x + coefficient_x;
-if(r2 > coefficient_y || (r2 == coefficient_y && (q64 & 1))) {
+if (r2 > coefficient_y || (r2 == coefficient_y && (q64 & 1))) {
   coefficient_x = coefficient_y - coefficient_x;
   sign_x ^= 0x80000000ul;
 }

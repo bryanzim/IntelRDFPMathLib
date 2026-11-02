@@ -93,18 +93,18 @@ static const TABLE_UNION TABLE_NAME[] = {
     DATA_2x2(0xfbcff798, 0x9a209a84, 0x0b7c9178, 0x8f8959ac),
 };
 
-#define LOG_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define LOG2_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 24))
-#define LOG10_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 48))
-#define LOG1P_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 72))
-#define ONE_OVER_SQRT_2 *((UX_FRACTION_DIGIT_TYPE *)((char *)TABLE_NAME + 88))
-#define I_SQRT_2 *((UX_FRACTION_DIGIT_TYPE *)((char *)TABLE_NAME + 88))
-#define I_RECIP_SQRT_2 *((UX_FRACTION_DIGIT_TYPE *)((char *)TABLE_NAME + 96))
-#define LOG2_COEF_ARRAY ((FIXED_128 *)((char *)TABLE_NAME + 104))
+#define LOG_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define LOG2_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 24))
+#define LOG10_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 48))
+#define LOG1P_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 72))
+#define ONE_OVER_SQRT_2 *((UX_FRACTION_DIGIT_TYPE*)((char*)TABLE_NAME + 88))
+#define I_SQRT_2 *((UX_FRACTION_DIGIT_TYPE*)((char*)TABLE_NAME + 88))
+#define I_RECIP_SQRT_2 *((UX_FRACTION_DIGIT_TYPE*)((char*)TABLE_NAME + 96))
+#define LOG2_COEF_ARRAY ((FIXED_128*)((char*)TABLE_NAME + 104))
 #define LOG2_COEF_ARRAY_DEGREE ((signed __int64)0x0000000000000011)
-#define UX_ONE ((UX_FLOAT *)((char *)TABLE_NAME + 400))
-#define UX_TWO ((UX_FLOAT *)((char *)TABLE_NAME + 424))
-#define LN_2 ((UX_FLOAT *)((char *)TABLE_NAME + 448))
-#define LOG10_2 ((UX_FLOAT *)((char *)TABLE_NAME + 472))
+#define UX_ONE ((UX_FLOAT*)((char*)TABLE_NAME + 400))
+#define UX_TWO ((UX_FLOAT*)((char*)TABLE_NAME + 424))
+#define LN_2 ((UX_FLOAT*)((char*)TABLE_NAME + 448))
+#define LOG10_2 ((UX_FLOAT*)((char*)TABLE_NAME + 472))
 
 #endif

@@ -206,14 +206,10 @@
 
 #define ATAN_MAP_WIDTH 4
 #define ATAN_MAP_FIELD(i, c) ((c) << ((i) * ATAN_MAP_WIDTH))
-#define INV_TRIG_CONS(index) \
-  (UX_FLOAT *)((char *)INV_TRIG_CONS_BASE + (index))
+#define INV_TRIG_CONS(index) (UX_FLOAT*)((char*)INV_TRIG_CONS_BASE + (index))
 
-void UX_ATAN2(
-    UX_FLOAT *unpacked_y,
-    UX_FLOAT *unpacked_x,
-    WORD degree_radian_flag,
-    UX_FLOAT *unpacked_result) {
+void UX_ATAN2(UX_FLOAT* unpacked_y, UX_FLOAT* unpacked_x,
+              WORD degree_radian_flag, UX_FLOAT* unpacked_result) {
   UX_FLOAT tmp[2], red_arg, *aux_x, *tmp_ptr;
   WORD index;
   UX_SIGN_TYPE sign, sign_y;
@@ -222,7 +218,7 @@ void UX_ATAN2(
 
   /* Determine (estimate ?) the exponent of y/x */
 
-  if(0 == unpacked_x) { /* This is a atan, rather than atan2 function */
+  if (0 == unpacked_x) { /* This is a atan, rather than atan2 function */
     quotient_exp = G_UX_EXPONENT(unpacked_y);
     aux_x = UX_ONE;
     sign = 0;
@@ -231,9 +227,11 @@ void UX_ATAN2(
     aux_x = unpacked_x;
     sign = G_UX_SIGN(unpacked_x);
     P_UX_SIGN(unpacked_x, 0);
-    diff = UX_TO_SDIGIT(G_UX_MSD(unpacked_y)) - UX_TO_SDIGIT(G_UX_MSD(unpacked_x));
-    if(quotient_exp >= 0)
+    diff =
+        UX_TO_SDIGIT(G_UX_MSD(unpacked_y)) - UX_TO_SDIGIT(G_UX_MSD(unpacked_x));
+    if (quotient_exp >= 0) {
       quotient_exp -= (diff == 0 && quotient_exp > 0);
+    }
     quotient_exp += (diff >= 0);
   }
 
@@ -243,16 +241,15 @@ void UX_ATAN2(
   sign_y = G_UX_SIGN(unpacked_y);
   P_UX_SIGN(unpacked_y, 0);
 
-  if(quotient_exp > 1) { /* reduced argument is x/y */
+  if (quotient_exp > 1) { /* reduced argument is x/y */
     index += 2 * ATAN_MAP_WIDTH;
     tmp_ptr = unpacked_x;
     unpacked_x = unpacked_y;
     unpacked_y = tmp_ptr;
     sign ^= UX_SIGN_BIT;
-  } else if(quotient_exp >= 0) { /* reduced argument is (y-x)/(y+x) */
+  } else if (quotient_exp >= 0) { /* reduced argument is (y-x)/(y+x) */
     index += ATAN_MAP_WIDTH;
-    ADDSUB(unpacked_y, aux_x,
-           ADD_SUB | MAGNITUDE_ONLY | NO_NORMALIZATION, tmp);
+    ADDSUB(unpacked_y, aux_x, ADD_SUB | MAGNITUDE_ONLY | NO_NORMALIZATION, tmp);
     unpacked_y = &tmp[1];
     unpacked_x = &tmp[0];
     NORMALIZE(unpacked_y);
@@ -263,9 +260,10 @@ void UX_ATAN2(
   /* force reduced argument to be less than 1/2 */
 
   quotient_exp = red_arg.exponent;
-  if((UX_MSB & red_arg.fraction[0]) == 0)
+  if ((UX_MSB & red_arg.fraction[0]) == 0) {
     quotient_exp--;
-  if(quotient_exp >= 0) {
+  }
+  if (quotient_exp >= 0) {
     index -= ATAN_MAP_WIDTH;
     sign ^= UX_SIGN_BIT;
     red_arg = *UX_ONE_THIRD;
@@ -273,40 +271,34 @@ void UX_ATAN2(
 
   /* Evaluate the reduced argument */
 
-  EVALUATE_RATIONAL(
-      &red_arg,
-      ATAN_COEF_ARRAY,
-      ATAN_COEF_ARRAY_DEGREE,
-      NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) |
-          DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(1),
-      unpacked_result);
+  EVALUATE_RATIONAL(&red_arg, ATAN_COEF_ARRAY, ATAN_COEF_ARRAY_DEGREE,
+                    NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) |
+                        DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(1),
+                    unpacked_result);
 
   /* Add in the appropriate constant */
 
   UX_TOGGLE_SIGN(unpacked_result, sign);
-  if(index) {
-    index =
-        ((ATAN_MAP_FIELD(0, UX_ZERO_INDEX) +
-          ATAN_MAP_FIELD(1, UX_PI_OVER_4_INDEX) +
-          ATAN_MAP_FIELD(2, UX_PI_OVER_2_INDEX) +
-          ATAN_MAP_FIELD(3, UX_PI_INDEX) +
-          ATAN_MAP_FIELD(4, UX_THREE_QUARTERS_PI_INDEX) +
-          ATAN_MAP_FIELD(5, UX_PI_OVER_2_INDEX)) >>
-         index) &
-        MAKE_MASK(ATAN_MAP_WIDTH, 3);
+  if (index) {
+    index = ((ATAN_MAP_FIELD(0, UX_ZERO_INDEX) +
+              ATAN_MAP_FIELD(1, UX_PI_OVER_4_INDEX) +
+              ATAN_MAP_FIELD(2, UX_PI_OVER_2_INDEX) +
+              ATAN_MAP_FIELD(3, UX_PI_INDEX) +
+              ATAN_MAP_FIELD(4, UX_THREE_QUARTERS_PI_INDEX) +
+              ATAN_MAP_FIELD(5, UX_PI_OVER_2_INDEX)) >>
+             index) &
+            MAKE_MASK(ATAN_MAP_WIDTH, 3);
 
     NORMALIZE(unpacked_result);
-    ADDSUB(
-        INV_TRIG_CONS(index),
-        unpacked_result,
-        ADD | NO_NORMALIZATION,
-        unpacked_result);
+    ADDSUB(INV_TRIG_CONS(index), unpacked_result, ADD | NO_NORMALIZATION,
+           unpacked_result);
   }
 
   /* Convert to degrees if necessary */
 
-  if(DEGREE_EVALUATION == degree_radian_flag)
+  if (DEGREE_EVALUATION == degree_radian_flag) {
     MULTIPLY(UX_RAD_TO_DEG, unpacked_result, unpacked_result);
+  }
 
   /* Determine final sign and return */
 
@@ -324,42 +316,26 @@ void UX_ATAN2(
 #define C_UX_ATAN2 __INTERNAL_NAME(C_ux_atan2__)
 #endif
 
-static void
-C_UX_ATAN2(
-    _X_FLOAT *packed_y,
-    _X_FLOAT *packed_x,
-    WORD degree_radian_flag,
-    U_WORD const *class_to_action_map,
-    WORD underflow_error,
-    _X_FLOAT *packed_result
-        OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_ATAN2(_X_FLOAT* packed_y, _X_FLOAT* packed_x,
+                       WORD degree_radian_flag,
+                       U_WORD const* class_to_action_map, WORD underflow_error,
+                       _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class;
   UX_FLOAT unpacked_x, unpacked_y, unpacked_result[2];
 
-  fp_class = UNPACK2(
-      packed_y,
-      packed_x,
-      &unpacked_y,
-      &unpacked_x,
-      class_to_action_map,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class =
+      UNPACK2(packed_y, packed_x, &unpacked_y, &unpacked_x, class_to_action_map,
+              packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     return;
+  }
 
-  UX_ATAN2(
-      &unpacked_y,
-      packed_x ? &unpacked_x : 0,
-      degree_radian_flag,
-      &unpacked_result[0]);
+  UX_ATAN2(&unpacked_y, packed_x ? &unpacked_x : 0, degree_radian_flag,
+           &unpacked_result[0]);
 
-  PACK(
-      &unpacked_result[0],
-      packed_result,
-      underflow_error,
-      NOT_USED
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&unpacked_result[0], packed_result, underflow_error,
+       NOT_USED OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 /*
@@ -375,14 +351,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_ATAN2(
-      PASS_ARG_X_FLOAT(packed_x),
-      NULL,
-      RADIAN_EVALUATION,
-      ATAN_CLASS_TO_ACTION_MAP,
-      NOT_USED,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_ATAN2(PASS_ARG_X_FLOAT(packed_x), NULL, RADIAN_EVALUATION,
+             ATAN_CLASS_TO_ACTION_MAP, NOT_USED,
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -395,14 +366,9 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_y, packed_x) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_ATAN2(
-      PASS_ARG_X_FLOAT(packed_y),
-      PASS_ARG_X_FLOAT(packed_x),
-      RADIAN_EVALUATION,
-      ATAN2_CLASS_TO_ACTION_MAP,
-      ATAN2_UNDERFLOW,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_ATAN2(PASS_ARG_X_FLOAT(packed_y), PASS_ARG_X_FLOAT(packed_x),
+             RADIAN_EVALUATION, ATAN2_CLASS_TO_ACTION_MAP, ATAN2_UNDERFLOW,
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -415,14 +381,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_ATAN2(
-      PASS_ARG_X_FLOAT(packed_x),
-      NULL,
-      DEGREE_EVALUATION,
-      ATAND_CLASS_TO_ACTION_MAP,
-      NOT_USED,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_ATAN2(PASS_ARG_X_FLOAT(packed_x), NULL, DEGREE_EVALUATION,
+             ATAND_CLASS_TO_ACTION_MAP, NOT_USED,
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -435,14 +396,9 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_y, packed_x) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_ATAN2(
-      PASS_ARG_X_FLOAT(packed_y),
-      PASS_ARG_X_FLOAT(packed_x),
-      DEGREE_EVALUATION,
-      ATAND2_CLASS_TO_ACTION_MAP,
-      ATAND2_UNDERFLOW,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_ATAN2(PASS_ARG_X_FLOAT(packed_y), PASS_ARG_X_FLOAT(packed_x),
+             DEGREE_EVALUATION, ATAND2_CLASS_TO_ACTION_MAP, ATAND2_UNDERFLOW,
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -543,7 +499,8 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_y, packed_x) {
 #define BIT_FROM_MAP(m, i) (((m) << (BITS_PER_WORD - (i))) & UX_SIGN_BIT)
 
 #define ASIN_MAP_WIDTH 6
-#define ASIN_MAP_FIELD(i, c, t, s) (((c) + 8 * (t) + 4 * (s)) << ((i) * ASIN_MAP_WIDTH))
+#define ASIN_MAP_FIELD(i, c, t, s) \
+  (((c) + 8 * (t) + 4 * (s)) << ((i) * ASIN_MAP_WIDTH))
 #define G_MAP_INFO(m, i) ((m) >> (i))
 #define G_S_FROM_ASIN_MAP(m) ((m & 4) ? UX_SIGN_BIT : 0)
 #define G_T_FROM_ASIN_MAP(m) ((m & 8) ? UX_SIGN_BIT : 0)
@@ -553,14 +510,10 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_y, packed_x) {
 #define UX_ASIN_ACOS __INTERNAL_NAME(ux_asin_acos__)
 #endif
 
-static void
-UX_ASIN_ACOS(
-    _X_FLOAT *packed_argument,
-    WORD index_map,
-    WORD invalid_error,
-    U_WORD const *class_to_action_map,
-    _X_FLOAT *packed_result
-        OPT_EXCEPTION_INFO_DECLARATION) {
+static void UX_ASIN_ACOS(_X_FLOAT* packed_argument, WORD index_map,
+                         WORD invalid_error, U_WORD const* class_to_action_map,
+                         _X_FLOAT* packed_result
+                             OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class, index;
   UX_FLOAT *unpacked_argument, *unpacked_result, tmp[3];
   UX_EXPONENT_TYPE exponent, exponent_inc;
@@ -568,15 +521,12 @@ UX_ASIN_ACOS(
   unpacked_argument = &tmp[0];
   unpacked_result = &tmp[1];
 
-  fp_class = UNPACK(
-      packed_argument,
-      unpacked_argument,
-      class_to_action_map,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class = UNPACK(packed_argument, unpacked_argument, class_to_action_map,
+                    packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     return;
+  }
 
   /*
   ** Determine the index based on size of x and sign(x).  Also
@@ -588,10 +538,10 @@ UX_ASIN_ACOS(
   index = G_UX_SIGN(unpacked_argument) ? 2 * ASIN_MAP_WIDTH : 0;
   P_UX_SIGN(unpacked_argument, 0);
 
-  if(exponent >= 0) { /* |x| >= 1/2 */
+  if (exponent >= 0) { /* |x| >= 1/2 */
 
     index += ASIN_MAP_WIDTH;
-    if(exponent < 1) { /* 1/2 <= |argument| < 1, compute sqrt((1-x)/2) */
+    if (exponent < 1) { /* 1/2 <= |argument| < 1, compute sqrt((1-x)/2) */
       exponent_inc = 1;
       ADDSUB(UX_ONE, unpacked_argument, SUB | MAGNITUDE_ONLY,
              unpacked_argument);
@@ -601,25 +551,21 @@ UX_ASIN_ACOS(
 
     /* separate |x| = 1 from |x| > 1 */
 
-    else if((exponent == 1) && UX_FRACTION_IS_ONE_HALF(unpacked_argument))
-
+    else if ((exponent == 1) && UX_FRACTION_IS_ONE_HALF(unpacked_argument)) {
       /* |x| = 1, make "reduced argument" zero */
       UX_COPY(UX_ZERO, unpacked_argument);
+    }
 
     else { /* Force "overflow" to signal error */
-      UX_SET_SIGN_EXP_MSD(unpacked_result, 0,
-                          UX_OVERFLOW_EXPONENT, UX_MSB);
+      UX_SET_SIGN_EXP_MSD(unpacked_result, 0, UX_OVERFLOW_EXPONENT, UX_MSB);
       goto pack_it;
     }
   }
 
   EVALUATE_RATIONAL(
-      unpacked_argument,
-      ASIN_COEF_ARRAY,
-      ASIN_COEF_ARRAY_DEGREE,
+      unpacked_argument, ASIN_COEF_ARRAY, ASIN_COEF_ARRAY_DEGREE,
       NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY | ALTERNATE_SIGN) |
-          DENOMINATOR_FLAGS(SQUARE_TERM | ALTERNATE_SIGN) |
-          P_SCALE(1),
+          DENOMINATOR_FLAGS(SQUARE_TERM | ALTERNATE_SIGN) | P_SCALE(1),
       unpacked_result);
 
   /*
@@ -632,22 +578,19 @@ UX_ASIN_ACOS(
 
   /* Add in c(i) */
 
-  ADDSUB(G_C_FROM_ASIN_MAP(index), unpacked_result,
-         ADD | NO_NORMALIZATION, unpacked_result);
+  ADDSUB(G_C_FROM_ASIN_MAP(index), unpacked_result, ADD | NO_NORMALIZATION,
+         unpacked_result);
 
   /* Set sign of result and convert to degrees */
 
   P_UX_SIGN(unpacked_result, G_S_FROM_ASIN_MAP(index));
-  if(index_map & DEGREE_EVALUATION)
+  if (index_map & DEGREE_EVALUATION) {
     MULTIPLY(unpacked_result, UX_RAD_TO_DEG, unpacked_result);
+  }
 
 pack_it:
-  PACK(
-      unpacked_result,
-      packed_result,
-      NOT_USED,
-      invalid_error
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(unpacked_result, packed_result, NOT_USED,
+       invalid_error OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 /*
@@ -659,29 +602,28 @@ pack_it:
 #define F_ENTRY_NAME F_ASIN_NAME
 
 /* Interval   Constant Index    t  s */
-#define ASIN_INTERVAL_MAP (ASIN_MAP_FIELD(3, UX_PI_OVER_2_INDEX, 1, 1) + \
-                           ASIN_MAP_FIELD(2, UX_ZERO_INDEX, 0, 1) +      \
-                           ASIN_MAP_FIELD(0, UX_ZERO_INDEX, 0, 0) +      \
-                           ASIN_MAP_FIELD(1, UX_PI_OVER_2_INDEX, 1, 0))
+#define ASIN_INTERVAL_MAP                        \
+  (ASIN_MAP_FIELD(3, UX_PI_OVER_2_INDEX, 1, 1) + \
+   ASIN_MAP_FIELD(2, UX_ZERO_INDEX, 0, 1) +      \
+   ASIN_MAP_FIELD(0, UX_ZERO_INDEX, 0, 0) +      \
+   ASIN_MAP_FIELD(1, UX_PI_OVER_2_INDEX, 1, 0))
 
 /* Interval    Constant Index    t  s */
-#define ACOS_INTERVAL_MAP (ASIN_MAP_FIELD(3, UX_PI_INDEX, 1, 0) +        \
-                           ASIN_MAP_FIELD(2, UX_PI_OVER_2_INDEX, 0, 0) + \
-                           ASIN_MAP_FIELD(0, UX_PI_OVER_2_INDEX, 1, 0) + \
-                           ASIN_MAP_FIELD(1, UX_ZERO_INDEX, 0, 0))
+#define ACOS_INTERVAL_MAP                        \
+  (ASIN_MAP_FIELD(3, UX_PI_INDEX, 1, 0) +        \
+   ASIN_MAP_FIELD(2, UX_PI_OVER_2_INDEX, 0, 0) + \
+   ASIN_MAP_FIELD(0, UX_PI_OVER_2_INDEX, 1, 0) + \
+   ASIN_MAP_FIELD(1, UX_ZERO_INDEX, 0, 0))
 
 X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  UX_ASIN_ACOS(
-      PASS_ARG_X_FLOAT(packed_argument),
-      ASIN_INTERVAL_MAP + RADIAN_EVALUATION,
-      ASIN_ARG_GT_ONE,
-      ASIN_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  UX_ASIN_ACOS(PASS_ARG_X_FLOAT(packed_argument),
+               ASIN_INTERVAL_MAP + RADIAN_EVALUATION, ASIN_ARG_GT_ONE,
+               ASIN_CLASS_TO_ACTION_MAP,
+               PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -694,13 +636,10 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  UX_ASIN_ACOS(
-      PASS_ARG_X_FLOAT(packed_argument),
-      ASIN_INTERVAL_MAP + DEGREE_EVALUATION,
-      ASIN_ARG_GT_ONE,
-      ASIND_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  UX_ASIN_ACOS(PASS_ARG_X_FLOAT(packed_argument),
+               ASIN_INTERVAL_MAP + DEGREE_EVALUATION, ASIN_ARG_GT_ONE,
+               ASIND_CLASS_TO_ACTION_MAP,
+               PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -713,13 +652,10 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  UX_ASIN_ACOS(
-      PASS_ARG_X_FLOAT(packed_argument),
-      ACOS_INTERVAL_MAP + RADIAN_EVALUATION,
-      ASIN_ARG_GT_ONE,
-      ACOS_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  UX_ASIN_ACOS(PASS_ARG_X_FLOAT(packed_argument),
+               ACOS_INTERVAL_MAP + RADIAN_EVALUATION, ASIN_ARG_GT_ONE,
+               ACOS_CLASS_TO_ACTION_MAP,
+               PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -732,13 +668,10 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  UX_ASIN_ACOS(
-      PASS_ARG_X_FLOAT(packed_argument),
-      ACOS_INTERVAL_MAP + DEGREE_EVALUATION,
-      ACOSD_ARG_GT_ONE,
-      ACOSD_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  UX_ASIN_ACOS(PASS_ARG_X_FLOAT(packed_argument),
+               ACOS_INTERVAL_MAP + DEGREE_EVALUATION, ACOSD_ARG_GT_ONE,
+               ACOSD_CLASS_TO_ACTION_MAP,
+               PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -848,14 +781,10 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(8) +
 /* Index 1: class-to-index mapping */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_POS_INF, 2) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 2) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_ZERO, 4) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 5));
+    CLASS_TO_INDEX(F_C_POS_INF, 2) + CLASS_TO_INDEX(F_C_NEG_INF, 2) +
+    CLASS_TO_INDEX(F_C_POS_NORM, 3) + CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 3) + CLASS_TO_INDEX(F_C_NEG_DENORM, 3) +
+    CLASS_TO_INDEX(F_C_POS_ZERO, 4) + CLASS_TO_INDEX(F_C_NEG_ZERO, 5));
 
 /* index 2: mapping for x when y is +/- Inf */
 
@@ -978,14 +907,10 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(7) +
 /* Index 1: class-to-index mapping */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_POS_INF, 2) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 3) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 4) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 5) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 4) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 5) +
-    CLASS_TO_INDEX(F_C_POS_ZERO, 6) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 7));
+    CLASS_TO_INDEX(F_C_POS_INF, 2) + CLASS_TO_INDEX(F_C_NEG_INF, 3) +
+    CLASS_TO_INDEX(F_C_POS_NORM, 4) + CLASS_TO_INDEX(F_C_NEG_NORM, 5) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 4) + CLASS_TO_INDEX(F_C_NEG_DENORM, 5) +
+    CLASS_TO_INDEX(F_C_POS_ZERO, 6) + CLASS_TO_INDEX(F_C_NEG_ZERO, 7));
 
 /* index 2: mapping for x when y is +Inf */
 
@@ -1105,9 +1030,8 @@ TABLE_COMMENT("0, pi/4, pi/2, 3pi/4, pi in unpacked format");
 PRINT_UX_TBL_ADEF("INV_TRIG_CONS_BASE\t");
 inv_trig_cons_base = MP_BIT_OFFSET;
 
-#define PRINT_BYTE_OFFSET(name)    \
-  printf("#define " name "\t%i\n", \
-         BYTES(MP_BIT_OFFSET - inv_trig_cons_base))
+#define PRINT_BYTE_OFFSET(name) \
+  printf("#define " name "\t%i\n", BYTES(MP_BIT_OFFSET - inv_trig_cons_base))
 
 PRINT_UX_TBL_ADEF("UX_ZERO\t\t\t\t");
 PRINT_BYTE_OFFSET("UX_ZERO_INDEX\t\t");
@@ -1139,10 +1063,11 @@ function __atan(z) {
   auto x;
 
   x = .5 * z;
-  if(x == 0)
+  if (x == 0) {
     return 1.;
-  else
+  } else {
     return atan(x) / x;
+  }
 }
 
 save_precision = precision;
@@ -1150,8 +1075,8 @@ precision = ceil(2 * UX_PRECISION / 8);
 
 max_arg = 2 * (1 / 2);
 
-remes(REMES_FIND_RATIONAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __atan, UX_PRECISION, &num_degree, &den_degree,
+remes(REMES_FIND_RATIONAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __atan, UX_PRECISION, &num_degree, &den_degree,
       &ux_rational_coefs);
 precision = save_precision;
 
@@ -1166,10 +1091,11 @@ function __asin(z) {
   auto x;
 
   x = .5 * z;
-  if(x == 0)
+  if (x == 0) {
     return 1.;
-  else
+  } else {
     return asin(x) / x;
+  }
 }
 
 save_precision = precision;
@@ -1177,8 +1103,8 @@ precision = ceil(2 * UX_PRECISION / 8);
 
 max_arg = 2 * (1 / 2);
 
-remes(REMES_FIND_RATIONAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __asin, UX_PRECISION, &num_degree, &den_degree,
+remes(REMES_FIND_RATIONAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __asin, UX_PRECISION, &num_degree, &den_degree,
       &ux_rational_coefs);
 precision = save_precision;
 
@@ -1189,13 +1115,13 @@ PRINT_WORD_DEF("ASIN_COEF_ARRAY_DEGREE\t", degree);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants inverse "."trigonomic routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants inverse "."trigonomic routines", __FILE__);
 print "$headerText\n\n$outText\n";
 
 #endif

@@ -47,17 +47,18 @@
 
 BID_RESTYPE0_FUNCTION_ARGTYPE1(long long int, bid32_llrint, BID_UINT32, x)
 
-long long int res; // assume sizeof (long long) = 8
+long long int res;  // assume sizeof (long long) = 8
 
-if(rnd_mode == BID_ROUNDING_TO_NEAREST)
+if (rnd_mode == BID_ROUNDING_TO_NEAREST) {
   BIDECIMAL_CALL1_NORND(bid32_to_int64_xrnint, res, x);
-else if(rnd_mode == BID_ROUNDING_TIES_AWAY)
+} else if (rnd_mode == BID_ROUNDING_TIES_AWAY) {
   BIDECIMAL_CALL1_NORND(bid32_to_int64_xrninta, res, x);
-else if(rnd_mode == BID_ROUNDING_DOWN)
+} else if (rnd_mode == BID_ROUNDING_DOWN) {
   BIDECIMAL_CALL1_NORND(bid32_to_int64_xfloor, res, x);
-else if(rnd_mode == BID_ROUNDING_UP)
+} else if (rnd_mode == BID_ROUNDING_UP) {
   BIDECIMAL_CALL1_NORND(bid32_to_int64_xceil, res, x);
-else // if (rnd_mode == BID_ROUNDING_TO_ZERO)
+} else {  // if (rnd_mode == BID_ROUNDING_TO_ZERO)
   BIDECIMAL_CALL1_NORND(bid32_to_int64_xint, res, x);
+}
 BID_RETURN(res);
 }

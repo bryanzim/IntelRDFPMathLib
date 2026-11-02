@@ -298,7 +298,10 @@ Arcsinh
                    7-bit potential shift in a normalized MP number) / MP_radix)
     */
 
-    working_prec = ceil((2 * F_PRECISION + REDUCE_RANGE_OVERHANG + MP_RADIX_BITS - 1) / MP_RADIX_BITS) + 1;
+    working_prec =
+        ceil((2 * F_PRECISION + REDUCE_RANGE_OVERHANG + MP_RADIX_BITS - 1) /
+             MP_RADIX_BITS) +
+        1;
 
 #define SET_MP_PREC(x) precision = x
 #define RND_TO_FMT(x) bround(x, F_PRECISION)
@@ -348,18 +351,20 @@ function make_accurate() {
 
   ones_mask = (2 ^ overhang) - 1;
   v1 = v2 = v;
-  while(v1 > lower_bound || v2 < upper_bound) {
-    if(v1 > lower_bound) {
+  while (v1 > lower_bound || v2 < upper_bound) {
+    if (v1 > lower_bound) {
       bits = bextr(asinh(v1), (F_PRECISION + 1), (F_PRECISION + overhang));
-      if((bits == 0) || (bits == ones_mask))
+      if ((bits == 0) || (bits == ones_mask)) {
         return v1;
+      }
       DEC_BIT(v1, (F_PRECISION - 1));
     };
-    if(v2 < upper_bound) {
+    if (v2 < upper_bound) {
       INC_BIT(v2, (F_PRECISION - 1));
       bits = bextr(asinh(v2), (F_PRECISION + 1), (F_PRECISION + overhang));
-      if((bits == 0) || (bits == ones_mask))
+      if ((bits == 0) || (bits == ones_mask)) {
         return v2;
+      }
     }
   }
 
@@ -455,7 +460,7 @@ rho = 2 ^ -(POLY_RANGE_OVERHANG);
 c = (1 - rho);
 x = 0.5;
 error = 1;
-while(error > 2 ^ -(2 * F_PRECISION)) {
+while (error > 2 ^ -(2 * F_PRECISION)) {
   f = asinh(x) - x * c;
   f1 = (1 / sqrt(1 + x * x)) - c;
   next_x = x - f / f1;
@@ -482,7 +487,7 @@ rho = 2 ^ -(ASYM_RANGE_OVERHANG);
 c = (1 - rho);
 x = 2.5;
 error = 1;
-while(error > 2 ^ -(2 * F_PRECISION)) {
+while (error > 2 ^ -(2 * F_PRECISION)) {
   f = c * asinh(x) - log(2 * x);
   f1 = c * (1 / sqrt(1 + x * x)) - 1 / x;
   next_x = x - f / f1;
@@ -511,7 +516,7 @@ rho = 2 ^ -(F_PRECISION + LARGE_RANGE_OVERHANG + 1);
 c = (1 - rho);
 x = 2.5;
 error = 1;
-while(error > 2 ^ -(2 * F_PRECISION)) {
+while (error > 2 ^ -(2 * F_PRECISION)) {
   f = c * asinh(x) - log(2 * x);
   f1 = c * (1 / sqrt(1 + x * x)) - 1 / x;
   next_x = x - f / f1;
@@ -531,18 +536,19 @@ asymptotic expansion in the asymptotic region.
 /* Approximation to the function:  x^2(asinh(x) - ln(2x)) */
 function asinh_asym_func() {
   x = $1;
-  if(x == 0)
+  if (x == 0) {
     return 1 / 4;
-  else
+  } else {
     return ((x * x) * (asinh(x) - ln(2 * x)));
+  }
 }
 
 old_precision = precision;
 precision = ceil(2 * F_PRECISION / MP_RADIX_BITS) + 5;
 
 remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_RECIP_SQUARE_ARG,
-      max_reduce_x, max_asym_x, asinh_asym_func, (F_PRECISION + 1),
-      &poly_deg, &poly_coef);
+      max_reduce_x, max_asym_x, asinh_asym_func, (F_PRECISION + 1), &poly_deg,
+      &poly_coef);
 
 printf("#define NUM_ASYM_TERM               %i\n", poly_deg + 1);
 
@@ -550,8 +556,9 @@ printf("#define EVALUATE_ASYM_RANGE_POLYNOMIAL(x,c,y) \\\n");
 printf("                         POLY_%i(x,c,y)\n", poly_deg + 1);
 
 printf("static const TABLE_UNION asym_range_coef[] = { \n");
-for(i = 0; i <= poly_deg; i++)
+for (i = 0; i <= poly_deg; i++) {
   printf("\t%#.4" STR(F_CHAR) ",\n", poly_coef[i]);
+}
 printf("}; \n\n");
 precision = old_precision;
 
@@ -704,11 +711,11 @@ max_delta_ax = 0.0;
 n = 0;
 printf("static const TABLE_UNION asinh_tab[] = { \n");
 
-while(ax0 < max_reduce_ax) {
+while (ax0 < max_reduce_ax) {
   delta_ax = rho * ax0;
   ax1 = ax0 + delta_ax;
   x1 = sinh(ax1);
-  if(ax1 > max_reduce_ax) {
+  if (ax1 > max_reduce_ax) {
     ax1 = max_reduce_ax;
     delta_ax = max_reduce_ax - ax0;
     axm = ax0 + delta_ax / 2;
@@ -720,8 +727,9 @@ while(ax0 < max_reduce_ax) {
     cosh_asinh_value = sqrt(1.0 + xm * xm);
     printf("\t%#.4" STR(F_CHAR) ",\n", cosh_asinh_value);
     n++;
-    if(max_delta_ax < delta_ax)
+    if (max_delta_ax < delta_ax) {
       max_delta_ax = delta_ax;
+    }
     break;
   }
   axm = ax0 + delta_ax / 2;
@@ -733,10 +741,12 @@ while(ax0 < max_reduce_ax) {
   printf("\t%#.4" STR(F_CHAR) ",\n", cosh_asinh_value);
   delta_x = x1 - x0;
   K = abs(floor(log2(delta_x / x0)));
-  if(max_K < K)
+  if (max_K < K) {
     max_K = K;
-  if(max_delta_ax < delta_ax)
+  }
+  if (max_delta_ax < delta_ax) {
     max_delta_ax = delta_ax;
+  }
   ax0 = ax1;
   x0 = x1;
   n++;
@@ -779,10 +789,11 @@ printf("#define HALF_HUGE_INDEX %i \n", (index(half_huge_x) - offset));
 
 rho = 2 ^ -REDUCE_RANGE_OVERHANG;
 
-if(count <= 256)
+if (count <= 256) {
   printf("static const U_INT_8 asinh_index_table[] = { ");
-else
+} else {
   printf("static const U_INT_16 asinh_index_table[] = { ");
+}
 bytes_used = 0;
 i = 0;
 j = 0;
@@ -790,10 +801,10 @@ m = 0;
 x0 = max_poly_x;
 ax0 = asinh(x0);
 
-while(ax0 < max_reduce_ax) {
+while (ax0 < max_reduce_ax) {
   delta_ax = rho * ax0;
   ax1 = ax0 + delta_ax;
-  if(ax1 > max_reduce_ax) {
+  if (ax1 > max_reduce_ax) {
     ax1 = max_reduce_ax;
     delta_ax = max_reduce_ax - ax0;
   }
@@ -801,12 +812,13 @@ while(ax0 < max_reduce_ax) {
   b = TRUNCATE(x0, K + 1);
   next_b = TRUNCATE(x1, K + 1);
   cur_index = b;
-  while(cur_index < next_b) {
-    if((j++ % 8) == 0) {
+  while (cur_index < next_b) {
+    if ((j++ % 8) == 0) {
       printf("\n\t");
       bytes_used = 1;
-    } else
+    } else {
       bytes_used++;
+    }
     printf("%i,  ", i);
     INC_BIT(cur_index, K);
   }
@@ -819,8 +831,9 @@ i--;
  *  Pad this table up to avoid alignment problem on HP machine.
  */
 bytes_to_pad = 8 - bytes_used;
-for(k = 0; k < bytes_to_pad; k++)
+for (k = 0; k < bytes_to_pad; k++) {
   printf("0,  ");
+}
 
 printf("\n}; \n\n");
 
@@ -828,39 +841,40 @@ printf("\n}; \n\n");
 
 /* Approximation to the function:  (asinh(x) - x) / x^3 */
 function asinh_func() {
-  if($1 == 0)
+  if ($1 == 0) {
     return -1 / 6;
-  else
+  } else {
     return (asinh($1) - ($1)) / ($1 * $1 * $1);
+  }
 }
 
 old_precision = precision;
 precision = ceil(2 * F_PRECISION / MP_RADIX_BITS) + 5;
 
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0.0, max_poly_x, asinh_func, (F_PRECISION),
-      &poly_deg, &poly_coef);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0.0,
+      max_poly_x, asinh_func, (F_PRECISION), &poly_deg, &poly_coef);
 
 printf("#define EVALUATE_POLY_RANGE_POLYNOMIAL(x,c,y) \\\n");
 printf("                         ODD_POLY_%i_U(x,c,y)\n", 2 * poly_deg + 3);
 
 printf("static const TABLE_UNION poly_range_coef[] = { \n");
-for(i = 0; i <= poly_deg; i++)
+for (i = 0; i <= poly_deg; i++) {
   printf("\t%#.4" STR(F_CHAR) ",\n", poly_coef[i]);
+}
 printf("}; \n\n");
 
 /* Generate the coefficients for the 'reduce' range polynomial */
 
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0.0, max_delta_x, asinh_func, (F_PRECISION + 1),
-      &poly_deg, &poly_coef);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0.0,
+      max_delta_x, asinh_func, (F_PRECISION + 1), &poly_deg, &poly_coef);
 
 printf("#define EVALUATE_REDUCE_RANGE_POLYNOMIAL(x,c,y) \\\n");
 printf("                         ODD_POLY_%i_U(x,c,y)\n", 2 * poly_deg + 3);
 
 printf("static const TABLE_UNION reduce_range_coef[] = { \n");
-for(i = 0; i <= poly_deg; i++)
+for (i = 0; i <= poly_deg; i++) {
   printf("\t%#.4" STR(F_CHAR) ",\n", poly_coef[i]);
+}
 printf("}; \n\n");
 
 precision = old_precision;
@@ -922,7 +936,8 @@ hi = 10;
 rho = 2 ^ -(ASYM_RANGE_OVERHANG);
 max_direct_x = find_root(MP_FIND_ROOT_NO_DERIV, lo, hi, rho, root_func);
 
-printf("static const TABLE_UNION max_direct_x[] = { %#.4" STR(F_CHAR) " };\n\n", max_direct_x);
+printf("static const TABLE_UNION max_direct_x[] = { %#.4" STR(F_CHAR) " };\n\n",
+       max_direct_x);
 
 /* The following code determines the the upper bound of the asymptotic
 region.(or the lower bound of the large region.) In the large region,
@@ -941,7 +956,7 @@ rho = 2 ^ -(F_PRECISION + LARGE_RANGE_OVERHANG + 1);
 c = (1 + rho);
 x = 2.5;
 error = 1;
-while(error > 2 ^ -(2 * F_PRECISION)) {
+while (error > 2 ^ -(2 * F_PRECISION)) {
   f = log(2 * x) - c * acosh(x);
   f1 = 1 / x - c * (1 / sqrt(x * x - 1));
   next_x = x - f / f1;
@@ -950,7 +965,8 @@ while(error > 2 ^ -(2 * F_PRECISION)) {
 }
 max_asym_x = x;
 
-printf("static const TABLE_UNION max_asym_x[] = { %#.4" STR(F_CHAR) " };\n\n", max_asym_x);
+printf("static const TABLE_UNION max_asym_x[] = { %#.4" STR(F_CHAR) " };\n\n",
+       max_asym_x);
 
 /* The computation in asymptotic and large region is more efficient
 than the computation in the direct region if the number of the
@@ -962,30 +978,33 @@ asymptotic series.
 /* Approximation to the function:  -[x^2(acosh(x) - ln(2x))] */
 function acosh_func() {
   x = $1;
-  if(x == 0)
+  if (x == 0) {
     return 1 / 4;
-  else
+  } else {
     return -((x * x) * (acosh(x) - ln(2 * x)));
+  }
 }
 
 old_precision = precision;
 precision = ceil(2 * F_PRECISION / MP_RADIX_BITS) + 5;
 
 remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_RECIP_SQUARE_ARG,
-      max_direct_x, max_asym_x, acosh_func, (F_PRECISION + 1),
-      &poly_deg, &poly_coef);
+      max_direct_x, max_asym_x, acosh_func, (F_PRECISION + 1), &poly_deg,
+      &poly_coef);
 
 printf("#define EVALUATE_ASYM_RANGE_POLYNOMIAL(x,c,y) \\\n");
 printf("                         POLY_%i(x,c,y)\n", poly_deg + 1);
 
 printf("static const TABLE_UNION asym_range_coef[] = { \n");
-for(i = 0; i <= poly_deg; i++)
+for (i = 0; i <= poly_deg; i++) {
   printf("\t%#.4" STR(F_CHAR) ",\n", poly_coef[i]);
+}
 printf("}; \n\n");
 precision = old_precision;
 
 half_huge_x = MPHOC_F_POS_HUGE / 2;
-printf("static const TABLE_UNION half_huge_x[] = { %#.4" STR(F_CHAR) " };\n\n", half_huge_x);
+printf("static const TABLE_UNION half_huge_x[] = { %#.4" STR(F_CHAR) " };\n\n",
+       half_huge_x);
 
 #endif /* MAKE_ASINH */
 
@@ -1021,10 +1040,10 @@ printf("#define HALF_HUGE_PT        m:%m\n", half_huge_x);
 #endif
 #endif
 
-@end_divert
-    @eval my $outText = MphocEval(GetStream("divertText"));
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for ".STR(F_ENTRY_NAME), __FILE__);
+@end_divert @eval my $outText = MphocEval(GetStream("divertText"));
+my $headerText =
+    GetHeaderText(STR(BUILD_FILE_NAME),
+                  "Definitions and constants for ".STR(F_ENTRY_NAME), __FILE__);
 print "$headerText\n$outText";
 
 #endif /* MAKE_INCLUDE */
@@ -1035,16 +1054,16 @@ typedef struct {
 
 /* macros specific to asinh */
 
-#define MAX_DIRECT_X *(F_TYPE *)max_direct_x
-#define MAX_ASYM_X *(F_TYPE *)max_asym_x
-#define HALF_HUGE_X *(F_TYPE *)half_huge_x
+#define MAX_DIRECT_X *(F_TYPE*)max_direct_x
+#define MAX_ASYM_X *(F_TYPE*)max_asym_x
+#define HALF_HUGE_X *(F_TYPE*)half_huge_x
 
-#define POLY_RANGE_COEF (F_TYPE *)poly_range_coef
-#define REDUCE_RANGE_COEF (F_TYPE *)reduce_range_coef
-#define ASYM_RANGE_COEF (F_TYPE *)asym_range_coef
+#define POLY_RANGE_COEF (F_TYPE*)poly_range_coef
+#define REDUCE_RANGE_COEF (F_TYPE*)reduce_range_coef
+#define ASYM_RANGE_COEF (F_TYPE*)asym_range_coef
 
-#define ASINH_TABLE(indx) *((TABLE_ENTRY *)asinh_tab + indx)
-#define LOG_2 *(F_TYPE *)log_2
+#define ASINH_TABLE(indx) *((TABLE_ENTRY*)asinh_tab + indx)
+#define LOG_2 *(F_TYPE*)log_2
 
 #if VAX_FLOATING
 #if BITS_PER_WORD == 32
@@ -1058,7 +1077,8 @@ typedef struct {
 #define IEEE_ONLY(x) x
 #endif
 
-#define GET_INDEX(exp_word, indx) (indx) = (exp_word >> INDEX_SHIFT) - OFFSET_IND;
+#define GET_INDEX(exp_word, indx) \
+  (indx) = (exp_word >> INDEX_SHIFT) - OFFSET_IND;
 
 #define GET_MID_POINT(indx, m, sqrt_one_add_m2) \
   (indx) = asinh_index_table[(indx)];           \
@@ -1083,16 +1103,18 @@ F_ENTRY_NAME(F_TYPE x) {
   F_SAVE_SIGN_AND_GET_ABS(x, sign, z);
   GET_EXP_WORD(z, exp_word_z);
   exp_word_z = PDP_SHUFFLE(exp_word_z);
-  if(F_EXP_WORD_IS_INFINITE_OR_NAN(exp_word_z))
+  if (F_EXP_WORD_IS_INFINITE_OR_NAN(exp_word_z)) {
     return (x);
+  }
 
   GET_INDEX(exp_word_z, indx);
-  if(indx >= MAX_REDUCE_INDEX)
+  if (indx >= MAX_REDUCE_INDEX) {
     goto asym_or_ln2x;
+  }
 
   /* Reduced region */
 
-  if(indx > MAX_POLY_INDEX) {
+  if (indx > MAX_POLY_INDEX) {
     GET_MID_POINT(indx, m, sqrt_one_add_m2);
     one_add_z2 = ((F_TYPE)1.0 + z * z);
     t = (z - m) * (z + m);
@@ -1106,7 +1128,7 @@ F_ENTRY_NAME(F_TYPE x) {
 
   /* Polynomial region */
 
-  else if(indx > MAX_SMALL_INDEX) {
+  else if (indx > MAX_SMALL_INDEX) {
     EVALUATE_POLY_RANGE_POLYNOMIAL(z, POLY_RANGE_COEF, t);
     F_NEGATE_IF_SIGN_NEG(sign, t);
     return (t);
@@ -1114,14 +1136,15 @@ F_ENTRY_NAME(F_TYPE x) {
 
   /* Small region */
 
-  else
+  else {
     return (x);
+  }
 
 asym_or_ln2x:
 
   /* Asymptotic region */
 
-  if(indx < MAX_ASYM_INDEX) {
+  if (indx < MAX_ASYM_INDEX) {
     u = 1 / (z * z);
     EVALUATE_ASYM_RANGE_POLYNOMIAL(u, ASYM_RANGE_COEF, t);
     t += F_LN_NAME(2 * z);
@@ -1131,7 +1154,7 @@ asym_or_ln2x:
 
   /* Large region */
 
-  else if(indx < HALF_HUGE_INDEX) {
+  else if (indx < HALF_HUGE_INDEX) {
     t = F_LN_NAME(2 * z);
     F_NEGATE_IF_SIGN_NEG(sign, t);
     return (t);
@@ -1159,14 +1182,15 @@ F_ENTRY_NAME(F_TYPE x) {
   U_WORD exp_word_x;
 
   GET_EXP_WORD(x, exp_word_x);
-  IEEE_ONLY(if(F_EXP_WORD_IS_ABNORMAL(exp_word_x)) goto non_finite_x;)
+  IEEE_ONLY(if (F_EXP_WORD_IS_ABNORMAL(exp_word_x)) goto non_finite_x;)
 
-  if(x <= 1.0)
+  if (x <= 1.0) {
     goto out_of_range_or_one;
+  }
 
-  if(x > MAX_DIRECT_X)
+  if (x > MAX_DIRECT_X) {
     goto asym_or_ln2x;
-  else {
+  } else {
     /* Direct region */
 
     x2_sub_one = (x - (F_TYPE)1.0) * (x + (F_TYPE)1.0);
@@ -1179,16 +1203,14 @@ F_ENTRY_NAME(F_TYPE x) {
 
 asym_or_ln2x:
 
-  if(x < MAX_ASYM_X) {
-
+  if (x < MAX_ASYM_X) {
     /* Asymptotic region */
 
     u = 1 / (x * x);
     EVALUATE_ASYM_RANGE_POLYNOMIAL(u, ASYM_RANGE_COEF, t);
     t = F_LN_NAME(2 * x) - t;
     return (t);
-  } else if(x < HALF_HUGE_X) {
-
+  } else if (x < HALF_HUGE_X) {
     /* Large region */
 
     t = F_LN_NAME(2 * x);
@@ -1202,8 +1224,9 @@ asym_or_ln2x:
 
 out_of_range_or_one:
 
-  if(x != 1.0)
+  if (x != 1.0) {
     goto invalid_argument;
+  }
   return (F_TYPE)0.0;
 
 #if IEEE_FLOATING
@@ -1211,8 +1234,9 @@ out_of_range_or_one:
 non_finite_x:
 
   F_CLASSIFY(x, exp_word_x);
-  if((exp_word_x == F_C_POS_INF) || (F_C_BASE_CLASS(exp_word_x) == F_C_NAN))
+  if ((exp_word_x == F_C_POS_INF) || (F_C_BASE_CLASS(exp_word_x) == F_C_NAN)) {
     return x;
+  }
 
 #endif
 
@@ -1267,16 +1291,13 @@ domain asinh_accuracy =
   { ( HALF_HUGE_PT, HUGE_PT):uniform:1000 }  
 ;
 
-domain asinh_keypoint =
-    lsb = 0.5;
+domain asinh_keypoint = lsb = 0.5;
 {
   -1.0 | der
 }
 {0.0 | der};
 
-test asinh_acc =
-    type = accuracy
-        error = lsb;
+test asinh_acc = type = accuracy error = lsb;
 stats = max;
 points = 1024;
 ;
@@ -1289,13 +1310,11 @@ domain = asinh_accuracy;
 
 build = asinh_build;
 
-output =
-    file = STR(PASTE(F_ENTRY_NAME, _acc.out));
+output = file = STR(PASTE(F_ENTRY_NAME, _acc.out));
 ;
 ;
 
-test asinh_key =
-    type = key_point;
+test asinh_key = type = key_point;
 
 function = asinh_func;
 
@@ -1304,8 +1323,7 @@ comparison_function = asinh_backup;
 domain = asinh_keypoint;
 
 build = asinh_build;
-output =
-    file = STR(PASTE(F_ENTRY_NAME, _key.out));
+output = file = STR(PASTE(F_ENTRY_NAME, _key.out));
 style = verbose;
 ;
 ;
@@ -1331,16 +1349,13 @@ domain acosh_accuracy =
   { [ HALF_HUGE_PT, HUGE_PT):uniform:4000 }  
 ;
 
-domain acosh_keypoint =
-    lsb = 0.5;
+domain acosh_keypoint = lsb = 0.5;
 {
   1.0 | der
 }
 {-1.0 | der};
 
-test acosh_acc =
-    type = accuracy
-        error = lsb;
+test acosh_acc = type = accuracy error = lsb;
 stats = max;
 points = 1024;
 ;
@@ -1353,13 +1368,11 @@ domain = acosh_accuracy;
 
 build = acosh_build;
 
-output =
-    file = STR(PASTE(F_ENTRY_NAME, _acc.out));
+output = file = STR(PASTE(F_ENTRY_NAME, _acc.out));
 ;
 ;
 
-test acosh_key =
-    type = key_point;
+test acosh_key = type = key_point;
 
 function = acosh_func;
 
@@ -1368,8 +1381,7 @@ comparison_function = acosh_backup;
 domain = acosh_keypoint;
 
 build = acosh_build;
-output =
-    file = STR(PASTE(F_ENTRY_NAME, _key.out));
+output = file = STR(PASTE(F_ENTRY_NAME, _key.out));
 style = verbose;
 ;
 ;

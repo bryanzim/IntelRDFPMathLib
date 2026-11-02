@@ -39,7 +39,8 @@
 #define NUM_REQ_BITS 250
 #define NUM_EXTRA_BITS 6
 
-#define W_HAS_M_BIT_LOSS (((MSD_OF_W + 0x40000000000000ull) & 0x3f80000000000000ull) == 0)
+#define W_HAS_M_BIT_LOSS \
+  (((MSD_OF_W + 0x40000000000000ull) & 0x3f80000000000000ull) == 0)
 #define G_DIGITS g0, g1, g2, g3
 #define F_DIGITS F0, F1
 #define TMP_DIGITS t0, t1, t2, t3
@@ -101,9 +102,8 @@
 #define GET_NEXT_PRODUCT(g, w, c)                 \
   XMUL_XADDC(g, F0, g0, (DIGIT_TYPE)0, c, g0, w); \
   XMUL_XADDC_W_C_IN(g, F1, g1, g0, c, c, g1, g0); \
-  if(c)                                           \
-    if(++g2 == 0)                                 \
-  g3++
+  if (c)                                          \
+    if (++g2 == 0) g3++
 
 #define LEFT_SHIFT_W_LOW_DIGITS_BY_ONE(extra_w_digit) \
   g2 = g1;                                            \

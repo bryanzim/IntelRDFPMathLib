@@ -120,8 +120,9 @@ extern TABLE_UNION GLOBALS_TABLE[];
 #define NEG_ONE_INDEX 12
 #define F_TYPE_ENUM PASTE_3(_, F_CHAR, _TYPE)
 #define GLOBALS_OFFSET(t, n) ((t << 3) + (n << 5))
-#define GLOBAL(n) *((F_TYPE *)((char *)GLOBALS_TABLE + GLOBALS_OFFSET(F_TYPE_ENUM, n)))
-#define GLOBAL_ADDR(t, n) ((void *)((char *)GLOBALS_TABLE + GLOBALS_OFFSET(t, n)))
+#define GLOBAL(n) \
+  *((F_TYPE*)((char*)GLOBALS_TABLE + GLOBALS_OFFSET(F_TYPE_ENUM, n)))
+#define GLOBAL_ADDR(t, n) ((void*)((char*)GLOBALS_TABLE + GLOBALS_OFFSET(t, n)))
 #define NAN GLOBAL(NAN_INDEX)
 #define POS_ZERO GLOBAL(POS_ZERO_INDEX)
 #define NEG_ZERO GLOBAL(NEG_ZERO_INDEX)

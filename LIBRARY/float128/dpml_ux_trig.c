@@ -183,8 +183,8 @@
 #define UX_DEGREE_REDUCE __INTERNAL_NAME(ux_degree_reduce__)
 #endif
 
-static U_WORD
-UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
+static U_WORD UX_DEGREE_REDUCE(UX_FLOAT* argument, WORD octant,
+                               UX_FLOAT* reduced_argument) {
   WORD cnt, digit_with_binary_pt, digit_num, w_tmp, quadrant;
   UX_SIGN_TYPE sign;
   UX_EXPONENT_TYPE exponent, k;
@@ -193,7 +193,7 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
   sign = G_UX_SIGN(argument);
   exponent = G_UX_EXPONENT(argument);
 
-  if(exponent > (UX_PRECISION + 14)) {
+  if (exponent > (UX_PRECISION + 14)) {
     /*
     ** This is a very large argument.  We make use of the identity
     **
@@ -255,7 +255,7 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
     P_UX_EXPONENT(argument, exponent);
   }
 
-  if(exponent >= 16) {
+  if (exponent >= 16) {
     /*
     ** For a medium arguments, 2^15 < |x| < 2^142, we consider the fraction
     ** field of x as a sequence of digit.  The digits that are comprised
@@ -332,8 +332,8 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
     **	with an "extra" digit.
     */
 
-#if BITS_PER_UX_FRACTION_DIGIT_TYPE > (BITS_PER_UX_EXPONENT_TYPE + \
-                                       BITS_PER_UX_SIGN_TYPE)
+#if BITS_PER_UX_FRACTION_DIGIT_TYPE > \
+    (BITS_PER_UX_EXPONENT_TYPE + BITS_PER_UX_SIGN_TYPE)
 #error "Need work buffer for this UX_FLOAT struct"
 #endif
 
@@ -343,7 +343,7 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
     tmp_digit = 0;
     exponent = exponent - ((UX_EXPONENT_TYPE)cnt);
 
-    if(cnt) { /* shift digit right (in memory) */
+    if (cnt) { /* shift digit right (in memory) */
       w_tmp = BITS_PER_UX_FRACTION_DIGIT_TYPE - cnt;
 
       current_digit = G_UX_LSD(argument);
@@ -362,8 +362,7 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
 #endif
 
       tmp_digit = G_UX_MSD(argument);
-      P_UX_MSD(argument,
-               (tmp_digit << cnt) | (current_digit >> w_tmp));
+      P_UX_MSD(argument, (tmp_digit << cnt) | (current_digit >> w_tmp));
       tmp_digit >>= w_tmp;
     }
     /*   P_UX_FRACTION_DIGIT(argument, -1, tmp_digit); */
@@ -372,7 +371,7 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
     ** line in the source.
     */
 
-    *(&(((UX_FLOAT *)(argument))->fraction[0]) - 1) = tmp_digit;
+    *(&(((argument))->fraction[0]) - 1) = tmp_digit;
 
     /*
     ** Extract B from the digit that contains the binary point
@@ -390,17 +389,18 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
 
     digit_num = digit_with_binary_pt;
     cnt = 0;
-    while(digit_num >= 0) {
+    while (digit_num >= 0) {
       current_digit = G_UX_FRACTION_DIGIT(argument, --digit_num);
       P_UX_FRACTION_DIGIT(argument, digit_num, 0);
-      if(cnt) {
+      if (cnt) {
         sum_digit += ((current_digit << cnt) & 0xfff);
         w_tmp = 12 - cnt;
         current_digit >>= w_tmp;
         cnt = -w_tmp;
       }
 
-      sum_digit = (sum_digit + (current_digit & MOD_360_DIGIT_MASK)) + (current_digit >> MOD_360_BITS_PER_DIGIT);
+      sum_digit = (sum_digit + (current_digit & MOD_360_DIGIT_MASK)) +
+                  (current_digit >> MOD_360_BITS_PER_DIGIT);
       cnt += (BITS_PER_UX_FRACTION_DIGIT_TYPE - MOD_360_BITS_PER_DIGIT);
     }
 
@@ -413,7 +413,8 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
 
 #if (BITS_PER_UX_FRACTION_DIGIT_TYPE == 64)
 
-    sum_digit = (sum_digit & 0xffffff) + ((sum_digit >> 24) & 0xffffff) + ((sum_digit >> 48) & 0xffffff);
+    sum_digit = (sum_digit & 0xffffff) + ((sum_digit >> 24) & 0xffffff) +
+                ((sum_digit >> 48) & 0xffffff);
 
 #endif
 
@@ -423,8 +424,9 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
     ** bits modulo 360.
     */
 
-    while((tmp_digit = (sum_digit >> 12)))
+    while ((tmp_digit = (sum_digit >> 12))) {
       sum_digit = (sum_digit & 0xfff) + tmp_digit;
+    }
 
     /*
     ** Now put the reduced integer into the original fraction field,
@@ -470,7 +472,7 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
   P_UX_SIGN(argument, 0);
   current_digit = G_UX_MSD(argument);
 
-  if(w_tmp > 0) {
+  if (w_tmp > 0) {
     UMULH(current_digit, MSD_OF_RECIP_90, tmp_digit);
   } else { /* I = 0 */
     w_tmp = 1;
@@ -480,7 +482,9 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
   /* I ~ x/90, "add in octant" and round to nearest integer */
 
   cnt = BITS_PER_UX_FRACTION_DIGIT_TYPE - w_tmp;
-  tmp_digit = UX_TO_DIGIT((tmp_digit + UX_TO_DIGIT((octant & 1) << (cnt - 1)) + UX_TO_DIGIT(SET_BIT(cnt - 1))) & ~MAKE_MASK(cnt, 0));
+  tmp_digit = UX_TO_DIGIT((tmp_digit + UX_TO_DIGIT((octant & 1) << (cnt - 1)) +
+                           UX_TO_DIGIT(SET_BIT(cnt - 1))) &
+                          ~MAKE_MASK(cnt, 0));
 
   /* Get quadrant bits and adjust for sign of the argument */
 
@@ -490,12 +494,13 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
 
   /* now subtract I*90 from x */
 
-#define MSD_OF_NINETY (((UX_FRACTION_DIGIT_TYPE)45) << (BITS_PER_UX_FRACTION_DIGIT_TYPE - 6))
+#define MSD_OF_NINETY \
+  (((UX_FRACTION_DIGIT_TYPE)45) << (BITS_PER_UX_FRACTION_DIGIT_TYPE - 6))
 
   UMULH(tmp_digit, MSD_OF_NINETY, tmp_digit);
   tmp_digit = (current_digit >> 2) - tmp_digit;
   current_digit = (current_digit & 3) | (4 * tmp_digit);
-  if(((UX_SIGNED_FRACTION_DIGIT_TYPE)tmp_digit) < 0) {
+  if (((UX_SIGNED_FRACTION_DIGIT_TYPE)tmp_digit) < 0) {
     sign ^= UX_SIGN_BIT;
 
     sum_digit = G_UX_LSD(argument);
@@ -544,20 +549,16 @@ UX_DEGREE_REDUCE(UX_FLOAT *argument, WORD octant, UX_FLOAT *reduced_argument) {
 #define SIN_POLY_FLAGS NUMERATOR_FLAGS(ODD_POLY_FLAGS)
 #define COS_POLY_FLAGS DENOMINATOR_FLAGS(EVEN_POLY_FLAGS)
 
-WORD UX_SINCOS(
-    UX_FLOAT *unpacked_argument,
-    WORD octant,
-    WORD function_code,
-    UX_FLOAT *unpacked_result) {
+WORD UX_SINCOS(UX_FLOAT* unpacked_argument, WORD octant, WORD function_code,
+               UX_FLOAT* unpacked_result) {
   WORD quadrant, poly_type;
   UX_FLOAT reduced_argument;
-  U_WORD (*reduce)(UX_FLOAT *, WORD, UX_FLOAT *);
+  U_WORD (*reduce)(UX_FLOAT*, WORD, UX_FLOAT*);
 
   /* Get the quadrant bits and the reduced argument */
 
   reduce = (function_code & DEGREE) ? UX_DEGREE_REDUCE : UX_RADIAN_REDUCE;
-  quadrant = UX_TO_WORD(reduce(unpacked_argument, octant,
-                               &reduced_argument));
+  quadrant = UX_TO_WORD(reduce(unpacked_argument, octant, &reduced_argument));
   function_code &= ~DEGREE;
 
   /*
@@ -567,39 +568,38 @@ WORD UX_SINCOS(
   ** has been accounted for in the value of octant.
   */
 
-  if(SINCOS_FUNC == function_code) {
+  if (SINCOS_FUNC == function_code) {
     poly_type = SIN_POLY_FLAGS | COS_POLY_FLAGS | NO_DIVIDE;
 
     /* Adjust location of sin/cos polynomials */
     poly_type |= ((quadrant & 1) ? SWAP : NULL);
-  } else if(quadrant & 1)
+  } else if (quadrant & 1) {
     /* We need to evaluate C(x^2) */
     poly_type = SKIP | COS_POLY_FLAGS;
-  else
+  } else {
     /* We need to evaluate x*S(x^2) */
     poly_type = SKIP | SIN_POLY_FLAGS;
+  }
 
   /*
   ** Evaluate the polynomial and set the sign based on the quadrant
   */
 
-  EVALUATE_RATIONAL(
-      &reduced_argument,
-      SINCOS_COEF_ARRAY,
-      SINCOS_COEF_ARRAY_DEGREE,
-      poly_type,
-      unpacked_result);
+  EVALUATE_RATIONAL(&reduced_argument, SINCOS_COEF_ARRAY,
+                    SINCOS_COEF_ARRAY_DEGREE, poly_type, unpacked_result);
 
-  if(quadrant & 2)
+  if (quadrant & 2) {
     UX_TOGGLE_SIGN(&unpacked_result[0], UX_SIGN_BIT);
+  }
 
   /*
   ** If this is a sincos entry point, set the sign on the second
   ** result
   */
 
-  if((SINCOS_FUNC == function_code) && ((quadrant + 1) & 2))
+  if ((SINCOS_FUNC == function_code) && ((quadrant + 1) & 2)) {
     UX_TOGGLE_SIGN(&unpacked_result[1], UX_SIGN_BIT);
+  }
 
   return 0; /* No error conditions for sin/cos */
 }
@@ -621,15 +621,11 @@ WORD UX_SINCOS(
 #define UX_TANCOT __INTERNAL_NAME(ux_tancot__)
 #endif
 
-static WORD
-UX_TANCOT(
-    UX_FLOAT *unpacked_argument,
-    WORD octant,
-    WORD function_code,
-    UX_FLOAT *unpacked_result) {
+static WORD UX_TANCOT(UX_FLOAT* unpacked_argument, WORD octant,
+                      WORD function_code, UX_FLOAT* unpacked_result) {
   WORD quadrant, div_flag;
   UX_FLOAT reduced_argument;
-  U_WORD (*reduce)(UX_FLOAT *, WORD, UX_FLOAT *);
+  U_WORD (*reduce)(UX_FLOAT*, WORD, UX_FLOAT*);
 
   /*
   ** Get the quadrant bits and the reduced argument, check for
@@ -637,17 +633,17 @@ UX_TANCOT(
   */
 
   reduce = (function_code & DEGREE) ? UX_DEGREE_REDUCE : UX_RADIAN_REDUCE;
-  quadrant = UX_TO_WORD(reduce(unpacked_argument, octant,
-                               &reduced_argument));
+  quadrant = UX_TO_WORD(reduce(unpacked_argument, octant, &reduced_argument));
   div_flag = ((quadrant + (function_code >> 3)) & 1) ? SWAP : 0;
 
-  if(0 == G_UX_MSD(&reduced_argument)) { /* reduced argument is zero */
+  if (0 == G_UX_MSD(&reduced_argument)) { /* reduced argument is zero */
     UX_SET_SIGN_EXP_MSD(unpacked_result, 0, UX_ZERO_EXPONENT, 0);
-    if(div_flag /* == SWAP */) {
+    if (div_flag /* == SWAP */) {
       P_UX_EXPONENT(unpacked_result, UX_INFINITY_EXPONENT);
       P_UX_MSD(unpacked_result, UX_MSB);
     }
-    return (function_code & TAN_FUNC) ? TAND_ODD_MULTIPLE_OF_90 : COTD_MULTIPLE_OF_180;
+    return (function_code & TAN_FUNC) ? TAND_ODD_MULTIPLE_OF_90
+                                      : COTD_MULTIPLE_OF_180;
   }
 
   /*
@@ -656,15 +652,14 @@ UX_TANCOT(
   */
 
   EVALUATE_RATIONAL(
-      &reduced_argument,
-      TANCOT_COEF_ARRAY,
-      TANCOT_COEF_ARRAY_DEGREE,
+      &reduced_argument, TANCOT_COEF_ARRAY, TANCOT_COEF_ARRAY_DEGREE,
       NUMERATOR_FLAGS(SQUARE_TERM | ALTERNATE_SIGN | POST_MULTIPLY) |
           DENOMINATOR_FLAGS(SQUARE_TERM | ALTERNATE_SIGN) | div_flag,
       unpacked_result);
 
-  if(quadrant & 1)
+  if (quadrant & 1) {
     UX_TOGGLE_SIGN(unpacked_result, UX_SIGN_BIT);
+  }
 
   return G_UX_SIGN(unpacked_result) ? COTD_NEG_OVERFLOW : COTD_POS_OVERFLOW;
 }
@@ -683,59 +678,43 @@ UX_TANCOT(
 
 #define F_C_NAN_OR_INF_MASK (SET_BIT(F_C_INF) | SET_BIT(F_C_NAN))
 
-static void
-C_UX_TRIG(
-    _X_FLOAT *packed_argument,
-    WORD octant,
-    WORD function_code,
-    U_WORD const *class_to_action_map,
-    WORD underflow_error,
-    _X_FLOAT *packed_result
-        OPT_EXCEPTION_INFO_DECLARATION) {
-  _X_FLOAT *second_value;
+static void C_UX_TRIG(_X_FLOAT* packed_argument, WORD octant,
+                      WORD function_code, U_WORD const* class_to_action_map,
+                      WORD underflow_error,
+                      _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+  _X_FLOAT* second_value;
   WORD fp_class, overflow_error;
   UX_FLOAT unpacked_result[3], unpacked_argument;
-  WORD (*trig_eval)(UX_FLOAT *, WORD, WORD, UX_FLOAT *);
+  WORD (*trig_eval)(UX_FLOAT*, WORD, WORD, UX_FLOAT*);
 
   trig_eval = (SINCOS_FUNC & function_code) ? UX_SINCOS : UX_TANCOT;
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      class_to_action_map,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class = UNPACK(packed_argument, &unpacked_argument, class_to_action_map,
+                    packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class) { /* If this is a SINCOS evaluation, write second result */
+  if (0 > fp_class) { /* If this is a SINCOS evaluation, write second result */
 
-    if(SINCOS_FUNC == (function_code & ~DEGREE)) {
+    if (SINCOS_FUNC == (function_code & ~DEGREE)) {
       second_value =
-          ((((U_WORD)1) << F_C_BASE_CLASS(fp_class)) & F_C_NAN_OR_INF_MASK) ? &packed_result[0] : (_X_FLOAT *)_X_ONE;
+          ((((U_WORD)1) << F_C_BASE_CLASS(fp_class)) & F_C_NAN_OR_INF_MASK)
+              ? &packed_result[0]
+              : (_X_FLOAT*)_X_ONE;
       _X_COPY(second_value, &packed_result[1]);
     }
     return;
   }
 
-  overflow_error = trig_eval(
-      &unpacked_argument,
-      octant,
-      function_code,
-      unpacked_result);
+  overflow_error =
+      trig_eval(&unpacked_argument, octant, function_code, unpacked_result);
 
-  PACK(
-      unpacked_result,
-      packed_result,
-      underflow_error,
-      overflow_error
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(unpacked_result, packed_result, underflow_error,
+       overflow_error OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(SINCOS_FUNC == (function_code & ~DEGREE)) { /* pack second result for sincos evaluations */
-    PACK(
-        unpacked_result + 1,
-        packed_result + 1,
-        NOT_USED,
-        NOT_USED
-            OPT_EXCEPTION_INFO_ARGUMENT);
+  if (SINCOS_FUNC ==
+      (function_code &
+       ~DEGREE)) { /* pack second result for sincos evaluations */
+    PACK(unpacked_result + 1, packed_result + 1, NOT_USED,
+         NOT_USED OPT_EXCEPTION_INFO_ARGUMENT);
   }
 }
 
@@ -744,18 +723,15 @@ C_UX_TRIG(
 ** sind/cosd functions
 */
 
-#define TRIG_ENTRY(oct, code, map, under)                   \
-  X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) { \
-    EXCEPTION_INFO_DECL                                     \
-    DECLARE_X_FLOAT(packed_result)                          \
-                                                            \
-    INIT_EXCEPTION_INFO;                                    \
-    C_UX_TRIG(                                              \
-        PASS_ARG_X_FLOAT(packed_argument),                  \
-        oct, code, map, under,                              \
-        PASS_RET_X_FLOAT(packed_result)                     \
-            OPT_EXCEPTION_INFO);                            \
-    RETURN_X_FLOAT(packed_result);                          \
+#define TRIG_ENTRY(oct, code, map, under)                               \
+  X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {             \
+    EXCEPTION_INFO_DECL                                                 \
+    DECLARE_X_FLOAT(packed_result)                                      \
+                                                                        \
+    INIT_EXCEPTION_INFO;                                                \
+    C_UX_TRIG(PASS_ARG_X_FLOAT(packed_argument), oct, code, map, under, \
+              PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);      \
+    RETURN_X_FLOAT(packed_result);                                      \
   }
 
 #
@@ -765,11 +741,9 @@ C_UX_TRIG(
     _X_FLOAT packed_result[2];                                                \
                                                                               \
     INIT_EXCEPTION_INFO;                                                      \
-    C_UX_TRIG(                                                                \
-        PASS_ARG_X_FLOAT(packed_argument),                                    \
-        oct, code, map, under,                                                \
-        packed_result /*PASS_RET_X_FLOAT(packed_result)*/                     \
-            OPT_EXCEPTION_INFO);                                              \
+    C_UX_TRIG(PASS_ARG_X_FLOAT(packed_argument), oct, code, map, under,       \
+              packed_result /*PASS_RET_X_FLOAT(packed_result)*/               \
+                  OPT_EXCEPTION_INFO);                                        \
     *packed_result1 = packed_result[0];                                       \
     *packed_result2 = packed_result[1];                                       \
   }
@@ -981,21 +955,23 @@ PRINT_F_TBL_ADEF_ITEM("_X_ONE\t\t\t", 1);
 ** by 12 and taking R = N/12 gives the appropriate result.
 */
 
-PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM("MSD_OF_RECIP_90\t\t",
-                                      nint(bldexp(1 / 90, BITS_PER_UX_FRACTION_DIGIT_TYPE + 5)));
+PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM(
+    "MSD_OF_RECIP_90\t\t",
+    nint(bldexp(1 / 90, BITS_PER_UX_FRACTION_DIGIT_TYPE + 5)));
 
-PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM("RECIP_TWELVE\t\t",
-                                      ceil(bldexp(1 / 12, BITS_PER_UX_FRACTION_DIGIT_TYPE)));
+PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM(
+    "RECIP_TWELVE\t\t", ceil(bldexp(1 / 12, BITS_PER_UX_FRACTION_DIGIT_TYPE)));
 
 /*
 ** Now generate coefficients for computing sin.
 */
 
 function __sin(x) {
-  if(x == 0)
+  if (x == 0) {
     return 1;
-  else
+  } else {
     return sin(x) / x;
+  }
 }
 
 save_precision = precision;
@@ -1003,8 +979,8 @@ precision = ceil(UX_PRECISION / 8) + 8;
 
 max_arg = pi / 4;
 
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __sin, UX_PRECISION, &sin_degree, &ux_rational_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __sin, UX_PRECISION, &sin_degree, &ux_rational_coefs);
 
 /*
 ** Now generate coefficients for computing cos and add them to the
@@ -1014,14 +990,15 @@ remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
 
 function __cos(x) { return cos(x); }
 
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __cos, UX_PRECISION, &cos_degree, &dummy_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __cos, UX_PRECISION, &cos_degree, &dummy_coefs);
 
 precision = save_precision;
 
 k = sin_degree + 1;
-for(i = 0; i <= cos_degree; i++)
+for (i = 0; i <= cos_degree; i++) {
   ux_rational_coefs[k++] = dummy_coefs[i];
+}
 
 TABLE_COMMENT("Fixed point coefficients for sin and cos evaluation");
 PRINT_FIXED_128_TBL_ADEF("SINCOS_COEF_ARRAY\t");
@@ -1033,10 +1010,11 @@ PRINT_WORD_DEF("SINCOS_COEF_ARRAY_DEGREE", degree);
 */
 
 function __tan(x) {
-  if(x == 0)
+  if (x == 0) {
     return 1;
-  else
+  } else {
     return tan(x) / x;
+  }
 }
 
 save_precision = precision;
@@ -1044,8 +1022,8 @@ precision = ceil(UX_PRECISION / 8) + 8;
 
 max_arg = pi / 4;
 
-remes(REMES_FIND_RATIONAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __tan, UX_PRECISION, &num_degree, &den_degree,
+remes(REMES_FIND_RATIONAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __tan, UX_PRECISION, &num_degree, &den_degree,
       &ux_rational_coefs);
 
 precision = save_precision;
@@ -1060,12 +1038,12 @@ PRINT_UX_TBL_ADEF_ITEM("UX_PI_OVER_FOUR", pi / 4);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants trigonometric "."routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME), "Definitions and constants trigonometric "."routines",
+    __FILE__);
 print "$headerText\n\n$outText\n";
 #endif

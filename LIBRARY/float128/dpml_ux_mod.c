@@ -237,8 +237,8 @@
 #define UX_MOD __INTERNAL_NAME(ux_mod__)
 #endif
 
-static WORD
-UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
+static WORD UX_MOD(UX_FLOAT* x, UX_FLOAT* y, WORD rounding_flags,
+                   UX_FLOAT* result)
 
 {
   U_WORD sklr;
@@ -292,17 +292,18 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
   UX_COPY(x, result);
   q = 0;
 
-  if(j >= 0) {
+  if (j >= 0) {
     ADDSUB(x, y, SUB | NO_NORMALIZATION, &ux_tmp);
 
-    if(G_UX_SIGN(&ux_tmp) == 0) {
+    if (G_UX_SIGN(&ux_tmp) == 0) {
       q = 1;
       UX_COPY(&ux_tmp, result);
     }
   }
 
-  if(j <= 0)
+  if (j <= 0) {
     goto final_step;
+  }
 
   /*
   ** COMPUTING Q"
@@ -348,7 +349,8 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
   ** division.)
   */
 
-  r = (UX_FRACTION_DIGIT_TYPE)(D_TWO_POW_2Km1 / ((double)(g1 + 1)) - D_TWO_POW_Km53);
+  r = (UX_FRACTION_DIGIT_TYPE)(D_TWO_POW_2Km1 / ((double)(g1 + 1)) -
+                               D_TWO_POW_Km53);
 
 #else
 
@@ -377,8 +379,7 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
   recip = D_TWO_POW_53 / ((double)(g1 >> 11));
   r_hi = ((double)((float)recip)) - D_RECIP_TWO_POW_23;
   g_hi = D_RECIP_TWO_POW_26 * ((double)((WORD)(g1 >> 38)));
-  g_lo = D_RECIP_TWO_POW_64 *
-         ((double)((WORD)((g1 & MAKE_MASK(38, 0)) + 1)));
+  g_lo = D_RECIP_TWO_POW_64 * ((double)((WORD)((g1 & MAKE_MASK(38, 0)) + 1)));
   r_lo = (D_GROUP(D_ONE - g_hi * r_hi) - g_lo * r_hi) * recip;
 
   /*
@@ -409,7 +410,11 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
 
   r = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)(D_TWO_POW_23 * r_hi));
   t1 = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)(D_TWO_POW_78 * r_lo));
-  r = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)(UX_TO_SDIGIT(r) << (BITS_PER_UX_FRACTION_DIGIT_TYPE - S_PRECISION)) + ((UX_TO_SDIGIT(t1) - 8) >> (79 - BITS_PER_UX_FRACTION_DIGIT_TYPE)));
+  r = UX_TO_DIGIT(
+      (UX_SIGNED_FRACTION_DIGIT_TYPE)(UX_TO_SDIGIT(r)
+                                      << (BITS_PER_UX_FRACTION_DIGIT_TYPE -
+                                          S_PRECISION)) +
+      ((UX_TO_SDIGIT(t1) - 8) >> (79 - BITS_PER_UX_FRACTION_DIGIT_TYPE)));
 
 #endif
 
@@ -430,9 +435,8 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
   UX_SET_SIGN_EXP_MSD(&ux_q, 0, 0, 0);
 
   do {
-
     j -= BITS_PER_UX_FRACTION_DIGIT_TYPE;
-    if(j >= 0) {
+    if (j >= 0) {
       EXTENDED_DIGIT_SHIFT_LEFT_UX_FRACTION(result, f1);
       old_quot = 0;
     } else {
@@ -493,7 +497,7 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
 
     f2 = G_UX_FRACTION_DIGIT(result, 0);
 
-    if(f1 == g1) {
+    if (f1 == g1) {
       q = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)-1);
       t2 = f2 + g1;
       t1 = (t2 < g1);
@@ -503,7 +507,7 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
       EXTENDED_DIGIT_MULTIPLY(q, g1, t1, t2);
       t2 = f2 - t2;
       t1 = f1 - t1 - (t2 > f2);
-      while((t1 != 0) || (t2 >= g1)) {
+      while ((t1 != 0) || (t2 >= g1)) {
         t1 -= (t2 < g1);
         t2 -= g1;
         q++;
@@ -545,8 +549,8 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
     MULTIPLY(&ux_q, &ux_g_lo, &product);
     ADDSUB(result, &product, SUB | NO_NORMALIZATION, result);
 
-    while(G_UX_SIGN(result)) {
-      if(!t1) {
+    while (G_UX_SIGN(result)) {
+      if (!t1) {
         addend = y;
         q--;
       } else {
@@ -558,7 +562,7 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
     }
     q |= old_quot;
 
-  } while(j > 0);
+  } while (j > 0);
 
   /*
   ** Now we need to deal with the rounding modes.  Get the SKLR, the sign,
@@ -570,17 +574,22 @@ UX_MOD(UX_FLOAT *x, UX_FLOAT *y, WORD rounding_flags, UX_FLOAT *result)
 
 final_step:
 
-  sklr = ((sign_xor >> (BITS_PER_UX_SIGN_TYPE - 4)) & 8) | (((UX_OR_LOW_FRACTION_DIGITS(result) | G_UX_MSD(result)) == 0) ? 0 : 4) | (q & 3);
+  sklr =
+      ((sign_xor >> (BITS_PER_UX_SIGN_TYPE - 4)) & 8) |
+      (((UX_OR_LOW_FRACTION_DIGITS(result) | G_UX_MSD(result)) == 0) ? 0 : 4) |
+      (q & 3);
 
-  rounding_flags = UX_TO_WORD((UX_TO_UWORD(rounding_flags) >> (sklr * FLAGS_BIT_WIDTH)) & FLAGS_MASK);
+  rounding_flags = UX_TO_WORD(
+      (UX_TO_UWORD(rounding_flags) >> (sklr * FLAGS_BIT_WIDTH)) & FLAGS_MASK);
 
   q >>= 1;
   UX_DECR_EXPONENT(result, 1);
-  if(rounding_flags != ZERO_FLAG) {
+  if (rounding_flags != ZERO_FLAG) {
     UX_DECR_EXPONENT(y, rounding_flags & 1);
     ADDSUB(result, y, (rounding_flags & 2) ? ADD : SUB, result);
-    if(!(rounding_flags & 2))
+    if (!(rounding_flags & 2)) {
       q += 1;
+    }
   }
 
   /*
@@ -606,40 +615,28 @@ final_step:
 #define C_UX_MOD __INTERNAL_NAME(C_ux_mod__)
 #endif
 
-static WORD
-C_UX_MOD(_X_FLOAT *packed_x, _X_FLOAT *packed_y, U_WORD bit_vector,
-         WORD underflow_error, const U_WORD *class_to_action_map,
-         _X_FLOAT *packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+static WORD C_UX_MOD(_X_FLOAT* packed_x, _X_FLOAT* packed_y, U_WORD bit_vector,
+                     WORD underflow_error, const U_WORD* class_to_action_map,
+                     _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class;
   WORD quot;
   UX_FLOAT unpacked_x, unpacked_y, unpacked_result;
 
   quot = 0;
 
-  fp_class = UNPACK2(
-      packed_x,
-      packed_y,
-      &unpacked_x,
-      &unpacked_y,
-      class_to_action_map,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class =
+      UNPACK2(packed_x, packed_y, &unpacked_x, &unpacked_y, class_to_action_map,
+              packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     return quot;
+  }
 
-  quot = UX_MOD(
-      &unpacked_x,
-      &unpacked_y,
-      UX_TO_WORD(bit_vector),
-      &unpacked_result);
+  quot = UX_MOD(&unpacked_x, &unpacked_y, UX_TO_WORD(bit_vector),
+                &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      packed_result,
-      underflow_error,
-      NOT_USED
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&unpacked_result, packed_result, underflow_error,
+       NOT_USED OPT_EXCEPTION_INFO_ARGUMENT);
 
   return quot;
 }
@@ -649,37 +646,31 @@ C_UX_MOD(_X_FLOAT *packed_x, _X_FLOAT *packed_y, U_WORD bit_vector,
 ** rem, and remquo.
 **
 ** The following macros convert the rounding flags defined in dpml_ux.h
-** (referred to at B above) to the flags used by UX_MOD (referred to at B' above)
+** (referred to at B above) to the flags used by UX_MOD (referred to at B'
+* above)
 */
 
 #define R_minus_2B(B, i) \
   ((2 + ((i & 1) - (((2 * B) >> i) & 2))) << (i * FLAGS_BIT_WIDTH))
 
-#define CVT_B_TO_B_PRIME(B) (R_minus_2B(B, 0) | R_minus_2B(B, 1) |   \
-                             R_minus_2B(B, 2) | R_minus_2B(B, 3) |   \
-                             R_minus_2B(B, 4) | R_minus_2B(B, 5) |   \
-                             R_minus_2B(B, 6) | R_minus_2B(B, 7) |   \
-                             R_minus_2B(B, 8) | R_minus_2B(B, 9) |   \
-                             R_minus_2B(B, 10) | R_minus_2B(B, 11) | \
-                             R_minus_2B(B, 12) | R_minus_2B(B, 13) | \
-                             R_minus_2B(B, 14) | R_minus_2B(B, 15))
+#define CVT_B_TO_B_PRIME(B)                                                    \
+  (R_minus_2B(B, 0) | R_minus_2B(B, 1) | R_minus_2B(B, 2) | R_minus_2B(B, 3) | \
+   R_minus_2B(B, 4) | R_minus_2B(B, 5) | R_minus_2B(B, 6) | R_minus_2B(B, 7) | \
+   R_minus_2B(B, 8) | R_minus_2B(B, 9) | R_minus_2B(B, 10) |                   \
+   R_minus_2B(B, 11) | R_minus_2B(B, 12) | R_minus_2B(B, 13) |                 \
+   R_minus_2B(B, 14) | R_minus_2B(B, 15))
 
 #undef F_ENTRY_NAME
 #define F_ENTRY_NAME F_MOD_NAME
 
 X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
-
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
   INIT_EXCEPTION_INFO;
-  C_UX_MOD(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      UX_TO_UWORD(CVT_B_TO_B_PRIME(RZ_BIT_VECTOR)),
-      MOD_UNDERFLOW,
-      MOD_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_MOD(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+           UX_TO_UWORD(CVT_B_TO_B_PRIME(RZ_BIT_VECTOR)), MOD_UNDERFLOW,
+           MOD_CLASS_TO_ACTION_MAP,
+           PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -688,19 +679,14 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
 #define F_ENTRY_NAME F_REM_NAME
 
 X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
-
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_MOD(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)),
-      REM_UNDERFLOW,
-      REM_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_MOD(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+           UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)), REM_UNDERFLOW,
+           REM_CLASS_TO_ACTION_MAP,
+           PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -709,19 +695,14 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
 #define F_ENTRY_NAME F_REMAINDER_NAME
 
 X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
-
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_MOD(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)),
-      REM_UNDERFLOW,
-      REM_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_MOD(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+           UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)), REM_UNDERFLOW,
+           REM_CLASS_TO_ACTION_MAP,
+           PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -730,21 +711,16 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
 #define F_ENTRY_NAME F_REMQUO_NAME
 
 X_XXIptr_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y, quotient) {
-
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
   WORD quot;
 
   INIT_EXCEPTION_INFO;
 
-  quot = C_UX_MOD(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)),
-      REMQUO_UNDERFLOW,
-      REMQUO_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  quot = C_UX_MOD(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+                  UX_TO_UWORD(CVT_B_TO_B_PRIME(RN_BIT_VECTOR)),
+                  REMQUO_UNDERFLOW, REMQUO_CLASS_TO_ACTION_MAP,
+                  PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   *quotient = (int)quot;
 
@@ -774,15 +750,12 @@ procedure print_class_to_action_table(infinity_error, zero_error) {
 
   /* Index 1: class-to-index mapping */
 
-  PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(5) +
-                    CLASS_TO_INDEX(F_C_POS_INF, 2) +
-                    CLASS_TO_INDEX(F_C_NEG_INF, 2) +
-                    CLASS_TO_INDEX(F_C_POS_NORM, 3) +
-                    CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
-                    CLASS_TO_INDEX(F_C_POS_DENORM, 4) +
-                    CLASS_TO_INDEX(F_C_NEG_DENORM, 4) +
-                    CLASS_TO_INDEX(F_C_POS_ZERO, 5) +
-                    CLASS_TO_INDEX(F_C_NEG_ZERO, 5));
+  PRINT_64_TBL_ITEM(
+      CLASS_TO_ACTION_DISP(5) + CLASS_TO_INDEX(F_C_POS_INF, 2) +
+      CLASS_TO_INDEX(F_C_NEG_INF, 2) + CLASS_TO_INDEX(F_C_POS_NORM, 3) +
+      CLASS_TO_INDEX(F_C_NEG_NORM, 3) + CLASS_TO_INDEX(F_C_POS_DENORM, 4) +
+      CLASS_TO_INDEX(F_C_NEG_DENORM, 4) + CLASS_TO_INDEX(F_C_POS_ZERO, 5) +
+      CLASS_TO_INDEX(F_C_NEG_ZERO, 5));
 
   /* Index 2: mapping for y given x was +/- Infinity */
 
@@ -876,12 +849,12 @@ PRINT_R_TBL_VDEF_ITEM("D_TWO_POW_2Km1\t", bldexp(1, 2 * k - 1));
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants remainder "."related routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants remainder "."related routines", __FILE__);
 print "$headerText\n\n$outText\n";
 #endif

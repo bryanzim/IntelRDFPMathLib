@@ -43,14 +43,16 @@ double xd, yd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK32) == NAN_MASK32) {
+if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK32) == SNAN_MASK32)
+  if ((x & SNAN_MASK32) == SNAN_MASK32) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res = x & 0xfc0ffffful;
-  if((res & 0x000ffffful) > 999999ul)
+  if ((res & 0x000ffffful) > 999999ul) {
     res &= ~0x000ffffful;
+  }
   BID_RETURN(res);
 }
 
@@ -58,9 +60,9 @@ if((x & NAN_MASK32) == NAN_MASK32) {
 // Instead, do y = 1 + x exactly in decimal and call usual log function.
 
 BIDECIMAL_CALL2_NORND(bid32_quiet_less, sm, x, bi_d32_minus_half);
-if(sm) {
+if (sm) {
   BIDECIMAL_CALL2(bid32_add, y, x, bi_d32_1);
-  if((y & SIGNMASK32) == SIGNMASK32) {
+  if ((y & SIGNMASK32) == SIGNMASK32) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif

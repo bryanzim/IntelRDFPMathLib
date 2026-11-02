@@ -36,8 +36,7 @@
 
 BID_EXTERN_C BINARY80 SQRT80(BINARY80);
 
-__BID_INLINE__ BID_UINT64
-short_sqrt128(BID_UINT128 A10) {
+__BID_INLINE__ BID_UINT64 short_sqrt128(BID_UINT128 A10) {
   BINARY80 lx, ly, l64;
   int_float f64;
 
@@ -54,13 +53,11 @@ typedef union BID_ALIGN(16) {
   long double d;
 } int_dext;
 
-__BID_INLINE__ void
-bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
+__BID_INLINE__ void bid_long_sqrt128(BID_UINT128* pCS, BID_UINT256 C256) {
   BID_UINT128 CS;
   BID_UINT64 X;
   BID_SINT64 SE;
-  BINARY80 l64, lm64, l128, lxL, lx, lS, lSH, lSL, lE, l3, l2,
-      l1, l0, lp, lCl;
+  BINARY80 l64, lm64, l128, lxL, lx, lS, lSH, lSL, lE, l3, l2, l1, l0, lp, lCl;
   int_float f64, fm64;
   int_dext tmp_dext;
 
@@ -86,7 +83,8 @@ bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
   CS.w[1U] = (BID_UINT64)(lS * lm64);
   CS.w[0U] = (BID_UINT64)(lS - (BINARY80)CS.w[1U] * l64);
 
-  // printf("C256=%016I64x %016I64x %016I64x %016I64x, CS=%016I64x %016I64x \n",C256.w[3],C256.w[2],C256.w[1],C256.w[0],CS.w[1],CS.w[0]);
+  // printf("C256=%016I64x %016I64x %016I64x %016I64x, CS=%016I64x %016I64x
+  // \n",C256.w[3],C256.w[2],C256.w[1],C256.w[0],CS.w[1],CS.w[0]);
 
   ///////////////////////////////////////
   //  CAUTION!
@@ -131,16 +129,18 @@ bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
 
   // get low part of coefficient
   X = CS.w[0U];
-  if(lCl >= 0) {
+  if (lCl >= 0) {
     SE = (BID_SINT64)(lE);
     CS.w[0U] += SE;
-    if(CS.w[0U] < X)
+    if (CS.w[0U] < X) {
       CS.w[1U]++;
+    }
   } else {
     SE = (BID_SINT64)(-lE);
     CS.w[0U] -= SE;
-    if(CS.w[0U] > X)
+    if (CS.w[0U] > X) {
       CS.w[1U]--;
+    }
   }
 
   pCS->w[0U] = CS.w[0U];
@@ -149,8 +149,7 @@ bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
 
 #else
 
-__BID_INLINE__ BID_UINT64
-short_sqrt128(BID_UINT128 A10) {
+__BID_INLINE__ BID_UINT64 short_sqrt128(BID_UINT128 A10) {
   BID_UINT256 ARS, ARS0, AE0, AE, S;
 
   BID_UINT64 MY, ES, CY;
@@ -173,18 +172,19 @@ short_sqrt128(BID_UINT128 A10) {
 
   // shr by 2*ey+40, to get a 64-bit value
   k = (ey << 1) + 104 - 64;
-  if(k >= 128) {
-    if(k > 128)
+  if (k >= 128) {
+    if (k > 128) {
       ES = (ARS.w[2U] >> (k - 128)) | (ARS.w[3U] << (192 - k));
-    else
+    } else {
       ES = ARS.w[2U];
+    }
   } else {
-    if(k >= 64) {
+    if (k >= 64) {
       ARS.w[0U] = ARS.w[1U];
       ARS.w[1U] = ARS.w[2U];
       k -= 64;
     }
-    if(k) {
+    if (k) {
       __shr_128(ARS, ARS, k);
     }
     ES = ARS.w[0U];
@@ -192,7 +192,7 @@ short_sqrt128(BID_UINT128 A10) {
 
   ES = (BID_UINT64)(((BID_SINT64)ES) >> 1);
 
-  if(((BID_SINT64)ES) < 0) {
+  if (((BID_SINT64)ES) < 0) {
     ES = (BID_UINT64)(-((BID_SINT64)ES));
 
     // A*RS*eps (scaled by 2^64)
@@ -220,8 +220,8 @@ short_sqrt128(BID_UINT128 A10) {
 
   k = ey + 51;
 
-  if(k >= 64) {
-    if(k >= 128) {
+  if (k >= 64) {
+    if (k >= 128) {
       S.w[0U] = S.w[2U];
       S.w[1U] = 0;
       k -= 128;
@@ -231,15 +231,14 @@ short_sqrt128(BID_UINT128 A10) {
     }
     k -= 64;
   }
-  if(k) {
+  if (k) {
     __shr_128(S, S, k);
   }
 
-  return (BID_UINT64)((S.w[0U] + 1) >> 1);
+  return ((S.w[0U] + 1) >> 1);
 }
 
-__BID_INLINE__ void
-bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
+__BID_INLINE__ void bid_long_sqrt128(BID_UINT128* pCS, BID_UINT256 C256) {
   BID_UINT512 ARS0, ARS;
   BID_UINT256 ARS00, AE, AE2, S;
   BID_UINT128 ES, ES2, ARS1;
@@ -289,11 +288,12 @@ bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
   ARS00.w[2U] = ARS0.w[3U];
   ARS00.w[3U] = ARS0.w[4U];
 
-  if(((BID_SINT64)ES.w[1U]) < 0) {
+  if (((BID_SINT64)ES.w[1U]) < 0) {
     ES.w[0U] = (BID_UINT64)(-((BID_SINT64)ES.w[0U]));
     ES.w[1U] = (BID_UINT64)(-((BID_SINT64)ES.w[1U]));
-    if(ES.w[0U])
+    if (ES.w[0U]) {
       ES.w[1U]--;
+    }
 
     // A*RS*eps
     __mul_128x128_to_256(AE, ES, ARS1);
@@ -332,8 +332,9 @@ bid_long_sqrt128(BID_UINT128 *pCS, BID_UINT256 C256) {
 
   // round to nearest
   S.w[0U]++;
-  if(!S.w[0U])
+  if (!S.w[0U]) {
     S.w[1U]++;
+  }
 
   pCS->w[0U] = (S.w[1U] << 63) | (S.w[0U] >> 1);
   pCS->w[1U] = S.w[1U] >> 1;

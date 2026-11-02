@@ -33,7 +33,8 @@
  *  BID32_round_integral_exact
  ****************************************************************************/
 
-BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_round_integral_exact, BID_UINT32, x)
+BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT32, bid32_round_integral_exact, BID_UINT32,
+                            x)
 
 BID_UINT64 x64, res64;
 BID_UINT32 res;
@@ -49,12 +50,14 @@ BID_RETURN(res);
  *  BID32_round_integral_nearest_even
  ****************************************************************************/
 
-BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_nearest_even, BID_UINT32, x)
+BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32,
+                                      bid32_round_integral_nearest_even,
+                                      BID_UINT32, x)
 
 BID_UINT64 x64, res64;
 BID_UINT32 res;
 #if !DECIMAL_GLOBAL_ROUNDING
-_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST; // temporary
+_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST;  // temporary
 #endif
 
 BIDECIMAL_CALL1_NORND(bid32_to_bid64, x64, x);
@@ -68,12 +71,13 @@ BID_RETURN(res);
  *  BID32_round_integral_negative
  *****************************************************************************/
 
-BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_negative, BID_UINT32, x)
+BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_negative,
+                                      BID_UINT32, x)
 
 BID_UINT64 x64, res64;
 BID_UINT32 res;
 #if !DECIMAL_GLOBAL_ROUNDING
-_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST; // temporary
+_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST;  // temporary
 #endif
 
 BIDECIMAL_CALL1_NORND(bid32_to_bid64, x64, x);
@@ -87,12 +91,13 @@ BID_RETURN(res);
  *  BID32_round_integral_positive
  ****************************************************************************/
 
-BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_positive, BID_UINT32, x)
+BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_positive,
+                                      BID_UINT32, x)
 
 BID_UINT64 x64, res64;
 BID_UINT32 res;
 #if !DECIMAL_GLOBAL_ROUNDING
-_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST; // temporary
+_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST;  // temporary
 #endif
 
 BIDECIMAL_CALL1_NORND(bid32_to_bid64, x64, x);
@@ -106,12 +111,13 @@ BID_RETURN(res);
  *  BID32_round_integral_zero
  ****************************************************************************/
 
-BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_zero, BID_UINT32, x)
+BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_zero,
+                                      BID_UINT32, x)
 
 BID_UINT64 x64, res64;
 BID_UINT32 res;
 #if !DECIMAL_GLOBAL_ROUNDING
-_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST; // temporary
+_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST;  // temporary
 #endif
 
 BIDECIMAL_CALL1_NORND(bid32_to_bid64, x64, x);
@@ -125,11 +131,13 @@ BID_RETURN(res);
  *  BID32_round_integral_nearest_away
  ****************************************************************************/
 
-BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32, bid32_round_integral_nearest_away, BID_UINT32, x)
+BID_TYPE0_FUNCTION_ARGTYPE1_NORND_DFP(BID_UINT32,
+                                      bid32_round_integral_nearest_away,
+                                      BID_UINT32, x)
 BID_UINT64 x64, res64;
 BID_UINT32 res;
 #if !DECIMAL_GLOBAL_ROUNDING
-_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST; // temporary
+_IDEC_round rnd_mode = BID_ROUNDING_TO_NEAREST;  // temporary
 #endif
 
 BIDECIMAL_CALL1_NORND(bid32_to_bid64, x64, x);

@@ -37,19 +37,21 @@ int exponent_x, k, j, iexpon;
 BID_F128_TYPE rq, xq;
 
 // unpack arguments, check for NaN or Infinity
-if(!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
+if (!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
   // test if x is NaN
-  if((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+    if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) ==
+        0x7e00000000000000ull) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res.w[BID_HIGH_128W] = (cx.w[BID_HIGH_128W]) & QUIET_MASK64;
     res.w[BID_LOW_128W] = cx.w[BID_LOW_128W];
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
     res.w[BID_HIGH_128W] = sign_x | 0x7800000000000000ull;
     res.w[BID_LOW_128W] = 0;
     BID_RETURN(res);
@@ -62,7 +64,7 @@ if(!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
 
 // get exponent/3
 iexpon = exponent_x + 1;
-k = ((int)iexpon * (int)0x5556U) >> 16;
+k = (iexpon * (int)0x5556U) >> 16;
 // exponent%3
 j = iexpon - 3 * k;
 // eliminate bias from k

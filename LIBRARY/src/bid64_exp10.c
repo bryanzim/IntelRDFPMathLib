@@ -29,10 +29,10 @@
 
 #include "bid_trans.h"
 
-BID_F80_CONST_DEF(c_385, 4007810000000000, 0000000000000000);     // 385.
-BID_F80_CONST_DEF(c_neg_398, c0078e0000000000, 0000000000000000); // -398
-BID_F80_CONST_DEF(c_1e2000, 59f2cf6c9c9bc5f8, 84a294e53edc955f);  // 1e2000
-BID_F80_CONST_DEF(c_1em2000, 260b1ad56d712a5d, 7f02384e5ded39be); // 1e-2000
+BID_F80_CONST_DEF(c_385, 4007810000000000, 0000000000000000);      // 385.
+BID_F80_CONST_DEF(c_neg_398, c0078e0000000000, 0000000000000000);  // -398
+BID_F80_CONST_DEF(c_1e2000, 59f2cf6c9c9bc5f8, 84a294e53edc955f);   // 1e2000
+BID_F80_CONST_DEF(c_1em2000, 260b1ad56d712a5d, 7f02384e5ded39be);  // 1e-2000
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_exp10, BID_UINT64, x)
 
@@ -43,18 +43,19 @@ int exponent_x;
 
 valid_x = unpack_BID64(&sign_x, &exponent_x, &coefficient_x, x);
 
-if(!valid_x) {
+if (!valid_x) {
   // test if x is NaN
-  if((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+    if ((x & 0x7e00000000000000ull) == 0x7e00000000000000ull) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = (coefficient_x)&QUIET_MASK64;
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
     res = sign_x ? 0ull : 0x7800000000000000ull;
     BID_RETURN(res);
   }
@@ -64,12 +65,13 @@ if(!valid_x) {
 }
 
 BIDECIMAL_CALL1(bid64_to_binary80, xd, x);
-if(__bid_f80_ge(xd, c_385.v)) {
+if (__bid_f80_ge(xd, c_385.v)) {
   BID_F80_ASSIGN(zd, c_1e2000);
-} else if(__bid_f80_lt(xd, c_neg_398.v)) {
+} else if (__bid_f80_lt(xd, c_neg_398.v)) {
   BID_F80_ASSIGN(zd, c_1em2000);
-} else
+} else {
   __bid_f80_exp10(zd, xd);
+}
 
 BIDECIMAL_CALL1(binary80_to_bid64, res, zd);
 BID_RETURN(res);

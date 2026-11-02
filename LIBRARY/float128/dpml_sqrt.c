@@ -27,7 +27,9 @@
   THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************************/
 
-#if defined(FAST_SQRT) + defined(SQRT) + defined(RSQRT) + defined(MAKE_INCLUDE) != 1
+#if defined(FAST_SQRT) + defined(SQRT) + defined(RSQRT) + \
+        defined(MAKE_INCLUDE) !=                          \
+    1
 #error Exactly one of SQRT, FAST_SQRT, RSQRT, or MAKE_INCLUDE must be defined.
 #endif
 
@@ -64,8 +66,7 @@
 #if (DYNAMIC_ROUNDING_MODES) || (COMPILER == epc_cc)
 #define ESTABLISH_ROUND_TO_ZERO(old_mode) \
   INIT_FPU_STATE_AND_ROUND_TO_ZERO(old_mode)
-#define RESTORE_ROUNDING_MODE(old_mode) \
-  RESTORE_FPU_STATE(old_mode)
+#define RESTORE_ROUNDING_MODE(old_mode) RESTORE_FPU_STATE(old_mode)
 #else
 #define ESTABLISH_ROUND_TO_ZERO(old_mode)
 #define RESTORE_ROUNDING_MODE(old_mode)
@@ -104,7 +105,8 @@ In the later case results will not be correctly rounded.  */
 */
 
 #define LOC_OF_EXPON ((BITS_PER_LS_INT_TYPE - 1) - B_EXP_WIDTH)
-#define EXP_BITS_OF_ONE_HALF ((U_LS_INT_TYPE)(B_EXP_BIAS - B_NORM - 1) << LOC_OF_EXPON)
+#define EXP_BITS_OF_ONE_HALF \
+  ((U_LS_INT_TYPE)(B_EXP_BIAS - B_NORM - 1) << LOC_OF_EXPON)
 #define HI_EXP_BIT_MASK (MAKE_MASK(B_EXP_WIDTH - 1, 1) << LOC_OF_EXPON)
 
 #define GET_SQRT_TABLE_INDEX(exp, index)           \
@@ -141,11 +143,9 @@ In the later case results will not be correctly rounded.  */
 /* We can do 64-bit stores */
 /* This is an optimization of the 'else' clause below */
 #if QUAD_PRECISION
-#define STORE_EXP_TO_V_UNION \
-  V_UNION_128_BIT_STORE
+#define STORE_EXP_TO_V_UNION V_UNION_128_BIT_STORE
 #else
-#define STORE_EXP_TO_V_UNION \
-  V_UNION_64_BIT_STORE
+#define STORE_EXP_TO_V_UNION V_UNION_64_BIT_STORE
 #endif
 
 #else
@@ -168,14 +168,12 @@ In the later case results will not be correctly rounded.  */
 /* This condition is complicated.  */
 
 #if (VAX_FLOATING) == (ENDIANESS == little_endian)
-#define V_UNION_64_BIT_STORE \
-  v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1
+#define V_UNION_64_BIT_STORE v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1
 #define V_UNION_128_BIT_STORE                          \
   v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1; \
   v.B_UNSIGNED_LO_64 = 0
 #elif ((ARCHITECTURE == alpha) && defined(HAS_LOAD_WRONG_STORE_SIZE_PENALTY))
-#define V_UNION_64_BIT_STORE \
-  v.B_UNSIGNED_HI_64 = ((U_WORD)exp) >> 1
+#define V_UNION_64_BIT_STORE v.B_UNSIGNED_HI_64 = ((U_WORD)exp) >> 1
 #define V_UNION_128_BIT_STORE              \
   v.B_UNSIGNED_HI_64 = ((U_WORD)exp) >> 1; \
   v.B_UNSIGNED_LO_64 = 0
@@ -396,8 +394,9 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1 << (NUM_FRAC_BITS + 1))];
 
     y' = scale   * x     * ( y + [ (1 - x * y^2) * y * 0.5 ] )
     y' = scale   * x * y * ( 1 + [ (1 - x * y^2) * 0.5 ] )
-    y' = scale/2 * x * y * ( 2 + [ (1 - x * y^2) ] )        gives about 5/4 lsb error
-    y' = scale/2 * x * y * ( 3 - x * y^2 )			gives about 8/4 lsb error
+    y' = scale/2 * x * y * ( 2 + [ (1 - x * y^2) ] )        gives about 5/4 lsb
+   error y' = scale/2 * x * y * ( 3 - x * y^2 )			gives about 8/4
+   lsb error
 
     So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x).
 */
@@ -580,27 +579,27 @@ F_TYPE F_ENTRY_NAME(F_TYPE x) {
   F_TYPE f_type_y;
   B_TYPE y, a, b, c;
   B_TYPE scaled_x;
-  B_TYPE IF_SQRT(half_scale)
-      IF_RSQRT(flah_scale);
+  B_TYPE IF_SQRT(half_scale) IF_RSQRT(flah_scale);
   const B_TYPE half = (B_TYPE)0.5;
   const B_TYPE one = (B_TYPE)1.0;
   const B_TYPE three = (B_TYPE)3.0;
-  DECLARE_old_mode
-      DECLARE_ulp_stuff
+  DECLARE_old_mode DECLARE_ulp_stuff
 
-          LS_INT_TYPE exp,
+      LS_INT_TYPE exp,
       save_exp;
   U_LS_INT_TYPE index;
   U_LS_INT_TYPE lo_exp_bit_and_hi_frac;
   U_LS_INT_TYPE hi_exp_mask = HI_EXP_BIT_MASK;
   U_LS_INT_TYPE exp_of_one_half = EXP_BITS_OF_ONE_HALF;
 
-#if defined(HAS_SQRT_INSTRUCTION) && (FAST_SQRT || SQRT) && (SINGLE_PRECISION || DOUBLE_PRECISION)
+#if defined(HAS_SQRT_INSTRUCTION) && (FAST_SQRT || SQRT) && \
+    (SINGLE_PRECISION || DOUBLE_PRECISION)
   u.f = (B_TYPE)x;
   save_exp = u.B_HI_LS_INT_TYPE;
 
-  if INPUT_IS_ABNORMAL
+  if INPUT_IS_ABNORMAL {
     goto abnormal_input;
+  }
 
   F_HW_SQRT(x, RESULT);
 
@@ -608,8 +607,9 @@ F_TYPE F_ENTRY_NAME(F_TYPE x) {
 #else
   SCALE_AND_DO_INDEXED_POLY_APPROX;
 
-  if INPUT_IS_ABNORMAL
+  if INPUT_IS_ABNORMAL {
     goto abnormal_input;
+  }
 
   NEWTONS_ITERATION;
   NEWTONS_ITERATION;
@@ -625,7 +625,7 @@ abnormal_input:
 
   /* x is either 0 or negative   */
 
-  if(x == (F_TYPE)0.0) {
+  if (x == (F_TYPE)0.0) {
 #if RSQRT
     GET_EXCEPTION_RESULT_1(RSQRT_OF_POS_ZERO, x, RESULT);
 #else
@@ -640,73 +640,72 @@ abnormal_input:
 
   F_CLASSIFY(x, index);
 
-  switch(index) {
-
-  case F_C_SIG_NAN:
-  case F_C_QUIET_NAN:
-    RESULT = x;
-    return RESULT;
-    break;
+  switch (index) {
+    case F_C_SIG_NAN:
+    case F_C_QUIET_NAN:
+      RESULT = x;
+      return RESULT;
+      break;
 
 #if RSQRT
 
-  case F_C_POS_INF:
-    RESULT = (F_TYPE)0.0;
-    return RESULT;
-    break;
-  case F_C_POS_ZERO:
-    GET_EXCEPTION_RESULT_1(RSQRT_OF_POS_ZERO, x, RESULT);
-    return RESULT;
-    break;
-  case F_C_NEG_ZERO:
-    GET_EXCEPTION_RESULT_1(RSQRT_OF_NEG_ZERO, x, RESULT);
-    return RESULT;
-    break;
+    case F_C_POS_INF:
+      RESULT = (F_TYPE)0.0;
+      return RESULT;
+      break;
+    case F_C_POS_ZERO:
+      GET_EXCEPTION_RESULT_1(RSQRT_OF_POS_ZERO, x, RESULT);
+      return RESULT;
+      break;
+    case F_C_NEG_ZERO:
+      GET_EXCEPTION_RESULT_1(RSQRT_OF_NEG_ZERO, x, RESULT);
+      return RESULT;
+      break;
 
 #else
 
-  case F_C_POS_INF:
-  case F_C_POS_ZERO:
-  case F_C_NEG_ZERO:
-    RESULT = x;
-    return RESULT;
-    break;
+    case F_C_POS_INF:
+    case F_C_POS_ZERO:
+    case F_C_NEG_ZERO:
+      RESULT = x;
+      return RESULT;
+      break;
 
 #endif
 
-  case F_C_NEG_INF:
-  case F_C_NEG_NORM:
-  case F_C_NEG_DENORM:
-    GET_EXCEPTION_RESULT_1(SQRT_OF_NEGATIVE, x, RESULT);
-    return RESULT;
-    break;
+    case F_C_NEG_INF:
+    case F_C_NEG_NORM:
+    case F_C_NEG_DENORM:
+      GET_EXCEPTION_RESULT_1(SQRT_OF_NEGATIVE, x, RESULT);
+      return RESULT;
+      break;
 
-  default:
+    default:
 
-    /* must be positive denorm */
+      /* must be positive denorm */
 
-    F_MAKE_FLOAT(
-        ((WORD)(2 * F_PRECISION + 1) << F_EXP_POS), f_type_y);
-    F_COPY_SIGN_AND_EXP(x, f_type_y, x);
-    x -= f_type_y;
+      F_MAKE_FLOAT(((WORD)(2 * F_PRECISION + 1) << F_EXP_POS), f_type_y);
+      F_COPY_SIGN_AND_EXP(x, f_type_y, x);
+      x -= f_type_y;
 
-#if defined(HAS_SQRT_INSTRUCTION) && (FAST_SQRT || SQRT) && (SINGLE_PRECISION || DOUBLE_PRECISION)
-    F_HW_SQRT(x, RESULT);
+#if defined(HAS_SQRT_INSTRUCTION) && (FAST_SQRT || SQRT) && \
+    (SINGLE_PRECISION || DOUBLE_PRECISION)
+      F_HW_SQRT(x, RESULT);
 #else
-    SCALE_AND_DO_INDEXED_POLY_APPROX;
+      SCALE_AND_DO_INDEXED_POLY_APPROX;
 
-    NEWTONS_ITERATION;
-    NEWTONS_ITERATION;
+      NEWTONS_ITERATION;
+      NEWTONS_ITERATION;
 
-    ITERATE_AND_MAYBE_CHECK_LAST_BIT;
+      ITERATE_AND_MAYBE_CHECK_LAST_BIT;
 #endif
 
-    /* Scale down again (up for RSQRT) */
+      /* Scale down again (up for RSQRT) */
 
-    IF_SQRT(SUB_FROM_EXP_FIELD(RESULT, F_PRECISION));
-    IF_RSQRT(ADD_TO_EXP_FIELD(RESULT, F_PRECISION));
-    return RESULT;
-    break;
+      IF_SQRT(SUB_FROM_EXP_FIELD(RESULT, F_PRECISION));
+      IF_RSQRT(ADD_TO_EXP_FIELD(RESULT, F_PRECISION));
+      return RESULT;
+      break;
   }
 
 #endif
@@ -754,8 +753,7 @@ precision = ceil((D_PRECISION + 16) / MP_RADIX_BITS);
 /*
 **  For each half fo the table, ...
 */
-for(h = 1; h <= 2; h++) {
-
+for (h = 1; h <= 2; h++) {
   xaa = 0.5;
   xbb = 1.0;
   xkk = 1.0 / h;
@@ -765,7 +763,7 @@ for(h = 1; h <= 2; h++) {
   printf(" ~= sqrt(%5r/x),\t\t%5r <= x < %5r", xkk, xaa, xbb);
   printf("\n*/\n");
 
-  for(i = 0; i < 2 ^ NUM_FRAC_BITS; i++) {
+  for (i = 0; i < 2 ^ NUM_FRAC_BITS; i++) {
     xa = xaa + (xbb - xaa) * i / 2 ^ NUM_FRAC_BITS;
     xb = xaa + (xbb - xaa) * (i + 1) / 2 ^ NUM_FRAC_BITS;
     /*
@@ -778,10 +776,12 @@ for(h = 1; h <= 2; h++) {
     tol = S_PRECISION + 2;
     flags = 0;
     err = remes(flags, xa, xb, rsqrt_f, tol, &degree, &rsqrt_c);
-    if(degree != 2)
+    if (degree != 2) {
       print("*** degree = %i\n", degree);
-    for(j = 0; j <= degree; j++)
+    }
+    for (j = 0; j <= degree; j++) {
       rsqrt_c[j] = rsqrt_c[j] * sqrt(xkk);
+    }
     /*
     ** Now round the x^2 and x coefficients to single precision,
     ** by subtracting Chebyshev polynomials.  The additional error
@@ -898,8 +898,8 @@ for(h = 1; h <= 2; h++) {
     rsqrt_c[1] = rsqrt_c[1] - t;
     rsqrt_c[0] = rsqrt_c[0] + t * z * xr;
     t = rsqrt_c[0] - bround(rsqrt_c[1], D_PRECISION);
-    printf("{\t%.10r,\t%.10r,\t%.20r\t},\n",
-           rsqrt_c[2], rsqrt_c[1], rsqrt_c[0]);
+    printf("{\t%.10r,\t%.10r,\t%.20r\t},\n", rsqrt_c[2], rsqrt_c[1],
+           rsqrt_c[0]);
   }
 }
 
@@ -910,8 +910,7 @@ print;
 print "};";
 print;
 
-@end_divert
-    @eval my $outText = MphocEval(GetStream("divertText"));
+@end_divert @eval my $outText = MphocEval(GetStream("divertText"));
 my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
                                "Double precision square root table", __FILE__);
 print "$headerText\n\n$outText";
@@ -934,8 +933,7 @@ function DOUBLE_SQRT = B_CHAR B_SQRT_NAME(B_CHAR.v.r);
 function FAST_DOUBLE_SQRT = B_CHAR B_FAST_SQRT_NAME(B_CHAR.v.r);
 function MP_SQRT = void mp_sqrt(m.r.r, m.r.w);
 
-type SQRT_ACCURACY = accuracy
-    error = lsb;
+type SQRT_ACCURACY = accuracy error = lsb;
 stats = max;
 points = 1024;
 ;
@@ -945,8 +943,7 @@ domain DOUBLE_SQRT_DENORMS = {[0.0, 1e-307] : uniform : 10001};
 domain SINGLE_SQRT_ACCURACY = {[0.0, 17.0] : uniform : 100001};
 domain DOUBLE_SQRT_ACCURACY = {[0.0, 17.0] : uniform : 100001};
 
-domain SQRT_KEYPOINTS =
-    lsb = 0.5;
+domain SQRT_KEYPOINTS = lsb = 0.5;
 {
   2.0 | der
 }
@@ -966,8 +963,7 @@ domain SQRT_KEYPOINTS =
 }
 {MTC_NAN | MTC_NAN};
 
-domain FAST_SINGLE_SQRT_KEYPOINTS =
-    lsb = 1.0;
+domain FAST_SINGLE_SQRT_KEYPOINTS = lsb = 1.0;
 {
   2.0 | der
 }
@@ -987,8 +983,7 @@ domain FAST_SINGLE_SQRT_KEYPOINTS =
 }
 {MTC_NAN | MTC_NAN};
 
-domain FAST_DOUBLE_SQRT_KEYPOINTS =
-    lsb = 2.0;
+domain FAST_DOUBLE_SQRT_KEYPOINTS = lsb = 2.0;
 {
   2.0 | der
 }
@@ -1008,106 +1003,86 @@ domain FAST_DOUBLE_SQRT_KEYPOINTS =
 }
 {MTC_NAN | MTC_NAN};
 
-test sqrt_acc_sd =
-    type = SQRT_ACCURACY;
+test sqrt_acc_sd = type = SQRT_ACCURACY;
 domain = SINGLE_SQRT_ACCURACY;
 function = SINGLE_SQRT;
 comparison_function = FAST_DOUBLE_SQRT;
-output =
-    file = "sqrt_acc_sd.out";
+output = file = "sqrt_acc_sd.out";
 ;
 ;
 
-test sqrt_denorm_acc_sd =
-    type = SQRT_ACCURACY;
+test sqrt_denorm_acc_sd = type = SQRT_ACCURACY;
 domain = SINGLE_SQRT_DENORMS;
 function = SINGLE_SQRT;
 comparison_function = FAST_DOUBLE_SQRT;
-output =
-    file = "sqrt_denorm_acc_sd.out";
+output = file = "sqrt_denorm_acc_sd.out";
 ;
 ;
 
-test fast_sqrt_acc_sd =
-    type = SQRT_ACCURACY;
+test fast_sqrt_acc_sd = type = SQRT_ACCURACY;
 domain = SINGLE_SQRT_ACCURACY;
 function = FAST_SINGLE_SQRT;
 comparison_function = FAST_DOUBLE_SQRT;
-output =
-    file = "fast_sqrt_acc_sd.out";
+output = file = "fast_sqrt_acc_sd.out";
 ;
 ;
 
-test sqrt_acc_dm =
-    type = SQRT_ACCURACY;
+test sqrt_acc_dm = type = SQRT_ACCURACY;
 domain = DOUBLE_SQRT_ACCURACY;
 function = DOUBLE_SQRT;
 comparison_function = MP_SQRT;
-output =
-    file = "sqrt_acc_dm.out";
+output = file = "sqrt_acc_dm.out";
 ;
 ;
 
-test sqrt_denorm_acc_dm =
-    type = SQRT_ACCURACY;
+test sqrt_denorm_acc_dm = type = SQRT_ACCURACY;
 domain = DOUBLE_SQRT_DENORMS;
 function = DOUBLE_SQRT;
 comparison_function = MP_SQRT;
-output =
-    file = "sqrt_denorm_acc_dm.out";
+output = file = "sqrt_denorm_acc_dm.out";
 ;
 ;
 
-test fast_sqrt_acc_dm =
-    type = SQRT_ACCURACY;
+test fast_sqrt_acc_dm = type = SQRT_ACCURACY;
 domain = DOUBLE_SQRT_ACCURACY;
 function = FAST_DOUBLE_SQRT;
 comparison_function = MP_SQRT;
-output =
-    file = "fast_sqrt_acc_dm.out";
+output = file = "fast_sqrt_acc_dm.out";
 ;
 ;
 
-test sqrt_key_sd =
-    type = key_point;
+test sqrt_key_sd = type = key_point;
 domain = SQRT_KEYPOINTS;
 function = SINGLE_SQRT;
 comparison_function = DOUBLE_SQRT;
-output =
-    file = "sqrt_key_sd.out";
+output = file = "sqrt_key_sd.out";
 style = verbose;
 ;
 ;
 
-test sqrt_key_dm =
-    type = key_point;
+test sqrt_key_dm = type = key_point;
 domain = SQRT_KEYPOINTS;
 function = DOUBLE_SQRT;
 comparison_function = MP_SQRT;
-output =
-    file = "sqrt_key_dm.out";
+output = file = "sqrt_key_dm.out";
 style = verbose;
 ;
 ;
 
-test fast_sqrt_key_sd =
-    type = key_point;
+test fast_sqrt_key_sd = type = key_point;
 domain = FAST_SINGLE_SQRT_KEYPOINTS;
 function = FAST_SINGLE_SQRT;
 comparison_function = FAST_DOUBLE_SQRT;
-output =
-    file = "fast_sqrt_key_sd.out";
+output = file = "fast_sqrt_key_sd.out";
 style = verbose;
 ;
 ;
 
-test fast_sqrt_key_dm =
-    type = key_point;
+test fast_sqrt_key_dm = type = key_point;
 domain = FAST_DOUBLE_SQRT_KEYPOINTS;
 function = FAST_DOUBLE_SQRT;
 comparison_function = MP_SQRT;
-output =
-    file = "fast_sqrt_key_dm.out";
+output = file = "fast_sqrt_key_dm.out";
 style = verbose;
 ;
 ;

@@ -71,17 +71,17 @@ static const TABLE_UNION TABLE_NAME[] = {
     DATA_2x2(0x00000000, 0xc0000000, 0x00000000, 0x00000000),
 };
 
-#define SQRT_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define RSQRT_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 8))
-#define HYPOT_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 48))
-#define D_SQRT_TWO *((double *)((char *)TABLE_NAME + 88))
-#define D_ONE *((double *)((char *)TABLE_NAME + 96))
-#define D_TWO_POW_24 *((double *)((char *)TABLE_NAME + 104))
-#define D_TWO_POW_75 *((double *)((char *)TABLE_NAME + 112))
-#define D_RECIP_TWO_POW_24 *((double *)((char *)TABLE_NAME + 120))
-#define D_RECIP_TWO_POW_77 *((double *)((char *)TABLE_NAME + 128))
-#define D_SEVEN_EIGHTS *((double *)((char *)TABLE_NAME + 136))
-#define D_THREE_EIGHTS *((double *)((char *)TABLE_NAME + 144))
-#define UX_THREE ((UX_FLOAT *)((char *)TABLE_NAME + 152))
+#define SQRT_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define RSQRT_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 8))
+#define HYPOT_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 48))
+#define D_SQRT_TWO *((double*)((char*)TABLE_NAME + 88))
+#define D_ONE *((double*)((char*)TABLE_NAME + 96))
+#define D_TWO_POW_24 *((double*)((char*)TABLE_NAME + 104))
+#define D_TWO_POW_75 *((double*)((char*)TABLE_NAME + 112))
+#define D_RECIP_TWO_POW_24 *((double*)((char*)TABLE_NAME + 120))
+#define D_RECIP_TWO_POW_77 *((double*)((char*)TABLE_NAME + 128))
+#define D_SEVEN_EIGHTS *((double*)((char*)TABLE_NAME + 136))
+#define D_THREE_EIGHTS *((double*)((char*)TABLE_NAME + 144))
+#define UX_THREE ((UX_FLOAT*)((char*)TABLE_NAME + 152))
 
 #endif

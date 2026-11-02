@@ -12,7 +12,7 @@ end_of_line = crlf
 [*.md]
 trim_trailing_whitespace = false
 
-# Matches the dominant indent in LIBRARY/src.
+# Google C++ Style Guide: 2-space indent.
 [*.{c,h,cc,cpp,cxx,hpp,hh,hxx}]
 indent_style = space
 indent_size = 2

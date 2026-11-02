@@ -80,7 +80,7 @@
 #define UX_POW __INTERNAL_NAME(ux_pow__)
 #endif
 
-void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
+void UX_POW(UX_FLOAT* x, UX_FLOAT* y, UX_FLOAT* result) {
   WORD cnt;
   UX_SIGN_TYPE sign;
   UX_EXPONENT_TYPE exponent;
@@ -119,8 +119,9 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
 
   exponent = G_UX_EXPONENT(x);
   tmp_digit = G_UX_MSD(x);
-  if(tmp_digit <= ONE_OVER_SQRT_2)
+  if (tmp_digit <= ONE_OVER_SQRT_2) {
     exponent--;
+  }
   UX_DECR_EXPONENT(x, exponent);
 
   /*
@@ -152,7 +153,7 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
   */
 
   z_msd = G_UX_MSD(&z);
-  if(exponent == 0) {
+  if (exponent == 0) {
     log2_hi = z_msd;
     exponent = G_UX_EXPONENT(&z);
     sign = G_UX_SIGN(&z);
@@ -166,12 +167,14 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
 
     /* Take high bits from z */
 
-    if(cnt >= BITS_PER_WORD)
+    if (cnt >= BITS_PER_WORD) {
       z_msd = 0;
-    else {
+    } else {
       tmp_digit = (z_msd >> cnt);
       z_msd = tmp_digit << cnt;
-      tmp_digit = (G_UX_SIGN(&z) != G_UX_SIGN(&tmp[2])) ? UX_TO_DIGIT(-UX_TO_SDIGIT(tmp_digit)) : tmp_digit;
+      tmp_digit = (G_UX_SIGN(&z) != G_UX_SIGN(&tmp[2]))
+                      ? UX_TO_DIGIT(-UX_TO_SDIGIT(tmp_digit))
+                      : tmp_digit;
       log2_hi += tmp_digit;
     }
   }
@@ -181,12 +184,8 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
   */
 
   MULTIPLY(&z, &z, &tmp[2]);
-  EVALUATE_RATIONAL(
-      &tmp[2],
-      POW_LOG2_COEF_ARRAY,
-      POW_LOG2_COEF_ARRAY_DEGREE,
-      NUMERATOR_FLAGS(POST_MULTIPLY),
-      &log2_lo);
+  EVALUATE_RATIONAL(&tmp[2], POW_LOG2_COEF_ARRAY, POW_LOG2_COEF_ARRAY_DEGREE,
+                    NUMERATOR_FLAGS(POST_MULTIPLY), &log2_lo);
   MULTIPLY(&z, &log2_lo, &log2_lo);
 
   /*
@@ -222,7 +221,7 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
   ** t1 - t0*u.
   */
 
-  if(z_msd != 0) {
+  if (z_msd != 0) {
     /*
     ** We used some bits from Z so compute z_lo and add it to
     ** log2_lo.  Start the computation by getting u equal to the
@@ -273,7 +272,7 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
 
   inc = G_UX_MSD(&log2_lo);
   cnt = exponent - G_UX_EXPONENT(&log2_lo);
-  if(cnt < BITS_PER_UX_FRACTION_DIGIT_TYPE) {
+  if (cnt < BITS_PER_UX_FRACTION_DIGIT_TYPE) {
     tmp_digit = inc & MAKE_MASK(cnt, 0);
     P_UX_MSD(&log2_lo, tmp_digit);
     inc >>= cnt;
@@ -289,8 +288,9 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
 
   UX_SET_SIGN_EXP_MSD(&tmp[0], sign, exponent, log2_hi);
   exponent += G_UX_EXPONENT(y);
-  if(exponent > (signed)(F_EXP_WIDTH + 2))
+  if (exponent > (F_EXP_WIDTH + 2)) {
     goto overflow_underflow;
+  }
 
   /*
   ** Get I by multiplying the high digit of y with LOG2_HI and rounding
@@ -302,15 +302,15 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
   sign ^= G_UX_SIGN(y);
   EXTENDED_MULTIPLY(&tmp[0], y, &h, &tmp[0]);
 
-  if(exponent >= 0) {
+  if (exponent >= 0) {
     UMULH(log2_hi, G_UX_MSD(y), i);
     cnt = BITS_PER_UX_FRACTION_DIGIT_TYPE - exponent;
     inc = SET_BIT(cnt - 1);
     tmp_digit = i + inc;
     inc += inc;
-    if(tmp_digit >= i)
+    if (tmp_digit >= i) {
       i = tmp_digit & UX_TO_DIGIT(-UX_TO_SDIGIT(inc));
-    else { /* A carry out occurred on the increment */
+    } else { /* A carry out occurred on the increment */
       cnt--;
       i = UX_MSB;
       exponent++;
@@ -338,12 +338,8 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
   ** Evaluate 2^h and do scaling
   */
 
-  EVALUATE_RATIONAL(
-      &h,
-      POW2_COEF_ARRAY,
-      POW2_COEF_ARRAY_DEGREE,
-      NUMERATOR_FLAGS(STANDARD),
-      result);
+  EVALUATE_RATIONAL(&h, POW2_COEF_ARRAY, POW2_COEF_ARRAY_DEGREE,
+                    NUMERATOR_FLAGS(STANDARD), result);
 
   i >>= cnt;
   tmp_digit = UX_TO_DIGIT(-UX_TO_SDIGIT(i));
@@ -352,7 +348,8 @@ void UX_POW(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *result) {
   return;
 
 overflow_underflow:
-  exponent = (sign ^ G_UX_SIGN(y)) ? UX_UNDERFLOW_EXPONENT : UX_OVERFLOW_EXPONENT;
+  exponent =
+      (sign ^ G_UX_SIGN(y)) ? UX_UNDERFLOW_EXPONENT : UX_OVERFLOW_EXPONENT;
   UX_SET_SIGN_EXP_MSD(result, 0, exponent, UX_MSB);
   return;
 }
@@ -378,11 +375,9 @@ overflow_underflow:
 #define C_UX_POW __INTERNAL_NAME(C_ux_pow__)
 #endif
 
-static void
-C_UX_POW(
-    _X_FLOAT *packed_x, _X_FLOAT *packed_y,
-    U_WORD const *class_to_action_array,
-    _X_FLOAT *packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_POW(_X_FLOAT* packed_x, _X_FLOAT* packed_y,
+                     U_WORD const* class_to_action_array,
+                     _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD x_fp_class, y_fp_class, index;
   UX_SIGN_TYPE sign;
   UX_EXPONENT_TYPE exponent;
@@ -403,17 +398,13 @@ C_UX_POW(
 
   /* Unpack x and y */
 
-  x_fp_class = UNPACK2(
-      packed_x,
-      packed_y,
-      &unpacked_x,
-      &unpacked_y,
-      class_to_action_array,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  x_fp_class =
+      UNPACK2(packed_x, packed_y, &unpacked_x, &unpacked_y,
+              class_to_action_array, packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 >= x_fp_class)
+  if (0 >= x_fp_class) {
     return;
+  }
 
   /*
   ** OK, now we need to screen for the two sets of exceptional
@@ -421,40 +412,40 @@ C_UX_POW(
   */
 
   sign = 0;
-  y_fp_class = UX_TO_WORD(UX_TO_UWORD(x_fp_class) & MAKE_MASK(F_C_CLASS_BIT_WIDTH, 0));
-  x_fp_class = UX_TO_WORD(UX_TO_UWORD(x_fp_class >> F_C_CLASS_BIT_WIDTH) & MAKE_MASK(F_C_CLASS_BIT_WIDTH, 0));
+  y_fp_class =
+      UX_TO_WORD(UX_TO_UWORD(x_fp_class) & MAKE_MASK(F_C_CLASS_BIT_WIDTH, 0));
+  x_fp_class = UX_TO_WORD(UX_TO_UWORD(x_fp_class >> F_C_CLASS_BIT_WIDTH) &
+                          MAKE_MASK(F_C_CLASS_BIT_WIDTH, 0));
 
-  if(F_C_INF == F_C_BASE_CLASS(y_fp_class)) {
+  if (F_C_INF == F_C_BASE_CLASS(y_fp_class)) {
     exponent = G_UX_EXPONENT(&unpacked_x);
-    if((exponent == 1) && UX_FRACTION_IS_ONE_HALF(&unpacked_x)) {
+    if ((exponent == 1) && UX_FRACTION_IS_ONE_HALF(&unpacked_x)) {
       underflow_error = POWER_ONE_TO_INF;
       goto pack_it;
     }
     sign = F_C_IS_NEG_CLASS(y_fp_class) ^ (exponent <= 0);
-    if((!sign) && F_C_IS_NEG_CLASS(x_fp_class)) {
+    if ((!sign) && F_C_IS_NEG_CLASS(x_fp_class)) {
       underflow_error = POWER_NEG_BASE;
       goto pack_it;
     }
     tmp_digit = sign ? 0 : F_EXP_MASK;
     goto return_zero_or_inf;
-  } else if(F_C_IS_NEG_CLASS(x_fp_class)) {
+  } else if (F_C_IS_NEG_CLASS(x_fp_class)) {
     index = UX_RND_TO_INT(&unpacked_y, RZ_BIT_VECTOR | FRACTION_RESULT,
                           NOT_USED, &tmp);
 
-    if((G_UX_MSD(&tmp) != 0) && (x_fp_class != F_C_NEG_INF) &&
-       (x_fp_class != F_C_NEG_ZERO)) { /* y was not an integer */
+    if ((G_UX_MSD(&tmp) != 0) && (x_fp_class != F_C_NEG_INF) &&
+        (x_fp_class != F_C_NEG_ZERO)) { /* y was not an integer */
       underflow_error = POWER_NEG_BASE;
       goto pack_it;
     }
 
-    if(index & 1) {
+    if (index & 1) {
       sign = UX_SIGN_BIT;
       overflow_error = POWER_NEG_OVERFLOW;
     }
 
-    if(SET_BIT(x_fp_class) &
-       (SET_BIT(F_C_NEG_INF) | SET_BIT(F_C_NEG_ZERO))) {
-
+    if (SET_BIT(x_fp_class) & (SET_BIT(F_C_NEG_INF) | SET_BIT(F_C_NEG_ZERO))) {
       tmp_digit = (((sign) && (G_UX_MSD(&tmp) != 0)) ? F_SIGN_BIT_MASK : 0);
 
     return_zero_or_inf:
@@ -479,12 +470,8 @@ C_UX_POW(
 
 pack_it:
 
-  PACK(
-      &unpacked_result,
-      packed_result,
-      underflow_error,
-      overflow_error
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&unpacked_result, packed_result, underflow_error,
+       overflow_error OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 #undef F_ENTRY_NAME
@@ -495,12 +482,9 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_POW(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      ANSI_C_POW_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_POW(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+           ANSI_C_POW_CLASS_TO_ACTION_MAP,
+           PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -513,12 +497,9 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_POW(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      FORTRAN_POW_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_POW(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+           FORTRAN_POW_CLASS_TO_ACTION_MAP,
+           PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -538,8 +519,7 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
 #define UX_EXP2 __INTERNAL_NAME(ux_exp2__)
 #endif
 
-static void
-UX_EXP2(UX_FLOAT *x, UX_FLOAT *result) {
+static void UX_EXP2(UX_FLOAT* x, UX_FLOAT* result) {
   WORD cnt;
   UX_SIGN_TYPE sign;
   UX_EXPONENT_TYPE exponent, scale;
@@ -550,8 +530,8 @@ UX_EXP2(UX_FLOAT *x, UX_FLOAT *result) {
   sign = G_UX_SIGN(x);
   cnt = 0;
 
-  if((UX_UNSIGNED_EXPONENT_TYPE)(exponent + 114) > (18 + 114)) {
-    if(exponent > 0) { /* exponent > 18 , definite overflow or underflow */
+  if ((UX_UNSIGNED_EXPONENT_TYPE)(exponent + 114) > (18 + 114)) {
+    if (exponent > 0) { /* exponent > 18 , definite overflow or underflow */
       UX_COPY(x, result);
       scale = sign ? UX_UNDERFLOW_EXPONENT : UX_OVERFLOW_EXPONENT;
       P_UX_EXPONENT(result, scale);
@@ -563,7 +543,7 @@ UX_EXP2(UX_FLOAT *x, UX_FLOAT *result) {
 
   i = 0;
 
-  if(exponent >= 0) {
+  if (exponent >= 0) {
     i = G_UX_MSD(x);
     cnt = BITS_PER_UX_FRACTION_DIGIT_TYPE - exponent;
     inc = SET_BIT(cnt - 1);
@@ -572,9 +552,9 @@ UX_EXP2(UX_FLOAT *x, UX_FLOAT *result) {
 
     tmp_digit = i + inc;
     inc += inc;
-    if(tmp_digit >= i)
+    if (tmp_digit >= i) {
       i = tmp_digit & UX_TO_DIGIT(-UX_TO_SDIGIT(inc));
-    else { /* A carry out occurred on the increment */
+    } else { /* A carry out occurred on the increment */
       cnt--;
       i = UX_MSB;
       exponent++;
@@ -585,12 +565,8 @@ UX_EXP2(UX_FLOAT *x, UX_FLOAT *result) {
     UX_COPY(x, &h);
   }
 
-  EVALUATE_RATIONAL(
-      &h,
-      POW2_COEF_ARRAY,
-      POW2_COEF_ARRAY_DEGREE,
-      NUMERATOR_FLAGS(STANDARD),
-      result);
+  EVALUATE_RATIONAL(&h, POW2_COEF_ARRAY, POW2_COEF_ARRAY_DEGREE,
+                    NUMERATOR_FLAGS(STANDARD), result);
 
   i >>= cnt;
   tmp_digit = UX_TO_DIGIT(-UX_TO_SDIGIT(i));
@@ -613,24 +589,18 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &unpacked_argument,
-      EXP2_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), &unpacked_argument,
+                    EXP2_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   UX_EXP2(&unpacked_argument, &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      EXP2_UNDERFLOW,
-      EXP2_OVERFLOW
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result), EXP2_UNDERFLOW,
+       EXP2_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -659,16 +629,11 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(1) + 0);
 /* Index 1: Class to index map */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_SIG_NAN, 2) +
-    CLASS_TO_INDEX(F_C_QUIET_NAN, 3) +
-    CLASS_TO_INDEX(F_C_POS_INF, 4) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 5) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 6) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 7) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 8) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 9) +
-    CLASS_TO_INDEX(F_C_POS_ZERO, 10) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 11));
+    CLASS_TO_INDEX(F_C_SIG_NAN, 2) + CLASS_TO_INDEX(F_C_QUIET_NAN, 3) +
+    CLASS_TO_INDEX(F_C_POS_INF, 4) + CLASS_TO_INDEX(F_C_NEG_INF, 5) +
+    CLASS_TO_INDEX(F_C_POS_NORM, 6) + CLASS_TO_INDEX(F_C_NEG_NORM, 7) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 8) + CLASS_TO_INDEX(F_C_NEG_DENORM, 9) +
+    CLASS_TO_INDEX(F_C_POS_ZERO, 10) + CLASS_TO_INDEX(F_C_NEG_ZERO, 11));
 
 /* Index 2: mapping for y when x is SNaN  */
 
@@ -809,22 +774,17 @@ PRINT_CLASS_TO_ACTION_TBL_DEF("FORTRAN_POW_CLASS_TO_ACTION_MAP");
 
 /* Index 0: for x */
 
-PRINT_64_TBL_ITEM(
-    CLASS_TO_ACTION(F_C_SIG_NAN, RETURN_QUIET_NAN, 0) +
-    CLASS_TO_ACTION(F_C_QUIET_NAN, RETURN_VALUE, 0));
+PRINT_64_TBL_ITEM(CLASS_TO_ACTION(F_C_SIG_NAN, RETURN_QUIET_NAN, 0) +
+                  CLASS_TO_ACTION(F_C_QUIET_NAN, RETURN_VALUE, 0));
 
 /* Index 1: Index map for unpacking y */
 
-PRINT_64_TBL_ITEM(CLASS_TO_INDEX(F_C_SIG_NAN, 0) +
-                  CLASS_TO_INDEX(F_C_QUIET_NAN, 0) +
-                  CLASS_TO_INDEX(F_C_POS_INF, 3) +
-                  CLASS_TO_INDEX(F_C_NEG_INF, 2) +
-                  CLASS_TO_INDEX(F_C_POS_NORM, 4) +
-                  CLASS_TO_INDEX(F_C_NEG_NORM, 2) +
-                  CLASS_TO_INDEX(F_C_POS_DENORM, 5) +
-                  CLASS_TO_INDEX(F_C_NEG_DENORM, 2) +
-                  CLASS_TO_INDEX(F_C_POS_ZERO, 6) +
-                  CLASS_TO_INDEX(F_C_NEG_ZERO, 7));
+PRINT_64_TBL_ITEM(
+    CLASS_TO_INDEX(F_C_SIG_NAN, 0) + CLASS_TO_INDEX(F_C_QUIET_NAN, 0) +
+    CLASS_TO_INDEX(F_C_POS_INF, 3) + CLASS_TO_INDEX(F_C_NEG_INF, 2) +
+    CLASS_TO_INDEX(F_C_POS_NORM, 4) + CLASS_TO_INDEX(F_C_NEG_NORM, 2) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 5) + CLASS_TO_INDEX(F_C_NEG_DENORM, 2) +
+    CLASS_TO_INDEX(F_C_POS_ZERO, 6) + CLASS_TO_INDEX(F_C_NEG_ZERO, 7));
 
 /* Index 2: mapping for y when x is negative and not zero  */
 
@@ -953,10 +913,11 @@ scale = ln2 / 2;
 zero_value = scale * scale / 3;
 inv_scale = 1 / scale;
 function __log2(x) {
-  if(x == 0)
+  if (x == 0) {
     return zero_value;
-  else
+  } else {
     return (inv_scale * atanh(x * scale) - x) / (x * x * x);
+  }
 }
 
 max_arg = 2 * (sqrt(2) - 1) ^ 2 / log(2);
@@ -965,8 +926,8 @@ save_precision = precision;
 precision = precision = ceil(UX_PRECISION / 8) + 8;
 
 TABLE_COMMENT("Fixed point coefficients for log2 evaluation");
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __log2, UX_PRECISION, &degree, &ux_rational_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __log2, UX_PRECISION, &degree, &ux_rational_coefs);
 
 precision = save_precision;
 
@@ -976,10 +937,11 @@ print_ux_rational_coefs(degree, 0, 0);
 
 scale = log(2);
 function __2_pow(x) {
-  if(x == 0)
+  if (x == 0) {
     return 1;
-  else
+  } else {
     return exp(x * scale);
+  }
 }
 
 max_arg = .5;
@@ -999,13 +961,13 @@ print_ux_rational_coefs(degree, 0, 0);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("\\#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for floating "."point power routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants for floating "."point power routines", __FILE__);
 print "$headerText\n$outText\n";
 
 #endif

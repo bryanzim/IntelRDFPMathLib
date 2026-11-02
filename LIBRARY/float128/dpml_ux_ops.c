@@ -74,7 +74,7 @@
 ** assumed to be undefined.
 */
 
-WORD FFS_AND_SHIFT(UX_FLOAT *argument, U_WORD flags) {
+WORD FFS_AND_SHIFT(UX_FLOAT* argument, U_WORD flags) {
   WORD shift, cshift, num_digits, cnt;
   UX_SIGN_TYPE sign;
   UX_EXPONENT_TYPE exponent;
@@ -83,16 +83,16 @@ WORD FFS_AND_SHIFT(UX_FLOAT *argument, U_WORD flags) {
 
   msd = G_UX_MSD(argument);
 
-  if(FFS_NORMALIZE == flags) { /* Do a quick check for a normalized argument */
+  if (FFS_NORMALIZE == flags) { /* Do a quick check for a normalized argument */
     exponent = G_UX_EXPONENT(argument);
-    if((UX_SIGNED_FRACTION_DIGIT_TYPE)msd < 0)
+    if ((UX_SIGNED_FRACTION_DIGIT_TYPE)msd < 0) {
       return 0;
+    }
   } else {
     sign = 0;
     exponent = BITS_PER_UX_FRACTION_DIGIT_TYPE;
 
-    if((FFS_CVT_WORD == flags) &&
-       ((UX_SIGNED_FRACTION_DIGIT_TYPE)msd < 0)) {
+    if ((FFS_CVT_WORD == flags) && ((UX_SIGNED_FRACTION_DIGIT_TYPE)msd < 0)) {
       sign = UX_SIGN_BIT;
       msd = UX_TO_DIGIT(-((UX_SIGNED_FRACTION_DIGIT_TYPE)msd));
     }
@@ -107,11 +107,12 @@ WORD FFS_AND_SHIFT(UX_FLOAT *argument, U_WORD flags) {
 
   cnt = 0;
   do {
-    if(msd)
+    if (msd) {
       goto find_shift;
+    }
     DIGIT_SHIFT_FRACTION_LEFT(lsd, msd);
     cnt += BITS_PER_UX_FRACTION_DIGIT_TYPE;
-  } while(--num_digits);
+  } while (--num_digits);
 
   /*
   ** If we get here, we had a zero fraction.  Set the exponent field
@@ -126,38 +127,35 @@ find_shift:
 
   /* Quick check to see if its already normalized */
 
-  if((UX_SIGNED_FRACTION_DIGIT_TYPE)msd >= 0) { /* The high bit is not set, see if any of the next four are set */
+  if ((UX_SIGNED_FRACTION_DIGIT_TYPE)msd >=
+      0) { /* The high bit is not set, see if any of the next four are set */
 
     shift = (msd >> (BITS_PER_UX_FRACTION_DIGIT_TYPE - 6)) & 0x1e;
-    if(shift)
+    if (shift) {
       /* Figure out which bit is set by "table look-up" */
-      shift = ((((3 << 2 * 1) |
-                 (2 << 2 * 2) |
-                 (2 << 2 * 3) |
-                 (1 << 2 * 4) |
-                 (1 << 2 * 5) |
-                 (1 << 2 * 6) |
-                 (1 << 2 * 7)) >>
+      shift = ((((3 << 2 * 1) | (2 << 2 * 2) | (2 << 2 * 3) | (1 << 2 * 4) |
+                 (1 << 2 * 5) | (1 << 2 * 6) | (1 << 2 * 7)) >>
                 shift) &
                0x3) +
               1;
-    else
+    } else
     /*
     ** Get shift by converting to floating point and extracting the
     ** then exponent field.  In the 64 bit case, make sure there is
     ** rounding on the convert.
     */
     {
-      if(BITS_PER_UX_FRACTION_DIGIT_TYPE == 32)
+      if (BITS_PER_UX_FRACTION_DIGIT_TYPE == 32) {
         u.f = (double)msd;
-      else {
+      } else {
         UX_FRACTION_DIGIT_TYPE itmp;
 
         itmp = msd & ~(UX_FRACTION_DIGIT_TYPE)0xff;
         itmp = itmp ? itmp : msd;
         u.f = (double)itmp;
       }
-      shift = (BITS_PER_UX_FRACTION_DIGIT_TYPE - 1 + D_EXP_BIAS - D_NORM) - (u.D_SIGNED_HI_WORD >> D_EXP_POS);
+      shift = (BITS_PER_UX_FRACTION_DIGIT_TYPE - 1 + D_EXP_BIAS - D_NORM) -
+              (u.D_SIGNED_HI_WORD >> D_EXP_POS);
     }
     cshift = BITS_PER_UX_FRACTION_DIGIT_TYPE - shift;
     BIT_SHIFT_FRACTION_LEFT(lsd, msd, shift, cshift);
@@ -181,7 +179,7 @@ find_shift:
 
 #define DO_NORMALIZATION (2 * NO_NORMALIZATION)
 
-void ADDSUB(UX_FLOAT *x, UX_FLOAT *y, U_WORD flags, UX_FLOAT *result) {
+void ADDSUB(UX_FLOAT* x, UX_FLOAT* y, U_WORD flags, UX_FLOAT* result) {
   WORD shift, cshift, cnt, op, tmp1, tmp2;
   UX_FLOAT *ux_tmp, ux_save;
   UX_SIGN_TYPE sign;
@@ -214,7 +212,7 @@ void ADDSUB(UX_FLOAT *x, UX_FLOAT *y, U_WORD flags, UX_FLOAT *result) {
   exponent = G_UX_EXPONENT(x);
   shift = exponent - G_UX_EXPONENT(y);
   P_UX_SIGN(&ux_save, 0);
-  if(shift < 0) {
+  if (shift < 0) {
     ux_tmp = x;
     x = y;
     y = ux_tmp;
@@ -233,11 +231,12 @@ void ADDSUB(UX_FLOAT *x, UX_FLOAT *y, U_WORD flags, UX_FLOAT *result) {
   cnt = NUM_UX_FRACTION_DIGITS;
   do {
     cshift = BITS_PER_UX_FRACTION_DIGIT_TYPE - shift;
-    if(cshift > 0)
+    if (cshift > 0) {
       goto bit_shift;
+    }
     DIGIT_SHIFT_FRACTION_RIGHT(lsd, msd);
     shift = -cshift;
-  } while(--cnt);
+  } while (--cnt);
 
   /*
   ** If we get here, there was a *VERY* big alignment shift, so we
@@ -247,7 +246,7 @@ void ADDSUB(UX_FLOAT *x, UX_FLOAT *y, U_WORD flags, UX_FLOAT *result) {
   UX_COPY(x, result);
   P_UX_SIGN(result, sign);
 
-  if((flags & 0x2)) {
+  if ((flags & 0x2)) {
     result++;
     UX_COPY(x, result);
     P_UX_SIGN(result, sign ^ G_UX_SIGN(&ux_save));
@@ -257,8 +256,9 @@ void ADDSUB(UX_FLOAT *x, UX_FLOAT *y, U_WORD flags, UX_FLOAT *result) {
 
 bit_shift:
 
-  if(shift)
+  if (shift) {
     BIT_SHIFT_FRACTION_RIGHT(lsd, msd, shift, cshift);
+  }
 
   /*
   ** Save shifted value in case we are dealing with an ADD_SUB op
@@ -274,11 +274,9 @@ bit_shift:
   */
 
   do {
-
     tmp_digit = G_UX_LSD(x);
 
-    if(op == ADD) {
-
+    if (op == ADD) {
       /*
       ** Addition code.  Turn off normalization
       */
@@ -312,7 +310,7 @@ bit_shift:
 
       /* If carry is set, we need to normalizes fraction field */
 
-      if(carry) {
+      if (carry) {
         BIT_SHIFT_FRACTION_RIGHT(lsd, msd, 1,
                                  BITS_PER_UX_FRACTION_DIGIT_TYPE - 1);
         msd |= UX_MSB;
@@ -321,7 +319,6 @@ bit_shift:
     }
 
     else {
-
       /*
       ** Subtraction code.  Set normalization flag
       */
@@ -358,14 +355,17 @@ bit_shift:
       ** negate the result
       */
 
-      if(carry) {
+      if (carry) {
         sign ^= UX_SIGN_BIT;
         P_UX_SIGN(&ux_save, UX_SIGN_BIT);
-        lsd = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)(0 - (UX_SIGNED_FRACTION_DIGIT_TYPE)lsd));
-        if(lsd == 0)
+        lsd = UX_TO_DIGIT((
+            UX_SIGNED_FRACTION_DIGIT_TYPE)(0 -
+                                           (UX_SIGNED_FRACTION_DIGIT_TYPE)lsd));
+        if (lsd == 0) {
           carry = UX_TO_DIGIT(0);
-        else
+        } else {
           carry = UX_TO_DIGIT((UX_SIGNED_FRACTION_DIGIT_TYPE)-1);
+        }
 
 #if NUM_UX_FRACTION_DIGITS == 4
 
@@ -387,12 +387,14 @@ bit_shift:
     P_UX_EXPONENT(result, exponent);
     P_UX_SIGN(result, sign);
 
-    if(flags & DO_NORMALIZATION)
+    if (flags & DO_NORMALIZATION) {
       NORMALIZE(result);
+    }
 
-    if(0 == (flags & 0x2))
+    if (0 == (flags & 0x2)) {
       /* Single op.  Quit now */
       break;
+    }
 
     /* This is a dual op.  Do the second part */
 
@@ -405,7 +407,7 @@ bit_shift:
     sign ^= G_UX_SIGN(&ux_save);
     exponent = G_UX_EXPONENT(x);
 
-  } while(1);
+  } while (1);
 }
 
 /*
@@ -427,24 +429,23 @@ bit_shift:
 #define F_TYPE _X_FLOAT
 
 #undef P_EXCPTN_VALUE_x
-#define P_EXCPTN_VALUE_X(x, v) x.ld = *((F_TYPE *)v)
+#define P_EXCPTN_VALUE_X(x, v) x.ld = *((F_TYPE*)v)
 
 #define TYPE_MASK MAKE_MASK(TYPE_WIDTH - 1, TYPE_POS)
 #undef ADD_ERR_CODE_TYPE
-#define ADD_ERR_CODE_TYPE(e) ((WORD)(((F_TYPE_ENUM << TYPE_POS) & TYPE_MASK) | ((U_WORD)(e) & (~TYPE_MASK))))
+#define ADD_ERR_CODE_TYPE(e)                        \
+  ((WORD)(((F_TYPE_ENUM << TYPE_POS) & TYPE_MASK) | \
+          ((U_WORD)(e) & (~TYPE_MASK))))
 
-WORD UNPACK_X_OR_Y(
-    _X_FLOAT *packed_x,
-    _X_FLOAT *packed_y,
-    UX_FLOAT *unpacked_argument,
-    U_WORD const *class_to_action_map,
-    _X_FLOAT *packed_result
-        OPT_EXCEPTION_INFO_DECLARATION) {
-  WORD fp_class, sign, action, disp, index, action_index, map_element,
-      shift, index_limit;
+WORD UNPACK_X_OR_Y(_X_FLOAT* packed_x, _X_FLOAT* packed_y,
+                   UX_FLOAT* unpacked_argument,
+                   U_WORD const* class_to_action_map,
+                   _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+  WORD fp_class, sign, action, disp, index, action_index, map_element, shift,
+      index_limit;
   UX_FRACTION_DIGIT_TYPE exponent_digit, cur_digit, next_digit, inf_nan,
       zero_denorm, fract_bits, *digit_ptr;
-  _X_FLOAT *packed_argument;
+  _X_FLOAT* packed_argument;
   EXCEPTION_RECORD_DECLARATION
 
 #if (BITS_PER_WORD == 32)
@@ -463,10 +464,12 @@ WORD UNPACK_X_OR_Y(
   cur_digit = UX_MSB;
 
   P_UX_SIGN(unpacked_argument, (UX_SIGN_TYPE)((exponent_digit & cur_digit) >>
-                                              (BITS_PER_UX_FRACTION_DIGIT_TYPE - BITS_PER_UX_SIGN_TYPE)));
+                                              (BITS_PER_UX_FRACTION_DIGIT_TYPE -
+                                               BITS_PER_UX_SIGN_TYPE)));
 
   P_UX_EXPONENT(unpacked_argument,
-                ((exponent_digit >> F_EXP_POS) & MAKE_MASK(F_EXP_WIDTH, 0)) - F_EXP_BIAS + 1);
+                ((exponent_digit >> F_EXP_POS) & MAKE_MASK(F_EXP_WIDTH, 0)) -
+                    F_EXP_BIAS + 1);
 
   cur_digit |= (exponent_digit << SHIFT);
 
@@ -511,21 +514,22 @@ WORD UNPACK_X_OR_Y(
   sign = exponent_digit >> F_SIGN_BIT_POS;
   fp_class = F_C_POS_NORM;
 
-  if((WORD)(inf_nan ^ zero_denorm) < 0) {          /* Input argument is +/-0, +/-denorm, +/- Infinity, [SQ]NaN */
-    if((WORD)(zero_denorm ^ exponent_digit) < 0) { /* argument was +/- zero or +/- denorm */
-      if(!fract_bits)
+  if ((WORD)(inf_nan ^ zero_denorm) <
+      0) { /* Input argument is +/-0, +/-denorm, +/- Infinity, [SQ]NaN */
+    if ((WORD)(zero_denorm ^ exponent_digit) <
+        0) { /* argument was +/- zero or +/- denorm */
+      if (!fract_bits) {
         fp_class = F_C_POS_ZERO;
-      else { /* denorm, undo hidden bit, adjust exponent and normalize */
-        P_UX_MSD(unpacked_argument,
-                 G_UX_MSD(unpacked_argument) - UX_MSB);
+      } else { /* denorm, undo hidden bit, adjust exponent and normalize */
+        P_UX_MSD(unpacked_argument, G_UX_MSD(unpacked_argument) - UX_MSB);
         UX_INCR_EXPONENT(unpacked_argument, 1);
         NORMALIZE(unpacked_argument);
         fp_class = F_C_POS_DENORM;
       }
     } else { /* argument was +/- Inf or [SQ]NaN */
-      if(!fract_bits)
+      if (!fract_bits) {
         fp_class = F_C_POS_INF;
-      else { /* NaN */
+      } else { /* NaN */
         fp_class = F_C_SIG_NAN;
         sign = exponent_digit >> (F_EXP_POS - 1) & 1;
       }
@@ -549,13 +553,13 @@ WORD UNPACK_X_OR_Y(
 
   map_element = class_to_action_map[0];
   tmp = class_to_action_map[1];
-  if(fp_class < F_C_NEG_NORM)
+  if (fp_class < F_C_NEG_NORM) {
     action_index = map_element >> shift;
-  else
-    action_index = map_element >>
-                   (shift - F_C_NEG_NORM * (INDEX_WIDTH + ACTION_WIDTH));
-  disp = ((map_element >> 31) & 0x6) |
-         ((tmp >> 29) & 0x18);
+  } else {
+    action_index =
+        map_element >> (shift - F_C_NEG_NORM * (INDEX_WIDTH + ACTION_WIDTH));
+  }
+  disp = ((map_element >> 31) & 0x6) | ((tmp >> 29) & 0x18);
 
 #endif
 
@@ -564,8 +568,9 @@ WORD UNPACK_X_OR_Y(
 
   /* Leave now if all we have to do is unpack the argument */
 
-  if(action == RETURN_UNPACKED)
+  if (action == RETURN_UNPACKED) {
     return fp_class;
+  }
   // printf("UNPACK %llx, %llx\n", (long long)fp_class, index);
 
   /*
@@ -574,13 +579,15 @@ WORD UNPACK_X_OR_Y(
   ** or the auxiliary argument.
   */
 
-  if(index <= index_limit) {
-    digit_ptr = (UX_FRACTION_DIGIT_TYPE *)(index == 0 ? packed_x : packed_y);
+  if (index <= index_limit) {
+    digit_ptr = (UX_FRACTION_DIGIT_TYPE*)(index == 0 ? packed_x : packed_y);
   } else {
     index = WORDS_PER_CLASS_TO_ACTION_MAP * (disp & 0xf) + index - 1;
     index = UX_TO_SDIGIT(class_to_action_map[index]);
-    digit_ptr = (UX_FRACTION_DIGIT_TYPE *)&((_X_FLOAT *)PACKED_CONSTANT_TABLE)[index];
-    // printf("UNPACK 3 %llx, %llx d= %llx, %llx\n", (long long)fp_class, index, digit_ptr[0],digit_ptr[1]);
+    digit_ptr =
+        (UX_FRACTION_DIGIT_TYPE*)&((_X_FLOAT*)PACKED_CONSTANT_TABLE)[index];
+    // printf("UNPACK 3 %llx, %llx d= %llx, %llx\n", (long long)fp_class, index,
+    // digit_ptr[0],digit_ptr[1]);
   }
 
   /*
@@ -589,32 +596,32 @@ WORD UNPACK_X_OR_Y(
   ** the base value to get the final return value.
   */
 
-  if(action == RETURN_ERROR) {
+  if (action == RETURN_ERROR) {
     GET_EXCEPTION_RESULT_2((WORD)index, packed_x, packed_y, *packed_result);
   } else {
     exponent_digit = G_X_DIGIT(digit_ptr, MSD_NUM);
-    switch(action) {
-    case RETURN_QUIET_NAN:
-      // exponent_digit &= (~SET_BIT(F_EXP_POS - 1));
-      exponent_digit |= (SET_BIT(F_EXP_POS - 1));
-      break;
+    switch (action) {
+      case RETURN_QUIET_NAN:
+        // exponent_digit &= (~SET_BIT(F_EXP_POS - 1));
+        exponent_digit |= (SET_BIT(F_EXP_POS - 1));
+        break;
 
-    case RETURN_NEGATIVE:
-      exponent_digit ^= (F_SIGN_BIT_MASK);
-      break;
+      case RETURN_NEGATIVE:
+        exponent_digit ^= (F_SIGN_BIT_MASK);
+        break;
 
-    case RETURN_ABSOLUTE:
-      exponent_digit &= (~F_SIGN_BIT_MASK);
-      break;
+      case RETURN_ABSOLUTE:
+        exponent_digit &= (~F_SIGN_BIT_MASK);
+        break;
 
-    case RETURN_CPYSN_ARG_0:
-      exponent_digit = (exponent_digit & (~F_SIGN_BIT_MASK)) |
-                       (G_X_DIGIT(packed_x, MSD_NUM) & F_SIGN_BIT_MASK);
-      break;
+      case RETURN_CPYSN_ARG_0:
+        exponent_digit = (exponent_digit & (~F_SIGN_BIT_MASK)) |
+                         (G_X_DIGIT(packed_x, MSD_NUM) & F_SIGN_BIT_MASK);
+        break;
 
-    case RETURN_VALUE:
-    default:
-      break;
+      case RETURN_VALUE:
+      default:
+        break;
     }
 
     /* Copy the final result to the packed result and return */
@@ -640,34 +647,27 @@ WORD UNPACK_X_OR_Y(
 ** mappings associated with two argument functions.
 */
 
-WORD UNPACK2(
-    _X_FLOAT *packed_x,
-    _X_FLOAT *packed_y,
-    UX_FLOAT *unpacked_x,
-    UX_FLOAT *unpacked_y,
-    U_WORD const *class_to_action_map,
-    _X_FLOAT *packed_result
-        OPT_EXCEPTION_INFO_DECLARATION) {
+WORD UNPACK2(_X_FLOAT* packed_x, _X_FLOAT* packed_y, UX_FLOAT* unpacked_x,
+             UX_FLOAT* unpacked_y, U_WORD const* class_to_action_map,
+             _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class_x, fp_class_y, disp, shift;
   IF_OPTNL_ERROR_INFO(U_WORD arg_classes;)
 
-  fp_class_x = UNPACK(
-      packed_x,
-      unpacked_x,
-      class_to_action_map,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class_x = UNPACK(packed_x, unpacked_x, class_to_action_map,
+                      packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class_x)
+  if (0 > fp_class_x) {
     return fp_class_x;
+  }
 
   /*
   ** Check for NULL second argument.  This allows for UNPACK2 to
   ** process single arguments if it has to
   */
 
-  if(!packed_y)
+  if (!packed_y) {
     return fp_class_x;
+  }
 
   shift = F_C_CLASS_BIT_WIDTH * fp_class_x;
 
@@ -677,9 +677,9 @@ WORD UNPACK2(
 
 #else
 
-  if(fp_class_x < (BITS_PER_WORD / F_C_CLASS_BIT_WIDTH))
+  if (fp_class_x < (BITS_PER_WORD / F_C_CLASS_BIT_WIDTH)) {
     disp = (U_WORD)class_to_action_map[2];
-  else {
+  } else {
     disp = (U_WORD)class_to_action_map[3];
     shift -= (BITS_PER_WORD / F_C_CLASS_BIT_WIDTH);
   }
@@ -688,13 +688,9 @@ WORD UNPACK2(
   disp = (UX_TO_UWORD(disp) >> (shift - 3)) & MAKE_MASK(F_C_CLASS_BIT_WIDTH, 3);
   IF_OPTNL_ERROR_INFO(arg_classes = EXCPTN_INFO->arg_classes);
 
-  fp_class_y = UNPACK_X_OR_Y(
-      packed_x,
-      packed_y,
-      unpacked_y,
-      (U_WORD *)((char *)class_to_action_map + disp),
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class_y = UNPACK_X_OR_Y(packed_x, packed_y, unpacked_y,
+                             (U_WORD*)((char*)class_to_action_map + disp),
+                             packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
   IF_OPTNL_ERROR_INFO(EXCPTN_INFO->arg_classes |= arg_classes);
   return fp_class_y | (fp_class_x << F_C_CLASS_BIT_WIDTH);
@@ -705,12 +701,9 @@ WORD UNPACK2(
 ** with any overflow, underflow or denorm conditions that might result.
 */
 
-void PACK(
-    UX_FLOAT *unpacked_result,
-    _X_FLOAT *packed_result,
-    WORD underflow_error,
-    WORD overflow_error
-        OPT_EXCEPTION_INFO_DECLARATION) {
+void PACK(UX_FLOAT* unpacked_result, _X_FLOAT* packed_result,
+          WORD underflow_error,
+          WORD overflow_error OPT_EXCEPTION_INFO_DECLARATION) {
   WORD shift, error_code;
   UX_FLOAT tmp;
   UX_EXPONENT_TYPE exponent;
@@ -725,7 +718,7 @@ void PACK(
   NORMALIZE(unpacked_result);
   exponent = G_UX_EXPONENT(unpacked_result);
 
-  if(exponent == UX_ZERO_EXPONENT) {
+  if (exponent == UX_ZERO_EXPONENT) {
     next_digit = UX_TO_SIGN_AS_DIGIT(G_UX_SIGN(unpacked_result));
 
 #if (NUM_UX_DIGITS == 4)
@@ -748,7 +741,7 @@ void PACK(
   }
 
   shift = (F_MIN_BIN_EXP + 1) - exponent;
-  if(shift > 0) {
+  if (shift > 0) {
     SET_UX_FRACTION_TO_HALF(&tmp);
     P_UX_EXPONENT(&tmp, exponent + shift);
     P_UX_SIGN(&tmp, G_UX_SIGN(unpacked_result));
@@ -761,10 +754,11 @@ void PACK(
     */
 
     exponent = 1 - F_EXP_BIAS;
-    if((shift > F_PRECISION) &&
-       (shift != -(UX_ZERO_EXPONENT - F_MIN_BIN_EXP - 1)))
+    if ((shift > F_PRECISION) &&
+        (shift != -(UX_ZERO_EXPONENT - F_MIN_BIN_EXP - 1))) {
       /* Force underflow */
       exponent--;
+    }
   }
 
   /* Now round result and shift right */
@@ -808,7 +802,7 @@ void PACK(
   ** fraction is 1.
   */
 
-  if(incr) {
+  if (incr) {
     exponent++;
     current_digit = (UX_MSB >> SHIFT);
   }
@@ -827,25 +821,27 @@ void PACK(
 
   /* If no overflow or underflow, we're done */
 
-  if(tmp_digit < (MAKE_MASK(F_EXP_WIDTH, 0) - 1))
+  if (tmp_digit < (MAKE_MASK(F_EXP_WIDTH, 0) - 1)) {
     /* OK, no overflow or underflow.  */
     return;
+  }
 
   /* Check for denorm and overflow/underflow processing */
 
-  if(++tmp_digit == 0) {
-
-#define IEEE_SPECIAL_ENCODING_MASK ((1 << F_C_QUIET_NAN) | (1 << F_C_SIG_NAN) | (1 << F_C_POS_INF) | (1 << F_C_NEG_INF) | (1 << F_C_POS_DENORM) | (1 << F_C_NEG_DENORM))
+  if (++tmp_digit == 0) {
+#define IEEE_SPECIAL_ENCODING_MASK                                  \
+  ((1 << F_C_QUIET_NAN) | (1 << F_C_SIG_NAN) | (1 << F_C_POS_INF) | \
+   (1 << F_C_NEG_INF) | (1 << F_C_POS_DENORM) | (1 << F_C_NEG_DENORM))
 #define INPUT_WAS_IEEE_SPECIAL_ENCODING \
   ((EXCPTN_INFO->arg_classes & IEEE_SPECIAL_ENCODING_MASK) != 0)
 
-    if(
-        IF_OPTNL_ERROR_INFO(INPUT_WAS_IEEE_SPECIAL_ENCODING ||)
-            PROCESS_DENORMS)
+    if (IF_OPTNL_ERROR_INFO(INPUT_WAS_IEEE_SPECIAL_ENCODING ||)
+            PROCESS_DENORMS) {
       return;
+    }
   }
 
-  error_code = (WORD)((exponent < 0) ? underflow_error : overflow_error);
+  error_code = ((exponent < 0) ? underflow_error : overflow_error);
   GET_EXCEPTION_RESULT_2(error_code, packed_x, packed_y, *packed_result);
 }
 
@@ -910,8 +906,8 @@ void PACK(
     scale = (UX_EXPONENT_TYPE)((((lsd >> 1) & mask) - (U_WORD)bias)); \
   }
 
-void EVALUATE_PACKED_POLY(UX_FLOAT *argument, WORD degree, FIXED_128 *coefs,
-                          U_WORD mask, WORD bias, UX_FLOAT *result) {
+void EVALUATE_PACKED_POLY(UX_FLOAT* argument, WORD degree, FIXED_128* coefs,
+                          U_WORD mask, WORD bias, UX_FLOAT* result) {
   WORD op;
   UX_EXPONENT_TYPE scale;
   UX_FLOAT tmp;
@@ -922,7 +918,7 @@ void EVALUATE_PACKED_POLY(UX_FLOAT *argument, WORD degree, FIXED_128 *coefs,
   P_UX_SIGN(result, (UX_SIGN_TYPE)((op == ADD) ? 0 : UX_SIGN_BIT));
   P_UX_EXPONENT(result, scale);
 
-  while(--degree >= 0) {
+  while (--degree >= 0) {
     MULTIPLY(argument, result, result);
     NORMALIZE(result);
     coefs++;

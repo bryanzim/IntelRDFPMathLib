@@ -430,7 +430,6 @@
 #if MAKE_INCLUDE
 
 @divert divertText
-
 /*
  *  Various constants, e.g. log(2), will be built with EXP_WIDTH trailing
  *  zeros, so that multiplying by the exponent will not lose any bits.
@@ -481,27 +480,27 @@
      */
 
     function log_x_plus_1_over_x() {
-  if($1 == 0)
+  if ($1 == 0) {
     return 1;
-  else {
-    if(($1 < 1 / MP_RADIX) && ($1 > -1 / MP_RADIX))
+  } else {
+    if (($1 < 1 / MP_RADIX) && ($1 > -1 / MP_RADIX)) {
       return (logx1($1)) / ($1);
-    else
+    } else {
       return log(1 + $1) / ($1);
+    }
   }
 }
 
-function
-do_regular_coeffs() {
+function do_regular_coeffs() {
   a = -$1;
   b = $1;
   remes_bits_of_accuracy = $2;
 
-  remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG,
-        a, b, log_x_plus_1_over_x, remes_bits_of_accuracy,
-        &remes_degree_numer, &remes_coeff_numer);
+  remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG, a, b,
+        log_x_plus_1_over_x, remes_bits_of_accuracy, &remes_degree_numer,
+        &remes_coeff_numer);
 
-  for(i = 1; i <= remes_degree_numer; i++) {
+  for (i = 1; i <= remes_degree_numer; i++) {
     y = remes_coeff_numer[i];
     PRINT_POLY_ITEM(y * log_of_e);
   }
@@ -515,24 +514,24 @@ do_regular_coeffs() {
  */
 
 function atanh_ov_x() {
-  if($1 == 0)
+  if ($1 == 0) {
     return 2;
-  else
+  } else {
     return 2 * atanh($1) / ($1);
+  }
 }
 
-function
-do_quot_coeffs() {
+function do_quot_coeffs() {
   a = 0;
   b = $1;
   remes_bits_of_accuracy = $2;
 
-  remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-        a, b, atanh_ov_x, remes_bits_of_accuracy,
-        &remes_degree_numer, &remes_coeff_numer);
+  remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, a, b,
+        atanh_ov_x, remes_bits_of_accuracy, &remes_degree_numer,
+        &remes_coeff_numer);
 
   div_by_two = 2;
-  for(i = 1; i <= remes_degree_numer; i++) {
+  for (i = 1; i <= remes_degree_numer; i++) {
     div_by_two *= 4;
     y = remes_coeff_numer[i];
     PRINT_F_ITEM(y * log_of_e / div_by_two);
@@ -552,7 +551,6 @@ do_quot_coeffs() {
  */
 
 procedure do_constants() {
-
   v = MPLOG(2);
 
 #if MAKE_COMMON || !PRECISION_BACKUP_AVAILABLE
@@ -636,13 +634,12 @@ procedure do_constants() {
  */
 
 procedure do_table() {
-
 #if (!SINGLE_PRECISION && ONE_PATH)
 
   TABLE_COMMENT("Table of F and log(F) hi in half-precision, ");
   TABLE_COMMENT(" and 1/F, 1/F lo, and log(F) lo in working precision");
 
-  for(i = 0; i <= two_to_k; i++) {
+  for (i = 0; i <= two_to_k; i++) {
     a = 1 + (i / two_to_k);
     b = 1 / a;
     d = bround(b, R_PRECISION - 3);
@@ -659,12 +656,12 @@ procedure do_table() {
 
 #if (MAKE_COMMON || (ONE_PATH && SINGLE_PRECISION))
 
-  for(i = 0; i <= two_to_k; i++) {
+  for (i = 0; i <= two_to_k; i++) {
     a = 1 + (i / two_to_k);
 
 #else
 
-  for(i = 0; i < two_to_k; i++) {
+  for (i = 0; i < two_to_k; i++) {
     a = 1 + (i / two_to_k) + (1 / two_to_k_plus_1);
 
 #endif
@@ -775,9 +772,7 @@ procedure do_table() {
 #define F_BIAS B_BIAS_M1
 #endif
 
-procedure
-do_T_consts() {
-
+procedure do_T_consts() {
 #if MAKE_COMMON
 
   x = 1 - (R_SAFE_LIM - 0.5) / 2 ^ (LOG_K);
@@ -790,21 +785,17 @@ do_T_consts() {
   y = bround(y, R_FRAC_BITS_NEEDED + 1);
   frac2 = bextr(y, 2, R_FRAC_BITS_NEEDED + 1);
 
-  a = ((R_BIAS_M1 + i) * 2 ^ R_EXP_POS_64) +
-          frac1 * 2 ^
+  a = ((R_BIAS_M1 + i) * 2 ^ R_EXP_POS_64) + frac1 * 2 ^
       (R_EXP_POS_64 - R_FRAC_BITS_NEEDED);
-  b = ((R_BIAS_M1 + j) * 2 ^ R_EXP_POS_64) +
-          frac2 * 2 ^
+  b = ((R_BIAS_M1 + j) * 2 ^ R_EXP_POS_64) + frac2 * 2 ^
       (R_EXP_POS_64 - R_FRAC_BITS_NEEDED);
 
   printf("\n#define R_T1_64  (WORD) %#..16i  ", a);
   printf("\n#define R_T2_64  (WORD) %#..16i  ", b);
 
-  c = ((R_BIAS_M1 + i) * 2 ^ R_EXP_POS_32) +
-          frac1 * 2 ^
+  c = ((R_BIAS_M1 + i) * 2 ^ R_EXP_POS_32) + frac1 * 2 ^
       (R_EXP_POS_32 - R_FRAC_BITS_NEEDED);
-  d = ((R_BIAS_M1 + j) * 2 ^ R_EXP_POS_32) +
-          frac2 * 2 ^
+  d = ((R_BIAS_M1 + j) * 2 ^ R_EXP_POS_32) + frac2 * 2 ^
       (R_EXP_POS_32 - R_FRAC_BITS_NEEDED);
 
   printf("\n#define R_T1_32  (WORD) %#..16i  ", c);
@@ -820,21 +811,17 @@ do_T_consts() {
   y = bround(y, B_FRAC_BITS_NEEDED + 1);
   frac2 = bextr(y, 2, B_FRAC_BITS_NEEDED + 1);
 
-  a = ((B_BIAS_M1 + i) * 2 ^ B_EXP_POS_64) +
-          frac1 * 2 ^
+  a = ((B_BIAS_M1 + i) * 2 ^ B_EXP_POS_64) + frac1 * 2 ^
       (B_EXP_POS_64 - B_FRAC_BITS_NEEDED);
-  b = ((B_BIAS_M1 + j) * 2 ^ B_EXP_POS_64) +
-          frac2 * 2 ^
+  b = ((B_BIAS_M1 + j) * 2 ^ B_EXP_POS_64) + frac2 * 2 ^
       (B_EXP_POS_64 - B_FRAC_BITS_NEEDED);
 
   printf("\n#define B_T1_64  (WORD) %#..16i  ", a);
   printf("\n#define B_T2_64  (WORD) %#..16i  ", b);
 
-  c = ((B_BIAS_M1 + i) * 2 ^ B_EXP_POS_32) +
-          frac1 * 2 ^
+  c = ((B_BIAS_M1 + i) * 2 ^ B_EXP_POS_32) + frac1 * 2 ^
       (B_EXP_POS_32 - B_FRAC_BITS_NEEDED);
-  d = ((B_BIAS_M1 + j) * 2 ^ B_EXP_POS_32) +
-          frac2 * 2 ^
+  d = ((B_BIAS_M1 + j) * 2 ^ B_EXP_POS_32) + frac2 * 2 ^
       (B_EXP_POS_32 - B_FRAC_BITS_NEEDED);
 
   printf("\n#define B_T1_32  (WORD) %#..16i  ", c);
@@ -852,21 +839,17 @@ do_T_consts() {
   y = bround(y, F_FRAC_BITS_NEEDED + 1);
   frac2 = bextr(y, 2, F_FRAC_BITS_NEEDED + 1);
 
-  a = ((F_BIAS + i) * 2 ^ F_EXP_POS_64) +
-          frac1 * 2 ^
+  a = ((F_BIAS + i) * 2 ^ F_EXP_POS_64) + frac1 * 2 ^
       (F_EXP_POS_64 - F_FRAC_BITS_NEEDED);
-  b = ((F_BIAS + j) * 2 ^ F_EXP_POS_64) +
-          frac2 * 2 ^
+  b = ((F_BIAS + j) * 2 ^ F_EXP_POS_64) + frac2 * 2 ^
       (F_EXP_POS_64 - F_FRAC_BITS_NEEDED);
 
   printf("\n#define T1_64  (WORD) %#..16i  ", a);
   printf("\n#define T2_64  (WORD) %#..16i  ", b);
 
-  c = ((F_BIAS + i) * 2 ^ F_EXP_POS_32) +
-          frac1 * 2 ^
+  c = ((F_BIAS + i) * 2 ^ F_EXP_POS_32) + frac1 * 2 ^
       (F_EXP_POS_32 - F_FRAC_BITS_NEEDED);
-  d = ((F_BIAS + j) * 2 ^ F_EXP_POS_32) +
-          frac2 * 2 ^
+  d = ((F_BIAS + j) * 2 ^ F_EXP_POS_32) + frac2 * 2 ^
       (F_EXP_POS_32 - F_FRAC_BITS_NEEDED);
 
   printf("\n#define T1_32  (WORD) %#..16i  ", c);
@@ -949,14 +932,12 @@ SET_MP_PREC(working_prec);
  */
 
 TABLE_COMMENT("accurate poly coeffs, single precision, near 1");
-PRINT_TABLE_ADDRESS_DEFINE(R_POLY_ADD_ACC_NEAR, LOG_TABLE_NAME,
-                           offset, B_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(R_POLY_ADD_ACC_NEAR, LOG_TABLE_NAME, offset, B_TYPE);
 max_arg = R_SAFE_LIM / (2 ^ (LOG_K));
 deg_sa_near = do_regular_coeffs(max_arg, R_PRECISION + 2);
 
 TABLE_COMMENT("accurate/fast poly coeffs, single precision, away from 1");
-PRINT_TABLE_ADDRESS_DEFINE(R_POLY_ADD_AWAY, LOG_TABLE_NAME,
-                           offset, B_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(R_POLY_ADD_AWAY, LOG_TABLE_NAME, offset, B_TYPE);
 #if IEEE_FLOATING
 max_arg = 1 / (2 ^ (LOG_K + 1));
 #else
@@ -965,8 +946,7 @@ max_arg = 1 / (2 ^ (LOG_K));
 deg_sa_away = do_regular_coeffs(max_arg, R_PRECISION - 3);
 
 TABLE_COMMENT("accurate poly coeffs, double precision, near 1");
-PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_ACC_NEAR, LOG_TABLE_NAME,
-                           offset, B_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_ACC_NEAR, LOG_TABLE_NAME, offset, B_TYPE);
 max_arg = B_SAFE_LIM / (2 ^ (LOG_K));
 deg_da_near = do_regular_coeffs(max_arg, B_PRECISION + 4);
 
@@ -974,20 +954,19 @@ TABLE_COMMENT("constant 1, the linear coeff of the fast near 1 poly");
 PRINT_B_ITEM(log_of_e);
 
 TABLE_COMMENT("fast poly coeffs, double precision, near 1");
-PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_FAST_NEAR, LOG_TABLE_NAME,
-                           offset, B_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_FAST_NEAR, LOG_TABLE_NAME, offset,
+                           B_TYPE);
 max_arg = B_SAFE_LIM / (2 ^ (LOG_K));
 deg_df_near = do_regular_coeffs(max_arg, B_PRECISION + 2);
 
 TABLE_COMMENT("accurate poly coeffs, double precision, away from 1");
-PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_ACC_AWAY, LOG_TABLE_NAME,
-                           offset, B_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_ACC_AWAY, LOG_TABLE_NAME, offset, B_TYPE);
 max_arg = 1 / (2 ^ (LOG_K + 1));
 deg_da_away = do_regular_coeffs(max_arg, B_PRECISION - 2);
 
 TABLE_COMMENT("fast poly coeffs, double precision, away from 1");
-PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_FAST_AWAY, LOG_TABLE_NAME,
-                           offset, B_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(B_POLY_ADD_FAST_AWAY, LOG_TABLE_NAME, offset,
+                           B_TYPE);
 max_arg = 1 / (2 ^ (LOG_K + 1));
 deg_df_away = do_regular_coeffs(max_arg, B_PRECISION - 8);
 
@@ -1017,34 +996,30 @@ deg_away = do_regular_coeffs(max_arg, F_PRECISION + 3);
 #else
 
 TABLE_COMMENT("poly coeffs, near 1");
-PRINT_TABLE_ADDRESS_DEFINE(POLY_ADDRESS_NEAR, LOG_TABLE_NAME,
-                           offset, F_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(POLY_ADDRESS_NEAR, LOG_TABLE_NAME, offset, F_TYPE);
 max_arg = F_SAFE_LIM / (2 ^ (LOG_K));
 deg_near = do_regular_coeffs(max_arg, F_PRECISION + EXTRA_N);
 
 TABLE_COMMENT("poly coeffs, quotient, near 1");
-PRINT_TABLE_ADDRESS_DEFINE(POLY_ADD_N_Q, LOG_TABLE_NAME,
-                           offset, F_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(POLY_ADD_N_Q, LOG_TABLE_NAME, offset, F_TYPE);
 max_arg = F_SAFE_LIM / 2 ^ (LOG_K);
 deg_near_q = do_quot_coeffs(max_arg, F_PRECISION + EXTRA_N_Q);
 
-for(j = 0; j < deg_near_q; j++) {
+for (j = 0; j < deg_near_q; j++) {
   printf("\n#define B%i POLY_ADD_N_Q[%i]", (2 * j + 3), j);
 }
 
 TABLE_COMMENT("poly coeffs, away from 1");
-PRINT_TABLE_ADDRESS_DEFINE(POLY_ADDRESS_AWAY, LOG_TABLE_NAME,
-                           offset, F_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(POLY_ADDRESS_AWAY, LOG_TABLE_NAME, offset, F_TYPE);
 max_arg = 1 / (2 ^ (LOG_K + 1));
 deg_away = do_regular_coeffs(max_arg, F_PRECISION - 2);
 
 TABLE_COMMENT("poly coeffs, quotient, away from 1");
-PRINT_TABLE_ADDRESS_DEFINE(POLY_ADD_A_Q, LOG_TABLE_NAME,
-                           offset, F_TYPE);
+PRINT_TABLE_ADDRESS_DEFINE(POLY_ADD_A_Q, LOG_TABLE_NAME, offset, F_TYPE);
 max_arg = 1 / 2 ^ LOG_K;
 deg_away_q = do_quot_coeffs(max_arg, F_PRECISION + EXTRA_A_Q);
 
-for(j = 0; j < deg_away_q; j++) {
+for (j = 0; j < deg_away_q; j++) {
   printf("\n#define C%i POLY_ADD_A_Q[%i]", (2 * j + 3), j);
 }
 
@@ -1131,11 +1106,11 @@ shell("" STR(GENPOLY_EXECUTABLE) " one odd   degree=%i  c1=0  cn=C%%d define=\"P
 
 printf("\n\n");
 
-@end_divert
-    @eval my $outText = MphocEval(GetStream("divertText"));
+@end_divert @eval my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for ".STR(F_ENTRY_NAME), __FILE__);
+my $headerText =
+    GetHeaderText(STR(BUILD_FILE_NAME),
+                  "Definitions and constants for ".STR(F_ENTRY_NAME), __FILE__);
 print "$headerText\n\n$tableText\n\n$defineText";
 
 #endif
@@ -1246,25 +1221,32 @@ print "$headerText\n\n$tableText\n\n$defineText";
 
 #if DO_ONE_PATH && !PRECISION_BACKUP_AVAILABLE
 
-#define GET_F(j) *((R_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j)))
+#define GET_F(j) *((R_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j)))
 
-#define LOGF_HI(j) *((R_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j) + BYTES_PER_R_TYPE))
+#define LOGF_HI(j) \
+  *((R_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j) + BYTES_PER_R_TYPE))
 
-#define RECIP_F_FULL(j) *((B_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j) + BYTES_PER_B_TYPE))
+#define RECIP_F_FULL(j) \
+  *((B_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j) + BYTES_PER_B_TYPE))
 
-#define RECIP_F_LO(j) *((B_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j) + 2 * BYTES_PER_B_TYPE))
+#define RECIP_F_LO(j) \
+  *((B_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j) + 2 * BYTES_PER_B_TYPE))
 
-#define LOGF_LO(j) *((B_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j) + 3 * BYTES_PER_B_TYPE))
+#define LOGF_LO(j) \
+  *((B_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j) + 3 * BYTES_PER_B_TYPE))
 
 #else
 
-#define GET_F(j) *((B_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j)))
+#define GET_F(j) *((B_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j)))
 
-#define RECIP_F(j) *((B_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j) + BYTES_PER_B_TYPE))
+#define RECIP_F(j) \
+  *((B_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j) + BYTES_PER_B_TYPE))
 
-#define LOGF_HI(j) *((B_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j) + 2 * BYTES_PER_B_TYPE))
+#define LOGF_HI(j) \
+  *((B_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j) + 2 * BYTES_PER_B_TYPE))
 
-#define LOGF_LO(j) *((B_TYPE *)((char *)LOG_TABLE_NAME + LOG_F_TABLE + (j) + 3 * BYTES_PER_B_TYPE))
+#define LOGF_LO(j) \
+  *((B_TYPE*)((char*)LOG_TABLE_NAME + LOG_F_TABLE + (j) + 3 * BYTES_PER_B_TYPE))
 
 #endif
 
@@ -1291,11 +1273,9 @@ print "$headerText\n\n$tableText\n\n$defineText";
   GET_EXP_WORD(x, j);                                                \
   float_one = ONE;                                                   \
   m = (j & F_EXP_MASK);                                              \
-  if(m <= ((U_WORD)LOWER_LIMIT << F_EXP_POS))                        \
-    return (x);                                                      \
-  if(m > ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS))                    \
-    goto label;                                                      \
-  if(m == ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS))                   \
+  if (m <= ((U_WORD)LOWER_LIMIT << F_EXP_POS)) return (x);           \
+  if (m > ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS)) goto label;       \
+  if (m == ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS))                  \
     tmpx = x;                                                        \
   else                                                               \
     tmpx = x + float_one;
@@ -1305,10 +1285,8 @@ print "$headerText\n\n$tableText\n\n$defineText";
   GET_EXP_WORD(x, j);                                                \
   float_one = ONE;                                                   \
   m = (j & F_EXP_MASK);                                              \
-  if(m > ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS))                    \
-    goto label;                                                      \
-  if(m <= ((U_WORD)LOWER_LIMIT << F_EXP_POS))                        \
-    return (x);                                                      \
+  if (m > ((U_WORD)F_MAX_BIASED_EXP << F_EXP_POS)) goto label;       \
+  if (m <= ((U_WORD)LOWER_LIMIT << F_EXP_POS)) return (x);           \
   tmpx = x + float_one;
 
 #endif
@@ -1563,31 +1541,27 @@ print "$headerText\n\n$tableText\n\n$defineText";
 
 #if SPECIAL_VAX && !FAST
 
-#define SCREEN_OUT_BAD_X(hi_x, label)           \
-  if((U_WORD)((hi_x >> CURRENT_EXP_POS) - 1) >= \
-     F_MAX_BIASED_EXP)                          \
-  goto label
+#define SCREEN_OUT_BAD_X(hi_x, label) \
+  if ((U_WORD)((hi_x >> CURRENT_EXP_POS) - 1) >= F_MAX_BIASED_EXP) goto label
 
 #elif (INDEX_BITS_NEEDED <= F_EXP_POS)
 
-#define SCREEN_OUT_BAD_X(hi_x, label)                             \
-  if((U_WORD)(((hi_x >> CURRENT_EXP_POS) & EXP_SIGN_MASK) - 1) >= \
-     F_MAX_BIASED_EXP)                                            \
+#define SCREEN_OUT_BAD_X(hi_x, label)                              \
+  if ((U_WORD)(((hi_x >> CURRENT_EXP_POS) & EXP_SIGN_MASK) - 1) >= \
+      F_MAX_BIASED_EXP)                                            \
   goto label
 
 #else
 
 #define SCREEN_OUT_BAD_X(hi_x, label) \
-  if((WORD)hi_x <= 0)                 \
-  goto label
+  if ((WORD)hi_x <= 0) goto label
 
 #endif
 
 #elif IEEE_FLOATING
 
-#define SCREEN_OUT_BAD_X(hi_x, label)                             \
-  if((U_WORD)((hi_x >> CURRENT_EXP_POS) - 1) >= F_MAX_BIASED_EXP) \
-  goto label
+#define SCREEN_OUT_BAD_X(hi_x, label) \
+  if ((U_WORD)((hi_x >> CURRENT_EXP_POS) - 1) >= F_MAX_BIASED_EXP) goto label
 
 #else
 #error Unsupported floating point format
@@ -1691,18 +1665,18 @@ print "$headerText\n\n$tableText\n\n$defineText";
 
 #if DO_LOG1P
 
-#define SET_UP_FOR_LOGP_POLY(j, Fj, tmp, one, x, m, tmpx, y)  \
-  if(m == -1)                                                 \
-    y = ((B_TYPE)2.0 - Fj) + (B_TYPE)(x + x);                 \
-  else if(m == 0)                                             \
-    y = ((B_TYPE)one - Fj) + (B_TYPE)x;                       \
-  else if((m > 0) && (m < F_PRECISION)) {                     \
-    SCALE_DOWN(m, tmp);                                       \
-    y = (tmp - Fj) + tmp * (B_TYPE)x;                         \
-  } else if((m == F_PRECISION) || (m == (F_PRECISION + 1))) { \
-    SCALE_DOWN(m, tmp);                                       \
-    y = (tmp * (B_TYPE)x - Fj) + tmp;                         \
-  } else                                                      \
+#define SET_UP_FOR_LOGP_POLY(j, Fj, tmp, one, x, m, tmpx, y)   \
+  if (m == -1)                                                 \
+    y = ((B_TYPE)2.0 - Fj) + (B_TYPE)(x + x);                  \
+  else if (m == 0)                                             \
+    y = ((B_TYPE)one - Fj) + (B_TYPE)x;                        \
+  else if ((m > 0) && (m < F_PRECISION)) {                     \
+    SCALE_DOWN(m, tmp);                                        \
+    y = (tmp - Fj) + tmp * (B_TYPE)x;                          \
+  } else if ((m == F_PRECISION) || (m == (F_PRECISION + 1))) { \
+    SCALE_DOWN(m, tmp);                                        \
+    y = (tmp * (B_TYPE)x - Fj) + tmp;                          \
+  } else                                                       \
     y = (B_TYPE)tmpx - Fj;
 
 #if USE_RECIP
@@ -1797,8 +1771,7 @@ print "$headerText\n\n$tableText\n\n$defineText";
   w += z;
 
 #else
-#define ADD_LINEAR_TERM_TO_LOG_F(w, v, x, t, tmpx, y, z) \
-  w += y * LOGE_HI;
+#define ADD_LINEAR_TERM_TO_LOG_F(w, v, x, t, tmpx, y, z) w += y * LOGE_HI;
 #endif
 #endif
 
@@ -1964,8 +1937,7 @@ print "$headerText\n\n$tableText\n\n$defineText";
   lin -= (lin * lin) * HALF;                                        \
   t += lin;
 #else
-#define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) \
-  t += lin;
+#define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) t += lin;
 
 #endif
 
@@ -1994,14 +1966,14 @@ print "$headerText\n\n$tableText\n\n$defineText";
 #if DO_LOG1P
 #define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) \
   t -= ((lin + short)*lo) * HALF;                                   \
-  short -= (short *short)*HALF;                                     \
+  short -= (short* short)*HALF;                                     \
   t += lo;                                                          \
   t += short;
 #else
 
 #define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) \
   t -= ((lin + short)*lo) * HALF;                                   \
-  lin -= (short *short)*HALF;                                       \
+  lin -= (short* short)*HALF;                                       \
   t += lin;
 #endif
 #endif
@@ -2010,19 +1982,19 @@ print "$headerText\n\n$tableText\n\n$defineText";
 #define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) \
   tmp = ((lin + short)*lo) * HALF;                                  \
   t -= tmp * LOGE_HI;                                               \
-  lin -= (short *short)*HALF;                                       \
+  lin -= (short* short)*HALF;                                       \
   SHORTEN2(lin, short);                                             \
   lo = lin - short;                                                 \
   t += lo * LOGE_HI;                                                \
-  t += short *LOGE_LO2;                                             \
-  t += short *LOGE_HI2;
+  t += short* LOGE_LO2;                                             \
+  t += short* LOGE_HI2;
 #else
 #define SUBTRACT_SQ_TERM_AND_COMBINE(t, lin, short, lo, tmp, extra) \
   t += extra * LOGE_LO2;                                            \
-  tmp = short *LOGE_LO2;                                            \
+  tmp = short* LOGE_LO2;                                            \
   tmp += extra * LOGE_HI2;                                          \
   t += tmp;                                                         \
-  t += short *LOGE_HI2;
+  t += short* LOGE_HI2;
 #endif
 #endif
 #endif
@@ -2057,8 +2029,8 @@ F_ENTRY_NAME(F_TYPE x)
   /*
    *  In log1p, start by getting the constant 1.0.  Check if x is really tiny,
    *  e.g. denorm, by looking at the exponent - if so, return x.  Then, add 1
-   *  to x, provided that this won't overflow (only a danger if the rounding mode
-   *  is "round to pos infinity" and x was FMAX).
+   *  to x, provided that this won't overflow (only a danger if the rounding
+   * mode is "round to pos infinity" and x was FMAX).
    */
 
   LOGP_CHANGE_VAR_AND_GET_ONE(x, temp_x, float_one, hi_x, m, bad_x);
@@ -2092,8 +2064,9 @@ F_ENTRY_NAME(F_TYPE x)
 #if !DO_ONE_PATH
   screen = (U_WORD)(hi_x - T1);
 
-  if(screen < T2_MINUS_T1)
+  if (screen < T2_MINUS_T1) {
     goto near_1;
+  }
 #endif
 
   {
@@ -2115,7 +2088,8 @@ F_ENTRY_NAME(F_TYPE x)
      *  x is not in the interval [T1, T2], but it still might be negative,
      *  zero, infinity or NaN.  On the way to screening these out, shift the
      *  exponent and fraction field to the right to isolate the leading
-     *  INDEX_BITS_NEEDED fraction bits, in order to get the index of the jth row.
+     *  INDEX_BITS_NEEDED fraction bits, in order to get the index of the jth
+     * row.
      */
 
     SHIFT_GET_INDEX_AND_EXPONENT(hi_x, m, j);
@@ -2257,8 +2231,8 @@ F_ENTRY_NAME(F_TYPE x)
    *  by reconstructing u itself in extra accuracy.
    *
    *
-   *  In both approaches, single precision uses double precision as a backup type
-   *  in critical steps.
+   *  In both approaches, single precision uses double precision as a backup
+   * type in critical steps.
    */
 
 #if !DO_ONE_PATH
@@ -2266,8 +2240,9 @@ F_ENTRY_NAME(F_TYPE x)
 near_1:
 
 #if DO_LOG1P
-  if(temp_x == float_one)
+  if (temp_x == float_one) {
     return (x);
+  }
 #endif
 
   {
@@ -2334,11 +2309,10 @@ bad_x:
 #if IEEE_FLOATING
 
   /* Check for negative arguement */
-  if((hi_x & F_SIGN_BIT_MASK) != 0) {
-
+  if ((hi_x & F_SIGN_BIT_MASK) != 0) {
 #if COMPATIBILITY_MODE
-    if ZERO_EXPON(hi_x) { /* sign = negative, exponent is zero
-                             could be -0 or -denorm */
+    if ZERO_EXPON (hi_x) { /* sign = negative, exponent is zero
+                              could be -0 or -denorm */
 
       GET_EXCEPTION_RESULT_1(LOG_NEGATIVE, x, x);
       return x;
@@ -2347,28 +2321,25 @@ bad_x:
     else { /* sign = negative, exponent not zero */
 
       F_SET_FLAG_IF_NAN(x, m);
-      if(!m) /* -inf or negative: return NaN, error */
+      if (!m) { /* -inf or negative: return NaN, error */
         GET_EXCEPTION_RESULT_1(LOG_NEGATIVE, x, x)
+      }
       return x;
     }
 #else
     F_SET_FLAG_IF_NAN(x, m);
-    if(m)
+    if (m) {
       return x;
-    else {
+    } else {
       WORD func_error_word;
-      func_error_word = ERROR_WORD(STATUS_INVALID,
-                                   NEG_HUGE_INDEX,
-                                   NAN_INDEX,
-                                   F_TYPE_ENUM,
-                                   DPML_EDOM,
-                                   SIGNAL_LOGZERNEG);
+      func_error_word = ERROR_WORD(STATUS_INVALID, NEG_HUGE_INDEX, NAN_INDEX,
+                                   F_TYPE_ENUM, DPML_EDOM, SIGNAL_LOGZERNEG);
       RETURN_EXCEPTION_RESULT_1(func_error_word, x, F_F, _FpCodeLog);
     }
 #endif
   }
 
-  else if ZERO_EXPON(hi_x) { /*  sign = positive, expon = zero */
+  else if ZERO_EXPON (hi_x) { /*  sign = positive, expon = zero */
 
 #if DO_LOG1P
 
@@ -2379,12 +2350,9 @@ bad_x:
 #else
     {
       WORD func_error_word;
-      func_error_word = ERROR_WORD(STATUS_OVERFLOW,
-                                   NEG_HUGE_INDEX,
-                                   NEG_INFINITY_INDEX,
-                                   F_TYPE_ENUM,
-                                   DPML_ERANGE,
-                                   SIGNAL_LOGZERNEG);
+      func_error_word =
+          ERROR_WORD(STATUS_OVERFLOW, NEG_HUGE_INDEX, NEG_INFINITY_INDEX,
+                     F_TYPE_ENUM, DPML_ERANGE, SIGNAL_LOGZERNEG);
       RETURN_EXCEPTION_RESULT_1(func_error_word, x, F_F, _FpCodeLog);
     }
 #endif
@@ -2400,19 +2368,16 @@ bad_x:
 
     DENORM_TO_NORM(x, temp_x);
 
-    if(temp_x == 0.0) { /*  +0: should return -inf, via RAISE */
+    if (temp_x == 0.0) { /*  +0: should return -inf, via RAISE */
 
 #if COMPATIBILITY_MODE
       GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x);
       return x;
 #else
       WORD func_error_word;
-      func_error_word = ERROR_WORD(STATUS_OVERFLOW,
-                                   NEG_HUGE_INDEX,
-                                   NEG_INFINITY_INDEX,
-                                   F_TYPE_ENUM,
-                                   DPML_ERANGE,
-                                   SIGNAL_LOGZERNEG);
+      func_error_word =
+          ERROR_WORD(STATUS_OVERFLOW, NEG_HUGE_INDEX, NEG_INFINITY_INDEX,
+                     F_TYPE_ENUM, DPML_ERANGE, SIGNAL_LOGZERNEG);
       RETURN_EXCEPTION_RESULT_1(func_error_word, x, F_F, _FpCodeLog);
 #endif
 
@@ -2442,16 +2407,16 @@ bad_x:
 #elif VAX_FLOATING
 
   FINAL_SIGN_BIT_POSITION(m);
-  if((hi_x & m) != 0) { /* sign = negative. */
-                        /* if exponent is zero, reserved operand */
-                        /* if exponent not zero, negative number */
+  if ((hi_x & m) != 0) { /* sign = negative. */
+                         /* if exponent is zero, reserved operand */
+                         /* if exponent not zero, negative number */
 
     GET_EXCEPTION_RESULT_1(LOG_NEGATIVE, x, x)
     return x;
   }
 
-  else if ZERO_EXPON(hi_x) { /*  sign = positive, expon = zero */
-                             /*  zero:  raise error */
+  else if ZERO_EXPON (hi_x) { /*  sign = positive, expon = zero */
+                              /*  zero:  raise error */
     GET_EXCEPTION_RESULT_1(LOG_ZERO, x, x);
     return x;
   }
@@ -2479,7 +2444,7 @@ F_ENTRY_NAME(F_TYPE x)
   F_TYPE float_one, tx;
   B_TYPE w, w1, w4, t, y, v, z;
 
-  printf("x = %8.8x\n", (int *)&x);
+  printf("x = %8.8x\n", (int*)&x);
   GET_HI_WORD(x, hi_x);
 
   PRE_LOAD_ONE(float_one);
@@ -2507,8 +2472,9 @@ F_ENTRY_NAME(F_TYPE x)
   y = (B_TYPE)tx - t; /* f - Fj */
 
 #if DOUBLE_PRECISION
-  if(screen < T2_MINUS_T1)
+  if (screen < T2_MINUS_T1) {
     goto near_1;
+  }
 #endif
 
   y *= z; /* y= (f - Fj)*recip */
@@ -2597,11 +2563,12 @@ bad_x:
 #define EXP_MASK MAKE_MASK(F_EXP_WIDTH, CURRENT_EXP_POS)
 
   m = hi_x & EXP_MASK;
-  if(m == EXP_MASK) { /* x is NaN or Inf - Check sign for -Inf */
+  if (m == EXP_MASK) { /* x is NaN or Inf - Check sign for -Inf */
     F_SET_FLAG_IF_NAN(x, j);
-    if(j || ((hi_x ^ m) == 0))
+    if (j || ((hi_x ^ m) == 0)) {
       /* x was NaN or +Inf */
       return x;
+    }
   }
 
 #endif

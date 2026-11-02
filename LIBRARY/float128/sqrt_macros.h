@@ -41,7 +41,8 @@ They all assume positive finite values.  */
 #define IF_IEEE_FLOATING(x) x
 
 #define LOC_OF_EXPON ((BITS_PER_LS_INT_TYPE - 1) - B_EXP_WIDTH)
-#define EXP_BITS_OF_ONE_HALF ((U_LS_INT_TYPE)(B_EXP_BIAS - B_NORM - 1) << LOC_OF_EXPON)
+#define EXP_BITS_OF_ONE_HALF \
+  ((U_LS_INT_TYPE)(B_EXP_BIAS - B_NORM - 1) << LOC_OF_EXPON)
 #define EXPON_MASK MAKE_MASK(B_EXP_WIDTH, 0)
 #define HI_EXP_BIT_MASK ((EXPON_MASK - 1) << LOC_OF_EXPON)
 #define GET_SQRT_TABLE_INDEX(exp, index)           \
@@ -49,8 +50,7 @@ They all assume positive finite values.  */
   index &= INDEX_MASK
 
 #if ((ARCHITECTURE == alpha) && defined(HAS_LOAD_WRONG_STORE_SIZE_PENALTY))
-#define V_UNION_64_BIT_STORE \
-  v.B_UNSIGNED_HI_64 = ((U_WORD)exp) >> 1
+#define V_UNION_64_BIT_STORE v.B_UNSIGNED_HI_64 = ((U_WORD)exp) >> 1
 #define V_UNION_128_BIT_STORE              \
   v.B_UNSIGNED_HI_64 = ((U_WORD)exp) >> 1; \
   v.B_UNSIGNED_LO_64 = 0
@@ -71,8 +71,7 @@ They all assume positive finite values.  */
 #define GET_SQRT_TABLE_INDEX(exp, index)        \
   index = ((exp << 3) | ((U_INT_32)exp >> 29)); \
   index &= INDEX_MASK
-#define V_UNION_64_BIT_STORE \
-  v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1
+#define V_UNION_64_BIT_STORE v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1
 #define V_UNION_128_BIT_STORE                          \
   v.B_UNSIGNED_HI_64 = ((U_INT_64)(U_INT_32)exp) >> 1; \
   v.B_UNSIGNED_LO_64 = 0
@@ -81,11 +80,9 @@ They all assume positive finite values.  */
 
 #if (ARCHITECTURE == alpha) || (BITS_PER_WORD == 64)
 #if QUAD_PRECISION
-#define STORE_EXP_TO_V_UNION \
-  V_UNION_128_BIT_STORE
+#define STORE_EXP_TO_V_UNION V_UNION_128_BIT_STORE
 #else
-#define STORE_EXP_TO_V_UNION \
-  V_UNION_64_BIT_STORE
+#define STORE_EXP_TO_V_UNION V_UNION_64_BIT_STORE
 #endif
 #else
 #if QUAD_PRECISION
@@ -181,7 +178,8 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[];
 
 #if (DYNAMIC_ROUNDING_MODES && !FAST_SQRT)
 
-#define ESTABLISH_KNOWN_ROUNDING_MODE(old_mode) INIT_FPU_STATE_AND_ROUND_TO_ZERO(old_mode)
+#define ESTABLISH_KNOWN_ROUNDING_MODE(old_mode) \
+  INIT_FPU_STATE_AND_ROUND_TO_ZERO(old_mode)
 #define RESTORE_ORIGINAL_ROUNDING_MODE(old_mode) RESTORE_FPU_STATE(old_mode)
 
 #else
@@ -214,7 +212,8 @@ a double-precision result, and then rounding it to single.  */
 #undef ULP_FACTOR
 #if (F_PRECISION == 53)
 
-#define ULP_FACTOR (F_TYPE)2.775557561562891351e-16 /* 1.25 * 2^(1 - F_PRECISION) */
+#define ULP_FACTOR \
+  (F_TYPE)2.775557561562891351e-16 /* 1.25 * 2^(1 - F_PRECISION) */
 
 #elif QUAD_PRECISION
 
@@ -237,8 +236,9 @@ and multiply the result by a scale factor we get:
 
     y' = scale   * x     * ( y + [ (1 - x * y^2) * y * 0.5 ] )
     y' = scale   * x * y * ( 1 + [ (1 - x * y^2) * 0.5 ] )
-    y' = scale/2 * x * y * ( 2 + [ (1 - x * y^2) ] )        gives about 5/4 lsb error
-    y' = scale/2 * x * y * ( 3 - x * y^2 )					gives about 8/4 lsb error
+    y' = scale/2 * x * y * ( 2 + [ (1 - x * y^2) ] )        gives about 5/4 lsb
+error y' = scale/2 * x * y * ( 3 - x * y^2 )
+gives about 8/4 lsb error
 
 So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x).  */
 
@@ -290,8 +290,7 @@ So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x).  */
 #define F_SQRT_2_LSB(input, result) F_SQRT(input, result)
 
 #define F_SQRT_2_LSB_NO_SCALE_FINISH_ITERATION(input) \
-  y *= (B_TYPE)(input)                                \
-      y += y;
+  y *= (B_TYPE)(input)y += y;
 
 #else
 
@@ -342,8 +341,8 @@ So iterate to get better 1/sqrt(x) and multiply by x to get sqrt(x).  */
 
 #endif
 
-/* The F_SQRT_2_LSB_NO_SCALE macro avoids most scaling (i.e. 0.5 <= input < 2.0).
-The input for the polynomial is still scaled, however, because the
+/* The F_SQRT_2_LSB_NO_SCALE macro avoids most scaling (i.e. 0.5 <= input
+< 2.0). The input for the polynomial is still scaled, however, because the
 coefficients have a scale factor built into them.  */
 
 #define F_SQRT_2_LSB_NO_SCALE_TIMES_2(input, result) \

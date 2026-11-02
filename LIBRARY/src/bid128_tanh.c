@@ -31,15 +31,14 @@
 
 // -10^-40, used in trivial path
 
-static BID_UINT128 bi_d128_10_p_m40 =
-    {{0x0000000000000001ull, 0xaff0000000000000ull}};
+static BID_UINT128 bi_d128_10_p_m40 = {
+    {0x0000000000000001ull, 0xaff0000000000000ull}};
 
 // 1 for dummy canonizing operation
 
-static BID_UINT128 bi_d128_1 =
-    {{0x0000000000000001ull, 0x3040000000000000ull}};
+static BID_UINT128 bi_d128_1 = {{0x0000000000000001ull, 0x3040000000000000ull}};
 
-BID_F128_CONST_DEF(c_1em40, 3f7a16c262777579, c58c46475896767b); // 1e-40
+BID_F128_CONST_DEF(c_1em40, 3f7a16c262777579, c58c46475896767b);  // 1e-40
 
 BID128_FUNCTION_ARG1(bid128_tanh, x)
 
@@ -50,18 +49,19 @@ BID_F128_TYPE xd, yd, abs_xd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
+if ((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if(((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64))
+  if (((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64)) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-  if(((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
-      0x0000314dc6448d93ull) ||
-     (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
-       0x0000314dc6448d93ull) &&
-      res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
+  if (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
+       0x0000314dc6448d93ull) ||
+      (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
+        0x0000314dc6448d93ull) &&
+       res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
     res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
     res.w[BID_LOW_128W] = 0ull;
   }
@@ -84,10 +84,10 @@ if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 BIDECIMAL_CALL1(bid128_to_binary128, xd, x);
 
 __bid_f128_fabs(abs_xd, xd);
-if(__bid_f128_lt(abs_xd, c_1em40.v)) {
+if (__bid_f128_lt(abs_xd, c_1em40.v)) {
   int zf;
   BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero, zf, x);
-  if(zf) {
+  if (zf) {
     BIDECIMAL_CALL2(bid128_mul, res, x, bi_d128_1);
   } else {
     BIDECIMAL_CALL3(bid128_fma, res, x, bi_d128_10_p_m40, x);

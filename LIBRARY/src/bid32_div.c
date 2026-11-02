@@ -87,27 +87,29 @@ valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 valid_y = unpack_BID32(&sign_y, &exponent_y, &coefficient_y, y);
 
 // unpack arguments, check for NaN or Infinity
-if(!valid_x) {
+if (!valid_x) {
   // x is Inf. or NaN
 #ifdef BID_SET_STATUS_FLAGS
-  if((y & SNAN_MASK32) == SNAN_MASK32) // y is sNaN
+  if ((y & SNAN_MASK32) == SNAN_MASK32) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
 
   // test if x is NaN
-  if((x & NAN_MASK32) == NAN_MASK32) {
+  if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & SNAN_MASK32) == SNAN_MASK32) // sNaN
+    if ((x & SNAN_MASK32) == SNAN_MASK32) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     BID_RETURN(coefficient_x & QUIET_MASK32);
   }
   // x is Infinity?
-  if((x & INFINITY_MASK32) == INFINITY_MASK32) {
+  if ((x & INFINITY_MASK32) == INFINITY_MASK32) {
     // check if y is Inf or NaN
-    if((y & INFINITY_MASK32) == INFINITY_MASK32) {
+    if ((y & INFINITY_MASK32) == INFINITY_MASK32) {
       // y==Inf, return NaN
-      if((y & NAN_MASK32) == INFINITY_MASK32) { // Inf/Inf
+      if ((y & NAN_MASK32) == INFINITY_MASK32) {  // Inf/Inf
 #ifdef BID_SET_STATUS_FLAGS
         __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -115,46 +117,49 @@ if(!valid_x) {
       }
     } else {
       // otherwise return +/-Inf
-      BID_RETURN(((x ^ y) & 0x80000000U) |
-                 INFINITY_MASK32);
+      BID_RETURN(((x ^ y) & 0x80000000U) | INFINITY_MASK32);
     }
   }
   // x==0
-  if(((y & INFINITY_MASK32) != INFINITY_MASK32) && !(coefficient_y)) {
+  if (((y & INFINITY_MASK32) != INFINITY_MASK32) && !(coefficient_y)) {
     // y==0 , return NaN
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
     BID_RETURN(NAN_MASK32);
   }
-  if(((y & INFINITY_MASK32) != INFINITY_MASK32)) {
-    if((y & SPECIAL_ENCODING_MASK32) == SPECIAL_ENCODING_MASK32)
-      exponent_y = ((BID_UINT32)(y >> 21)) & 0xffU;
-    else
-      exponent_y = ((BID_UINT32)(y >> 23)) & 0xffU;
+  if (((y & INFINITY_MASK32) != INFINITY_MASK32)) {
+    if ((y & SPECIAL_ENCODING_MASK32) == SPECIAL_ENCODING_MASK32) {
+      exponent_y = ((y >> 21)) & 0xffU;
+    } else {
+      exponent_y = ((y >> 23)) & 0xffU;
+    }
     sign_y = y & 0x80000000U;
 
     exponent_x = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS_32;
-    if(exponent_x > DECIMAL_MAX_EXPON_32)
+    if (exponent_x > DECIMAL_MAX_EXPON_32) {
       exponent_x = DECIMAL_MAX_EXPON_32;
-    else if(exponent_x < 0)
+    } else if (exponent_x < 0) {
       exponent_x = 0;
-    BID_RETURN((BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64)exponent_x) << 23)));
+    }
+    BID_RETURN(
+        (BID_UINT32)((sign_x ^ sign_y) | (((BID_UINT64)exponent_x) << 23)));
   }
 }
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y & NAN_MASK32) == NAN_MASK32) {
+  if ((y & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((y & SNAN_MASK32) == SNAN_MASK32) // sNaN
+    if ((y & SNAN_MASK32) == SNAN_MASK32) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     BID_RETURN(coefficient_y & QUIET_MASK32);
   }
   // y is Infinity?
-  if((y & INFINITY_MASK32) == INFINITY_MASK32) {
+  if ((y & INFINITY_MASK32) == INFINITY_MASK32) {
     // return +/-0
     BID_RETURN(((x ^ y) & 0x80000000U));
   }
@@ -169,8 +174,7 @@ if(!valid_y) {
 #endif
 diff_expon = exponent_x - exponent_y + DECIMAL_EXPONENT_BIAS_32;
 
-if(coefficient_x < coefficient_y) {
-
+if (coefficient_x < coefficient_y) {
   // get number of decimal digits for c_x, c_y
 
   //--- get number of bits in the coefficients of x and y ---
@@ -203,10 +207,8 @@ if(coefficient_x < coefficient_y) {
   bin_expon_cx = (tempq.i >> 23) - 0x7fU;
 
   // exact result ?
-  if(r == 0) {
-    res =
-        get_BID32(sign_x ^ sign_y, diff_expon, q, (int)rnd_mode,
-                  pfpsf);
+  if (r == 0) {
+    res = get_BID32(sign_x ^ sign_y, diff_expon, q, (int)rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -233,7 +235,7 @@ r = (BID_UINT32)(ca - q2 * b);
 q += q2;
 
 #ifdef BID_SET_STATUS_FLAGS
-if(r) {
+if (r) {
   // set status flags
   __set_status_flags(pfpsf, BID_INEXACT_EXCEPTION);
   // printf("ZZZ R=%x, %x %x\n",R, (BID_UINT32)pfpsf, *pfpsf);
@@ -243,7 +245,7 @@ else
 #endif
 #else
 #ifndef LEAVE_TRAILING_ZEROS
-if(!R)
+if (!R)
 #endif
 #endif
 #ifndef LEAVE_TRAILING_ZEROS
@@ -251,17 +253,18 @@ if(!R)
   // eliminate trailing zeros
 
   // check whether CX, CY are short
-  if((coefficient_x <= 1024) && (coefficient_y <= 1024)) {
+  if ((coefficient_x <= 1024) && (coefficient_y <= 1024)) {
     i = (int)coefficient_y - 1;
     j = (int)coefficient_x - 1;
     // difference in powers of 2 bid_factors for Y and X
     nzeros = ed2 - bid_factors[i][0U] + bid_factors[j][0U];
     // difference in powers of 5 bid_factors
     d5 = ed2 - bid_factors[i][1U] + bid_factors[j][1U];
-    if(d5 < nzeros)
+    if (d5 < nzeros) {
       nzeros = d5;
+    }
 
-    if(nzeros) {
+    if (nzeros) {
       ct = ((BID_UINT64)q) * bid_bid_reciprocals10_32[nzeros];
       ct >>= 32;
 
@@ -279,18 +282,18 @@ if(!R)
     digit_h = (BID_UINT32)(pd >> 40);
     digit_low = q - digit_h * 10000;
 
-    if(!digit_low)
+    if (!digit_low) {
       nzeros += 4;
-    else
+    } else {
       digit_h = digit_low;
-
-    if(!(digit_h & 1)) {
-      nzeros +=
-          3 & (BID_UINT32)(bid_packed_10000_zeros[digit_h >> 3] >>
-                           (digit_h & 7));
     }
 
-    if(nzeros) {
+    if (!(digit_h & 1)) {
+      nzeros += 3 & (BID_UINT32)(bid_packed_10000_zeros[digit_h >> 3] >>
+                                 (digit_h & 7));
+    }
+
+    if (nzeros) {
       ct = (BID_UINT64)q * bid_bid_reciprocals10_32[nzeros];
       ct >>= 32;
 
@@ -300,10 +303,8 @@ if(!R)
     }
     diff_expon += nzeros;
   }
-  if(diff_expon >= 0) {
-    res =
-        get_BID32(sign_x ^ sign_y, diff_expon, q,
-                  (int)rnd_mode, pfpsf);
+  if (diff_expon >= 0) {
+    res = get_BID32(sign_x ^ sign_y, diff_expon, q, (int)rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
     // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -312,7 +313,7 @@ if(!R)
 }
 #endif
 
-if(diff_expon >= 0) {
+if (diff_expon >= 0) {
 #ifdef IEEE_ROUND_NEAREST
   // round to nearest code
   // R*10
@@ -344,36 +345,35 @@ if(diff_expon >= 0) {
     Q += (BID_UINT32)D;
 #else
   rmode = (int)rnd_mode;
-  if(sign_x ^ sign_y && (unsigned)(rmode - 1) < 2U)
+  if (sign_x ^ sign_y && (unsigned)(rmode - 1) < 2U) {
     rmode = 3 - rmode;
-  switch(rmode) {
-  case 0: // round to nearest code
-  case BID_ROUNDING_TIES_AWAY:
-    // R*10
-    r += r;
-    r = (r << 2) + r;
-    b5 = b4 + b;
-    // compare 10*R to 5*B
-    r = b5 - r;
-    // correction for (R==0 && (Q&1))
-    r -= (q | (((unsigned)(rmode >> 2)) & 1U));
-    // R<0 ?
-    d = (BID_SINT32)(((BID_UINT32)r) >> 31U);
-    q += (BID_UINT32)d;
-    break;
-  case BID_ROUNDING_DOWN:
-  case BID_ROUNDING_TO_ZERO:
-    break;
-  default: // rounding up
-    q++;
-    break;
+  }
+  switch (rmode) {
+    case 0:  // round to nearest code
+    case BID_ROUNDING_TIES_AWAY:
+      // R*10
+      r += r;
+      r = (r << 2) + r;
+      b5 = b4 + b;
+      // compare 10*R to 5*B
+      r = b5 - r;
+      // correction for (R==0 && (Q&1))
+      r -= (q | (((unsigned)(rmode >> 2)) & 1U));
+      // R<0 ?
+      d = (BID_SINT32)((r) >> 31U);
+      q += (BID_UINT32)d;
+      break;
+    case BID_ROUNDING_DOWN:
+    case BID_ROUNDING_TO_ZERO:
+      break;
+    default:  // rounding up
+      q++;
+      break;
   }
 #endif
 #endif
 
-  res =
-      get_BID32(sign_x ^ sign_y, diff_expon, q, (int)rnd_mode,
-                pfpsf);
+  res = get_BID32(sign_x ^ sign_y, diff_expon, q, (int)rnd_mode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif
@@ -381,14 +381,13 @@ if(diff_expon >= 0) {
 } else {
   // UF occurs
 #ifdef BID_SET_STATUS_FLAGS
-  if((diff_expon + 7 < 0)) {
+  if ((diff_expon + 7 < 0)) {
     // set status flags
     __set_status_flags(pfpsf, BID_INEXACT_EXCEPTION);
   }
 #endif
   rmode = (int)rnd_mode;
-  res =
-      get_BID32_UF(sign_x ^ sign_y, diff_expon, q, r, rmode, pfpsf);
+  res = get_BID32_UF(sign_x ^ sign_y, diff_expon, q, r, rmode, pfpsf);
 #ifdef UNCHANGED_BINARY_STATUS_FLAGS
   // (void) fesetexceptflag (&binaryflags, BID_FE_ALL_FLAGS);
 #endif

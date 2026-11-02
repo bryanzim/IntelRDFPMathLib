@@ -56,7 +56,8 @@
 #define BINARY_EXPONENT_BIAS 0x3ff
 #define UPPER_EXPON_LIMIT 51
 
-BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_rem, BID_UINT64, x, BID_UINT64, y)
+BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(BID_UINT64, bid64_rem, BID_UINT64, x,
+                                           BID_UINT64, y)
 
 BID_UINT128 cy;
 BID_UINT64 sign_x, sign_y, coefficient_x, coefficient_y, res;
@@ -71,26 +72,28 @@ valid_y = unpack_BID64(&sign_y, &exponent_y, &coefficient_y, y);
 valid_x = unpack_BID64(&sign_x, &exponent_x, &coefficient_x, x);
 
 // unpack arguments, check for NaN or Infinity
-if(!valid_x) {
+if (!valid_x) {
   // x is Inf. or NaN or 0
 #ifdef BID_SET_STATUS_FLAGS
-  if((y & SNAN_MASK64) == SNAN_MASK64) // y is sNaN
+  if ((y & SNAN_MASK64) == SNAN_MASK64) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
 
   // test if x is NaN
-  if((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if(((x & SNAN_MASK64) == SNAN_MASK64))
+    if (((x & SNAN_MASK64) == SNAN_MASK64)) {
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = coefficient_x & QUIET_MASK64;
     ;
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
-    if(((y & NAN_MASK64) != NAN_MASK64)) {
+  if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
+    if (((y & NAN_MASK64) != NAN_MASK64)) {
 #ifdef BID_SET_STATUS_FLAGS
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -101,15 +104,16 @@ if(!valid_x) {
   }
   // x is 0
   // return x if y != 0
-  if(((y & 0x7800000000000000ull) < 0x7800000000000000ull) &&
-     coefficient_y) {
-    if((y & 0x6000000000000000ull) == 0x6000000000000000ull)
+  if (((y & 0x7800000000000000ull) < 0x7800000000000000ull) && coefficient_y) {
+    if ((y & 0x6000000000000000ull) == 0x6000000000000000ull) {
       exponent_y = (y >> 51) & 0x3ffU;
-    else
+    } else {
       exponent_y = (y >> 53) & 0x3ffU;
+    }
 
-    if(exponent_y < exponent_x)
+    if (exponent_y < exponent_x) {
       exponent_x = exponent_y;
+    }
 
     x = (BID_UINT64)exponent_x;
     x <<= 53;
@@ -118,21 +122,22 @@ if(!valid_x) {
     BID_RETURN(res);
   }
 }
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((y & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if(((y & SNAN_MASK64) == SNAN_MASK64))
+    if (((y & SNAN_MASK64) == SNAN_MASK64)) {
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = coefficient_y & QUIET_MASK64;
     ;
     BID_RETURN(res);
   }
   // y is Infinity?
-  if((y & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((y & 0x7800000000000000ull) == 0x7800000000000000ull) {
     res = very_fast_get_BID64(sign_x, exponent_x, coefficient_x);
     BID_RETURN(res);
   }
@@ -147,10 +152,10 @@ if(!valid_y) {
 }
 
 diff_expon = exponent_x - exponent_y;
-if(diff_expon <= 0) {
+if (diff_expon <= 0) {
   diff_expon = -diff_expon;
 
-  if(diff_expon > 16) {
+  if (diff_expon > 16) {
     // |x|<|y| in this case
     res = x;
     BID_RETURN(res);
@@ -159,7 +164,7 @@ if(diff_expon <= 0) {
   t = bid_power10_table_128[diff_expon].w[0U];
   __mul_64x64_to_128(cy, coefficient_y, t);
 
-  if(cy.w[1U] || cy.w[0U] > (coefficient_x << 1)) {
+  if (cy.w[1U] || cy.w[0U] > (coefficient_x << 1)) {
     res = x;
     BID_RETURN(res);
   }
@@ -168,7 +173,7 @@ if(diff_expon <= 0) {
   r = coefficient_x - q * cy.w[0U];
 
   r2 = r + r;
-  if(r2 > cy.w[0U] || (r2 == cy.w[0U] && (q & 1))) {
+  if (r2 > cy.w[0U] || (r2 == cy.w[0U] && (q & 1))) {
     r = cy.w[0U] - r;
     sign_x ^= 0x8000000000000000ull;
   }
@@ -177,7 +182,7 @@ if(diff_expon <= 0) {
   BID_RETURN(res);
 }
 
-while(diff_expon > 0) {
+while (diff_expon > 0) {
   // get number of digits in coeff_x
   tempx.d = (float)coefficient_x;
   bin_expon = ((tempx.i >> 23) & 0xffU) - 0x7fU;
@@ -187,7 +192,7 @@ while(diff_expon > 0) {
   //      digits_x++;
 
   e_scale = 18 - digits_x;
-  if(diff_expon >= e_scale) {
+  if (diff_expon >= e_scale) {
     diff_expon -= e_scale;
   } else {
     e_scale = diff_expon;
@@ -203,14 +208,14 @@ while(diff_expon > 0) {
   coefficient_x -= q * coefficient_y;
 
   // check for remainder == 0
-  if(!coefficient_x) {
+  if (!coefficient_x) {
     res = very_fast_get_BID64_small_mantissa(sign_x, exponent_y, 0);
     BID_RETURN(res);
   }
 }
 
 r2 = coefficient_x + coefficient_x;
-if(r2 > coefficient_y || (r2 == coefficient_y && (q & 1))) {
+if (r2 > coefficient_y || (r2 == coefficient_y && (q & 1))) {
   coefficient_x = coefficient_y - coefficient_x;
   sign_x ^= 0x8000000000000000ull;
 }

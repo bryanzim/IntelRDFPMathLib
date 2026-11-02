@@ -63,7 +63,7 @@ static const TABLE_UNION __powi_x_table[] = {
     /* 104 */ DATA_1x2(0x00000056, 0x00000000),
 };
 
-#define POWI_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)__powi_x_table + 0))
+#define POWI_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)__powi_x_table + 0))
 #define NEG_EXPONENT_INDEX 0
 #define ZERO_EXPONENT_RETURN_0_INDEX 2
 #define ZERO_EXPONENT_RETURN_1_INDEX 3
