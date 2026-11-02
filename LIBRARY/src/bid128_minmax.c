@@ -48,77 +48,79 @@ char x_is_zero = 0, y_is_zero = 0;
 // BID_SWAP128 (y);
 
 // check for non-canonical x
-if((x.w[1U] & MASK_NAN) == MASK_NAN) {       // x is NAN
-  x.w[1U] = x.w[1U] & 0xfe003fffffffffffull; // clear out G[6]-G[16]
+if ((x.w[1U] & MASK_NAN) == MASK_NAN) {       // x is NAN
+  x.w[1U] = x.w[1U] & 0xfe003fffffffffffull;  // clear out G[6]-G[16]
   // check for non-canonical NaN payload
-  if(((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-     (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-      (x.w[0U] > 0x38c15b09ffffffffull))) {
+  if (((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
+      (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+       (x.w[0U] > 0x38c15b09ffffffffull))) {
     x.w[1U] = x.w[1U] & 0xffffc00000000000ull;
     x.w[0U] = 0x0ull;
   }
-} else if((x.w[1U] & MASK_ANY_INF) == MASK_INF) { // x = inf
+} else if ((x.w[1U] & MASK_ANY_INF) == MASK_INF) {  // x = inf
   x.w[1U] = x.w[1U] & (MASK_SIGN | MASK_INF);
   x.w[0U] = 0x0ull;
-} else { // x is not special
+} else {  // x is not special
   // check for non-canonical values - treated as zero
-  if((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) { // G0_G1=11
+  if ((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {  // G0_G1=11
     // non-canonical
     x.w[1U] = (x.w[1U] & MASK_SIGN) | ((x.w[1U] << 2) & MASK_EXP);
     x.w[0U] = 0x0ull;
-  } else { // G0_G1 != 11
-    if((x.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-       ((x.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull && x.w[0U] > 0x378d8e63ffffffffull)) {
+  } else {  // G0_G1 != 11
+    if ((x.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
+        ((x.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+         x.w[0U] > 0x378d8e63ffffffffull)) {
       // x is non-canonical if coefficient is larger than 10^34 -1
       x.w[1U] = (x.w[1U] & MASK_SIGN) | (x.w[1U] & MASK_EXP);
       x.w[0U] = 0x0ull;
-    } else { // canonical
+    } else {  // canonical
       ;
     }
   }
 }
 // check for non-canonical y
-if((y.w[1U] & MASK_NAN) == MASK_NAN) {       // y is NAN
-  y.w[1U] = y.w[1U] & 0xfe003fffffffffffull; // clear out G[6]-G[16]
+if ((y.w[1U] & MASK_NAN) == MASK_NAN) {       // y is NAN
+  y.w[1U] = y.w[1U] & 0xfe003fffffffffffull;  // clear out G[6]-G[16]
   // check for non-canonical NaN payload
-  if(((y.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-     (((y.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-      (y.w[0U] > 0x38c15b09ffffffffull))) {
+  if (((y.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
+      (((y.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+       (y.w[0U] > 0x38c15b09ffffffffull))) {
     y.w[1U] = y.w[1U] & 0xffffc00000000000ull;
     y.w[0U] = 0x0ull;
   }
-} else if((y.w[1U] & MASK_ANY_INF) == MASK_INF) { // y = inf
+} else if ((y.w[1U] & MASK_ANY_INF) == MASK_INF) {  // y = inf
   y.w[1U] = y.w[1U] & (MASK_SIGN | MASK_INF);
   y.w[0U] = 0x0ull;
-} else { // y is not special
+} else {  // y is not special
   // check for non-canonical values - treated as zero
-  if((y.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) { // G0_G1=11
+  if ((y.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {  // G0_G1=11
     // non-canonical
     y.w[1U] = (y.w[1U] & MASK_SIGN) | ((y.w[1U] << 2) & MASK_EXP);
     y.w[0U] = 0x0ull;
-  } else { // G0_G1 != 11
-    if((y.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-       ((y.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull && y.w[0U] > 0x378d8e63ffffffffull)) {
+  } else {  // G0_G1 != 11
+    if ((y.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
+        ((y.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+         y.w[0U] > 0x378d8e63ffffffffull)) {
       // y is non-canonical if coefficient is larger than 10^34 -1
       y.w[1U] = (y.w[1U] & MASK_SIGN) | (y.w[1U] & MASK_EXP);
       y.w[0U] = 0x0ull;
-    } else { // canonical
+    } else {  // canonical
       ;
     }
   }
 }
 
 // NaN (CASE1)
-if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
-  if((x.w[1U] & MASK_SNAN) == MASK_SNAN) { // x is SNaN
+if ((x.w[1U] & MASK_NAN) == MASK_NAN) {      // x is NAN
+  if ((x.w[1U] & MASK_SNAN) == MASK_SNAN) {  // x is SNaN
     // if x is SNAN, then return quiet (x)
-    *pfpsf |= BID_INVALID_EXCEPTION;           // set exception if SNaN
-    x.w[1U] = x.w[1U] & 0xfdffffffffffffffull; // quietize x
+    *pfpsf |= BID_INVALID_EXCEPTION;            // set exception if SNaN
+    x.w[1U] = x.w[1U] & 0xfdffffffffffffffull;  // quietize x
     res = x;
-  } else {                                     // x is QNaN
-    if((y.w[1U] & MASK_NAN) == MASK_NAN) {     // y is NAN
-      if((y.w[1U] & MASK_SNAN) == MASK_SNAN) { // y is SNAN
-        *pfpsf |= BID_INVALID_EXCEPTION;       // set invalid flag
+  } else {                                       // x is QNaN
+    if ((y.w[1U] & MASK_NAN) == MASK_NAN) {      // y is NAN
+      if ((y.w[1U] & MASK_SNAN) == MASK_SNAN) {  // y is SNAN
+        *pfpsf |= BID_INVALID_EXCEPTION;         // set invalid flag
       }
       res = x;
     } else {
@@ -126,10 +128,10 @@ if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
     }
   }
   BID_RETURN(res);
-} else if((y.w[1U] & MASK_NAN) == MASK_NAN) { // y is NaN, but x is not
-  if((y.w[1U] & MASK_SNAN) == MASK_SNAN) {
-    *pfpsf |= BID_INVALID_EXCEPTION;           // set exception if SNaN
-    y.w[1U] = y.w[1U] & 0xfdffffffffffffffull; // quietize y
+} else if ((y.w[1U] & MASK_NAN) == MASK_NAN) {  // y is NaN, but x is not
+  if ((y.w[1U] & MASK_SNAN) == MASK_SNAN) {
+    *pfpsf |= BID_INVALID_EXCEPTION;            // set exception if SNaN
+    y.w[1U] = y.w[1U] & 0xfdffffffffffffffull;  // quietize y
     res = y;
   } else {
     // will return x (which is not NaN)
@@ -139,16 +141,16 @@ if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
 }
 // SIMPLE (CASE2)
 // if all the bits are the same, these numbers are equal (not Greater).
-if(x.w[0U] == y.w[0U] && x.w[1U] == y.w[1U]) {
+if (x.w[0U] == y.w[0U] && x.w[1U] == y.w[1U]) {
   res = x;
   BID_RETURN(res);
 }
 // INFINITY (CASE3)
-if((x.w[1U] & MASK_INF) == MASK_INF) {
+if ((x.w[1U] & MASK_INF) == MASK_INF) {
   // if x is neg infinity, there is no way it is greater than y, return 0
   res = (((x.w[1U] & MASK_SIGN) == MASK_SIGN)) ? x : y;
   BID_RETURN(res);
-} else if((y.w[1U] & MASK_INF) == MASK_INF) {
+} else if ((y.w[1U] & MASK_INF) == MASK_INF) {
   // x is finite, so if y is positive infinity, then x is less, return 0
   //                 if y is negative infinity, then x is greater, return 1
   res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
@@ -170,49 +172,50 @@ sig_y.w[0U] = y.w[0U];
 //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B => ignore the exponent
 //    field
 //    (Any non-canonical # is considered 0)
-if((sig_x.w[1U] == 0) && (sig_x.w[0U] == 0)) {
+if ((sig_x.w[1U] == 0) && (sig_x.w[0U] == 0)) {
   x_is_zero = 1;
 }
-if((sig_y.w[1U] == 0) && (sig_y.w[0U] == 0)) {
+if ((sig_y.w[1U] == 0) && (sig_y.w[0U] == 0)) {
   y_is_zero = 1;
 }
 
-if(x_is_zero && y_is_zero) {
+if (x_is_zero && y_is_zero) {
   // if both numbers are zero, neither is greater => return either number
   res = x;
   BID_RETURN(res);
-} else if(x_is_zero) {
+} else if (x_is_zero) {
   // is x is zero, it is greater if Y is negative
   res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
   BID_RETURN(res);
-} else if(y_is_zero) {
+} else if (y_is_zero) {
   // is y is zero, X is greater if it is positive
   res = ((x.w[1U] & MASK_SIGN) != MASK_SIGN) ? y : x;
   BID_RETURN(res);
 }
 // OPPOSITE SIGN (CASE5)
 // now, if the sign bits differ, x is greater if y is negative
-if(((x.w[1U] ^ y.w[1U]) & MASK_SIGN) == MASK_SIGN) {
+if (((x.w[1U] ^ y.w[1U]) & MASK_SIGN) == MASK_SIGN) {
   res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
   BID_RETURN(res);
 }
 // REDUNDANT REPRESENTATIONS (CASE6)
 // if exponents are the same, then we have a simple comparison of
 //    the significands
-if(exp_y == exp_x) {
-  res = (((sig_x.w[1U] > sig_y.w[1U]) || (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U])) ^ ((x.w[1U] & MASK_SIGN) ==
-                                                                                                        MASK_SIGN))
+if (exp_y == exp_x) {
+  res = (((sig_x.w[1U] > sig_y.w[1U]) ||
+          (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U])) ^
+         ((x.w[1U] & MASK_SIGN) == MASK_SIGN))
             ? y
             : x;
   BID_RETURN(res);
 }
 // if both components are either bigger or smaller, it is clear what
 //    needs to be done
-if(sig_x.w[1U] >= sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U] && exp_x > exp_y) {
+if (sig_x.w[1U] >= sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U] && exp_x > exp_y) {
   res = ((x.w[1U] & MASK_SIGN) != MASK_SIGN) ? y : x;
   BID_RETURN(res);
 }
-if(sig_x.w[1U] <= sig_y.w[1U] && sig_x.w[0U] <= sig_y.w[0U] && exp_x < exp_y) {
+if (sig_x.w[1U] <= sig_y.w[1U] && sig_x.w[0U] <= sig_y.w[0U] && exp_x < exp_y) {
   res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
   BID_RETURN(res);
 }
@@ -220,19 +223,22 @@ if(sig_x.w[1U] <= sig_y.w[1U] && sig_x.w[0U] <= sig_y.w[0U] && exp_x < exp_y) {
 diff = exp_x - exp_y;
 
 // if |exp_x - exp_y| < 33, it comes down to the compensated significand
-if(diff > 0) { // to simplify the loop below,
+if (diff > 0) {  // to simplify the loop below,
   // if exp_x is 33 greater than exp_y, no need for compensation
-  if(diff > 33) {
+  if (diff > 33) {
     // difference cannot be greater than 10^33
     res = ((x.w[1U] & MASK_SIGN) != MASK_SIGN) ? y : x;
     BID_RETURN(res);
   }
-  if(diff > 19) { // 128 by 128 bit multiply -> 256 bits
+  if (diff > 19) {  // 128 by 128 bit multiply -> 256 bits
     __mul_128x128_to_256(sig_n_prime256, sig_x, bid_ten2k128[diff - 20]);
     // if postitive, return whichever significand is larger
     // (converse if negative)
-    res = ((((sig_n_prime256.w[3U] > 0) || sig_n_prime256.w[2U] > 0) || (sig_n_prime256.w[1U] > sig_y.w[1U]) || (sig_n_prime256.w[1U] == sig_y.w[1U] && sig_n_prime256.w[0U] > sig_y.w[0U])) ^ ((y.w[1U] & MASK_SIGN) ==
-                                                                                                                                                                                                MASK_SIGN))
+    res = ((((sig_n_prime256.w[3U] > 0) || sig_n_prime256.w[2U] > 0) ||
+            (sig_n_prime256.w[1U] > sig_y.w[1U]) ||
+            (sig_n_prime256.w[1U] == sig_y.w[1U] &&
+             sig_n_prime256.w[0U] > sig_y.w[0U])) ^
+           ((y.w[1U] & MASK_SIGN) == MASK_SIGN))
               ? y
               : x;
     BID_RETURN(res);
@@ -240,33 +246,43 @@ if(diff > 0) { // to simplify the loop below,
   __mul_64x128_to_192(sig_n_prime192, bid_ten2k64[diff], sig_x);
   // if postitive, return whichever significand is larger
   // (converse if negative)
-  res =
-      (((sig_n_prime192.w[2U] > 0) || (sig_n_prime192.w[1U] > sig_y.w[1U]) || (sig_n_prime192.w[1U] == sig_y.w[1U] && sig_n_prime192.w[0U] > sig_y.w[0U])) ^ ((y.w[1U] & MASK_SIGN) == MASK_SIGN)) ? y : x;
+  res = (((sig_n_prime192.w[2U] > 0) || (sig_n_prime192.w[1U] > sig_y.w[1U]) ||
+          (sig_n_prime192.w[1U] == sig_y.w[1U] &&
+           sig_n_prime192.w[0U] > sig_y.w[0U])) ^
+         ((y.w[1U] & MASK_SIGN) == MASK_SIGN))
+            ? y
+            : x;
   BID_RETURN(res);
 }
 diff = exp_y - exp_x;
 // if exp_x is 33 less than exp_y, no need for compensation
-if(diff > 33) {
+if (diff > 33) {
   res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
   BID_RETURN(res);
 }
-if(diff > 19) { // 128 by 128 bit multiply -> 256 bits
+if (diff > 19) {  // 128 by 128 bit multiply -> 256 bits
   // adjust the y significand upwards
   __mul_128x128_to_256(sig_n_prime256, sig_y, bid_ten2k128[diff - 20]);
   // if postitive, return whichever significand is larger
   // (converse if negative)
-  res =
-      ((sig_n_prime256.w[3U] != 0 || sig_n_prime256.w[2U] != 0 || (sig_n_prime256.w[1U] > sig_x.w[1U] || (sig_n_prime256.w[1U] == sig_x.w[1U] && sig_n_prime256.w[0U] > sig_x.w[0U]))) ^ ((x.w[1U] & MASK_SIGN) ==
-                                                                                                                                                                                          MASK_SIGN))
-          ? x
-          : y;
+  res = ((sig_n_prime256.w[3U] != 0 || sig_n_prime256.w[2U] != 0 ||
+          (sig_n_prime256.w[1U] > sig_x.w[1U] ||
+           (sig_n_prime256.w[1U] == sig_x.w[1U] &&
+            sig_n_prime256.w[0U] > sig_x.w[0U]))) ^
+         ((x.w[1U] & MASK_SIGN) == MASK_SIGN))
+            ? x
+            : y;
   BID_RETURN(res);
 }
 // adjust the y significand upwards
 __mul_64x128_to_192(sig_n_prime192, bid_ten2k64[diff], sig_y);
 // if postitive, return whichever significand is larger (converse if negative)
-res =
-    ((sig_n_prime192.w[2U] != 0 || (sig_n_prime192.w[1U] > sig_x.w[1U] || (sig_n_prime192.w[1U] == sig_x.w[1U] && sig_n_prime192.w[0U] > sig_x.w[0U]))) ^ ((y.w[1U] & MASK_SIGN) == MASK_SIGN)) ? x : y;
+res = ((sig_n_prime192.w[2U] != 0 || (sig_n_prime192.w[1U] > sig_x.w[1U] ||
+                                      (sig_n_prime192.w[1U] == sig_x.w[1U] &&
+                                       sig_n_prime192.w[0U] > sig_x.w[0U]))) ^
+       ((y.w[1U] & MASK_SIGN) == MASK_SIGN))
+          ? x
+          : y;
 BID_RETURN(res);
 }
 
@@ -287,77 +303,79 @@ BID_UINT256 sig_n_prime256;
 // BID_SWAP128 (y);
 
 // check for non-canonical x
-if((x.w[1U] & MASK_NAN) == MASK_NAN) {       // x is NAN
-  x.w[1U] = x.w[1U] & 0xfe003fffffffffffull; // clear out G[6]-G[16]
+if ((x.w[1U] & MASK_NAN) == MASK_NAN) {       // x is NAN
+  x.w[1U] = x.w[1U] & 0xfe003fffffffffffull;  // clear out G[6]-G[16]
   // check for non-canonical NaN payload
-  if(((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-     (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-      (x.w[0U] > 0x38c15b09ffffffffull))) {
+  if (((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
+      (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+       (x.w[0U] > 0x38c15b09ffffffffull))) {
     x.w[1U] = x.w[1U] & 0xffffc00000000000ull;
     x.w[0U] = 0x0ull;
   }
-} else if((x.w[1U] & MASK_ANY_INF) == MASK_INF) { // x = inf
+} else if ((x.w[1U] & MASK_ANY_INF) == MASK_INF) {  // x = inf
   x.w[1U] = x.w[1U] & (MASK_SIGN | MASK_INF);
   x.w[0U] = 0x0ull;
-} else { // x is not special
+} else {  // x is not special
   // check for non-canonical values - treated as zero
-  if((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) { // G0_G1=11
+  if ((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {  // G0_G1=11
     // non-canonical
     x.w[1U] = (x.w[1U] & MASK_SIGN) | ((x.w[1U] << 2) & MASK_EXP);
     x.w[0U] = 0x0ull;
-  } else { // G0_G1 != 11
-    if((x.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-       ((x.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull && x.w[0U] > 0x378d8e63ffffffffull)) {
+  } else {  // G0_G1 != 11
+    if ((x.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
+        ((x.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+         x.w[0U] > 0x378d8e63ffffffffull)) {
       // x is non-canonical if coefficient is larger than 10^34 -1
       x.w[1U] = (x.w[1U] & MASK_SIGN) | (x.w[1U] & MASK_EXP);
       x.w[0U] = 0x0ull;
-    } else { // canonical
+    } else {  // canonical
       ;
     }
   }
 }
 // check for non-canonical y
-if((y.w[1U] & MASK_NAN) == MASK_NAN) {       // y is NAN
-  y.w[1U] = y.w[1U] & 0xfe003fffffffffffull; // clear out G[6]-G[16]
+if ((y.w[1U] & MASK_NAN) == MASK_NAN) {       // y is NAN
+  y.w[1U] = y.w[1U] & 0xfe003fffffffffffull;  // clear out G[6]-G[16]
   // check for non-canonical NaN payload
-  if(((y.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-     (((y.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-      (y.w[0U] > 0x38c15b09ffffffffull))) {
+  if (((y.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
+      (((y.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+       (y.w[0U] > 0x38c15b09ffffffffull))) {
     y.w[1U] = y.w[1U] & 0xffffc00000000000ull;
     y.w[0U] = 0x0ull;
   }
-} else if((y.w[1U] & MASK_ANY_INF) == MASK_INF) { // y = inf
+} else if ((y.w[1U] & MASK_ANY_INF) == MASK_INF) {  // y = inf
   y.w[1U] = y.w[1U] & (MASK_SIGN | MASK_INF);
   y.w[0U] = 0x0ull;
-} else { // y is not special
+} else {  // y is not special
   // check for non-canonical values - treated as zero
-  if((y.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) { // G0_G1=11
+  if ((y.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {  // G0_G1=11
     // non-canonical
     y.w[1U] = (y.w[1U] & MASK_SIGN) | ((y.w[1U] << 2) & MASK_EXP);
     y.w[0U] = 0x0ull;
-  } else { // G0_G1 != 11
-    if((y.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-       ((y.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull && y.w[0U] > 0x378d8e63ffffffffull)) {
+  } else {  // G0_G1 != 11
+    if ((y.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
+        ((y.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+         y.w[0U] > 0x378d8e63ffffffffull)) {
       // y is non-canonical if coefficient is larger than 10^34 -1
       y.w[1U] = (y.w[1U] & MASK_SIGN) | (y.w[1U] & MASK_EXP);
       y.w[0U] = 0x0ull;
-    } else { // canonical
+    } else {  // canonical
       ;
     }
   }
 }
 
 // NaN (CASE1)
-if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
-  if((x.w[1U] & MASK_SNAN) == MASK_SNAN) { // x is SNaN
+if ((x.w[1U] & MASK_NAN) == MASK_NAN) {      // x is NAN
+  if ((x.w[1U] & MASK_SNAN) == MASK_SNAN) {  // x is SNaN
     // if x is SNAN, then return quiet (x)
-    *pfpsf |= BID_INVALID_EXCEPTION;           // set exception if SNaN
-    x.w[1U] = x.w[1U] & 0xfdffffffffffffffull; // quietize x
+    *pfpsf |= BID_INVALID_EXCEPTION;            // set exception if SNaN
+    x.w[1U] = x.w[1U] & 0xfdffffffffffffffull;  // quietize x
     res = x;
-  } else {                                     // x is QNaN
-    if((y.w[1U] & MASK_NAN) == MASK_NAN) {     // y is NAN
-      if((y.w[1U] & MASK_SNAN) == MASK_SNAN) { // y is SNAN
-        *pfpsf |= BID_INVALID_EXCEPTION;       // set invalid flag
+  } else {                                       // x is QNaN
+    if ((y.w[1U] & MASK_NAN) == MASK_NAN) {      // y is NAN
+      if ((y.w[1U] & MASK_SNAN) == MASK_SNAN) {  // y is SNAN
+        *pfpsf |= BID_INVALID_EXCEPTION;         // set invalid flag
       }
       res = x;
     } else {
@@ -365,10 +383,10 @@ if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
     }
   }
   BID_RETURN(res);
-} else if((y.w[1U] & MASK_NAN) == MASK_NAN) { // y is NaN, but x is not
-  if((y.w[1U] & MASK_SNAN) == MASK_SNAN) {
-    *pfpsf |= BID_INVALID_EXCEPTION;           // set exception if SNaN
-    y.w[1U] = y.w[1U] & 0xfdffffffffffffffull; // quietize y
+} else if ((y.w[1U] & MASK_NAN) == MASK_NAN) {  // y is NaN, but x is not
+  if ((y.w[1U] & MASK_SNAN) == MASK_SNAN) {
+    *pfpsf |= BID_INVALID_EXCEPTION;            // set exception if SNaN
+    y.w[1U] = y.w[1U] & 0xfdffffffffffffffull;  // quietize y
     res = y;
   } else {
     // will return x (which is not NaN)
@@ -378,17 +396,19 @@ if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
 }
 // SIMPLE (CASE2)
 // if all the bits are the same, these numbers are equal (not Greater).
-if(x.w[0U] == y.w[0U] && x.w[1U] == y.w[1U]) {
+if (x.w[0U] == y.w[0U] && x.w[1U] == y.w[1U]) {
   res = y;
   BID_RETURN(res);
 }
 // INFINITY (CASE3)
-if((x.w[1U] & MASK_INF) == MASK_INF) {
+if ((x.w[1U] & MASK_INF) == MASK_INF) {
   // if x infinity, it has maximum magnitude.
   // Check if magnitudes are equal.  If x is negative, return it.
-  res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN && (y.w[1U] & MASK_INF) == MASK_INF) ? x : y;
+  res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN && (y.w[1U] & MASK_INF) == MASK_INF)
+            ? x
+            : y;
   BID_RETURN(res);
-} else if((y.w[1U] & MASK_INF) == MASK_INF) {
+} else if ((y.w[1U] & MASK_INF) == MASK_INF) {
   // x is finite, so if y is infinity, then x is less in magnitude
   res = x;
   BID_RETURN(res);
@@ -409,93 +429,128 @@ sig_y.w[0U] = y.w[0U];
 //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
 //        therefore ignore the exponent field
 //    (Any non-canonical # is considered 0)
-if((sig_x.w[1U] == 0) && (sig_x.w[0U] == 0)) {
+if ((sig_x.w[1U] == 0) && (sig_x.w[0U] == 0)) {
   res = x;
   BID_RETURN(res);
 }
-if((sig_y.w[1U] == 0) && (sig_y.w[0U] == 0)) {
+if ((sig_y.w[1U] == 0) && (sig_y.w[0U] == 0)) {
   res = y;
   BID_RETURN(res);
 }
 // REDUNDANT REPRESENTATIONS (CASE6)
 // check if exponents are the same and significands are the same
-if(exp_y == exp_x && sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] == sig_y.w[0U]) {
-  if(x.w[1U] & 0x8000000000000000ull) { // x is negative
+if (exp_y == exp_x && sig_x.w[1U] == sig_y.w[1U] &&
+    sig_x.w[0U] == sig_y.w[0U]) {
+  if (x.w[1U] & 0x8000000000000000ull) {  // x is negative
     res = x;
     BID_RETURN(res);
   } else {
     res = y;
     BID_RETURN(res);
   }
-} else if(((sig_x.w[1U] > sig_y.w[1U] || (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] > sig_y.w[0U])) && exp_x == exp_y) || ((sig_x.w[1U] > sig_y.w[1U] || (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U])) && exp_x > exp_y)) {
+} else if (((sig_x.w[1U] > sig_y.w[1U] ||
+             (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] > sig_y.w[0U])) &&
+            exp_x == exp_y) ||
+           ((sig_x.w[1U] > sig_y.w[1U] ||
+             (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U])) &&
+            exp_x > exp_y)) {
   // if both components are either bigger or smaller, it is clear what
   // needs to be done; also if the magnitudes are equal
   res = y;
   BID_RETURN(res);
-} else if(((sig_y.w[1U] > sig_x.w[1U] || (sig_y.w[1U] == sig_x.w[1U] && sig_y.w[0U] > sig_x.w[0U])) && exp_y == exp_x) || ((sig_y.w[1U] > sig_x.w[1U] || (sig_y.w[1U] == sig_x.w[1U] && sig_y.w[0U] >= sig_x.w[0U])) && exp_y > exp_x)) {
+} else if (((sig_y.w[1U] > sig_x.w[1U] ||
+             (sig_y.w[1U] == sig_x.w[1U] && sig_y.w[0U] > sig_x.w[0U])) &&
+            exp_y == exp_x) ||
+           ((sig_y.w[1U] > sig_x.w[1U] ||
+             (sig_y.w[1U] == sig_x.w[1U] && sig_y.w[0U] >= sig_x.w[0U])) &&
+            exp_y > exp_x)) {
   res = x;
   BID_RETURN(res);
 } else {
-  ; // continue
+  ;  // continue
 }
 diff = exp_x - exp_y;
 // if |exp_x - exp_y| < 33, it comes down to the compensated significand
-if(diff > 0) { // to simplify the loop below,
+if (diff > 0) {  // to simplify the loop below,
   // if exp_x is 33 greater than exp_y, no need for compensation
-  if(diff > 33) {
-    res = y; // difference cannot be greater than 10^33
+  if (diff > 33) {
+    res = y;  // difference cannot be greater than 10^33
     BID_RETURN(res);
   }
-  if(diff > 19) { // 128 by 128 bit multiply -> 256 bits
+  if (diff > 19) {  // 128 by 128 bit multiply -> 256 bits
     __mul_128x128_to_256(sig_n_prime256, sig_x, bid_ten2k128[diff - 20]);
     // if positive, return whichever significand is larger
     // (converse if negative)
-    if(sig_n_prime256.w[3U] == 0 && (sig_n_prime256.w[2U] == 0) && sig_n_prime256.w[1U] == sig_y.w[1U] && (sig_n_prime256.w[0U] == sig_y.w[0U])) {
-      res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x; // if equal
+    if (sig_n_prime256.w[3U] == 0 && (sig_n_prime256.w[2U] == 0) &&
+        sig_n_prime256.w[1U] == sig_y.w[1U] &&
+        (sig_n_prime256.w[0U] == sig_y.w[0U])) {
+      res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;  // if equal
       BID_RETURN(res);
     }
-    res = (((sig_n_prime256.w[3U] > 0) || sig_n_prime256.w[2U] > 0) || (sig_n_prime256.w[1U] > sig_y.w[1U]) || (sig_n_prime256.w[1U] == sig_y.w[1U] && sig_n_prime256.w[0U] > sig_y.w[0U])) ? y : x;
+    res = (((sig_n_prime256.w[3U] > 0) || sig_n_prime256.w[2U] > 0) ||
+           (sig_n_prime256.w[1U] > sig_y.w[1U]) ||
+           (sig_n_prime256.w[1U] == sig_y.w[1U] &&
+            sig_n_prime256.w[0U] > sig_y.w[0U]))
+              ? y
+              : x;
     BID_RETURN(res);
   }
   __mul_64x128_to_192(sig_n_prime192, bid_ten2k64[diff], sig_x);
   // if positive, return whichever significand is larger
   // (converse if negative)
-  if((sig_n_prime192.w[2U] == 0) && sig_n_prime192.w[1U] == sig_y.w[1U] && (sig_n_prime192.w[0U] == sig_y.w[0U])) {
+  if ((sig_n_prime192.w[2U] == 0) && sig_n_prime192.w[1U] == sig_y.w[1U] &&
+      (sig_n_prime192.w[0U] == sig_y.w[0U])) {
     // if = in magnitude, return +, (if possible)
     res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
     BID_RETURN(res);
   }
-  res = ((sig_n_prime192.w[2U] > 0) || (sig_n_prime192.w[1U] > sig_y.w[1U]) || (sig_n_prime192.w[1U] == sig_y.w[1U] && sig_n_prime192.w[0U] > sig_y.w[0U])) ? y : x;
+  res = ((sig_n_prime192.w[2U] > 0) || (sig_n_prime192.w[1U] > sig_y.w[1U]) ||
+         (sig_n_prime192.w[1U] == sig_y.w[1U] &&
+          sig_n_prime192.w[0U] > sig_y.w[0U]))
+            ? y
+            : x;
   BID_RETURN(res);
 }
 diff = exp_y - exp_x;
 // if exp_x is 33 less than exp_y, no need for compensation
-if(diff > 33) {
+if (diff > 33) {
   res = x;
   BID_RETURN(res);
 }
-if(diff > 19) { // 128 by 128 bit multiply -> 256 bits
+if (diff > 19) {  // 128 by 128 bit multiply -> 256 bits
   // adjust the y significand upwards
   __mul_128x128_to_256(sig_n_prime256, sig_y, bid_ten2k128[diff - 20]);
   // if positive, return whichever significand is larger
   // (converse if negative)
-  if(sig_n_prime256.w[3U] == 0 && (sig_n_prime256.w[2U] == 0) && sig_n_prime256.w[1U] == sig_x.w[1U] && (sig_n_prime256.w[0U] == sig_x.w[0U])) {
+  if (sig_n_prime256.w[3U] == 0 && (sig_n_prime256.w[2U] == 0) &&
+      sig_n_prime256.w[1U] == sig_x.w[1U] &&
+      (sig_n_prime256.w[0U] == sig_x.w[0U])) {
     // if = in magnitude, return +, (if possible)
     res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
     BID_RETURN(res);
   }
-  res = (sig_n_prime256.w[3U] == 0 && sig_n_prime256.w[2U] == 0 && (sig_n_prime256.w[1U] < sig_x.w[1U] || (sig_n_prime256.w[1U] == sig_x.w[1U] && sig_n_prime256.w[0U] < sig_x.w[0U]))) ? y : x;
+  res = (sig_n_prime256.w[3U] == 0 && sig_n_prime256.w[2U] == 0 &&
+         (sig_n_prime256.w[1U] < sig_x.w[1U] ||
+          (sig_n_prime256.w[1U] == sig_x.w[1U] &&
+           sig_n_prime256.w[0U] < sig_x.w[0U])))
+            ? y
+            : x;
   BID_RETURN(res);
 }
 // adjust the y significand upwards
 __mul_64x128_to_192(sig_n_prime192, bid_ten2k64[diff], sig_y);
 // if positive, return whichever significand is larger (converse if negative)
-if((sig_n_prime192.w[2U] == 0) && sig_n_prime192.w[1U] == sig_x.w[1U] && (sig_n_prime192.w[0U] == sig_x.w[0U])) {
+if ((sig_n_prime192.w[2U] == 0) && sig_n_prime192.w[1U] == sig_x.w[1U] &&
+    (sig_n_prime192.w[0U] == sig_x.w[0U])) {
   // if = in magnitude, return +, if possible)
   res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
   BID_RETURN(res);
 }
-res = (sig_n_prime192.w[2U] == 0 && (sig_n_prime192.w[1U] < sig_x.w[1U] || (sig_n_prime192.w[1U] == sig_x.w[1U] && sig_n_prime192.w[0U] < sig_x.w[0U]))) ? y : x;
+res = (sig_n_prime192.w[2U] == 0 && (sig_n_prime192.w[1U] < sig_x.w[1U] ||
+                                     (sig_n_prime192.w[1U] == sig_x.w[1U] &&
+                                      sig_n_prime192.w[0U] < sig_x.w[0U])))
+          ? y
+          : x;
 BID_RETURN(res);
 }
 
@@ -517,77 +572,79 @@ char x_is_zero = 0, y_is_zero = 0;
 // BID_SWAP128 (y);
 
 // check for non-canonical x
-if((x.w[1U] & MASK_NAN) == MASK_NAN) {       // x is NAN
-  x.w[1U] = x.w[1U] & 0xfe003fffffffffffull; // clear out G[6]-G[16]
+if ((x.w[1U] & MASK_NAN) == MASK_NAN) {       // x is NAN
+  x.w[1U] = x.w[1U] & 0xfe003fffffffffffull;  // clear out G[6]-G[16]
   // check for non-canonical NaN payload
-  if(((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-     (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-      (x.w[0U] > 0x38c15b09ffffffffull))) {
+  if (((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
+      (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+       (x.w[0U] > 0x38c15b09ffffffffull))) {
     x.w[1U] = x.w[1U] & 0xffffc00000000000ull;
     x.w[0U] = 0x0ull;
   }
-} else if((x.w[1U] & MASK_ANY_INF) == MASK_INF) { // x = inf
+} else if ((x.w[1U] & MASK_ANY_INF) == MASK_INF) {  // x = inf
   x.w[1U] = x.w[1U] & (MASK_SIGN | MASK_INF);
   x.w[0U] = 0x0ull;
-} else { // x is not special
+} else {  // x is not special
   // check for non-canonical values - treated as zero
-  if((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) { // G0_G1=11
+  if ((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {  // G0_G1=11
     // non-canonical
     x.w[1U] = (x.w[1U] & MASK_SIGN) | ((x.w[1U] << 2) & MASK_EXP);
     x.w[0U] = 0x0ull;
-  } else { // G0_G1 != 11
-    if((x.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-       ((x.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull && x.w[0U] > 0x378d8e63ffffffffull)) {
+  } else {  // G0_G1 != 11
+    if ((x.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
+        ((x.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+         x.w[0U] > 0x378d8e63ffffffffull)) {
       // x is non-canonical if coefficient is larger than 10^34 -1
       x.w[1U] = (x.w[1U] & MASK_SIGN) | (x.w[1U] & MASK_EXP);
       x.w[0U] = 0x0ull;
-    } else { // canonical
+    } else {  // canonical
       ;
     }
   }
 }
 // check for non-canonical y
-if((y.w[1U] & MASK_NAN) == MASK_NAN) {       // y is NAN
-  y.w[1U] = y.w[1U] & 0xfe003fffffffffffull; // clear out G[6]-G[16]
+if ((y.w[1U] & MASK_NAN) == MASK_NAN) {       // y is NAN
+  y.w[1U] = y.w[1U] & 0xfe003fffffffffffull;  // clear out G[6]-G[16]
   // check for non-canonical NaN payload
-  if(((y.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-     (((y.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-      (y.w[0U] > 0x38c15b09ffffffffull))) {
+  if (((y.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
+      (((y.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+       (y.w[0U] > 0x38c15b09ffffffffull))) {
     y.w[1U] = y.w[1U] & 0xffffc00000000000ull;
     y.w[0U] = 0x0ull;
   }
-} else if((y.w[1U] & MASK_ANY_INF) == MASK_INF) { // y = inf
+} else if ((y.w[1U] & MASK_ANY_INF) == MASK_INF) {  // y = inf
   y.w[1U] = y.w[1U] & (MASK_SIGN | MASK_INF);
   y.w[0U] = 0x0ull;
-} else { // y is not special
+} else {  // y is not special
   // check for non-canonical values - treated as zero
-  if((y.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) { // G0_G1=11
+  if ((y.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {  // G0_G1=11
     // non-canonical
     y.w[1U] = (y.w[1U] & MASK_SIGN) | ((y.w[1U] << 2) & MASK_EXP);
     y.w[0U] = 0x0ull;
-  } else { // G0_G1 != 11
-    if((y.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-       ((y.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull && y.w[0U] > 0x378d8e63ffffffffull)) {
+  } else {  // G0_G1 != 11
+    if ((y.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
+        ((y.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+         y.w[0U] > 0x378d8e63ffffffffull)) {
       // y is non-canonical if coefficient is larger than 10^34 -1
       y.w[1U] = (y.w[1U] & MASK_SIGN) | (y.w[1U] & MASK_EXP);
       y.w[0U] = 0x0ull;
-    } else { // canonical
+    } else {  // canonical
       ;
     }
   }
 }
 
 // NaN (CASE1)
-if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
-  if((x.w[1U] & MASK_SNAN) == MASK_SNAN) { // x is SNaN
+if ((x.w[1U] & MASK_NAN) == MASK_NAN) {      // x is NAN
+  if ((x.w[1U] & MASK_SNAN) == MASK_SNAN) {  // x is SNaN
     // if x is SNAN, then return quiet (x)
-    *pfpsf |= BID_INVALID_EXCEPTION;           // set exception if SNaN
-    x.w[1U] = x.w[1U] & 0xfdffffffffffffffull; // quietize x
+    *pfpsf |= BID_INVALID_EXCEPTION;            // set exception if SNaN
+    x.w[1U] = x.w[1U] & 0xfdffffffffffffffull;  // quietize x
     res = x;
-  } else {                                     // x is QNaN
-    if((y.w[1U] & MASK_NAN) == MASK_NAN) {     // y is NAN
-      if((y.w[1U] & MASK_SNAN) == MASK_SNAN) { // y is SNAN
-        *pfpsf |= BID_INVALID_EXCEPTION;       // set invalid flag
+  } else {                                       // x is QNaN
+    if ((y.w[1U] & MASK_NAN) == MASK_NAN) {      // y is NAN
+      if ((y.w[1U] & MASK_SNAN) == MASK_SNAN) {  // y is SNAN
+        *pfpsf |= BID_INVALID_EXCEPTION;         // set invalid flag
       }
       res = x;
     } else {
@@ -595,10 +652,10 @@ if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
     }
   }
   BID_RETURN(res);
-} else if((y.w[1U] & MASK_NAN) == MASK_NAN) { // y is NaN, but x is not
-  if((y.w[1U] & MASK_SNAN) == MASK_SNAN) {
-    *pfpsf |= BID_INVALID_EXCEPTION;           // set exception if SNaN
-    y.w[1U] = y.w[1U] & 0xfdffffffffffffffull; // quietize y
+} else if ((y.w[1U] & MASK_NAN) == MASK_NAN) {  // y is NaN, but x is not
+  if ((y.w[1U] & MASK_SNAN) == MASK_SNAN) {
+    *pfpsf |= BID_INVALID_EXCEPTION;            // set exception if SNaN
+    y.w[1U] = y.w[1U] & 0xfdffffffffffffffull;  // quietize y
     res = y;
   } else {
     // will return x (which is not NaN)
@@ -608,15 +665,15 @@ if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
 }
 // SIMPLE (CASE2)
 // if all the bits are the same, these numbers are equal (not Greater).
-if(x.w[0U] == y.w[0U] && x.w[1U] == y.w[1U]) {
+if (x.w[0U] == y.w[0U] && x.w[1U] == y.w[1U]) {
   res = x;
   BID_RETURN(res);
 }
 // INFINITY (CASE3)
-if((x.w[1U] & MASK_INF) == MASK_INF) {
+if ((x.w[1U] & MASK_INF) == MASK_INF) {
   res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN) ? y : x;
   BID_RETURN(res);
-} else if((y.w[1U] & MASK_INF) == MASK_INF) {
+} else if ((y.w[1U] & MASK_INF) == MASK_INF) {
   // x is finite, so if y is positive infinity, then x is less, return 0
   //                 if y is negative infinity, then x is greater, return 1
   res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;
@@ -638,38 +695,38 @@ sig_y.w[0U] = y.w[0U];
 //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
 //        therefore ignore the exponent field
 //    (Any non-canonical # is considered 0)
-if((sig_x.w[1U] == 0) && (sig_x.w[0U] == 0)) {
+if ((sig_x.w[1U] == 0) && (sig_x.w[0U] == 0)) {
   x_is_zero = 1;
 }
-if((sig_y.w[1U] == 0) && (sig_y.w[0U] == 0)) {
+if ((sig_y.w[1U] == 0) && (sig_y.w[0U] == 0)) {
   y_is_zero = 1;
 }
 
-if(x_is_zero && y_is_zero) {
+if (x_is_zero && y_is_zero) {
   // if both numbers are zero, neither is greater => return either number
   res = x;
   BID_RETURN(res);
-} else if(x_is_zero) {
+} else if (x_is_zero) {
   // is x is zero, it is greater if Y is negative
   res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;
   BID_RETURN(res);
-} else if(y_is_zero) {
+} else if (y_is_zero) {
   // is y is zero, X is greater if it is positive
   res = ((x.w[1U] & MASK_SIGN) != MASK_SIGN) ? x : y;
   BID_RETURN(res);
 }
 // OPPOSITE SIGN (CASE5)
 // now, if the sign bits differ, x is greater if y is negative
-if(((x.w[1U] ^ y.w[1U]) & MASK_SIGN) == MASK_SIGN) {
+if (((x.w[1U] ^ y.w[1U]) & MASK_SIGN) == MASK_SIGN) {
   res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;
   BID_RETURN(res);
 }
 // REDUNDANT REPRESENTATIONS (CASE6)
 // if exponents are the same, then we have a simple comparison of
 // the significands
-if(exp_y == exp_x) {
-  res = (((sig_x.w[1U] > sig_y.w[1U]) || (sig_x.w[1U] == sig_y.w[1U] &&
-                                          sig_x.w[0U] >= sig_y.w[0U])) ^
+if (exp_y == exp_x) {
+  res = (((sig_x.w[1U] > sig_y.w[1U]) ||
+          (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U])) ^
          ((x.w[1U] & MASK_SIGN) == MASK_SIGN))
             ? x
             : y;
@@ -677,29 +734,36 @@ if(exp_y == exp_x) {
 }
 // if both components are either bigger or smaller, it is clear what
 // needs to be done
-if((sig_x.w[1U] > sig_y.w[1U] || (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] > sig_y.w[0U])) && exp_x >= exp_y) {
+if ((sig_x.w[1U] > sig_y.w[1U] ||
+     (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] > sig_y.w[0U])) &&
+    exp_x >= exp_y) {
   res = ((x.w[1U] & MASK_SIGN) != MASK_SIGN) ? x : y;
   BID_RETURN(res);
 }
-if((sig_x.w[1U] < sig_y.w[1U] || (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] < sig_y.w[0U])) && exp_x <= exp_y) {
+if ((sig_x.w[1U] < sig_y.w[1U] ||
+     (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] < sig_y.w[0U])) &&
+    exp_x <= exp_y) {
   res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;
   BID_RETURN(res);
 }
 diff = exp_x - exp_y;
 // if |exp_x - exp_y| < 33, it comes down to the compensated significand
-if(diff > 0) { // to simplify the loop below,
+if (diff > 0) {  // to simplify the loop below,
   // if exp_x is 33 greater than exp_y, no need for compensation
-  if(diff > 33) {
+  if (diff > 33) {
     // difference cannot be greater than 10^33
     res = ((x.w[1U] & MASK_SIGN) != MASK_SIGN) ? x : y;
     BID_RETURN(res);
   }
-  if(diff > 19) { // 128 by 128 bit multiply -> 256 bits
+  if (diff > 19) {  // 128 by 128 bit multiply -> 256 bits
     __mul_128x128_to_256(sig_n_prime256, sig_x, bid_ten2k128[diff - 20]);
     // if postitive, return whichever significand is larger
     // (converse if negative)
-    res = ((((sig_n_prime256.w[3U] > 0) || sig_n_prime256.w[2U] > 0) || (sig_n_prime256.w[1U] > sig_y.w[1U]) || (sig_n_prime256.w[1U] == sig_y.w[1U] && sig_n_prime256.w[0U] > sig_y.w[0U])) ^ ((y.w[1U] & MASK_SIGN) ==
-                                                                                                                                                                                                MASK_SIGN))
+    res = ((((sig_n_prime256.w[3U] > 0) || sig_n_prime256.w[2U] > 0) ||
+            (sig_n_prime256.w[1U] > sig_y.w[1U]) ||
+            (sig_n_prime256.w[1U] == sig_y.w[1U] &&
+             sig_n_prime256.w[0U] > sig_y.w[0U])) ^
+           ((y.w[1U] & MASK_SIGN) == MASK_SIGN))
               ? x
               : y;
     BID_RETURN(res);
@@ -707,38 +771,43 @@ if(diff > 0) { // to simplify the loop below,
   __mul_64x128_to_192(sig_n_prime192, bid_ten2k64[diff], sig_x);
   // if postitive, return whichever significand is larger
   // (converse if negative)
-  res =
-      (((sig_n_prime192.w[2U] > 0) || (sig_n_prime192.w[1U] > sig_y.w[1U]) || (sig_n_prime192.w[1U] == sig_y.w[1U] && sig_n_prime192.w[0U] > sig_y.w[0U])) ^ ((y.w[1U] & MASK_SIGN) == MASK_SIGN)) ? x : y;
+  res = (((sig_n_prime192.w[2U] > 0) || (sig_n_prime192.w[1U] > sig_y.w[1U]) ||
+          (sig_n_prime192.w[1U] == sig_y.w[1U] &&
+           sig_n_prime192.w[0U] > sig_y.w[0U])) ^
+         ((y.w[1U] & MASK_SIGN) == MASK_SIGN))
+            ? x
+            : y;
   BID_RETURN(res);
 }
 diff = exp_y - exp_x;
 // if exp_x is 33 less than exp_y, no need for compensation
-if(diff > 33) {
+if (diff > 33) {
   res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;
   BID_RETURN(res);
 }
-if(diff > 19) { // 128 by 128 bit multiply -> 256 bits
+if (diff > 19) {  // 128 by 128 bit multiply -> 256 bits
   // adjust the y significand upwards
   __mul_128x128_to_256(sig_n_prime256, sig_y, bid_ten2k128[diff - 20]);
   // if postitive, return whichever significand is larger
   // (converse if negative)
-  res =
-      ((sig_n_prime256.w[3U] != 0 || sig_n_prime256.w[2U] != 0 || (sig_n_prime256.w[1U] > sig_x.w[1U] || (sig_n_prime256.w[1U] == sig_x.w[1U] && sig_n_prime256.w[0U] > sig_x.w[0U]))) ^ ((x.w[1U] & MASK_SIGN) !=
-                                                                                                                                                                                          MASK_SIGN))
-          ? x
-          : y;
+  res = ((sig_n_prime256.w[3U] != 0 || sig_n_prime256.w[2U] != 0 ||
+          (sig_n_prime256.w[1U] > sig_x.w[1U] ||
+           (sig_n_prime256.w[1U] == sig_x.w[1U] &&
+            sig_n_prime256.w[0U] > sig_x.w[0U]))) ^
+         ((x.w[1U] & MASK_SIGN) != MASK_SIGN))
+            ? x
+            : y;
   BID_RETURN(res);
 }
 // adjust the y significand upwards
 __mul_64x128_to_192(sig_n_prime192, bid_ten2k64[diff], sig_y);
 // if postitive, return whichever significand is larger (converse if negative)
-res =
-    ((sig_n_prime192.w[2U] != 0 || (sig_n_prime192.w[1U] > sig_x.w[1U] || (sig_n_prime192.w[1U] == sig_x.w[1U] && sig_n_prime192.w[0U] >
-                                                                                                                      sig_x.w[0U]))) ^
-     ((y.w[1U] & MASK_SIGN) !=
-      MASK_SIGN))
-        ? x
-        : y;
+res = ((sig_n_prime192.w[2U] != 0 || (sig_n_prime192.w[1U] > sig_x.w[1U] ||
+                                      (sig_n_prime192.w[1U] == sig_x.w[1U] &&
+                                       sig_n_prime192.w[0U] > sig_x.w[0U]))) ^
+       ((y.w[1U] & MASK_SIGN) != MASK_SIGN))
+          ? x
+          : y;
 BID_RETURN(res);
 }
 
@@ -759,78 +828,79 @@ BID_UINT256 sig_n_prime256;
 // BID_SWAP128 (y);
 
 // check for non-canonical x
-if((x.w[1U] & MASK_NAN) == MASK_NAN) {       // x is NAN
-  x.w[1U] = x.w[1U] & 0xfe003fffffffffffull; // clear out G[6]-G[16]
+if ((x.w[1U] & MASK_NAN) == MASK_NAN) {       // x is NAN
+  x.w[1U] = x.w[1U] & 0xfe003fffffffffffull;  // clear out G[6]-G[16]
   // check for non-canonical NaN payload
-  if(((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-     (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-      (x.w[0U] > 0x38c15b09ffffffffull))) {
+  if (((x.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
+      (((x.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+       (x.w[0U] > 0x38c15b09ffffffffull))) {
     x.w[1U] = x.w[1U] & 0xffffc00000000000ull;
     x.w[0U] = 0x0ull;
   }
-} else if((x.w[1U] & MASK_ANY_INF) == MASK_INF) { // x = inf
+} else if ((x.w[1U] & MASK_ANY_INF) == MASK_INF) {  // x = inf
   x.w[1U] = x.w[1U] & (MASK_SIGN | MASK_INF);
   x.w[0U] = 0x0ull;
-} else { // x is not special
+} else {  // x is not special
   // check for non-canonical values - treated as zero
-  if((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) { // G0_G1=11
+  if ((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {  // G0_G1=11
     // non-canonical
     x.w[1U] = (x.w[1U] & MASK_SIGN) | ((x.w[1U] << 2) & MASK_EXP);
     x.w[0U] = 0x0ull;
-  } else { // G0_G1 != 11
-    if((x.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-       ((x.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull && x.w[0U] > 0x378d8e63ffffffffull)) {
+  } else {  // G0_G1 != 11
+    if ((x.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
+        ((x.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+         x.w[0U] > 0x378d8e63ffffffffull)) {
       // x is non-canonical if coefficient is larger than 10^34 -1
       x.w[1U] = (x.w[1U] & MASK_SIGN) | (x.w[1U] & MASK_EXP);
       x.w[0U] = 0x0ull;
-    } else { // canonical
+    } else {  // canonical
       ;
     }
   }
 }
 // check for non-canonical y
-if((y.w[1U] & MASK_NAN) == MASK_NAN) {       // y is NAN
-  y.w[1U] = y.w[1U] & 0xfe003fffffffffffull; // clear out G[6]-G[16]
+if ((y.w[1U] & MASK_NAN) == MASK_NAN) {       // y is NAN
+  y.w[1U] = y.w[1U] & 0xfe003fffffffffffull;  // clear out G[6]-G[16]
   // check for non-canonical NaN payload
-  if(((y.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
-     (((y.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
-      (y.w[0U] > 0x38c15b09ffffffffull))) {
+  if (((y.w[1U] & 0x00003fffffffffffull) > 0x0000314dc6448d93ull) ||
+      (((y.w[1U] & 0x00003fffffffffffull) == 0x0000314dc6448d93ull) &&
+       (y.w[0U] > 0x38c15b09ffffffffull))) {
     y.w[1U] = y.w[1U] & 0xffffc00000000000ull;
     y.w[0U] = 0x0ull;
   }
-} else if((y.w[1U] & MASK_ANY_INF) == MASK_INF) { // y = inf
+} else if ((y.w[1U] & MASK_ANY_INF) == MASK_INF) {  // y = inf
   y.w[1U] = y.w[1U] & (MASK_SIGN | MASK_INF);
   y.w[0U] = 0x0ull;
-} else { // y is not special
+} else {  // y is not special
   // check for non-canonical values - treated as zero
-  if((y.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) { // G0_G1=11
+  if ((y.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {  // G0_G1=11
     // non-canonical
     y.w[1U] = (y.w[1U] & MASK_SIGN) | ((y.w[1U] << 2) & MASK_EXP);
     y.w[0U] = 0x0ull;
-  } else { // G0_G1 != 11
-    if((y.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
-       ((y.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
-        y.w[0U] > 0x378d8e63ffffffffull)) {
+  } else {  // G0_G1 != 11
+    if ((y.w[1U] & MASK_COEFF) > 0x0001ed09bead87c0ull ||
+        ((y.w[1U] & MASK_COEFF) == 0x0001ed09bead87c0ull &&
+         y.w[0U] > 0x378d8e63ffffffffull)) {
       // y is non-canonical if coefficient is larger than 10^34 -1
       y.w[1U] = (y.w[1U] & MASK_SIGN) | (y.w[1U] & MASK_EXP);
       y.w[0U] = 0x0ull;
-    } else { // canonical
+    } else {  // canonical
       ;
     }
   }
 }
 
 // NaN (CASE1)
-if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
-  if((x.w[1U] & MASK_SNAN) == MASK_SNAN) { // x is SNaN
+if ((x.w[1U] & MASK_NAN) == MASK_NAN) {      // x is NAN
+  if ((x.w[1U] & MASK_SNAN) == MASK_SNAN) {  // x is SNaN
     // if x is SNAN, then return quiet (x)
-    *pfpsf |= BID_INVALID_EXCEPTION;           // set exception if SNaN
-    x.w[1U] = x.w[1U] & 0xfdffffffffffffffull; // quietize x
+    *pfpsf |= BID_INVALID_EXCEPTION;            // set exception if SNaN
+    x.w[1U] = x.w[1U] & 0xfdffffffffffffffull;  // quietize x
     res = x;
-  } else {                                     // x is QNaN
-    if((y.w[1U] & MASK_NAN) == MASK_NAN) {     // y is NAN
-      if((y.w[1U] & MASK_SNAN) == MASK_SNAN) { // y is SNAN
-        *pfpsf |= BID_INVALID_EXCEPTION;       // set invalid flag
+  } else {                                       // x is QNaN
+    if ((y.w[1U] & MASK_NAN) == MASK_NAN) {      // y is NAN
+      if ((y.w[1U] & MASK_SNAN) == MASK_SNAN) {  // y is SNAN
+        *pfpsf |= BID_INVALID_EXCEPTION;         // set invalid flag
       }
       res = x;
     } else {
@@ -838,10 +908,10 @@ if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
     }
   }
   BID_RETURN(res);
-} else if((y.w[1U] & MASK_NAN) == MASK_NAN) { // y is NaN, but x is not
-  if((y.w[1U] & MASK_SNAN) == MASK_SNAN) {
-    *pfpsf |= BID_INVALID_EXCEPTION;           // set exception if SNaN
-    y.w[1U] = y.w[1U] & 0xfdffffffffffffffull; // quietize y
+} else if ((y.w[1U] & MASK_NAN) == MASK_NAN) {  // y is NaN, but x is not
+  if ((y.w[1U] & MASK_SNAN) == MASK_SNAN) {
+    *pfpsf |= BID_INVALID_EXCEPTION;            // set exception if SNaN
+    y.w[1U] = y.w[1U] & 0xfdffffffffffffffull;  // quietize y
     res = y;
   } else {
     // will return x (which is not NaN)
@@ -851,16 +921,18 @@ if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
 }
 // SIMPLE (CASE2)
 // if all the bits are the same, these numbers are equal (not Greater).
-if(x.w[0U] == y.w[0U] && x.w[1U] == y.w[1U]) {
+if (x.w[0U] == y.w[0U] && x.w[1U] == y.w[1U]) {
   res = y;
   BID_RETURN(res);
 }
 // INFINITY (CASE3)
-if((x.w[1U] & MASK_INF) == MASK_INF) {
+if ((x.w[1U] & MASK_INF) == MASK_INF) {
   // if x infinity, it has maximum magnitude
-  res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN && (y.w[1U] & MASK_INF) == MASK_INF) ? y : x;
+  res = ((x.w[1U] & MASK_SIGN) == MASK_SIGN && (y.w[1U] & MASK_INF) == MASK_INF)
+            ? y
+            : x;
   BID_RETURN(res);
-} else if((y.w[1U] & MASK_INF) == MASK_INF) {
+} else if ((y.w[1U] & MASK_INF) == MASK_INF) {
   // x is finite, so if y is positive infinity, then x is less, return 0
   //                 if y is negative infinity, then x is greater, return 1
   res = y;
@@ -882,91 +954,126 @@ sig_y.w[0U] = y.w[0U];
 //    (ZERO x 10^A == ZERO x 10^B) for any valid A, B =>
 //         therefore ignore the exponent field
 //    (Any non-canonical # is considered 0)
-if((sig_x.w[1U] == 0) && (sig_x.w[0U] == 0)) {
+if ((sig_x.w[1U] == 0) && (sig_x.w[0U] == 0)) {
   res = y;
   BID_RETURN(res);
 }
-if((sig_y.w[1U] == 0) && (sig_y.w[0U] == 0)) {
+if ((sig_y.w[1U] == 0) && (sig_y.w[0U] == 0)) {
   res = x;
   BID_RETURN(res);
 }
 // REDUNDANT REPRESENTATIONS (CASE6)
-if(exp_y == exp_x && sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] == sig_y.w[0U]) {
+if (exp_y == exp_x && sig_x.w[1U] == sig_y.w[1U] &&
+    sig_x.w[0U] == sig_y.w[0U]) {
   // check if exponents are the same and significands are the same
-  if(x.w[1U] & 0x8000000000000000ull) { // x is negative
+  if (x.w[1U] & 0x8000000000000000ull) {  // x is negative
     res = y;
     BID_RETURN(res);
   } else {
     res = x;
     BID_RETURN(res);
   }
-} else if(((sig_x.w[1U] > sig_y.w[1U] || (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] > sig_y.w[0U])) && exp_x == exp_y) || ((sig_x.w[1U] > sig_y.w[1U] || (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U])) && exp_x > exp_y)) {
+} else if (((sig_x.w[1U] > sig_y.w[1U] ||
+             (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] > sig_y.w[0U])) &&
+            exp_x == exp_y) ||
+           ((sig_x.w[1U] > sig_y.w[1U] ||
+             (sig_x.w[1U] == sig_y.w[1U] && sig_x.w[0U] >= sig_y.w[0U])) &&
+            exp_x > exp_y)) {
   // if both components are either bigger or smaller, it is clear what
   // needs to be done; also if the magnitudes are equal
   res = x;
   BID_RETURN(res);
-} else if(((sig_y.w[1U] > sig_x.w[1U] || (sig_y.w[1U] == sig_x.w[1U] && sig_y.w[0U] > sig_x.w[0U])) && exp_y == exp_x) || ((sig_y.w[1U] > sig_x.w[1U] || (sig_y.w[1U] == sig_x.w[1U] && sig_y.w[0U] >= sig_x.w[0U])) && exp_y > exp_x)) {
+} else if (((sig_y.w[1U] > sig_x.w[1U] ||
+             (sig_y.w[1U] == sig_x.w[1U] && sig_y.w[0U] > sig_x.w[0U])) &&
+            exp_y == exp_x) ||
+           ((sig_y.w[1U] > sig_x.w[1U] ||
+             (sig_y.w[1U] == sig_x.w[1U] && sig_y.w[0U] >= sig_x.w[0U])) &&
+            exp_y > exp_x)) {
   res = y;
   BID_RETURN(res);
 } else {
-  ; // continue
+  ;  // continue
 }
 diff = exp_x - exp_y;
 // if |exp_x - exp_y| < 33, it comes down to the compensated significand
-if(diff > 0) { // to simplify the loop below,
+if (diff > 0) {  // to simplify the loop below,
   // if exp_x is 33 greater than exp_y, no need for compensation
-  if(diff > 33) {
-    res = x; // difference cannot be greater than 10^33
+  if (diff > 33) {
+    res = x;  // difference cannot be greater than 10^33
     BID_RETURN(res);
   }
-  if(diff > 19) { // 128 by 128 bit multiply -> 256 bits
+  if (diff > 19) {  // 128 by 128 bit multiply -> 256 bits
     __mul_128x128_to_256(sig_n_prime256, sig_x, bid_ten2k128[diff - 20]);
     // if postitive, return whichever significand is larger
     // (converse if negative)
-    if(sig_n_prime256.w[3U] == 0 && (sig_n_prime256.w[2U] == 0) && sig_n_prime256.w[1U] == sig_y.w[1U] && (sig_n_prime256.w[0U] == sig_y.w[0U])) {
-      res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y; // if equal
+    if (sig_n_prime256.w[3U] == 0 && (sig_n_prime256.w[2U] == 0) &&
+        sig_n_prime256.w[1U] == sig_y.w[1U] &&
+        (sig_n_prime256.w[0U] == sig_y.w[0U])) {
+      res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;  // if equal
       BID_RETURN(res);
     }
-    res = (((sig_n_prime256.w[3U] > 0) || sig_n_prime256.w[2U] > 0) || (sig_n_prime256.w[1U] > sig_y.w[1U]) || (sig_n_prime256.w[1U] == sig_y.w[1U] && sig_n_prime256.w[0U] > sig_y.w[0U])) ? x : y;
+    res = (((sig_n_prime256.w[3U] > 0) || sig_n_prime256.w[2U] > 0) ||
+           (sig_n_prime256.w[1U] > sig_y.w[1U]) ||
+           (sig_n_prime256.w[1U] == sig_y.w[1U] &&
+            sig_n_prime256.w[0U] > sig_y.w[0U]))
+              ? x
+              : y;
     BID_RETURN(res);
   }
   __mul_64x128_to_192(sig_n_prime192, bid_ten2k64[diff], sig_x);
   // if postitive, return whichever significand is larger (converse if negative)
-  if((sig_n_prime192.w[2U] == 0) && sig_n_prime192.w[1U] == sig_y.w[1U] && (sig_n_prime192.w[0U] == sig_y.w[0U])) {
+  if ((sig_n_prime192.w[2U] == 0) && sig_n_prime192.w[1U] == sig_y.w[1U] &&
+      (sig_n_prime192.w[0U] == sig_y.w[0U])) {
     // if equal, return positive magnitude
     res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;
     BID_RETURN(res);
   }
-  res = ((sig_n_prime192.w[2U] > 0) || (sig_n_prime192.w[1U] > sig_y.w[1U]) || (sig_n_prime192.w[1U] == sig_y.w[1U] && sig_n_prime192.w[0U] > sig_y.w[0U])) ? x : y;
+  res = ((sig_n_prime192.w[2U] > 0) || (sig_n_prime192.w[1U] > sig_y.w[1U]) ||
+         (sig_n_prime192.w[1U] == sig_y.w[1U] &&
+          sig_n_prime192.w[0U] > sig_y.w[0U]))
+            ? x
+            : y;
   BID_RETURN(res);
 }
 diff = exp_y - exp_x;
 // if exp_x is 33 less than exp_y, no need for compensation
-if(diff > 33) {
+if (diff > 33) {
   res = y;
   BID_RETURN(res);
 }
-if(diff > 19) { // 128 by 128 bit multiply -> 256 bits
+if (diff > 19) {  // 128 by 128 bit multiply -> 256 bits
   // adjust the y significand upwards
   __mul_128x128_to_256(sig_n_prime256, sig_y, bid_ten2k128[diff - 20]);
   // if postitive, return whichever significand is larger
   // (converse if negative)
-  if(sig_n_prime256.w[3U] == 0 && (sig_n_prime256.w[2U] == 0) && sig_n_prime256.w[1U] == sig_x.w[1U] && (sig_n_prime256.w[0U] == sig_x.w[0U])) {
+  if (sig_n_prime256.w[3U] == 0 && (sig_n_prime256.w[2U] == 0) &&
+      sig_n_prime256.w[1U] == sig_x.w[1U] &&
+      (sig_n_prime256.w[0U] == sig_x.w[0U])) {
     // if equal, return positive (if possible)
     res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;
     BID_RETURN(res);
   }
-  res = (sig_n_prime256.w[3U] == 0 && sig_n_prime256.w[2U] == 0 && (sig_n_prime256.w[1U] < sig_x.w[1U] || (sig_n_prime256.w[1U] == sig_x.w[1U] && sig_n_prime256.w[0U] < sig_x.w[0U]))) ? x : y;
+  res = (sig_n_prime256.w[3U] == 0 && sig_n_prime256.w[2U] == 0 &&
+         (sig_n_prime256.w[1U] < sig_x.w[1U] ||
+          (sig_n_prime256.w[1U] == sig_x.w[1U] &&
+           sig_n_prime256.w[0U] < sig_x.w[0U])))
+            ? x
+            : y;
   BID_RETURN(res);
 }
 // adjust the y significand upwards
 __mul_64x128_to_192(sig_n_prime192, bid_ten2k64[diff], sig_y);
 // if postitive, return whichever significand is larger (converse if negative)
-if((sig_n_prime192.w[2U] == 0) && sig_n_prime192.w[1U] == sig_x.w[1U] && (sig_n_prime192.w[0U] == sig_x.w[0U])) {
+if ((sig_n_prime192.w[2U] == 0) && sig_n_prime192.w[1U] == sig_x.w[1U] &&
+    (sig_n_prime192.w[0U] == sig_x.w[0U])) {
   // if equal, return positive (if possible)
   res = ((y.w[1U] & MASK_SIGN) == MASK_SIGN) ? x : y;
   BID_RETURN(res);
 }
-res = (sig_n_prime192.w[2U] == 0 && (sig_n_prime192.w[1U] < sig_x.w[1U] || (sig_n_prime192.w[1U] == sig_x.w[1U] && sig_n_prime192.w[0U] < sig_x.w[0U]))) ? x : y;
+res = (sig_n_prime192.w[2U] == 0 && (sig_n_prime192.w[1U] < sig_x.w[1U] ||
+                                     (sig_n_prime192.w[1U] == sig_x.w[1U] &&
+                                      sig_n_prime192.w[0U] < sig_x.w[0U])))
+          ? x
+          : y;
 BID_RETURN(res);
 }

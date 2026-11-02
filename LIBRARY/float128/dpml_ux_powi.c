@@ -83,9 +83,8 @@
    ((n) << 3 * EXPONENT_INDEX_FIELD_WIDTH) |               \
    (((n) + INDEX_INC) << 4 * EXPONENT_INDEX_FIELD_WIDTH))
 
-static void
-C_UX_POW_I(_X_FLOAT *packed_argument, WORD n, WORD index_map,
-           _X_FLOAT *packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_POW_I(_X_FLOAT* packed_argument, WORD n, WORD index_map,
+                       _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class, exponent, index;
   UX_FLOAT unpacked_argument, unpacked_result;
 
@@ -107,46 +106,50 @@ C_UX_POW_I(_X_FLOAT *packed_argument, WORD n, WORD index_map,
   */
 
   index = (WORD)((((U_WORD)n >> (BITS_PER_WORD - 1)) & 2) | (n & 1)) + (n != 0);
-  index = (WORD)(((U_WORD)index_map >> ((U_WORD)EXPONENT_INDEX_FIELD_WIDTH * (U_WORD)index)) & POWI_INDEX_MASK);
+  index = (WORD)(((U_WORD)index_map >>
+                  ((U_WORD)EXPONENT_INDEX_FIELD_WIDTH * (U_WORD)index)) &
+                 POWI_INDEX_MASK);
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      POWI_CLASS_TO_ACTION_MAP + index,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class = UNPACK(packed_argument, &unpacked_argument,
+                    POWI_CLASS_TO_ACTION_MAP + index,
+                    packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     return;
+  }
 
   /* Initialize result to 1 */
 
   UX_SET_SIGN_EXP_MSD(&unpacked_result, 0, 1, UX_MSB);
 
-  if(index <= (NEG_EXPONENT_INDEX + INDEX_INC)) { /* For negative exponents use reciprocal of the argument */
+  if (index <=
+      (NEG_EXPONENT_INDEX +
+       INDEX_INC)) { /* For negative exponents use reciprocal of the argument */
     n = -n;
     DIVIDE(0, &unpacked_argument, FULL_PRECISION, &unpacked_argument);
   }
 
-  while(1) {
-    if(n & 1) {
+  while (1) {
+    if (n & 1) {
       MULTIPLY(&unpacked_result, &unpacked_argument, &unpacked_result);
       NORMALIZE(&unpacked_result);
     }
     exponent = G_UX_EXPONENT(&unpacked_result) - UX_UNDERFLOW_EXPONENT;
     n = UX_TO_WORD((U_WORD)(n >> 1));
-    if((0 == n) || (((unsigned)exponent) >
-                    (UX_OVERFLOW_EXPONENT - UX_UNDERFLOW_EXPONENT)))
+    if ((0 == n) || (((unsigned)exponent) >
+                     (UX_OVERFLOW_EXPONENT - UX_UNDERFLOW_EXPONENT))) {
       break;
+    }
     SQUARE(&unpacked_argument, &unpacked_argument);
     NORMALIZE(&unpacked_argument);
   }
 
-  PACK(
-      &unpacked_result,
-      packed_result,
-      G_UX_SIGN(&unpacked_result) ? INTPOWER_NEG_UNDERFLOW : INTPOWER_POS_UNDERFLOW,
-      G_UX_SIGN(&unpacked_result) ? INTPOWER_NEG_OVERFLOW : INTPOWER_POS_OVERFLOW OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&unpacked_result, packed_result,
+       G_UX_SIGN(&unpacked_result) ? INTPOWER_NEG_UNDERFLOW
+                                   : INTPOWER_POS_UNDERFLOW,
+       G_UX_SIGN(&unpacked_result)
+           ? INTPOWER_NEG_OVERFLOW
+           : INTPOWER_POS_OVERFLOW OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 #undef F_ENTRY_NAME
@@ -157,14 +160,10 @@ X_XI_PROTO(F_ENTRY_NAME, packed_result, packed_base, n) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_POW_I(
-      PASS_ARG_X_FLOAT(packed_base),
-      n,
-      INDEX_MAP(NEG_EXPONENT_INDEX,
-                ZERO_EXPONENT_RETURN_1_INDEX,
-                POS_EXPONENT_INDEX),
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_POW_I(PASS_ARG_X_FLOAT(packed_base), n,
+             INDEX_MAP(NEG_EXPONENT_INDEX, ZERO_EXPONENT_RETURN_1_INDEX,
+                       POS_EXPONENT_INDEX),
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -177,14 +176,10 @@ X_XI_PROTO(F_ENTRY_NAME, packed_result, packed_base, n) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_POW_I(
-      PASS_ARG_X_FLOAT(packed_base),
-      n,
-      INDEX_MAP(NEG_EXPONENT_INDEX,
-                ZERO_EXPONENT_RETURN_ERROR_INDEX,
-                POS_EXPONENT_INDEX),
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_POW_I(PASS_ARG_X_FLOAT(packed_base), n,
+             INDEX_MAP(NEG_EXPONENT_INDEX, ZERO_EXPONENT_RETURN_ERROR_INDEX,
+                       POS_EXPONENT_INDEX),
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -199,14 +194,10 @@ X_XI_PROTO(F_ENTRY_NAME, packed_result, packed_base, n) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_POW_I(
-      PASS_ARG_X_FLOAT(packed_base),
-      n,
-      INDEX_MAP(NEG_EXPONENT_INDEX,
-                ZERO_EXPONENT_RETURN_0_INDEX,
-                POS_EXPONENT_INDEX),
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_POW_I(PASS_ARG_X_FLOAT(packed_base), n,
+             INDEX_MAP(NEG_EXPONENT_INDEX, ZERO_EXPONENT_RETURN_0_INDEX,
+                       POS_EXPONENT_INDEX),
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -321,13 +312,14 @@ PRINT_U_TBL_ITEM(/* data  7 */ INTPOWER_ZERO_TO_ZERO);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants floating base "."integer power routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants floating base "."integer power routines",
+    __FILE__);
 print "$headerText\n\n$outText\n";
 
 #endif

@@ -29,10 +29,12 @@
 
 #include "bid_strtod.h"
 
-DFP_WRAPFN_TYPE1_TYPE2(32, bid_wcstod32, const wchar_t *RESTRICT, wchar_t **RESTRICT)
+DFP_WRAPFN_TYPE1_TYPE2(32, bid_wcstod32, const wchar_t* RESTRICT,
+                       wchar_t** RESTRICT)
 
-BID_UINT32 bid_wcstod32(const wchar_t *RESTRICT ps_in, wchar_t **RESTRICT endptr) {
-  char *ps0_c;
+BID_UINT32 bid_wcstod32(const wchar_t* RESTRICT ps_in,
+                        wchar_t** RESTRICT endptr) {
+  char* ps0_c;
   BID_UINT32 dr;
 #if !DECIMAL_GLOBAL_EXCEPTION_FLAGS
   unsigned fpsc = 0, *pfpsf = &fpsc;
@@ -43,10 +45,11 @@ BID_UINT32 bid_wcstod32(const wchar_t *RESTRICT ps_in, wchar_t **RESTRICT endptr
 
   ps0_c = wcstod_conversion(ps_in, endptr);
 
-  if(!ps0_c)
-    return 0x32800000; // 0.0
+  if (!ps0_c) {
+    return 0x32800000;  // 0.0
+  }
 
-  BIDECIMAL_CALL1_RESARG(bid32_from_string, dr, (char *)ps0_c);
+  BIDECIMAL_CALL1_RESARG(bid32_from_string, dr, (char*)ps0_c);
 
   free(ps0_c);
 

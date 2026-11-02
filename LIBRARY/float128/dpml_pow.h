@@ -73,9 +73,9 @@
 #define SIGN_EXTEND(x) ((WORD)(x))
 #endif
 
-#define NORMALIZE(x, f) BACKUP_SELECT( \
-    B_COPY_SIGN_AND_EXP(x, ONE, f),    \
-    F_COPY_SIGN_AND_EXP((B_TYPE)x, ONE, f))
+#define NORMALIZE(x, f)                         \
+  BACKUP_SELECT(B_COPY_SIGN_AND_EXP(x, ONE, f), \
+                F_COPY_SIGN_AND_EXP((B_TYPE)x, ONE, f))
 /*
 ** For IEEE types, we get the index bits for the log table by shifting
 ** right.  But for VAX types we need to do a PDP_SHUFFLE and shift left
@@ -148,13 +148,12 @@
 #if IEEE_FLOATING
 #define GET_LOW_32_BITS(i, u) i = (WORD)((INT_32)u.B_LO_WORD)
 #else
-#define GET_LOW_32_BITS(i, u)               \
-  {                                         \
-    U_INT_32 u32;                           \
-    u32 = (U_INT_32)(u.uw[0] >>             \
-                     (BITS_PER_WORD - 32)); \
-    u32 = ((u32 >> 16) | (u32 << 16));      \
-    i = (WORD)((INT_32)u32);                \
+#define GET_LOW_32_BITS(i, u)                          \
+  {                                                    \
+    U_INT_32 u32;                                      \
+    u32 = (U_INT_32)(u.uw[0] >> (BITS_PER_WORD - 32)); \
+    u32 = ((u32 >> 16) | (u32 << 16));                 \
+    i = (WORD)((INT_32)u32);                           \
   }
 #endif
 

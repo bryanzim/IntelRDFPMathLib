@@ -70,7 +70,7 @@ extern const SQRT_COEF_STRUCT D_SQRT_TABLE_NAME[(1 << (NUM_FRAC_BITS + 1))];
 #define EVALUATE_SQRT 0
 #define EVALUATE_RSQRT 1
 
-void UX_SQRT_EVALUATION(UX_FLOAT *x, WORD evaluation_type, UX_FLOAT *y) {
+void UX_SQRT_EVALUATION(UX_FLOAT* x, WORD evaluation_type, UX_FLOAT* y) {
   U_WORD index, shift;
   UX_SIGNED_FRACTION_DIGIT_TYPE signed_digit;
   UX_FRACTION_DIGIT_TYPE msd, lsd, tmp_digit;
@@ -78,7 +78,7 @@ void UX_SQRT_EVALUATION(UX_FLOAT *x, WORD evaluation_type, UX_FLOAT *y) {
   UX_FLOAT s, ux_tmp;
   D_UNION u;
   D_TYPE f, f_hi, f_lo, g, g_lo, t, w;
-  SQRT_COEF_STRUCT const *p;
+  SQRT_COEF_STRUCT const* p;
 
   /*
   ** Given x = 2^(2n-d)*f', where d = 0 or 1 and f' is in the interval
@@ -91,19 +91,19 @@ void UX_SQRT_EVALUATION(UX_FLOAT *x, WORD evaluation_type, UX_FLOAT *y) {
 
   msd = G_UX_MSD(x);
   lsd = G_UX_2nd_MSD(x);
-  u.D_UNSIGNED_HI_WORD = (msd >> D_EXP_WIDTH) +
-                         ((WORD)(D_EXP_BIAS - D_NORM - 2) << D_EXP_POS);
+  u.D_UNSIGNED_HI_WORD =
+      (msd >> D_EXP_WIDTH) + ((WORD)(D_EXP_BIAS - D_NORM - 2) << D_EXP_POS);
 
   exponent = G_UX_EXPONENT(x);
   exponent_parity = (UX_EXPONENT_TYPE)(exponent & 1);
   exponent = (exponent + exponent_parity) >> 1;
 
-  shift = (U_WORD)(BITS_PER_UX_FRACTION_DIGIT_TYPE + (int)exponent_parity - S_PRECISION);
+  shift = (U_WORD)(BITS_PER_UX_FRACTION_DIGIT_TYPE + (int)exponent_parity -
+                   S_PRECISION);
 
 #if (NUM_UX_FRACTION_DIGITS == 2)
 
-  lsd = ((msd << (BITS_PER_UX_FRACTION_DIGIT_TYPE - shift)) |
-         (lsd >> shift)) >>
+  lsd = ((msd << (BITS_PER_UX_FRACTION_DIGIT_TYPE - shift)) | (lsd >> shift)) >>
         (BITS_PER_UX_FRACTION_DIGIT_TYPE - D_PRECISION);
   f_lo = (double)lsd;
 
@@ -221,10 +221,10 @@ void UX_SQRT_EVALUATION(UX_FLOAT *x, WORD evaluation_type, UX_FLOAT *y) {
 #if NUM_UX_FRACTION_DIGITS == 2
 
   signed_digit = (UX_SIGNED_FRACTION_DIGIT_TYPE)(D_TWO_POW_75 * g_lo);
-  msd = UX_TO_DIGIT((msd << 39) + (UX_FRACTION_DIGIT_TYPE)(signed_digit >> 12) + UX_TO_DIGIT((signed_digit >> 11) & 1));
+  msd = UX_TO_DIGIT((msd << 39) + (UX_FRACTION_DIGIT_TYPE)(signed_digit >> 12) +
+                    UX_TO_DIGIT((signed_digit >> 11) & 1));
   tmp_digit = (msd & SET_BIT(62)) ? (UX_MSB - 1) : ((UX_FRACTION_DIGIT_TYPE)-1);
-  msd = ((UX_SIGNED_FRACTION_DIGIT_TYPE)msd < 0) ? msd
-                                                 : UX_TO_DIGIT(tmp_digit);
+  msd = ((UX_SIGNED_FRACTION_DIGIT_TYPE)msd < 0) ? msd : UX_TO_DIGIT(tmp_digit);
 
 #else
 
@@ -265,26 +265,25 @@ void UX_SQRT_EVALUATION(UX_FLOAT *x, WORD evaluation_type, UX_FLOAT *y) {
 #define HALF_LSB SET_BIT(14)
 #define CLEAR_EXTRA_BITS(l) ((l) & ~MAKE_MASK(15, 0))
 
-static void
-C_UX_SQRT(_X_FLOAT *packed_argument, WORD evaluation_code,
-          _X_FLOAT *packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_SQRT(_X_FLOAT* packed_argument, WORD evaluation_code,
+                      _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class;
   UX_FRACTION_DIGIT_TYPE lsd, tmp_digit;
   UX_FLOAT unpacked_argument, unpacked_result, diff, hi, lo;
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      (EVALUATE_SQRT == evaluation_code) ? SQRT_CLASS_TO_ACTION_MAP : RSQRT_CLASS_TO_ACTION_MAP,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class =
+      UNPACK(packed_argument, &unpacked_argument,
+             (EVALUATE_SQRT == evaluation_code) ? SQRT_CLASS_TO_ACTION_MAP
+                                                : RSQRT_CLASS_TO_ACTION_MAP,
+             packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     return;
+  }
 
   UX_SQRT_EVALUATION(&unpacked_argument, evaluation_code, &unpacked_result);
 
-  if(EVALUATE_SQRT == evaluation_code) {
+  if (EVALUATE_SQRT == evaluation_code) {
     /*
     ** Now we have to fool around with the low digit of the result to
     ** insure that correct rounding takes place.  If the result is
@@ -297,7 +296,9 @@ C_UX_SQRT(_X_FLOAT *packed_argument, WORD evaluation_code,
 
     NORMALIZE(&unpacked_result);
     lsd = G_UX_LSD(&unpacked_result);
-    if(0 == ((lsd + RND_CHECK_INC) & RND_CHECK_MASK)) { /* too close to the middle.  Check sign of difference */
+    if (0 == ((lsd + RND_CHECK_INC) &
+              RND_CHECK_MASK)) { /* too close to the middle.  Check sign of
+                                    difference */
 
       lsd = CLEAR_EXTRA_BITS(lsd);
       tmp_digit = lsd + HALF_LSB;
@@ -310,12 +311,8 @@ C_UX_SQRT(_X_FLOAT *packed_argument, WORD evaluation_code,
     }
   }
 
-  PACK(
-      &unpacked_result,
-      packed_result,
-      NOT_USED,
-      NOT_USED
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&unpacked_result, packed_result, NOT_USED,
+       NOT_USED OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 /*
@@ -332,11 +329,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_SQRT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      EVALUATE_SQRT,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_SQRT(PASS_ARG_X_FLOAT(packed_argument), EVALUATE_SQRT,
+            PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -349,11 +343,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_SQRT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      EVALUATE_RSQRT,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_SQRT(PASS_ARG_X_FLOAT(packed_argument), EVALUATE_RSQRT,
+            PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -367,10 +358,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 #define UX_HYPOT __INTERNAL_NAME(ux_hypot__)
 #endif
 
-void UX_HYPOT(
-    UX_FLOAT *unpacked_x,
-    UX_FLOAT *unpacked_y,
-    UX_FLOAT *unpacked_result) {
+void UX_HYPOT(UX_FLOAT* unpacked_x, UX_FLOAT* unpacked_y,
+              UX_FLOAT* unpacked_result) {
   UX_FLOAT sum;
 
   MULTIPLY(unpacked_x, unpacked_x, &sum);
@@ -394,26 +383,18 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  fp_class = UNPACK2(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      &unpacked_x,
-      &unpacked_y,
-      HYPOT_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK2(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+                     &unpacked_x, &unpacked_y, HYPOT_CLASS_TO_ACTION_MAP,
+                     PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   UX_HYPOT(&unpacked_x, &unpacked_y, &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      /* Not Used */ 0,
-      CABS_OVERFLOW
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result),
+       /* Not Used */ 0, CABS_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -472,14 +453,10 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(1) +
 /* Index 1: class-to-index mapping */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_POS_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_INF, 4) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 4));
+    CLASS_TO_INDEX(F_C_POS_ZERO, 2) + CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 3) + CLASS_TO_INDEX(F_C_NEG_DENORM, 3) +
+    CLASS_TO_INDEX(F_C_POS_NORM, 3) + CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
+    CLASS_TO_INDEX(F_C_POS_INF, 4) + CLASS_TO_INDEX(F_C_NEG_INF, 4));
 
 /* Index 2: y class-to-index mapping for x = +/- zero */
 
@@ -536,8 +513,7 @@ PRINT_R_TBL_VDEF_ITEM("D_TWO_POW_75\t", bldexp(1, 75));
 PRINT_R_TBL_VDEF_ITEM("D_RECIP_TWO_POW_24", bldexp(1, -24));
 PRINT_R_TBL_VDEF_ITEM("D_RECIP_TWO_POW_77", bldexp(1, -77));
 
-TABLE_COMMENT(
-    "Rsqrt iteration (double precision) constants: 7/8 and 3/8");
+TABLE_COMMENT("Rsqrt iteration (double precision) constants: 7/8 and 3/8");
 
 PRINT_R_TBL_VDEF_ITEM("D_SEVEN_EIGHTS", 7 / 8);
 PRINT_R_TBL_VDEF_ITEM("D_THREE_EIGHTS", 3 / 8);
@@ -547,12 +523,12 @@ PRINT_UX_TBL_ADEF_ITEM("UX_THREE\t\t", 3);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants square root "."related routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants square root "."related routines", __FILE__);
 print "$headerText\n\n$outText\n";
 #endif

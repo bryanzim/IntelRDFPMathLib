@@ -1,12 +1,19 @@
-# Identifier case is not enforced.
-# This tree mixes snake_case with existing spellings such as unpack_BID64,
-# QH, Stemp, BID_UINT64, and macros (UPPER_CASE, P_/G_ prefixes, big_endian,
-# and leading underscores). Forcing one case flags the same headers in every
-# translation unit.
+# Google C++ Style Guide.
+# https://google.github.io/styleguide/cppguide.html
+#
+# This library is C. The guide's existing-C-API exception applies:
+# bid_* functions and BID_ / DEC_ / DPML_ / UX_ / IDEC_ macros and typedefs
+# keep their spellings. nullptr and using are C++ and are not applied.
 ---
 Checks: >
   -*,
-  readability-identifier-naming
+  google-*,
+  -google-objc-*,
+  -google-readability-avoid-underscore-in-googletest-name,
+  -google-upgrade-googletest-case,
+  -google-readability-braces-around-statements,
+  readability-identifier-naming,
+  modernize-use-override
 
 WarningsAsErrors: ''
 HeaderFilterRegex: '(LIBRARY|TESTS|EXAMPLES)/.*'
@@ -14,72 +21,76 @@ FormatStyle: file
 
 CheckOptions:
   - key: readability-identifier-naming.NamespaceCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.FunctionCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.MethodCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.VariableCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.ParameterCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.MemberCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.ClassMemberCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.ConstantCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.GlobalConstantCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.StaticConstantCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.MacroDefinitionCase
-    value: aNy_CasE
+    value: lower_case
   - key: readability-identifier-naming.ClassCase
-    value: aNy_CasE
+    value: CamelCase
   - key: readability-identifier-naming.StructCase
-    value: aNy_CasE
+    value: CamelCase
   - key: readability-identifier-naming.EnumCase
-    value: aNy_CasE
+    value: CamelCase
   - key: readability-identifier-naming.EnumConstantCase
-    value: aNy_CasE
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantPrefix
+    value: k
   - key: readability-identifier-naming.TypedefCase
-    value: aNy_CasE
+    value: CamelCase
   - key: readability-identifier-naming.TypeAliasCase
-    value: aNy_CasE
-  - key: readability-identifier-naming.NamespaceIgnoredRegexp
-    value: '^_.*'
+    value: CamelCase
+  - key: readability-identifier-naming.TemplateParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypeTemplateParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.ValueTemplateParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.ValueTemplateParameterPrefix
+    value: k
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
+  - key: readability-identifier-naming.MethodCase
+    value: CamelCase
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.ClassMemberSuffix
+    value: _
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: CamelCase
+  - key: readability-identifier-naming.ConstexprVariablePrefix
+    value: k
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalConstantPrefix
+    value: k
+  - key: readability-identifier-naming.StaticConstantCase
+    value: CamelCase
+  - key: readability-identifier-naming.StaticConstantPrefix
+    value: k
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  # Existing C functions keep their spellings (bid_* and unpack_BID64).
   - key: readability-identifier-naming.FunctionIgnoredRegexp
-    value: '^_.*'
+    value: '.*_.*|^__.*'
   - key: readability-identifier-naming.MethodIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.VariableIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.ParameterIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.MemberIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.ClassMemberIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.ConstantIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.GlobalConstantIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.StaticConstantIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.ClassIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.StructIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.UnionIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.EnumIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.EnumConstantIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.TypedefIgnoredRegexp
-    value: '^_.*'
-  - key: readability-identifier-naming.TypeAliasIgnoredRegexp
-    value: '^_.*'
+    value: '.*_.*|^__.*'
+  # C API macros are lowercase or P_/G_ names, not UPPER_CASE.
   - key: readability-identifier-naming.MacroDefinitionIgnoredRegexp
+    value: '.*[a-z].*|^_.*'
+  - key: readability-identifier-naming.TypedefIgnoredRegexp
+    value: '.*_.*|^[A-Z0-9_]+$|^_.*'
+  - key: readability-identifier-naming.StructIgnoredRegexp
+    value: '.*_.*|^[A-Z0-9_]+$|^_.*'
+  - key: readability-identifier-naming.EnumIgnoredRegexp
+    value: '.*_.*|^[A-Z0-9_]+$|^_.*'
+  # class_t enumerators (signalingNaN, quietNaN, ...) are the C API.
+  - key: readability-identifier-naming.EnumConstantIgnoredRegexp
     value: '.*'
+  - key: readability-identifier-naming.GlobalConstantIgnoredRegexp
+    value: '.*_.*|^[A-Z0-9_]+$|^_.*'
+  # Header temps such as QH and Stemp, and mixed parameters such as ptr_Cstar.
+  - key: readability-identifier-naming.VariableIgnoredRegexp
+    value: '^(_|[A-Z]).*|.*[A-Z].*'
+  - key: readability-identifier-naming.ParameterIgnoredRegexp
+    value: '^(_|[A-Z]).*|.*[A-Z].*'

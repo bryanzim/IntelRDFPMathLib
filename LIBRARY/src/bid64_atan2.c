@@ -38,31 +38,34 @@ int exponent_x, exponent_y;
 valid_x = unpack_BID64(&sign_x, &exponent_x, &coefficient_x, x);
 valid_y = unpack_BID64(&sign_y, &exponent_y, &coefficient_y, y);
 
-if(!valid_x) {
+if (!valid_x) {
   // x is Inf. or NaN
 #ifdef BID_SET_STATUS_FLAGS
-  if((y & SNAN_MASK64) == SNAN_MASK64) // y is sNaN
+  if ((y & SNAN_MASK64) == SNAN_MASK64) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
 
   // test if x is NaN
-  if((x & NAN_MASK64) == NAN_MASK64) {
+  if ((x & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & SNAN_MASK64) == SNAN_MASK64) // sNaN
+    if ((x & SNAN_MASK64) == SNAN_MASK64) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     BID_RETURN(coefficient_x & QUIET_MASK64);
   }
 }
 
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y & NAN_MASK64) == NAN_MASK64) {
+  if ((y & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((y & SNAN_MASK64) == SNAN_MASK64) // sNaN
+    if ((y & SNAN_MASK64) == SNAN_MASK64) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     BID_RETURN(coefficient_y & QUIET_MASK64);
   }

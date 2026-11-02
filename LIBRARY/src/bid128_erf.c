@@ -31,10 +31,10 @@
 
 // 2/sqrt(pi), used for cases where conversion would underflow
 
-static BID_UINT128 bi_d128_2_over_sqrtpi =
-    {BID128_LH_INIT(0xf009a099f5c1b689ull, 0x2ffe37a225baa150ull)};
+static BID_UINT128 bi_d128_2_over_sqrtpi = {
+    BID128_LH_INIT(0xf009a099f5c1b689ull, 0x2ffe37a225baa150ull)};
 
-BID_F128_CONST_DEF(c_1em2000, 260b1ad56d712a5d, 7f02384e5ded39be); // 1e-2000
+BID_F128_CONST_DEF(c_1em2000, 260b1ad56d712a5d, 7f02384e5ded39be);  // 1e-2000
 
 BID128_FUNCTION_ARG1(bid128_erf, x)
 
@@ -45,18 +45,19 @@ BID_F128_TYPE xd, yd, abs_xd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
+if ((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if(((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64))
+  if (((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64)) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-  if(((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
-      0x0000314dc6448d93ull) ||
-     (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
-       0x0000314dc6448d93ull) &&
-      res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
+  if (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
+       0x0000314dc6448d93ull) ||
+      (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
+        0x0000314dc6448d93ull) &&
+       res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
     res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
     res.w[BID_LOW_128W] = 0ull;
   }
@@ -74,7 +75,7 @@ if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 
 BIDECIMAL_CALL1(bid128_to_binary128, xd, x);
 __bid_f128_fabs(abs_xd, xd);
-if(__bid_f128_lt(abs_xd, c_1em2000.v)) {
+if (__bid_f128_lt(abs_xd, c_1em2000.v)) {
   BIDECIMAL_CALL2(bid128_mul, res, bi_d128_2_over_sqrtpi, x);
 } else {
   __bid_f128_erf(yd, xd);

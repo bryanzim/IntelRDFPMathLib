@@ -56,15 +56,20 @@ static const TABLE_UNION TABLE_NAME[] = {
     /* 096 */ DATA_1x2(0x1c71c71c, 0x3fcc71c7),
 };
 
-#define CBRT_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define COEFS ((double *)((char *)TABLE_NAME + 8))
-#define POW_CBRT_2_TABLE ((double *)((char *)TABLE_NAME + 56))
-#define FOURTEEN_NINTHS *((double *)((char *)TABLE_NAME + 80))
-#define SEVEN_NINTHS *((double *)((char *)TABLE_NAME + 88))
-#define TWO_NINTHS *((double *)((char *)TABLE_NAME + 96))
+#define CBRT_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define COEFS ((double*)((char*)TABLE_NAME + 8))
+#define POW_CBRT_2_TABLE ((double*)((char*)TABLE_NAME + 56))
+#define FOURTEEN_NINTHS *((double*)((char*)TABLE_NAME + 80))
+#define SEVEN_NINTHS *((double*)((char*)TABLE_NAME + 88))
+#define TWO_NINTHS *((double*)((char*)TABLE_NAME + 96))
 
-#define RECIP_CBRT_POLY_M(x) (((COEFS[0] + x * COEFS[1]) + (x * x) * COEFS[2]) + (x * (x * x)) * ((COEFS[3] + x * COEFS[4]) + (x * x) * COEFS[5]))
-#define RECIP_CBRT_POLY_C(x) (COEFS[0] + x * (COEFS[1] + x * (COEFS[2] + x * (COEFS[3] + x * (COEFS[4] + x * COEFS[5])))))
+#define RECIP_CBRT_POLY_M(x)                          \
+  (((COEFS[0] + x * COEFS[1]) + (x * x) * COEFS[2]) + \
+   (x * (x * x)) * ((COEFS[3] + x * COEFS[4]) + (x * x) * COEFS[5]))
+#define RECIP_CBRT_POLY_C(x) \
+  (COEFS[0] +                \
+   x * (COEFS[1] +           \
+        x * (COEFS[2] + x * (COEFS[3] + x * (COEFS[4] + x * COEFS[5])))))
 #define RECIP_CBRT_POLY SELECT_POLY(RECIP_CBRT_POLY_)
 
 #endif

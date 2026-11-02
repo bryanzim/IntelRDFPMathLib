@@ -41,18 +41,19 @@
 BID128_FUNCTION_ARG2(bid128_fdim, x, y)
 BID_UINT128 res;
 int cmpres;
-BID_FPSC tmp_fpsf = 0; // dummy fpsf for calls to comparison functions
+BID_FPSC tmp_fpsf = 0;  // dummy fpsf for calls to comparison functions
 
-tmp_fpsf = *pfpsf; // save fpsf
+tmp_fpsf = *pfpsf;  // save fpsf
 #if DECIMAL_CALL_BY_REFERENCE
-bid128_quiet_greater(&cmpres, &x, &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+bid128_quiet_greater(&cmpres, &x,
+                     &y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #else
-cmpres = bid128_quiet_greater(x, y
-                                     _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+cmpres = bid128_quiet_greater(x, y _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #endif
-*pfpsf = tmp_fpsf; // restore fpsf
-if(((x.w[BID_HIGH_128W] & MASK_NAN) != MASK_NAN) && ((y.w[BID_HIGH_128W] & MASK_NAN) != MASK_NAN) &&
-   !cmpres) { // if x != NaN and y != NaN and x <= y return +0
+*pfpsf = tmp_fpsf;  // restore fpsf
+if (((x.w[BID_HIGH_128W] & MASK_NAN) != MASK_NAN) &&
+    ((y.w[BID_HIGH_128W] & MASK_NAN) != MASK_NAN) &&
+    !cmpres) {  // if x != NaN and y != NaN and x <= y return +0
   res.w[BID_HIGH_128W] = 0x3040000000000000ull;
   res.w[BID_LOW_128W] = 0x0000000000000000ull;
   BID_RETURN(res);
@@ -61,10 +62,11 @@ if(((x.w[BID_HIGH_128W] & MASK_NAN) != MASK_NAN) && ((y.w[BID_HIGH_128W] & MASK_
 // else if x = NaN or y = NaN or x > y return x - y
 
 #if DECIMAL_CALL_BY_REFERENCE
-bid128_sub(&res, &x, &y _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+bid128_sub(&res, &x,
+           &y _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #else
-res = bid128_sub(x, y
-                        _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
+res =
+    bid128_sub(x, y _RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG);
 #endif
 BID_RETURN(res);
 }

@@ -113,8 +113,8 @@
 #define PRINT_TABLE_ENTRY(a) PRINT_1_F_TYPE_ENTRY(a, offset)
 #define PRINT_TABLE_VALUE_F_DEFINE(n) \
   PRINT_TABLE_VALUE_DEFINE(n, TABLE_NAME, offset, F_TYPE)
-#define F_PRINT_A_DEFINE(name) PRINT_TABLE_ADDRESS_DEFINE(name, \
-                                                          TABLE_NAME, offset, F_TYPE)
+#define F_PRINT_A_DEFINE(name) \
+  PRINT_TABLE_ADDRESS_DEFINE(name, TABLE_NAME, offset, F_TYPE)
 
 #ifndef MAKE_INCLUDE
 
@@ -135,14 +135,13 @@
 #define FIND_ROOT(x_0, x_1, f, p, y)        \
   y_0 = f(x_0);                             \
   y_1 = f(x_1);                             \
-  if(y_0 * y_1 > 0) {                       \
+  if (y_0 * y_1 > 0) {                      \
     printf("Invalid input to FIND_ROOT\n"); \
     exit;                                   \
   }                                         \
-  while(1) {                                \
+  while (1) {                               \
     delta = x_1 - x_0;                      \
-    if(bexp(x_1) - bexp(delta) > p)         \
-      break;                                \
+    if (bexp(x_1) - bexp(delta) > p) break; \
     x = x_1 - y_1 * (delta / (y_1 - y_0));  \
     x_0 = x_1;                              \
     x_1 = x;                                \
@@ -303,14 +302,15 @@ old_precision = precision;
 precision = ceil(2 * F_PRECISION / MP_RADIX_BITS) + 4;
 
 function lgamma_approx() {
-  if($1 == 0)
+  if ($1 == 0) {
     return (1 - euler_gamma);
-  else {
+  } else {
     /* logx1(x) is more accurate than ln(x) for |x| < 1/MP_RADIX */
-    if(abs($1) < (1 / MP_RADIX))
+    if (abs($1) < (1 / MP_RADIX)) {
       return (lgamma(1 + $1) + logx1($1)) / $1;
-    else
+    } else {
       return (lgamma(1 + $1) + ln(1 + $1)) / $1;
+    }
   }
 }
 
@@ -329,23 +329,24 @@ degree = 0;
 #endif
 
 tol = 0;
-while(tol < (F_PRECISION + 1 + 3)) {
+while (tol < (F_PRECISION + 1 + 3)) {
   den_degree = num_degree = ++degree;
-  tol = remes(REMES_STATIC + REMES_LINEAR_ARG + REMES_RELATIVE_WEIGHT,
-              -0.5, 0.5, lgamma_approx,
-              num_degree, den_degree, &rational_coefs);
+  tol = remes(REMES_STATIC + REMES_LINEAR_ARG + REMES_RELATIVE_WEIGHT, -0.5,
+              0.5, lgamma_approx, num_degree, den_degree, &rational_coefs);
 }
 
 precision = old_precision;
 
 /* Extract denominator coefficients */
 first_den_coef = num_degree + 1;
-for(i = 0; i <= den_degree; i++)
+for (i = 0; i <= den_degree; i++) {
   q[i] = rational_coefs[i + first_den_coef];
+}
 
 /* Extract numerator coefficients */
-for(i = 0; i <= num_degree; i++)
+for (i = 0; i <= num_degree; i++) {
   p[i] = rational_coefs[i] - q[i] / 2;
+}
 
 /* Generate constants for Phi */
 
@@ -355,10 +356,11 @@ precision = ceil(2 * F_PRECISION / MP_RADIX_BITS) + 4;
 half_ln_of_2pi = .5 * ln(2 * pi);
 function lgamma_asym_approx() {
   x = $1;
-  if(x == 0)
+  if (x == 0) {
     return (1 / 12); /* B2(0)/2  where B2(x) = x^2 - x + 1/6 */
-  else
+  } else {
     return x * (lgamma(x) - half_ln_of_2pi + x - (x - .5) * ln(x));
+  }
 }
 
 max_arg = real_big;
@@ -366,12 +368,11 @@ max_arg = real_big;
 max_arg = 100000; /* This is temporary until mp_remes is corrected */
 #endif
 remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_RECIP_SQUARE_ARG,
-      8.0, max_arg, lgamma_asym_approx, (F_PRECISION + 1),
-      &poly_degree, &r);
+      8.0, max_arg, lgamma_asym_approx, (F_PRECISION + 1), &poly_degree, &r);
 precision = old_precision;
 
 #define PRINT_COEFS(n, p)    \
-  for(i = 0; i <= n; i++) {  \
+  for (i = 0; i <= n; i++) { \
     PRINT_TABLE_ENTRY(p[i]); \
   }
 
@@ -398,33 +399,31 @@ printf("#define PHI(a,u)         u = a*a; u = a*POLY%i(PHI_COEFS, u)\n",
 printf("#define Q(x)             (POLY%i(P_COEFS, x)/POLY%i(Q_COEFS, x))\n",
        num_degree, den_degree);
 
-@end_divert
-    @eval my $outText = MphocEval(GetStream("divertText"));
+@end_divert @eval my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for ".STR(F_ENTRY_NAME), __FILE__);
+my $headerText =
+    GetHeaderText(STR(BUILD_FILE_NAME),
+                  "Definitions and constants for ".STR(F_ENTRY_NAME), __FILE__);
 print "$headerText\n\n$tableText\n\n$defineText";
 #endif
 
 #if IEEE_FLOATING
 #define SCREEN_SPECIAL_ARGS(x, i) \
   GET_EXP_WORD(x, i);             \
-  if(F_EXP_WORD_IS_ABNORMAL(i))   \
-  goto special_args
+  if (F_EXP_WORD_IS_ABNORMAL(i)) goto special_args
 #else
 #define SCREEN_SPECIAL_ARGS(x, i)
 #endif
 
-#define NEG_2_POW_F_PRECISION ALIGN_W_EXP_FIELD(F_PRECISION + F_EXP_BIAS - F_NORM) + \
-                                  F_SIGN_BIT_MASK
+#define NEG_2_POW_F_PRECISION \
+  ALIGN_W_EXP_FIELD(F_PRECISION + F_EXP_BIAS - F_NORM) + F_SIGN_BIT_MASK
 
 #ifdef F_COPY_SIGN_FAST
 #define F_SET_SIGN(val, sign, res) F_COPY_SIGN(val, sign, result)
 #else
 #define F_SET_SIGN(val, sign, res) \
   res = val;                       \
-  if((sign) < 0)                   \
-  F_NEGATE(res)
+  if ((sign) < 0) F_NEGATE(res)
 #endif
 
 #if DO_LGAMMA
@@ -444,7 +443,7 @@ extern int SIGNGAM_NAME;
 #else
 
 #define _F_ENTRY_NAME F_RT_LGAMMA_NAME
-#define OPT_PTR_ARG , int *SIGNGAM_NAME
+#define OPT_PTR_ARG , int* SIGNGAM_NAME
 #undef HACK_GAMMAS_INLINE
 #define USE_CALL 0
 
@@ -496,10 +495,12 @@ F_ENTRY_NAME(F_TYPE x OPT_PTR_ARG) {
 
   F_SET_SIGN((F_TYPE).5, x, y);
 
-  if(x >= (F_TYPE)8.)
+  if (x >= (F_TYPE)8.) {
     goto pos_asymtotic;
-  if(x <= (F_TYPE)-8.)
+  }
+  if (x <= (F_TYPE)-8.) {
     goto neg_asymtotic;
+  }
 
   /* For small x, get i = rint(x), y = x - i */
 
@@ -512,85 +513,87 @@ F_ENTRY_NAME(F_TYPE x OPT_PTR_ARG) {
    * is faster than a loop.
    */
 
-  switch(i) {
-  case -8:
-    t *= (y - 8);
-    /* Fall through */
+  switch (i) {
+    case -8:
+      t *= (y - 8);
+      /* Fall through */
 
-  case -7:
-    t *= (y - 7);
-    /* Fall through */
+    case -7:
+      t *= (y - 7);
+      /* Fall through */
 
-  case -6:
-    t *= (y - 6);
-    /* Fall through */
+    case -6:
+      t *= (y - 6);
+      /* Fall through */
 
-  case -5:
-    t *= (y - 5);
-    /* Fall through */
+    case -5:
+      t *= (y - 5);
+      /* Fall through */
 
-  case -4:
-    t *= (y - 4);
-    /* Fall through */
+    case -4:
+      t *= (y - 4);
+      /* Fall through */
 
-  case -3:
-    t *= (y - 3);
-    /* Fall through */
+    case -3:
+      t *= (y - 3);
+      /* Fall through */
 
-  case -2:
-    t *= (y - 2);
-    /* Fall through */
+    case -2:
+      t *= (y - 2);
+      /* Fall through */
 
-  case -1:
-    t *= (y - 1);
-    /* Fall through */
+    case -1:
+      t *= (y - 1);
+      /* Fall through */
 
-  case 0:
-    /*
-     * Since all of the negative cases come through here, we need
-     * to check for integer values and set signgam correctly;
-     */
-    t *= (y * (y + 1));
-    if(y == 0)
-      goto non_pos_int;
-    if(t < 0)
-      SIGNGAM = -1;
-    F_ABS(t, t);
-    t = -F_LN_NAME(t);
-    goto pos_eval;
+    case 0:
+      /*
+       * Since all of the negative cases come through here, we need
+       * to check for integer values and set signgam correctly;
+       */
+      t *= (y * (y + 1));
+      if (y == 0) {
+        goto non_pos_int;
+      }
+      if (t < 0) {
+        SIGNGAM = -1;
+      }
+      F_ABS(t, t);
+      t = -F_LN_NAME(t);
+      goto pos_eval;
 
-  case 1:
-    t = -F_LN_NAME(x);
-    goto pos_eval;
+    case 1:
+      t = -F_LN_NAME(x);
+      goto pos_eval;
 
-  case 2:
-    t = 0;
-    goto pos_eval;
+    case 2:
+      t = 0;
+      goto pos_eval;
 
-  case 8:
-    t *= (x - 6);
-    /* Fall through */
+    case 8:
+      t *= (x - 6);
+      /* Fall through */
 
-  case 7:
-    t *= (x - 5);
-    /* Fall through */
+    case 7:
+      t *= (x - 5);
+      /* Fall through */
 
-  case 6:
-    t *= (x - 4);
-    /* Fall through */
+    case 6:
+      t *= (x - 4);
+      /* Fall through */
 
-  case 5:
-    t *= (x - 3);
-    /* Fall through */
+    case 5:
+      t *= (x - 3);
+      /* Fall through */
 
-  case 4:
-    t *= (x - 2);
-    /* Fall through */
+    case 4:
+      t *= (x - 2);
+      /* Fall through */
 
-  case 3:
-    t *= (x - 1);
-    t = F_LN_NAME(t);
-    goto pos_eval;
+    case 3:
+      t *= (x - 1);
+      t = F_LN_NAME(t);
+      goto pos_eval;
   }
 
 pos_eval:
@@ -607,8 +610,9 @@ pos_asymtotic:
    * If x is really big, we don't need phi(x), so we can skip it.
    */
   t = HALF_LN_2_PI;
-  if(x > REAL_BIG)
+  if (x > REAL_BIG) {
     goto skip_poly;
+  }
   y = 1 / x;
   PHI(y, s);
   t += s;
@@ -623,8 +627,9 @@ add_in_log:
 
 skip_poly:
   /* If x is reaally, really big, result will overflow */
-  if(x <= OVERFLOW_THRESHOLD)
+  if (x <= OVERFLOW_THRESHOLD) {
     goto add_in_log;
+  }
 
   GET_EXCEPTION_RESULT_1(LGAMMA_OVERFLOW, x, t);
   return t;
@@ -643,9 +648,10 @@ neg_asymtotic:
 
   x = -x;
   s = F_POW_2(F_PRECISION - 1);
-  if(x >= s)
+  if (x >= s) {
     /* x is so big that it must be an integer */
     goto non_pos_int;
+  }
   y = x + s;
 
   /*
@@ -658,13 +664,14 @@ neg_asymtotic:
   y = x - t;
 
   /* Figure out n so we can set signgam correctly, and get |y| */
-  if(y < 0) {
+  if (y < 0) {
     i--;
     t--;
     y = -y;
   }
-  if(x == t)
+  if (x == t) {
     goto non_pos_int;
+  }
   SIGNGAM = ((i + i) & 2) - 1;
 
   /* OK compute aymtotic polynomial approximation for lgamma(|x|) */
@@ -689,34 +696,34 @@ special_args:
   */
 
   F_CLASSIFY(x, i);
-  switch(i) {
-  case F_C_POS_INF:
-    GET_EXCEPTION_RESULT_1(LGAMMA_POS_INF, x, t);
-    break;
+  switch (i) {
+    case F_C_POS_INF:
+      GET_EXCEPTION_RESULT_1(LGAMMA_POS_INF, x, t);
+      break;
 
-  case F_C_NEG_INF:
-    GET_EXCEPTION_RESULT_1(LGAMMA_NEG_INF, x, t);
-    break;
+    case F_C_NEG_INF:
+      GET_EXCEPTION_RESULT_1(LGAMMA_NEG_INF, x, t);
+      break;
 
-  case F_C_QUIET_NAN:
-  case F_C_SIG_NAN:
-    t = x;
-    break;
+    case F_C_QUIET_NAN:
+    case F_C_SIG_NAN:
+      t = x;
+      break;
 
-  case F_C_NEG_ZERO:
-    SIGNGAM = -1;
-    /* fall through */
-
-  case F_C_POS_ZERO:
-    GET_EXCEPTION_RESULT_1(LGAMMA_OF_ZERO, x, t);
-    break;
-
-  default: /* +-denorm */
-    if(F_C_IS_NEG_CLASS(i)) {
+    case F_C_NEG_ZERO:
       SIGNGAM = -1;
-      F_ABS(x, x);
-    }
-    t = -F_LN_NAME(x);
+      /* fall through */
+
+    case F_C_POS_ZERO:
+      GET_EXCEPTION_RESULT_1(LGAMMA_OF_ZERO, x, t);
+      break;
+
+    default: /* +-denorm */
+      if (F_C_IS_NEG_CLASS(i)) {
+        SIGNGAM = -1;
+        F_ABS(x, x);
+      }
+      t = -F_LN_NAME(x);
   }
   return t;
 

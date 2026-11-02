@@ -1,25 +1,16 @@
-# Formatting taken from LIBRARY/src, not an external style guide.
-# Most sources use 2-space indents, braces attached to the signature,
-# and pointers written as `type *name`.
+# Google C++ Style Guide, applied to every first-party C and C++ file.
+# https://google.github.io/styleguide/cppguide.html
+# clang-format's Google preset is that guide's formatting subset
+# (2-space indent, 80 columns, pointers and references on the left,
+# braces attached).
+#
+# Includes are not reordered. Translation units define configuration
+# macros immediately before the headers that consume them.
 ---
 Language: Cpp
-LineEnding: LF
-BasedOnStyle: LLVM
-IndentWidth: 2
-TabWidth: 2
-UseTab: Never
-ContinuationIndentWidth: 4
-ColumnLimit: 0
-BreakBeforeBraces: Attach
-PointerAlignment: Right
-DerivePointerAlignment: false
-SpaceBeforeParens: Custom
-SpaceBeforeParensOptions:
-  AfterControlStatements: false
-  AfterFunctionDefinitionName: false
-  AfterFunctionDeclarationName: false
-AlignTrailingComments: true
-SortIncludes: Never
-InsertBraces: false
+BasedOnStyle: Google
 Standard: c++17
+LineEnding: LF
+SortIncludes: Never
+InsertBraces: true
 ...

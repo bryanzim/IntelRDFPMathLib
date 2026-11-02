@@ -49,29 +49,31 @@ BID_RESTYPE0_FUNCTION_ARGTYPE1(long int, bid64_lrint, BID_UINT64, x)
 
 #if BID_SIZE_LONG == 4
 BID_SINT32 res;
-if(rnd_mode == BID_ROUNDING_TO_NEAREST)
+if (rnd_mode == BID_ROUNDING_TO_NEAREST) {
   BIDECIMAL_CALL1_NORND(bid64_to_int32_xrnint, res, x);
-else if(rnd_mode == BID_ROUNDING_TIES_AWAY)
+} else if (rnd_mode == BID_ROUNDING_TIES_AWAY) {
   BIDECIMAL_CALL1_NORND(bid64_to_int32_xrninta, res, x);
-else if(rnd_mode == BID_ROUNDING_DOWN)
+} else if (rnd_mode == BID_ROUNDING_DOWN) {
   BIDECIMAL_CALL1_NORND(bid64_to_int32_xfloor, res, x);
-else if(rnd_mode == BID_ROUNDING_UP)
+} else if (rnd_mode == BID_ROUNDING_UP) {
   BIDECIMAL_CALL1_NORND(bid64_to_int32_xceil, res, x);
-else // if (rnd_mode == BID_ROUNDING_TO_ZERO)
+} else {  // if (rnd_mode == BID_ROUNDING_TO_ZERO)
   BIDECIMAL_CALL1_NORND(bid64_to_int32_xint, res, x);
+}
 #else
 // if BID_SIZE_LONG==8
 BID_SINT64 res;
-if(rnd_mode == BID_ROUNDING_TO_NEAREST)
+if (rnd_mode == BID_ROUNDING_TO_NEAREST) {
   BIDECIMAL_CALL1_NORND(bid64_to_int64_xrnint, res, x);
-else if(rnd_mode == BID_ROUNDING_TIES_AWAY)
+} else if (rnd_mode == BID_ROUNDING_TIES_AWAY) {
   BIDECIMAL_CALL1_NORND(bid64_to_int64_xrninta, res, x);
-else if(rnd_mode == BID_ROUNDING_DOWN)
+} else if (rnd_mode == BID_ROUNDING_DOWN) {
   BIDECIMAL_CALL1_NORND(bid64_to_int64_xfloor, res, x);
-else if(rnd_mode == BID_ROUNDING_UP)
+} else if (rnd_mode == BID_ROUNDING_UP) {
   BIDECIMAL_CALL1_NORND(bid64_to_int64_xceil, res, x);
-else // if (rnd_mode == BID_ROUNDING_TO_ZERO)
+} else {  // if (rnd_mode == BID_ROUNDING_TO_ZERO)
   BIDECIMAL_CALL1_NORND(bid64_to_int64_xint, res, x);
+}
 #endif
 BID_RETURN((long int)res);
 }

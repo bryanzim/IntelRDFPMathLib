@@ -95,8 +95,7 @@ typedef UDItype BID_UINT64;
 typedef DItype BID_SINT64;
 
 /* It has to be identical to the one defined in bid_functions.h.  */
-typedef __attribute__((aligned(16))) struct
-{
+typedef __attribute__((aligned(16))) struct {
   BID_UINT64 w[2];
 } BID_UINT128;
 #else /* if not IN_LIBGCC2 */

@@ -123,9 +123,8 @@
 #define UX_ASYMPTOTIC_BESSEL __INTERNAL_NAME(ux_asymptotic_bessel__)
 #endif
 
-static void
-UX_ASYMPTOTIC_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
-                     UX_FLOAT *unpacked_result) {
+static void UX_ASYMPTOTIC_BESSEL(UX_FLOAT* unpacked_argument, WORD order,
+                                 WORD kind, UX_FLOAT* unpacked_result) {
   UX_FLOAT tmp[5];
   WORD p_degree, q_degree;
   FIXED_128 *p_coefs, *q_coefs;
@@ -142,7 +141,7 @@ UX_ASYMPTOTIC_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
   ** and Q = c*Q(x,n), where c = 1/sqrt[ pi*2^(t-1) ]
   */
 
-  if(0 == order) {
+  if (0 == order) {
     p_degree = P0_DEGREE;
     q_degree = Q0_DEGREE;
     p_coefs = P0_COEFFICIENTS;
@@ -154,13 +153,10 @@ UX_ASYMPTOTIC_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
     q_coefs = Q1_COEFFICIENTS;
   }
 
-  EVALUATE_RATIONAL(
-      &tmp[4],
-      p_coefs,
-      p_degree,
-      NUMERATOR_FLAGS(SQUARE_TERM) | DENOMINATOR_FLAGS(SQUARE_TERM) |
-          P_SCALE(4),
-      &tmp[0]);
+  EVALUATE_RATIONAL(&tmp[4], p_coefs, p_degree,
+                    NUMERATOR_FLAGS(SQUARE_TERM) |
+                        DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(4),
+                    &tmp[0]);
 
   /*
   ** Because the value of q0 is negative and the value of q1 is positive,
@@ -168,20 +164,15 @@ UX_ASYMPTOTIC_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
   ** contains (-1)^(order+1)*Q rather than Q
   */
 
-  EVALUATE_RATIONAL(
-      &tmp[4], /* Already been scaled by previous call */
-      q_coefs,
-      q_degree,
-      NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) | DENOMINATOR_FLAGS(SQUARE_TERM),
-      &tmp[1]);
+  EVALUATE_RATIONAL(&tmp[4], /* Already been scaled by previous call */
+                    q_coefs, q_degree,
+                    NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) |
+                        DENOMINATOR_FLAGS(SQUARE_TERM),
+                    &tmp[1]);
 
   /* get tmp[2,3] = sin and cos values respectively */
 
-  UX_SINCOS(
-      unpacked_argument,
-      1 - kind - 2 * order,
-      SINCOS_FUNC,
-      &tmp[2]);
+  UX_SINCOS(unpacked_argument, 1 - kind - 2 * order, SINCOS_FUNC, &tmp[2]);
 
   /* Now multiply the results */
 
@@ -394,7 +385,7 @@ UX_ASYMPTOTIC_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
 #define UX_BESSEL __INTERNAL_NAME(ux_bessel__)
 #endif
 
-static void UX_BESSEL(UX_FLOAT *, WORD, WORD, UX_FLOAT *);
+static void UX_BESSEL(UX_FLOAT*, WORD, WORD, UX_FLOAT*);
 
 #if (OP_SYSTEM == vms)
 #define S_SUFFIX PASTE_2(_, S_CHAR)
@@ -408,12 +399,8 @@ static void UX_BESSEL(UX_FLOAT *, WORD, WORD, UX_FLOAT *);
 
 extern S_TYPE S_LOG2_NAME(S_TYPE);
 
-static void
-UX_LARGE_ORDER_BESSEL(
-    UX_FLOAT *unpacked_argument,
-    WORD order,
-    WORD kind,
-    UX_FLOAT *unpacked_result) {
+static void UX_LARGE_ORDER_BESSEL(UX_FLOAT* unpacked_argument, WORD order,
+                                  WORD kind, UX_FLOAT* unpacked_result) {
   double c, d;
   float forder, f_n, fx, log2_n, delta, ftmp, a, b;
   WORD n_exponent, exp_diff, i;
@@ -437,7 +424,8 @@ UX_LARGE_ORDER_BESSEL(
   ** In the process, do underflow and overflow screening.
   */
 
-  n_exponent = (WORD)(BITS_PER_UX_FRACTION_DIGIT_TYPE - (WORD)U_WORD_TO_UX((U_WORD)order, &tmp[0]));
+  n_exponent =
+      (BITS_PER_UX_FRACTION_DIGIT_TYPE - U_WORD_TO_UX((U_WORD)order, &tmp[0]));
   exponent = G_UX_EXPONENT(unpacked_argument);
 
   c = .5 * (111.5 - (double)(n_exponent + order));
@@ -449,13 +437,13 @@ UX_LARGE_ORDER_BESSEL(
   ** forward recurrence.
   */
 
-  if(kind == Y_BESSEL) { /* Check for certain overflow */
-    if(c + d > 0) {
+  if (kind == Y_BESSEL) { /* Check for certain overflow */
+    if (c + d > 0) {
       exponent = UX_OVERFLOW_EXPONENT;
       goto return_exception;
     }
   } else { /* J_BESSEL, check for underflow */
-    if(c < 0) {
+    if (c < 0) {
       exponent = UX_UNDERFLOW_EXPONENT;
       goto return_exception;
     }
@@ -467,8 +455,9 @@ UX_LARGE_ORDER_BESSEL(
 
     f_hi = G_UX_MSD(unpacked_argument);
     n = f_hi >> (BITS_PER_UX_FRACTION_DIGIT_TYPE - n_exponent);
-    if((0 < exp_diff) || ((0 == exp_diff) && (((WORD)n) < order)))
+    if ((0 < exp_diff) || ((0 == exp_diff) && (((WORD)n) < order))) {
       goto backward_recurrence;
+    }
   }
 
   // forward_recurrence:
@@ -489,13 +478,14 @@ UX_LARGE_ORDER_BESSEL(
 
   /* Now do the recursions */
 
-  while(1) {
+  while (1) {
     MULTIPLY(&tmp[3], &twice_n, c2);
     MULTIPLY(c1, c2, c2);
     ADDSUB(c2, c0, SUB, c2);
 
-    if((--order) <= 0)
+    if ((--order) <= 0) {
       break;
+    }
 
     /* Adjust pointers, check for overflow or underflow */
 
@@ -505,7 +495,7 @@ UX_LARGE_ORDER_BESSEL(
     c2 = save;
 
     f_hi = G_UX_MSD(&twice_n) + incr;
-    if(f_hi < incr) { /* carry out occurred on the addition */
+    if (f_hi < incr) { /* carry out occurred on the addition */
       UX_INCR_EXPONENT(&twice_n, 1);
       f_hi = (f_hi >> 1) + UX_MSB;
       incr >>= 1;
@@ -576,12 +566,14 @@ backward_recurrence:
 
 #define R_LOG2 ((float)1.4426950408889634073599246810018921374266)
 
-  a = S_LOG2_NAME(fx) + (float)(exponent - BITS_PER_UX_FRACTION_DIGIT_TYPE) + R_LOG2;
-  b = ((((float)F_PRECISION + 1) + R_LOG2) - .5f * a) - (forder + .5f) * (a - log2_n);
+  a = S_LOG2_NAME(fx) + (float)(exponent - BITS_PER_UX_FRACTION_DIGIT_TYPE) +
+      R_LOG2;
+  b = ((((float)F_PRECISION + 1) + R_LOG2) - .5f * a) -
+      (forder + .5f) * (a - log2_n);
 
   /* Iterate three times to get a good approximation to N */
 
-  for(i = 3; i > 0; i--) {
+  for (i = 3; i > 0; i--) {
     ftmp = S_LOG2_NAME(f_n);
     ftmp = (b + 5.0f * ftmp) / (ftmp - a);
     f_n = .5f * (f_n + ftmp);
@@ -606,17 +598,18 @@ backward_recurrence:
   UX_SET_SIGN_EXP_MSD(&tmp[1], 0, 1, UX_MSB);
 
   P_UX_SIGN(&sum, 0);
-  if(n & 1)
+  if (n & 1) {
     UX_SET_SIGN_EXP_MSD(&sum, 0, UX_ZERO_EXPONENT, 0);
-  else
+  } else {
     UX_SET_SIGN_EXP_MSD(&sum, 0, 1, UX_MSB);
+  }
 
   (void)U_WORD_TO_UX(2 * n, &twice_n);
   incr = UX_MSB >> (G_UX_EXPONENT(&twice_n) - 2);
 
   /* Now do the recursions */
 
-  while(1) {
+  while (1) {
     MULTIPLY(&tmp[3], &twice_n, c2);
     MULTIPLY(c1, c2, c2);
 
@@ -624,18 +617,21 @@ backward_recurrence:
     NORMALIZE(c0);
     ADDSUB(c2, c0, SUB, c2);
 
-    if(--n == 0)
+    if (--n == 0) {
       break;
+    }
 
     /* if N == n, C2 = K*J(n,x).  Save it for later */
 
-    if(n == (UX_FRACTION_DIGIT_TYPE)order)
+    if (n == (UX_FRACTION_DIGIT_TYPE)order) {
       UX_COPY(c2, unpacked_result);
+    }
 
     /* Add to sum if N is even */
 
-    if(0 == (n & 1))
+    if (0 == (n & 1)) {
       ADDSUB(&sum, c2, ADD, &sum);
+    }
 
     /* Adjust pointers */
 
@@ -647,7 +643,7 @@ backward_recurrence:
     /* decrement twice_n by  2 */
 
     f_hi = G_UX_MSD(&twice_n) - incr;
-    if(f_hi < UX_MSB) { /* borrow from MSB on the subtraction */
+    if (f_hi < UX_MSB) { /* borrow from MSB on the subtraction */
       UX_DECR_EXPONENT(&twice_n, 1);
       f_hi += f_hi;
       incr += incr;
@@ -668,11 +664,9 @@ backward_recurrence:
   return;
 
 return_exception:
-  UX_SET_SIGN_EXP_MSD(
-      unpacked_result,
-      UX_OVERFLOW_EXPONENT == exponent ? UX_SIGN_BIT : 0,
-      exponent,
-      UX_MSB);
+  UX_SET_SIGN_EXP_MSD(unpacked_result,
+                      UX_OVERFLOW_EXPONENT == exponent ? UX_SIGN_BIT : 0,
+                      exponent, UX_MSB);
 }
 
 /*
@@ -742,8 +736,9 @@ typedef struct {
   FIXED_128 coefficients[1];
 } INTERVAL_DATA;
 
-#define FIXED_BITS_PER_INTERVAL_DATA \
-  ((2 * NUM_UX_FRACTION_DIGITS + 1) * BITS_PER_UX_FRACTION_DIGIT_TYPE + __NUM_WORDS * BITS_PER_WORD)
+#define FIXED_BITS_PER_INTERVAL_DATA                                    \
+  ((2 * NUM_UX_FRACTION_DIGITS + 1) * BITS_PER_UX_FRACTION_DIGIT_TYPE + \
+   __NUM_WORDS * BITS_PER_WORD)
 
 #define OFFSET_POS 32
 #define OFFSET_WIDTH 10
@@ -754,7 +749,8 @@ typedef struct {
 #define G_OFFSET(ip) ((ip)->eval_data_hi & OFFSET_MASK)
 #else
 #define NUM_WORDS 1
-#define G_OFFSET(ip) ((U_WORD)(((U_WORD)(ip)->eval_data >> OFFSET_POS) & OFFSET_MASK))
+#define G_OFFSET(ip) \
+  ((U_WORD)(((U_WORD)(ip)->eval_data >> OFFSET_POS) & OFFSET_MASK))
 #endif
 
 /*
@@ -847,9 +843,9 @@ typedef struct {
 #define BESSEL_EXP_WIDTH_POS 7
 #define BESSEL_EXP_WIDTH_WIDTH 7
 
-#define EXTR_BITS(name, val) ((U_WORD)(((U_WORD)(val) >>                \
-                                        PASTE_3(BESSEL_, name, _POS)) & \
-                                       MAKE_MASK(PASTE_3(BESSEL_, name, _WIDTH), 0)))
+#define EXTR_BITS(name, val)                                  \
+  ((U_WORD)(((U_WORD)(val) >> PASTE_3(BESSEL_, name, _POS)) & \
+            MAKE_MASK(PASTE_3(BESSEL_, name, _WIDTH), 0)))
 
 /*
 ** The next 4 definitions are used to extract the exponent information from
@@ -859,20 +855,19 @@ typedef struct {
 #define MIN_ASYMPTOTIC_EXPONENT 5
 #define LAST (2 * NUM_UX_FRACTION_DIGITS - 1)
 #define ZERO_EXPONENT_BITS 3
-#define G_ZERO_EXPONENT(p) ((((INTERVAL_DATA *)(p))->zero[LAST]) & \
-                            MAKE_MASK(ZERO_EXPONENT_BITS, 0))
+#define G_ZERO_EXPONENT(p) \
+  ((((INTERVAL_DATA*)(p))->zero[LAST]) & MAKE_MASK(ZERO_EXPONENT_BITS, 0))
 
-static void
-UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
-          UX_FLOAT *unpacked_result) {
-  INTERVAL_DATA *interval_data;
-  TABLE_DATA_MAP *table_data_map;
+static void UX_BESSEL(UX_FLOAT* unpacked_argument, WORD order, WORD kind,
+                      UX_FLOAT* unpacked_result) {
+  INTERVAL_DATA* interval_data;
+  TABLE_DATA_MAP* table_data_map;
   WORD eval_data, op;
   UX_FRACTION_DIGIT_TYPE f_hi;
   UX_EXPONENT_TYPE exponent;
   UX_FLOAT tmp[3], *poly_argument;
 
-  if(2 <= order) {
+  if (2 <= order) {
     UX_LARGE_ORDER_BESSEL(unpacked_argument, order, kind, unpacked_result);
     return;
   }
@@ -887,9 +882,9 @@ UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
 
   table_data_map = BESSEL_TABLE_DATA_MAP + (kind + order);
 
-  if((exponent > MIN_ASYMPTOTIC_EXPONENT) ||
-     ((exponent == MIN_ASYMPTOTIC_EXPONENT) &&
-      (f_hi > table_data_map->min_asymptotic_value))) {
+  if ((exponent > MIN_ASYMPTOTIC_EXPONENT) ||
+      ((exponent == MIN_ASYMPTOTIC_EXPONENT) &&
+       (f_hi > table_data_map->min_asymptotic_value))) {
     UX_ASYMPTOTIC_BESSEL(unpacked_argument, order, kind, unpacked_result);
     return;
   }
@@ -899,8 +894,8 @@ UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
   ** function.
   */
 
-  interval_data = (INTERVAL_DATA *)((char *)TABLE_NAME +
-                                    table_data_map->interval_data_offset);
+  interval_data = (INTERVAL_DATA*)((char*)TABLE_NAME +
+                                   table_data_map->interval_data_offset);
 
   /*
   ** Now scan through the extrema values to determine the
@@ -908,13 +903,14 @@ UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
   ** and exponent of the argument to fixed point form
   */
 
-  if(exponent >= 0) {
+  if (exponent >= 0) {
     f_hi >>= (5 - exponent);
-    while(1) {
-      if(f_hi <= interval_data->extrema)
+    while (1) {
+      if (f_hi <= interval_data->extrema) {
         break;
-      interval_data = (INTERVAL_DATA *)((char *)interval_data +
-                                        (ptrdiff_t)G_OFFSET(interval_data));
+      }
+      interval_data = (INTERVAL_DATA*)((char*)interval_data +
+                                       (ptrdiff_t)G_OFFSET(interval_data));
     }
   }
 
@@ -925,16 +921,15 @@ UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
   */
 
   eval_data = UX_TO_WORD(interval_data->eval_data);
-  if((UX_TO_UWORD(eval_data) & BESSEL_USE_ZERO) == 0)
+  if ((UX_TO_UWORD(eval_data) & BESSEL_USE_ZERO) == 0) {
     poly_argument = unpacked_argument;
-  else {
+  } else {
     COPY_TO_UX_FRACTION(interval_data->zero, &tmp[1]);
     P_UX_SIGN(&tmp[1], 0);
     exponent = G_ZERO_EXPONENT(interval_data);
     P_UX_EXPONENT(&tmp[1], exponent);
     ADDSUB(unpacked_argument, &tmp[1], SUB, &tmp[0]);
-    COPY_TO_UX_FRACTION(
-        &interval_data->zero[NUM_UX_FRACTION_DIGITS], &tmp[1]);
+    COPY_TO_UX_FRACTION(&interval_data->zero[NUM_UX_FRACTION_DIGITS], &tmp[1]);
     P_UX_EXPONENT(&tmp[1], exponent - UX_PRECISION);
     ADDSUB(&tmp[0], &tmp[1], SUB, &tmp[0]);
     poly_argument = &tmp[0];
@@ -943,21 +938,16 @@ UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
   ** Evaluate the polynomial.
   */
 
-  if(UX_TO_UWORD(eval_data) & BESSEL_PACKED_POLY)
-    EVALUATE_PACKED_POLY(
-        poly_argument,
-        (WORD)EXTR_BITS(DEGREE, eval_data),
-        interval_data->coefficients,
-        MAKE_MASK(EXTR_BITS(EXP_WIDTH, eval_data), 0),
-        UX_TO_WORD(EXTR_BITS(EXP_BIAS, eval_data)),
-        unpacked_result);
-  else {
-    EVALUATE_RATIONAL(
-        poly_argument,
-        interval_data->coefficients,
-        (U_WORD)EXTR_BITS(DEGREE, eval_data),
-        (U_WORD)eval_data,
-        unpacked_result);
+  if (UX_TO_UWORD(eval_data) & BESSEL_PACKED_POLY) {
+    EVALUATE_PACKED_POLY(poly_argument, (WORD)EXTR_BITS(DEGREE, eval_data),
+                         interval_data->coefficients,
+                         MAKE_MASK(EXTR_BITS(EXP_WIDTH, eval_data), 0),
+                         UX_TO_WORD(EXTR_BITS(EXP_BIAS, eval_data)),
+                         unpacked_result);
+  } else {
+    EVALUATE_RATIONAL(poly_argument, interval_data->coefficients,
+                      (U_WORD)EXTR_BITS(DEGREE, eval_data), (U_WORD)eval_data,
+                      unpacked_result);
 
 #if 0
 	/*
@@ -968,18 +958,21 @@ UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
 #endif
   }
   op = (WORD)EXTR_BITS(EVEN_ODD_OP, eval_data);
-  if(op)
+  if (op) {
     ADDSUB(unpacked_result, unpacked_result + 1, (U_WORD)(op - 1),
            unpacked_result);
+  }
 
-  if(UX_TO_UWORD(eval_data) & BESSEL_POST_MULTIPLY)
+  if (UX_TO_UWORD(eval_data) & BESSEL_POST_MULTIPLY) {
     MULTIPLY(poly_argument, unpacked_result, unpacked_result);
+  }
 
-  if(UX_TO_UWORD(eval_data) & BESSEL_NEGATE_POLY)
+  if (UX_TO_UWORD(eval_data) & BESSEL_NEGATE_POLY) {
     UX_TOGGLE_SIGN(unpacked_result, UX_SIGN_BIT);
+  }
 
   /* For y bessel functions, add in jn(x)*ln(x) term */
-  if(UX_TO_UWORD(eval_data) & BESSEL_NEUMANN_POLY) {
+  if (UX_TO_UWORD(eval_data) & BESSEL_NEUMANN_POLY) {
     /*
     ** For Y_BESSEL:
     **
@@ -994,12 +987,12 @@ UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
     ** unscale before proceeding
     */
 
-    if(poly_argument == unpacked_argument)
+    if (poly_argument == unpacked_argument) {
       UX_DECR_EXPONENT(unpacked_argument, G_SCALE(eval_data));
+    }
 
-    if(1 == order) {
-      DIVIDE(UX_TWO_OVER_PI, unpacked_argument, FULL_PRECISION,
-             &tmp[1]);
+    if (1 == order) {
+      DIVIDE(UX_TWO_OVER_PI, unpacked_argument, FULL_PRECISION, &tmp[1]);
       ADDSUB(unpacked_result, &tmp[1], ADD, unpacked_result);
     }
 
@@ -1028,16 +1021,15 @@ UX_BESSEL(UX_FLOAT *unpacked_argument, WORD order, WORD kind,
 #define BESSEL_ERROR_CODE_TABLE __TABLE_NAME(bessel_error_codes)
 #endif
 
-static WORD const
-    BESSEL_ERROR_CODE_TABLE[] = {
-        NULL,
-        BES_J1_UNDERFLOW,
-        BES_J1_NEG_UNDERFLOW,
-        BES_JN_UNDERFLOW,
-        BES_JN_NEG_UNDERFLOW,
-        BES_Y1_OVERFLOW,
-        BES_YN_POS_OVERFLOW,
-        BES_YN_NEG_OVERFLOW,
+static WORD const BESSEL_ERROR_CODE_TABLE[] = {
+    NULL,
+    BES_J1_UNDERFLOW,
+    BES_J1_NEG_UNDERFLOW,
+    BES_JN_UNDERFLOW,
+    BES_JN_NEG_UNDERFLOW,
+    BES_Y1_OVERFLOW,
+    BES_YN_POS_OVERFLOW,
+    BES_YN_NEG_OVERFLOW,
 };
 
 #define NO_ERROR 0
@@ -1055,10 +1047,9 @@ static WORD const
 #define P_OVERFLOW_POS (N_UNDERFLOW_POS + _FIELD_WITDTH)
 #define N_OVERFLOW_POS (P_OVERFLOW_POS + _FIELD_WITDTH)
 
-#define ERROR_MAP(pu, nu, po, no) (((pu) << P_UNDERFLOW_POS) | \
-                                   ((nu) << N_UNDERFLOW_POS) | \
-                                   ((po) << P_OVERFLOW_POS) |  \
-                                   ((no) << N_OVERFLOW_POS))
+#define ERROR_MAP(pu, nu, po, no)                          \
+  (((pu) << P_UNDERFLOW_POS) | ((nu) << N_UNDERFLOW_POS) | \
+   ((po) << P_OVERFLOW_POS) | ((no) << N_OVERFLOW_POS))
 
 #define MAP_MASK MAKE_MASK(_FIELD_WITDTH, 0)
 #define ERROR_INDEX(s, m, n, p) (((U_WORD)(m) >> ((s) ? (n) : (p))) & MAP_MASK)
@@ -1070,21 +1061,16 @@ static WORD const
 #define C_BESSEL __INTERNAL_NAME(C_bessel__)
 #endif
 
-static void
-C_BESSEL(_X_FLOAT *packed_argument, WORD order, WORD bessel_kind,
-         U_WORD const *class_to_action_map, WORD const error_map,
-         _X_FLOAT *packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_BESSEL(_X_FLOAT* packed_argument, WORD order, WORD bessel_kind,
+                     U_WORD const* class_to_action_map, WORD const error_map,
+                     _X_FLOAT* packed_result OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class;
   UX_SIGN_TYPE sign, sign_toggle;
   UX_FRACTION_DIGIT_TYPE hi;
   UX_FLOAT unpacked_argument, unpacked_result[2];
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      class_to_action_map,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class = UNPACK(packed_argument, &unpacked_argument, class_to_action_map,
+                    packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
   /* Map negative arguments onto positive arguments */
 
@@ -1094,22 +1080,24 @@ C_BESSEL(_X_FLOAT *packed_argument, WORD order, WORD bessel_kind,
   /* Account for reflection formula: C(-n,x) = (-1)^n*C(x) */
 
   sign_toggle = UX_SIGN_BIT;
-  if(order < 0) {
+  if (order < 0) {
     order = -order;
     sign ^= sign_toggle;
   }
 
   sign_toggle &= ((order & 1) ? sign : 0);
 
-  if(0 > fp_class) {
-    if(1 < order) {
+  if (0 > fp_class) {
+    if (1 < order) {
       /*
       ** If orders >= 2, the unpack routine returns C(|n|,|x|), so
       ** we have to adjust the sign of the packed result.
       */
       hi = G_X_DIGIT(packed_result, 0);
-      if((hi & F_EXP_MASK) != F_EXP_MASK)
-        hi |= (((UX_FRACTION_DIGIT_TYPE)sign_toggle) << (BITS_PER_UX_FRACTION_DIGIT_TYPE - BITS_PER_UX_SIGN_TYPE));
+      if ((hi & F_EXP_MASK) != F_EXP_MASK) {
+        hi |= (((UX_FRACTION_DIGIT_TYPE)sign_toggle)
+               << (BITS_PER_UX_FRACTION_DIGIT_TYPE - BITS_PER_UX_SIGN_TYPE));
+      }
       P_X_DIGIT(packed_result, 0, hi);
     }
     return;
@@ -1119,12 +1107,10 @@ C_BESSEL(_X_FLOAT *packed_argument, WORD order, WORD bessel_kind,
   UX_TOGGLE_SIGN(unpacked_result, sign_toggle);
 
   sign_toggle = G_UX_SIGN(unpacked_result);
-  PACK(
-      unpacked_result,
-      packed_result,
-      UX_TO_WORD(UNDERFLOW_ERROR(sign_toggle, error_map)),
-      UX_TO_WORD(OVERFLOW_ERROR(sign_toggle, error_map))
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(unpacked_result, packed_result,
+       UX_TO_WORD(UNDERFLOW_ERROR(sign_toggle, error_map)),
+       UX_TO_WORD(OVERFLOW_ERROR(sign_toggle, error_map))
+           OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 /*
@@ -1141,18 +1127,15 @@ C_BESSEL(_X_FLOAT *packed_argument, WORD order, WORD bessel_kind,
   X_IX_PROTO(F_ENTRY_NAME, packed_result, order, packed_argument) \
   BESSEL_BODY(order, kind, class, map)
 
-#define BESSEL_BODY(order, kind, class, map) \
-  {                                          \
-    EXCEPTION_INFO_DECL                      \
-    DECLARE_X_FLOAT(packed_result)           \
-                                             \
-    INIT_EXCEPTION_INFO;                     \
-    C_BESSEL(                                \
-        PASS_ARG_X_FLOAT(packed_argument),   \
-        order, kind, class, map,             \
-        PASS_RET_X_FLOAT(packed_result)      \
-            OPT_EXCEPTION_INFO);             \
-    RETURN_X_FLOAT(packed_result);           \
+#define BESSEL_BODY(order, kind, class, map)                             \
+  {                                                                      \
+    EXCEPTION_INFO_DECL                                                  \
+    DECLARE_X_FLOAT(packed_result)                                       \
+                                                                         \
+    INIT_EXCEPTION_INFO;                                                 \
+    C_BESSEL(PASS_ARG_X_FLOAT(packed_argument), order, kind, class, map, \
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);        \
+    RETURN_X_FLOAT(packed_result);                                       \
   }
 
 #undef F_ENTRY_NAME
@@ -1188,7 +1171,7 @@ BESSEL_N_ENTRY(Y_BESSEL, YN_CLASS_TO_ACTION_MAP,
 #if defined(MAKE_INCLUDE)
 
 #define ASSERT_TOL(tol, p, str)                         \
-  if(tol < (p)) {                                       \
+  if (tol < (p)) {                                      \
     printf("ERROR: insufficient degree for " str "\n"); \
     exit;                                               \
   }
@@ -1398,8 +1381,9 @@ function __jn_prime(x) {
   auto z;
 
   z = -j1(x);
-  if(bessel_order == 1)
+  if (bessel_order == 1) {
     z = j0(x) + z / x;
+  }
   return z;
 }
 
@@ -1411,13 +1395,14 @@ function __jn_prime(x) {
 
 function __jn_hat(z) {
   auto x, y;
-  if(z == 0)
+  if (z == 0) {
     y = __jn_hat_zero_result;
-  else {
+  } else {
     x = z + bessel_zero;
     y = jn(x, bessel_order);
-    if(bessel_do_divide)
+    if (bessel_do_divide) {
       y /= z;
+    }
   }
   return y;
 }
@@ -1433,8 +1418,9 @@ function __yn_prime(x) {
   auto z;
 
   z = -y1(x);
-  if(bessel_order == 1)
+  if (bessel_order == 1) {
     z = y0(x) + z / x;
+  }
   return z;
 }
 
@@ -1446,10 +1432,11 @@ function __yn_prime(x) {
 
 function __yn_hat(z) {
   auto x, y;
-  if(z == 0)
+  if (z == 0) {
     y = __yn_hat_zero_result;
-  else
+  } else {
     y = yn(z + bessel_zero, bessel_order) / z;
+  }
   return y;
 }
 
@@ -1463,12 +1450,13 @@ function __yn_hat(z) {
 function __yn_neumann_hat(z) {
   auto x, y;
 
-  if(z == 0)
+  if (z == 0) {
     y = __yn_hat_zero_result;
-  else {
+  } else {
     y = neumann_yn(z + bessel_zero, bessel_order) * recip_pi;
-    if(bessel_do_divide)
+    if (bessel_do_divide) {
       y /= z;
+    }
   }
   return y;
 }
@@ -1479,11 +1467,10 @@ procedure init_bessel_hat(a, do_divide) {
   bessel_zero = a;
   bessel_do_divide = do_divide;
 
-  if(a == 0) {
+  if (a == 0) {
     __jn_hat_zero_result = 1 - .5 * bessel_order;
-    __yn_hat_zero_result =
-        (2 * (log(2) - euler_gamma) + bessel_order) *
-        (1 - .5 * bessel_order) * recip_pi;
+    __yn_hat_zero_result = (2 * (log(2) - euler_gamma) + bessel_order) *
+                           (1 - .5 * bessel_order) * recip_pi;
     remes_arg_flags = REMES_SQUARE_ARG;
   } else {
     __jn_hat_zero_result = __jn_prime(a);
@@ -1538,7 +1525,7 @@ function find_next_bessel_extrema(z, p) {
   a = z + .5 * pi;
   b = a + pi;
 
-  if(__bessel_prime(a) * __bessel_prime(b) > 0) {
+  if (__bessel_prime(a) * __bessel_prime(b) > 0) {
     printf("ERROR: non-bracketing pair in find_bessel_extrema\n");
     exit;
   }
@@ -1559,16 +1546,18 @@ qn_zero_value = 0;
 __Pn_Qn_scale = bldexp(1, MIN_ASYMPTOTIC_EXPONENT - 1);
 
 function __Pn(z) {
-  if(z == 0)
+  if (z == 0) {
     return pn_zero_value;
+  }
   return pn_zero_value * hankel_p(__Pn_Qn_scale / z, bessel_order);
 }
 
 function __Qn(z) {
   auto x;
 
-  if(z == 0)
+  if (z == 0) {
     return qn_zero_value;
+  }
   x = __Pn_Qn_scale / z;
   return x * pn_zero_value * hankel_q(x, bessel_order);
 }
@@ -1591,21 +1580,21 @@ function check_em(start, end, index) {
   old_exp = bexp(ux_rational_coefs[start]);
   ux_rational_coefs[index] = old_exp;
   last_sign = ux_rational_coefs[start] < 0 ? -1 : 1;
-  while(i <= end) {
+  while (i <= end) {
     tmp = ux_rational_coefs[i];
     new_exp = bexp(ux_rational_coefs[i]);
-    if(new_exp > old_exp) {
+    if (new_exp > old_exp) {
       /* The second term not less than the first term is OK */
-      if(i <= (start + 1))
+      if (i <= (start + 1)) {
         ux_rational_coefs[index] = new_exp;
-      else {
+      } else {
         TABLE_COMMENT("Exponents don't decrease");
         return FAILED;
       }
     }
     old_exp = new_exp;
 
-    if(last_sign * tmp > 0) {
+    if (last_sign * tmp > 0) {
       TABLE_COMMENT("Signs don't alternate");
       return FAILED;
     }
@@ -1648,13 +1637,14 @@ procedure reform_coefs(a, z, b, degree) {
 
   t = z - a;
   s = b - z;
-  if(s > t)
+  if (s > t) {
     t = s;
+  }
 
   i = 0;
   t = bexp(t);
 
-  if(0 == z) {
+  if (0 == z) {
     /*
     ** The bessel expansions around zero are known to be alternating
     ** in sign, so just scale the coefficients.
@@ -1663,7 +1653,7 @@ procedure reform_coefs(a, z, b, degree) {
     ** odd depending on the order of the bessel function
     */
 
-    if(0 == bessel_order) {
+    if (0 == bessel_order) {
       s = 0;
       flags = 0;
     } else {
@@ -1676,7 +1666,7 @@ procedure reform_coefs(a, z, b, degree) {
     num_degree = degree;
     den_degree = 0;
     k = 2 * t;
-    for(j = 0; j <= num_degree; j++) {
+    for (j = 0; j <= num_degree; j++) {
       ux_rational_coefs[j] = bldexp(ux_tmp_coefs[j], s);
       s += k;
     }
@@ -1693,28 +1683,29 @@ procedure reform_coefs(a, z, b, degree) {
     ** even and odd terms rather than add them.
     */
 
-    flags =
-        DENOMINATOR_FLAGS(POST_MULTIPLY + SQUARE_TERM + ALTERNATE_SIGN) +
-        NUMERATOR_FLAGS(SQUARE_TERM + ALTERNATE_SIGN) +
-        BESSEL_USE_ZERO + BESSEL_NO_DIVIDE;
+    flags = DENOMINATOR_FLAGS(POST_MULTIPLY + SQUARE_TERM + ALTERNATE_SIGN) +
+            NUMERATOR_FLAGS(SQUARE_TERM + ALTERNATE_SIGN) + BESSEL_USE_ZERO +
+            BESSEL_NO_DIVIDE;
 
     s = 0;
-    if(bessel_do_divide) {
+    if (bessel_do_divide) {
       flags += BESSEL_POST_MULTIPLY;
       s = t;
     }
 
-    flags += ((((ux_tmp_coefs[0] * ux_tmp_coefs[1] < 0) ? SUB : ADD) + 1) << BESSEL_EVEN_ODD_OP_POS);
+    flags += ((((ux_tmp_coefs[0] * ux_tmp_coefs[1] < 0) ? SUB : ADD) + 1)
+              << BESSEL_EVEN_ODD_OP_POS);
 
-    if((ux_tmp_coefs[0] < 0))
+    if ((ux_tmp_coefs[0] < 0)) {
       flags += BESSEL_NEGATE_POLY;
+    }
 
     num_degree = floor(degree / 2);
     k = num_degree + 1;
     den_degree = degree - k;
     ux_rational_coefs[degree + 1] = 0; /* make sure its initialized */
 
-    for(j = 0; j <= num_degree; /* NULL */) {
+    for (j = 0; j <= num_degree; /* NULL */) {
       ux_rational_coefs[j++] = bldexp(ux_tmp_coefs[i++], s);
       s += t;
       ux_rational_coefs[k++] = bldexp(ux_tmp_coefs[i++], s);
@@ -1727,14 +1718,15 @@ procedure reform_coefs(a, z, b, degree) {
   flags += (num_degree << BESSEL_DEGREE_POS);
   index = degree + 1;
   status = check_em(0, num_degree, index + NUM_SCALE_OFFSET);
-  if(den_degree > 0)
-    status = status & check_em(num_degree + 1, degree,
-                               index + DEN_SCALE_OFFSET);
+  if (den_degree > 0) {
+    status =
+        status & check_em(num_degree + 1, degree, index + DEN_SCALE_OFFSET);
+  }
 
-  if(FAILED != status)
+  if (FAILED != status) {
     /* Add scale factor for unpacked evaluations */
     flags += (((t > 0) ? ((1 << SCALE_WIDTH) - t) : t) << SCALE_POS);
-  else {
+  } else {
     /*
     ** Need to use packed evaluation here, so do the conversion.
     **
@@ -1745,21 +1737,21 @@ procedure reform_coefs(a, z, b, degree) {
     ** them there in the correct order
     */
 
-    for(i = 0; i <= degree; i++)
+    for (i = 0; i <= degree; i++) {
       ux_rational_coefs[i] = ux_tmp_coefs[i];
+    }
     find_exponent_width_and_bias(degree, 0);
-    cvt_to_packed(degree, 0, packed_exponent_width,
-                  packed_exponent_bias);
+    cvt_to_packed(degree, 0, packed_exponent_width, packed_exponent_bias);
 
-    if(packed_exponent_width >= (1 << BESSEL_EXP_WIDTH_WIDTH))
-      printf(
-          "\tERROR: packed_exponent_width = %i exceeds field width\n",
-          packed_exponent_width);
+    if (packed_exponent_width >= (1 << BESSEL_EXP_WIDTH_WIDTH)) {
+      printf("\tERROR: packed_exponent_width = %i exceeds field width\n",
+             packed_exponent_width);
+    }
 
-    if(packed_exponent_bias >= (1 << BESSEL_EXP_BIAS_WIDTH))
-      printf(
-          "\tERROR: packed_exponent_bias = %i exceeds field width\n",
-          packed_exponent_bias);
+    if (packed_exponent_bias >= (1 << BESSEL_EXP_BIAS_WIDTH)) {
+      printf("\tERROR: packed_exponent_bias = %i exceeds field width\n",
+             packed_exponent_bias);
+    }
 
     offset = 128 * (degree + 1);
     flags = (flags & BESSEL_COMMON_FLAGS_MASK) + BESSEL_PACKED_POLY +
@@ -1841,7 +1833,7 @@ function print_interval_data(a, z, b, k, index) {
   exponent = bexp(z);
   z = bldexp(z, -exponent) + bldexp(exponent, -2 * UX_PRECISION);
 
-  for(i = 2; i > 0; i--) {
+  for (i = 2; i > 0; i--) {
     printf("\t/* %3i */", BYTES(MP_BIT_OFFSET));
     z = print_ux_fraction_digits(z);
     MP_BIT_OFFSET += UX_PRECISION;
@@ -1850,18 +1842,20 @@ function print_interval_data(a, z, b, k, index) {
 
   num_degree = ux_rational_coefs[index + NUM_DEGREE_OFFSET];
   den_degree = ux_rational_coefs[index + DEN_DEGREE_OFFSET];
-  if((low_32_bits(flags) & BESSEL_PACKED_POLY) != 0) {
+  if ((low_32_bits(flags) & BESSEL_PACKED_POLY) != 0) {
     printf("\t/* degree = %i - packed coefficients */\n", num_degree);
     print_packed(num_degree, 0);
   } else {
     poly_degree = num_degree + den_degree;
-    if(den_degree)
+    if (den_degree) {
       poly_degree++;
+    }
     printf("\t/* degree = %i - unpacked coefficients */\n", poly_degree);
     print_ux_poly_coefs(0, num_degree, 0, 0);
-    if(den_degree)
-      print_ux_poly_coefs(num_degree - den_degree, den_degree,
-                          0, num_degree + 1);
+    if (den_degree) {
+      print_ux_poly_coefs(num_degree - den_degree, den_degree, 0,
+                          num_degree + 1);
+    }
   }
   return k + 1;
 }
@@ -1897,8 +1891,8 @@ function print_interval_data(a, z, b, k, index) {
 #define AUXILIARY 1
 #endif
 
-function get_coefficients(a, z, b, k, p, bessel_enum, type, do_divide,
-                          tol, action) {
+function get_coefficients(a, z, b, k, p, bessel_enum, type, do_divide, tol,
+                          action) {
   auto low, high, save_precision, actual_tol, index, tmp, flags;
 
   save_precision = precision;
@@ -1908,7 +1902,7 @@ function get_coefficients(a, z, b, k, p, bessel_enum, type, do_divide,
    ** We assume here that if z == 0 ==> a == 0
    */
 
-  if((z == 0) && (a != 0)) {
+  if ((z == 0) && (a != 0)) {
     printf("\tERROR: Invalid arguments to get_coefficients\n");
     exit;
   }
@@ -1918,37 +1912,38 @@ function get_coefficients(a, z, b, k, p, bessel_enum, type, do_divide,
   init_bessel_hat(z, do_divide);
   flags = REMES_RELATIVE_WEIGHT + remes_arg_flags;
 
-  if(DYNAMIC) {
+  if (DYNAMIC) {
     flags += REMES_FIND_POLYNOMIAL;
-    if(STANDARD == type)
-      remes(flags, low, high, __bessel_hat, tol, &poly_degree,
-            &ux_tmp_coefs);
-    else /* need auxillary function */
+    if (STANDARD == type) {
+      remes(flags, low, high, __bessel_hat, tol, &poly_degree, &ux_tmp_coefs);
+    } else { /* need auxillary function */
       remes(flags, low, high, __yn_neumann_hat, tol, &poly_degree,
             &ux_tmp_coefs);
+    }
   } else {
     /* Extract fixed degree from "packed" list */
 
     tmp = fixed_degrees[bessel_enum] * 64;
     poly_degree = floor(tmp);
     fixed_degrees[bessel_enum] = tmp - poly_degree;
-    if(0 == poly_degree)
+    if (0 == poly_degree) {
       return k;
+    }
     flags += REMES_STATIC;
 
-    if(STANDARD == type)
-      actual_tol = remes(flags, low, high, __bessel_hat,
-                         poly_degree, 0, &ux_tmp_coefs);
-    else /* need auxillary function */
-      actual_tol = remes(flags, low, high, __yn_neumann_hat,
-                         poly_degree, 0, &ux_tmp_coefs);
+    if (STANDARD == type) {
+      actual_tol =
+          remes(flags, low, high, __bessel_hat, poly_degree, 0, &ux_tmp_coefs);
+    } else { /* need auxillary function */
+      actual_tol = remes(flags, low, high, __yn_neumann_hat, poly_degree, 0,
+                         &ux_tmp_coefs);
+    }
 
-    if(actual_tol < tol) {
+    if (actual_tol < tol) {
       printf(
           "ERROR: insufficient degree for subinterval polynomial\n"
           "       expected tol = %r, got %r\n",
-          five_digits(tol),
-          five_digits(actual_tol));
+          five_digits(tol), five_digits(actual_tol));
       /* exit; */
     }
   }
@@ -1962,14 +1957,16 @@ function get_coefficients(a, z, b, k, p, bessel_enum, type, do_divide,
           ((STANDARD == type) ? 0 : BESSEL_NEUMANN_POLY);
   ux_rational_coefs[index + FLAGS_OFFSET] = flags;
 
-  if((low_32_bits(flags) & BESSEL_PACKED_POLY) != 0) {
-    if(SIGNAL == action) {
+  if ((low_32_bits(flags) & BESSEL_PACKED_POLY) != 0) {
+    if (SIGNAL == action) {
       printf("\tERROR: expected well form coefficients\n");
       exit;
-    } else if(NO_PRINT == action)
+    } else if (NO_PRINT == action) {
       return k;
-  } else if(action == NO_PRINT)
+    }
+  } else if (action == NO_PRINT) {
     return k + 1;
+  }
 
   return print_interval_data(a, z, b, k, index);
 }
@@ -1981,11 +1978,11 @@ function get_coefficients(a, z, b, k, p, bessel_enum, type, do_divide,
 ** or .5*(a+b) if it doesn't.
 */
 
-function get_neumann_coefficients(a, b, k, remes_prec, zero_prec,
-                                  bessel_enum, tol) {
+function get_neumann_coefficients(a, b, k, remes_prec, zero_prec, bessel_enum,
+                                  tol) {
   auto do_divide, neumann_zero, saved_precision;
 
-  if((a == 0) && (bessel_order == 1)) {
+  if ((a == 0) && (bessel_order == 1)) {
     do_divide = TRUE;
     neumann_zero = 0;
   } else {
@@ -1994,7 +1991,8 @@ function get_neumann_coefficients(a, b, k, remes_prec, zero_prec,
 
     saved_precision = precision;
     precision = zero_prec;
-    neumann_zero = do_divide ? find_root(0, a, b, 0, __yn_neumann_hat) : .5 * (a + b);
+    neumann_zero =
+        do_divide ? find_root(0, a, b, 0, __yn_neumann_hat) : .5 * (a + b);
     precision = saved_precision;
   }
   return get_coefficients(a, neumann_zero, b, k, remes_prec, bessel_enum,
@@ -2011,10 +2009,11 @@ function find_yn_bound(z, z_inc) {
   auto w;
 
   w = z;
-  while(1) {
+  while (1) {
     w = z + z_inc;
-    if(foo(z) * foo(w) < 0)
+    if (foo(z) * foo(w) < 0) {
       break;
+    }
     z = w;
   }
   return find_root(0, z, w, 0, foo);
@@ -2040,18 +2039,18 @@ function find_yn_bound(z, z_inc) {
 
 function find_interval_data(bessel_enum, a, x) {
   auto b, c, save_precision, zero_precision, extrema_precision, tol,
-      remes_precision, order, k, last_extrema, t, poly_degree, flags,
-      index;
+      remes_precision, order, k, last_extrema, t, poly_degree, flags, index;
 
   /*
   ** In order to insure 'tol' bits in the zeros of jn, we need to
   ** compute bessel to at least 2*'tol' bits.
   */
 
-  if(bessel_enum < Y0_ENUM)
+  if (bessel_enum < Y0_ENUM) {
     tol = F_PRECISION + 3;
-  else
+  } else {
     tol = F_PRECISION + 1;
+  }
 
   save_precision = precision;
   extrema_precision = ceil(BITS_PER_WORD / MP_RADIX_BITS) + 4;
@@ -2064,17 +2063,16 @@ function find_interval_data(bessel_enum, a, x) {
   last_extrema = a;
 
   table_offset[bessel_enum] = MP_BIT_OFFSET;
-  if(bessel_enum < Y0_ENUM) {
-    printf(
-        "\n\t/* Interval polynomial coefficients for j%i */\n", order);
+  if (bessel_enum < Y0_ENUM) {
+    printf("\n\t/* Interval polynomial coefficients for j%i */\n", order);
 
-    if(a != 0)
+    if (a != 0) {
       /* Get coefficients on (0,a) */
-      k = get_coefficients(0, 0, a, k, remes_precision, bessel_enum,
-                           STANDARD, 1 == order, tol, SIGNAL);
+      k = get_coefficients(0, 0, a, k, remes_precision, bessel_enum, STANDARD,
+                           1 == order, tol, SIGNAL);
+    }
   } else {
-    printf(
-        "\n\t/* Interval polynomial coefficients for y%i */\n", order);
+    printf("\n\t/* Interval polynomial coefficients for y%i */\n", order);
 
     /*
     ** Near 0, we need to compute yn via the neumann functions (see eq.
@@ -2093,8 +2091,8 @@ function find_interval_data(bessel_enum, a, x) {
 
     z = find_bessel_zero(a, a + 1, zero_precision);
     b = find_yn_bound(z, -.1);
-    k = get_neumann_coefficients(0, b, k, remes_precision,
-                                 zero_precision, bessel_enum, tol);
+    k = get_neumann_coefficients(0, b, k, remes_precision, zero_precision,
+                                 bessel_enum, tol);
 
     /*
     ** We know that expansion around the first zero of y0 or y1 between
@@ -2106,8 +2104,8 @@ function find_interval_data(bessel_enum, a, x) {
     */
 
     c = find_yn_bound(z, .1);
-    k = get_coefficients(b, z, c, k, remes_precision, bessel_enum,
-                         STANDARD, TRUE, tol, PRINT);
+    k = get_coefficients(b, z, c, k, remes_precision, bessel_enum, STANDARD,
+                         TRUE, tol, PRINT);
 
     /*
     ** We finish up the "first interval" by approximating yn via the
@@ -2127,18 +2125,17 @@ function find_interval_data(bessel_enum, a, x) {
   */
 
   flags = 0;
-  while(a <= x) {
+  while (a <= x) {
     a = find_next_bessel_extrema(last_extrema, extrema_precision);
     z = find_bessel_zero(last_extrema, a, zero_precision);
-    k = get_coefficients(last_extrema, z, a, k, remes_precision,
-                         bessel_enum, STANDARD, TRUE, tol, PRINT);
+    k = get_coefficients(last_extrema, z, a, k, remes_precision, bessel_enum,
+                         STANDARD, TRUE, tol, PRINT);
     last_extrema = a;
   }
 
-  if(!DYNAMIC) { /* Check for the correct number of intervals */
-    if(num_intervals[bessel_enum] != k) {
-      printf(
-          "ERROR: Incorrect number of intervals for non DYNAMIC mode\n");
+  if (!DYNAMIC) { /* Check for the correct number of intervals */
+    if (num_intervals[bessel_enum] != k) {
+      printf("ERROR: Incorrect number of intervals for non DYNAMIC mode\n");
       exit;
     }
   }
@@ -2152,11 +2149,11 @@ function find_interval_data(bessel_enum, a, x) {
 ** if it exists or .5*(a+b) if it doesn't
 */
 
-function get_neumann_coefficients(a, b, k, remes_prec, zero_prec,
-                                  bessel_enum, tol) {
+function get_neumann_coefficients(a, b, k, remes_prec, zero_prec, bessel_enum,
+                                  tol) {
   auto do_divide, neumann_zero, saved_precision;
 
-  if((a == 0) && (bessel_order == 1)) {
+  if ((a == 0) && (bessel_order == 1)) {
     do_divide = TRUE;
     neumann_zero = 0;
   } else {
@@ -2165,7 +2162,8 @@ function get_neumann_coefficients(a, b, k, remes_prec, zero_prec,
 
     saved_precision = precision;
     precision = zero_prec;
-    neumann_zero = do_divide ? find_root(0, a, b, 0, __yn_neumann_hat) : .5 * (a + b);
+    neumann_zero =
+        do_divide ? find_root(0, a, b, 0, __yn_neumann_hat) : .5 * (a + b);
     precision = saved_precision;
   }
   return get_coefficients(a, neumann_zero, b, k, remes_prec, bessel_enum,
@@ -2176,10 +2174,11 @@ function find_yn_bound(z, z_inc) {
   auto w;
 
   w = z;
-  while(1) {
+  while (1) {
     w = z + z_inc;
-    if(foo(z) * foo(w) < 0)
+    if (foo(z) * foo(w) < 0) {
       break;
+    }
     z = w;
   }
   return find_root(0, z, w, 0, foo);
@@ -2192,8 +2191,8 @@ function find_yn_bound(z, z_inc) {
 */
 
 procedure get_asymptotic_coefficients(j_min, y_min, n) {
-  auto max_z, saved_precision, remes_precision, num_degree, den_degree,
-      degree, remes_base_flags;
+  auto max_z, saved_precision, remes_precision, num_degree, den_degree, degree,
+      remes_base_flags;
 
   saved_precision = precision;
   remes_precision = ceil(F_PRECISION / MP_RADIX_BITS) + 6;
@@ -2201,7 +2200,7 @@ procedure get_asymptotic_coefficients(j_min, y_min, n) {
 
   max_z = bldexp(1, MIN_ASYMPTOTIC_EXPONENT - 1) / min(j_min, y_min);
 
-  if(max_z >= 1) {
+  if (max_z >= 1) {
     printf("ERROR: scale factor (%i) too big for min asymptotic x\n",
            MIN_ASYMPTOTIC_EXPONENT - 1);
     exit;
@@ -2213,37 +2212,41 @@ procedure get_asymptotic_coefficients(j_min, y_min, n) {
 
   remes_base_flags = REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG;
 
-  if(DYNAMIC)
+  if (DYNAMIC) {
     remes(remes_base_flags + REMES_FIND_RATIONAL, 0, max_z, __Pn,
           F_PRECISION + 6, &num_degree, &den_degree, &ux_rational_coefs);
-  else {
+  } else {
     num_degree = 9;
     den_degree = 9 - n;
 
-    tol = remes(remes_base_flags + REMES_STATIC, 0, max_z, __Pn,
-                num_degree, den_degree, &ux_rational_coefs);
+    tol = remes(remes_base_flags + REMES_STATIC, 0, max_z, __Pn, num_degree,
+                den_degree, &ux_rational_coefs);
 
     ASSERT_TOL(tol, F_PRECISION + 6, "Pn")
   }
 
-  printf("#define\tP%i_COEFFICIENTS\t\t((FIXED_128 *) ((char *) " STR(MP_TABLE_NAME) " + %i))\n", n, BYTES(MP_BIT_OFFSET));
+  printf("#define\tP%i_COEFFICIENTS\t\t((FIXED_128 *) ((char *) " STR(
+             MP_TABLE_NAME) " + %i))\n",
+         n, BYTES(MP_BIT_OFFSET));
   degree = print_ux_rational_coefs(num_degree, den_degree, 0);
   printf("#define\tP%i_DEGREE\t\t%i\n", n, degree);
 
-  if(DYNAMIC)
+  if (DYNAMIC) {
     remes(remes_base_flags + REMES_FIND_RATIONAL, 0, max_z, __Qn,
           F_PRECISION + 6, &num_degree, &den_degree, &ux_rational_coefs);
-  else {
+  } else {
     num_degree = 9;
     den_degree = 10 - n;
 
-    tol = remes(remes_base_flags + REMES_STATIC, 0, max_z, __Qn,
-                num_degree, den_degree, &ux_rational_coefs);
+    tol = remes(remes_base_flags + REMES_STATIC, 0, max_z, __Qn, num_degree,
+                den_degree, &ux_rational_coefs);
 
     ASSERT_TOL(tol, F_PRECISION + 6, "Qn")
   }
 
-  printf("#define\tQ%i_COEFFICIENTS\t\t((FIXED_128 *) ((char *) " STR(MP_TABLE_NAME) " + %i))\n", n, BYTES(MP_BIT_OFFSET));
+  printf("#define\tQ%i_COEFFICIENTS\t\t((FIXED_128 *) ((char *) " STR(
+             MP_TABLE_NAME) " + %i))\n",
+         n, BYTES(MP_BIT_OFFSET));
   degree = print_ux_rational_coefs(num_degree, den_degree,
                                    -(MIN_ASYMPTOTIC_EXPONENT - 1));
   printf("#define\tQ%i_DEGREE\t\t%i\n", n, degree);
@@ -2256,7 +2259,7 @@ procedure get_asymptotic_coefficients(j_min, y_min, n) {
 ** the associated degrees of the polynomials.
 */
 
-if(!DYNAMIC) {
+if (!DYNAMIC) {
   num_intervals[J0_ENUM] = 7;
   num_intervals[J1_ENUM] = 8;
   num_intervals[Y0_ENUM] = 10;
@@ -2266,19 +2269,21 @@ if(!DYNAMIC) {
   (a + (b + (c + (d + (e + f / 64) / 64) / 64) / 64) / 64) / 64
 #define PACK7(a, b, c, d, e, f, g) (a + PACK6(b, c, d, e, f, g)) / 64
 #define PACK8(a, b, c, d, e, f, g, h) (a + PACK7(b, c, d, e, f, g, h)) / 64
-#define PACK9(a, b, c, d, e, f, g, h, i) (a + PACK8(b, c, d, e, f, g, h, i)) / 64
-#define PACK10(a, b, c, d, e, f, g, h, i, j) (a + PACK9(b, c, d, e, f, g, h, i, j)) / 64
+#define PACK9(a, b, c, d, e, f, g, h, i) \
+  (a + PACK8(b, c, d, e, f, g, h, i)) / 64
+#define PACK10(a, b, c, d, e, f, g, h, i, j) \
+  (a + PACK9(b, c, d, e, f, g, h, i, j)) / 64
 
   save_precision = precision;
   precision = ceil(16 * 6 / 8) + 1;
   fixed_degrees[J0_ENUM] = PACK7(30, 28, 28, 28, 28, 28, 28);
   fixed_degrees[J1_ENUM] = PACK8(14, 29, 28, 28, 28, 28, 28, 28);
-  fixed_degrees[Y0_ENUM] = PACK10(20, 19, 23, 49, 34, 29, 28, 28, 28,
-                                  28);
+  fixed_degrees[Y0_ENUM] = PACK10(20, 19, 23, 49, 34, 29, 28, 28, 28, 28);
   fixed_degrees[Y1_ENUM] = PACK9(14, 29, 23, 41, 32, 28, 28, 28, 28);
   precision = save_precision;
-} else
+} else {
   __tmp = 0;
+}
 
 /*
 ** Set up __bessel() to get locations of the extrema and zeros of j0 and j1.
@@ -2335,11 +2340,12 @@ asymptotic_coef_offset[Y1_ENUM] = MP_BIT_OFFSET;
 get_asymptotic_coefficients(min_asymptotic_value[J1_ENUM],
                             min_asymptotic_value[Y1_ENUM], 1);
 
-printf("#define BESSEL_TABLE_DATA_MAP\t"
-       "(TABLE_DATA_MAP *)((char *) TABLE_NAME + %i)\n",
-       BYTES(MP_BIT_OFFSET));
+printf(
+    "#define BESSEL_TABLE_DATA_MAP\t"
+    "(TABLE_DATA_MAP *)((char *) TABLE_NAME + %i)\n",
+    BYTES(MP_BIT_OFFSET));
 
-for(i = 0; i < 4; i++) {
+for (i = 0; i < 4; i++) {
   tmp = min_asymptotic_value[i];
   tmp = bldexp(tmp, BITS_PER_UX_FRACTION_DIGIT_TYPE - 5);
   PRINT_64_TBL_ITEM(tmp);
@@ -2360,13 +2366,13 @@ PRINT_UX_TBL_ADEF_ITEM("UX_TWO_LN2_OVER_PI", tmp);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for bessel "."routines", __FILE__);
+my $headerText =
+    GetHeaderText(STR(BUILD_FILE_NAME),
+                  "Definitions and constants for bessel "."routines", __FILE__);
 print "$headerText\n\n$outText\n";
 
 #endif

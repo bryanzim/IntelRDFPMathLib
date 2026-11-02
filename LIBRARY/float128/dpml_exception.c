@@ -111,11 +111,12 @@
 #if !defined(DPML_GET_ENVIRONMENT)
 
 #if IEEE_EXCEPTION_BEHAVIOR
-#define DPML_GET_ENVIRONMENT(e) \
-  P_EXCPT_REC_ENVIRONMENT(p, DPML_GET_FPCSR(e))
+#define DPML_GET_ENVIRONMENT(e) P_EXCPT_REC_ENVIRONMENT(p, DPML_GET_FPCSR(e))
 #else
-#define DPML_GET_ENVIRONMENT(e) \
-  P_EXCPT_REC_ENVIRONMENT(p, (ENABLE_FLUSH_TO_ZERO | ENABLE_SINGULARITY | ENABLE_OVERFLOW | ENABLE_INVALID | ENABLE_LOST_SIGNIFICANCE))
+#define DPML_GET_ENVIRONMENT(e)                                         \
+  P_EXCPT_REC_ENVIRONMENT(                                              \
+      p, (ENABLE_FLUSH_TO_ZERO | ENABLE_SINGULARITY | ENABLE_OVERFLOW | \
+          ENABLE_INVALID | ENABLE_LOST_SIGNIFICANCE))
 #endif
 #endif
 
@@ -125,8 +126,8 @@
  */
 
 extern int raise(int);
-#if !defined(DPML_SIGNAL) && !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER) && \
-    !defined(wnt)
+#if !defined(DPML_SIGNAL) && \
+    !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER) && !defined(wnt)
 
 #include <sys/signal.h>
 #define DPML_SIGNAL(p) raise(SIGFPE)
@@ -168,8 +169,7 @@ extern int raise(int);
 
 #define DPML_DO_SIDE_EFFECTS(p) DPML_DO_SIDE_EFFECTS_NAME(p)
 
-static void
-DPML_DO_SIDE_EFFECTS_NAME(DPML_EXCEPTION_RECORD *p) {
+static void DPML_DO_SIDE_EFFECTS_NAME(DPML_EXCEPTION_RECORD* p) {
   SET_ERRNO(p);
 
 #if !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
@@ -177,9 +177,9 @@ DPML_DO_SIDE_EFFECTS_NAME(DPML_EXCEPTION_RECORD *p) {
   /* set ieee sticky bit before signaling exception */
   DPML_UPDATE_STICKY_BITS(p);
 
-  if((G_EXCPT_REC_ENVIRONMENT(p) &
-      (WORD)SET_BIT(G_EXCPT_REC_DPML_ECODE(p))))
+  if ((G_EXCPT_REC_ENVIRONMENT(p) & (WORD)SET_BIT(G_EXCPT_REC_DPML_ECODE(p)))) {
     DPML_SIGNAL(p);
+  }
 #endif
 }
 
@@ -222,7 +222,7 @@ DPML_DO_SIDE_EFFECTS_NAME(DPML_EXCEPTION_RECORD *p) {
 #endif
 
 #if (EXCEPTION_INTERFACE_RECEIVE == receive_exception_record)
-#define EXCPTN_ARG DPML_EXCEPTION_RECORD *p
+#define EXCPTN_ARG DPML_EXCEPTION_RECORD* p
 #define DECLARATIONS WORD err = G_EXCPT_REC_FUNC_ECODE(p)
 #else
 #define EXCPTN_ARG WORD err
@@ -231,23 +231,24 @@ DPML_DO_SIDE_EFFECTS_NAME(DPML_EXCEPTION_RECORD *p) {
 
 #if !defined(DPML_EXCEPTION)
 
-void *DPML_EXCEPTION_NAME(EXCPTN_ARG) {
+void* DPML_EXCEPTION_NAME(EXCPTN_ARG) {
   DECLARATIONS;
 
   /* Split input error code into type, and base error */
   P_EXCPT_REC_DATA_TYPE(p, GET_ERR_CODE_TYPE(err));
-  P_EXCPT_REC_FUNC_ECODE(p,
-                         (WORD)((U_WORD)GET_TYPELESS_ERR_CODE((U_WORD)err)));
+  P_EXCPT_REC_FUNC_ECODE(p, (WORD)((U_WORD)GET_TYPELESS_ERR_CODE((U_WORD)err)));
 
   DPML_GET_ENVIRONMENT(p);
-  if(err < 0)
+  if (err < 0) {
     /* Just a request for info */
-    return (void *)G_EXCPT_REC_ENVIRONMENT(p);
+    return (void*)G_EXCPT_REC_ENVIRONMENT(p);
+  }
 
   GET_DPML_EXCEPTION_AND_VALUE(p);
 
-  if(G_EXCPT_REC_DPML_ECODE(p) != DPML_NO_ERROR)
+  if (G_EXCPT_REC_DPML_ECODE(p) != DPML_NO_ERROR) {
     DPML_DO_SIDE_EFFECTS(p);
+  }
 
   return G_EXCPT_REC_RET_VAL_PTR(p);
 }

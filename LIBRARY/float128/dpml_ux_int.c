@@ -95,12 +95,12 @@
 ** result.
 */
 
-WORD UX_RND_TO_INT(UX_FLOAT *unpacked_argument, WORD flags,
-                   UX_FLOAT *unpacked_result, UX_FLOAT *unpacked_fraction) {
+WORD UX_RND_TO_INT(UX_FLOAT* unpacked_argument, WORD flags,
+                   UX_FLOAT* unpacked_result, UX_FLOAT* unpacked_fraction) {
   WORD num_digits, shift, lr, sklr;
   UX_EXPONENT_TYPE exponent;
-  UX_FRACTION_DIGIT_TYPE *arg_ptr, *int_ptr, current_digit, new_digit,
-      incr, sticky, lsd, mask;
+  UX_FRACTION_DIGIT_TYPE *arg_ptr, *int_ptr, current_digit, new_digit, incr,
+      sticky, lsd, mask;
   UX_FLOAT dummy;
 
   /*
@@ -119,8 +119,9 @@ WORD UX_RND_TO_INT(UX_FLOAT *unpacked_argument, WORD flags,
 
   do {
     current_digit = *arg_ptr--;
-    if(shift < BITS_PER_UX_FRACTION_DIGIT_TYPE)
+    if (shift < BITS_PER_UX_FRACTION_DIGIT_TYPE) {
       goto get_LR;
+    }
 
     /*
     ** The current digit is completely to the right of the binary point
@@ -131,7 +132,7 @@ WORD UX_RND_TO_INT(UX_FLOAT *unpacked_argument, WORD flags,
     *int_ptr-- = 0;
     sticky = current_digit | (sticky != 0);
     shift -= BITS_PER_UX_FRACTION_DIGIT_TYPE;
-  } while(--num_digits > 0);
+  } while (--num_digits > 0);
 
   sticky = (shift) ? (sticky != 0) : sticky;
   current_digit = 0;
@@ -139,8 +140,9 @@ WORD UX_RND_TO_INT(UX_FLOAT *unpacked_argument, WORD flags,
 
 get_LR:
 
-  if(shift < 0)
+  if (shift < 0) {
     shift = 0;
+  }
   incr = (UX_FRACTION_DIGIT_TYPE)1 << shift;
   mask = incr - 1;
 
@@ -153,7 +155,8 @@ get_LR:
 
   new_digit = 2 * current_digit;
 
-  if(mask == 0) { /* The L and R bits straddle a digit.  Get them back together */
+  if (mask ==
+      0) { /* The L and R bits straddle a digit.  Get them back together */
     lr = (new_digit & 2) | ((UX_SIGNED_FRACTION_DIGIT_TYPE)sticky < 0);
     sticky += sticky;
     lsd = current_digit;
@@ -165,8 +168,8 @@ get_LR:
           (current_digit >> shift);
   }
 
-  sklr =
-      ((G_UX_SIGN(unpacked_argument) >> (BITS_PER_UX_SIGN_TYPE - 3)) & 0x8) + (((sticky != 0) << 2) + lr);
+  sklr = ((G_UX_SIGN(unpacked_argument) >> (BITS_PER_UX_SIGN_TYPE - 3)) & 0x8) +
+         (((sticky != 0) << 2) + lr);
 
   /* Get increment value, add it in and propagate the carry */
 
@@ -175,14 +178,14 @@ get_LR:
   current_digit &= ~mask;
   lsd += UX_TO_DIGIT(sklr);
 
-  while(num_digits-- > 0) {
+  while (num_digits-- > 0) {
     new_digit = current_digit + incr;
     incr = (new_digit < incr);
     *int_ptr-- = new_digit;
     current_digit = *arg_ptr--;
   }
 
-  if(incr)
+  if (incr)
   /*
   ** A carry out from the last add ==> result = 2^(exponent + 1) or
   ** 1, depending on whether or not exponent >= 0.
@@ -197,9 +200,10 @@ get_LR:
   P_UX_SIGN(unpacked_result, G_UX_SIGN(unpacked_argument));
   P_UX_EXPONENT(unpacked_result, exponent);
 
-  if(flags & FRACTION_RESULT)
+  if (flags & FRACTION_RESULT) {
     /* subtract int_func(x) from x */
     ADDSUB(unpacked_argument, unpacked_result, SUB, unpacked_fraction);
+  }
 
   return UX_TO_WORD(lsd);
 }
@@ -213,27 +217,21 @@ get_LR:
 #define C_UX_RND_TO_INT __INTERNAL_NAME(C_rnd_to_int__)
 #endif
 
-static void
-C_UX_RND_TO_INT(_X_FLOAT *packed_argument, U_WORD const *class_to_action_map, WORD flags,
-                _X_FLOAT *packed_result, _X_FLOAT *packed_fraction OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_RND_TO_INT(
+    _X_FLOAT* packed_argument, U_WORD const* class_to_action_map, WORD flags,
+    _X_FLOAT* packed_result,
+    _X_FLOAT* packed_fraction OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class;
   UX_FLOAT unpacked_argument, unpacked_result, unpacked_fraction;
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      class_to_action_map,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class = UNPACK(packed_argument, &unpacked_argument, class_to_action_map,
+                    packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class) { /* Set error value for fraction also */
-    if(flags & FRACTION_RESULT) {
-      (void)UNPACK(
-          packed_argument,
-          &unpacked_argument,
-          class_to_action_map + WORDS_PER_CLASS_TO_ACTION_MAP,
-          packed_fraction
-              OPT_EXCEPTION_INFO_ARGUMENT);
+  if (0 > fp_class) { /* Set error value for fraction also */
+    if (flags & FRACTION_RESULT) {
+      (void)UNPACK(packed_argument, &unpacked_argument,
+                   class_to_action_map + WORDS_PER_CLASS_TO_ACTION_MAP,
+                   packed_fraction OPT_EXCEPTION_INFO_ARGUMENT);
     }
     return;
   }
@@ -241,23 +239,17 @@ C_UX_RND_TO_INT(_X_FLOAT *packed_argument, U_WORD const *class_to_action_map, WO
   (void)UX_RND_TO_INT(&unpacked_argument, flags, &unpacked_result,
                       &unpacked_fraction);
 
-  if(flags & INTEGER_RESULT)
-    PACK(
-        &unpacked_result,
-        packed_result,
-        NOT_USED,
-        NOT_USED
-            OPT_EXCEPTION_INFO_ARGUMENT);
+  if (flags & INTEGER_RESULT) {
+    PACK(&unpacked_result, packed_result, NOT_USED,
+         NOT_USED OPT_EXCEPTION_INFO_ARGUMENT);
+  }
 
   /* We assume the following call will normalize unpacked_result */
 
-  if(flags & FRACTION_RESULT)
-    PACK(
-        &unpacked_fraction,
-        packed_fraction,
-        NOT_USED,
-        NOT_USED
-            OPT_EXCEPTION_INFO_ARGUMENT);
+  if (flags & FRACTION_RESULT) {
+    PACK(&unpacked_fraction, packed_fraction, NOT_USED,
+         NOT_USED OPT_EXCEPTION_INFO_ARGUMENT);
+  }
 }
 
 /*
@@ -273,13 +265,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_RND_TO_INT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      FLOOR_CLASS_TO_ACTION_MAP,
-      RM_BIT_VECTOR | INTEGER_RESULT,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  C_UX_RND_TO_INT(PASS_ARG_X_FLOAT(packed_argument), FLOOR_CLASS_TO_ACTION_MAP,
+                  RM_BIT_VECTOR | INTEGER_RESULT,
+                  PASS_RET_X_FLOAT(packed_result), NOT_USED OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -292,13 +280,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_RND_TO_INT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      CEIL_CLASS_TO_ACTION_MAP,
-      RP_BIT_VECTOR | INTEGER_RESULT,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  C_UX_RND_TO_INT(PASS_ARG_X_FLOAT(packed_argument), CEIL_CLASS_TO_ACTION_MAP,
+                  RP_BIT_VECTOR | INTEGER_RESULT,
+                  PASS_RET_X_FLOAT(packed_result), NOT_USED OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -311,13 +295,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_RND_TO_INT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      TRUNC_CLASS_TO_ACTION_MAP,
-      RZ_BIT_VECTOR | INTEGER_RESULT,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  C_UX_RND_TO_INT(PASS_ARG_X_FLOAT(packed_argument), TRUNC_CLASS_TO_ACTION_MAP,
+                  RZ_BIT_VECTOR | INTEGER_RESULT,
+                  PASS_RET_X_FLOAT(packed_result), NOT_USED OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -330,13 +310,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_RND_TO_INT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      TRUNC_CLASS_TO_ACTION_MAP,
-      RV_BIT_VECTOR | INTEGER_RESULT,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  C_UX_RND_TO_INT(PASS_ARG_X_FLOAT(packed_argument), TRUNC_CLASS_TO_ACTION_MAP,
+                  RV_BIT_VECTOR | INTEGER_RESULT,
+                  PASS_RET_X_FLOAT(packed_result), NOT_USED OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -348,13 +324,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  C_UX_RND_TO_INT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      TRUNC_CLASS_TO_ACTION_MAP,
-      RN_BIT_VECTOR | INTEGER_RESULT,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  C_UX_RND_TO_INT(PASS_ARG_X_FLOAT(packed_argument), TRUNC_CLASS_TO_ACTION_MAP,
+                  RN_BIT_VECTOR | INTEGER_RESULT,
+                  PASS_RET_X_FLOAT(packed_result), NOT_USED OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -367,13 +339,9 @@ X_XXptr_PROTO(F_ENTRY_NAME, packed_result, packed_argument, packed_n) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_RND_TO_INT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      TRUNC_CLASS_TO_ACTION_MAP,
-      RZ_BIT_VECTOR | INTEGER_RESULT | FRACTION_RESULT,
-      packed_n,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_RND_TO_INT(PASS_ARG_X_FLOAT(packed_argument), TRUNC_CLASS_TO_ACTION_MAP,
+                  RZ_BIT_VECTOR | INTEGER_RESULT | FRACTION_RESULT, packed_n,
+                  PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -388,13 +356,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_RND_TO_INT(
-      PASS_ARG_X_FLOAT(packed_argument),
-      TRUNC_CLASS_TO_ACTION_MAP,
-      RV_BIT_VECTOR | INTEGER_RESULT,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  C_UX_RND_TO_INT(PASS_ARG_X_FLOAT(packed_argument), TRUNC_CLASS_TO_ACTION_MAP,
+                  RV_BIT_VECTOR | INTEGER_RESULT,
+                  PASS_RET_X_FLOAT(packed_result), NOT_USED OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -474,8 +438,9 @@ END_TABLE;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants 'round to int'"." routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants 'round to int'"." routines", __FILE__);
 print "$headerText\n\n$outText\n";
 
 #endif

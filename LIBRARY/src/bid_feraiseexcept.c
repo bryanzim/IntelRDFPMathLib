@@ -33,22 +33,22 @@ void bid_feraiseexcept(int excepts _EXC_FLAGS_PARAM) {
   /* Take only supported exceptions */
   excepts &= DEC_FE_ALL_EXCEPT;
 
-  if(excepts & DEC_FE_INVALID) { /* Invalid operation */
+  if (excepts & DEC_FE_INVALID) { /* Invalid operation */
     bid_raise_except(BID_INVALID_EXCEPTION);
   }
-  if(excepts & DEC_FE_DIVBYZERO) { /* Division-by-zero */
+  if (excepts & DEC_FE_DIVBYZERO) { /* Division-by-zero */
     bid_raise_except(BID_ZERO_DIVIDE_EXCEPTION);
   }
-  if(excepts & DEC_FE_UNNORMAL) { /* Denormal operand (IA-specific) */
+  if (excepts & DEC_FE_UNNORMAL) { /* Denormal operand (IA-specific) */
     bid_raise_except(BID_DENORMAL_EXCEPTION);
   }
-  if(excepts & DEC_FE_OVERFLOW) { /* Overflow */
+  if (excepts & DEC_FE_OVERFLOW) { /* Overflow */
     bid_raise_except(BID_OVERFLOW_EXCEPTION);
   }
-  if(excepts & DEC_FE_UNDERFLOW) { /* Underflow */
+  if (excepts & DEC_FE_UNDERFLOW) { /* Underflow */
     bid_raise_except(BID_UNDERFLOW_EXCEPTION);
   }
-  if(excepts & DEC_FE_INEXACT) { /* Separate Inexact */
+  if (excepts & DEC_FE_INEXACT) { /* Separate Inexact */
     bid_raise_except(BID_INEXACT_EXCEPTION);
   }
 }

@@ -1431,152 +1431,242 @@ extern const double TABLE_NAME[1154];
 
 #endif
 
-#define POW2_HI(j) *((double *)((char *)TABLE_NAME + 0 + (j)))
-#define POW2_LO_OV_POW2_HI(j) *((double *)((char *)TABLE_NAME + 8 + (j)))
-#define IPOW2(j) *((signed __int64 *)((char *)TABLE_NAME + 0 + (j)))
+#define POW2_HI(j) *((double*)((char*)TABLE_NAME + 0 + (j)))
+#define POW2_LO_OV_POW2_HI(j) *((double*)((char*)TABLE_NAME + 8 + (j)))
+#define IPOW2(j) *((signed __int64*)((char*)TABLE_NAME + 0 + (j)))
 #define POW2_INDEX_POS 4
-#define POW2_LO_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4096))
-#define POW2_HI_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4104))
-#define POW2_MAX_SCALE_F *((unsigned __int64 *)((char *)TABLE_NAME + 4112))
-#define POW2_LO_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4120))
-#define POW2_HI_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4128))
-#define POW2_MAX_SCALE_R *((unsigned __int64 *)((char *)TABLE_NAME + 4136))
+#define POW2_LO_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4096))
+#define POW2_HI_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4104))
+#define POW2_MAX_SCALE_F *((unsigned __int64*)((char*)TABLE_NAME + 4112))
+#define POW2_LO_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4120))
+#define POW2_HI_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4128))
+#define POW2_MAX_SCALE_R *((unsigned __int64*)((char*)TABLE_NAME + 4136))
 #define SCALE_DOWN_EXP 11
-#define FAST_BIG *((double *)((char *)TABLE_NAME + 4144))
-#define SCALE_DOWN_OV_LN2 *((double *)((char *)TABLE_NAME + 4152))
-#define SCALE_DOWN_OV_LN2_HI *((double *)((char *)TABLE_NAME + 4160))
-#define SCALE_DOWN_OV_LN2_LO *((double *)((char *)TABLE_NAME + 4168))
-#define FAST_EXP_RANGE_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4176))
-#define FAST_EXP_RANGE_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4184))
-#define FAST_POW2_F ((double *)((char *)TABLE_NAME + 4192))
-#define FAST_POW2_R ((double *)((char *)TABLE_NAME + 4232))
-#define SCALE_DOWN *((double *)((char *)TABLE_NAME + 4256))
+#define FAST_BIG *((double*)((char*)TABLE_NAME + 4144))
+#define SCALE_DOWN_OV_LN2 *((double*)((char*)TABLE_NAME + 4152))
+#define SCALE_DOWN_OV_LN2_HI *((double*)((char*)TABLE_NAME + 4160))
+#define SCALE_DOWN_OV_LN2_LO *((double*)((char*)TABLE_NAME + 4168))
+#define FAST_EXP_RANGE_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4176))
+#define FAST_EXP_RANGE_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4184))
+#define FAST_POW2_F ((double*)((char*)TABLE_NAME + 4192))
+#define FAST_POW2_R ((double*)((char*)TABLE_NAME + 4232))
+#define SCALE_DOWN *((double*)((char*)TABLE_NAME + 4256))
 #define ACC_BIG_HI_32 0x42b80001
 #define FAST_BIG_HI_32 0x42080001
-#define LN2_HI *((double *)((char *)TABLE_NAME + 4264))
-#define LN2_LO *((double *)((char *)TABLE_NAME + 4272))
-#define LN2_OV_LN10_HI *((double *)((char *)TABLE_NAME + 4280))
-#define LN2_OV_LN10_LO *((double *)((char *)TABLE_NAME + 4288))
-#define ACC_POW2_F ((double *)((char *)TABLE_NAME + 4296))
-#define ACC_POW2_R ((double *)((char *)TABLE_NAME + 4336))
-#define ACC_BIG *((double *)((char *)TABLE_NAME + 4360))
-#define EXP_LO_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4368))
-#define EXP_HI_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4376))
-#define EXP_LO_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4384))
-#define EXP_HI_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4392))
-#define EXP2_HI_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4400))
-#define EXP2_HI_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4408))
-#define EXP10_LO_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4416))
-#define EXP10_HI_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4424))
-#define EXP10_LO_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4432))
-#define EXP10_HI_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4440))
-#define ACC_EXP_F ((double *)((char *)TABLE_NAME + 4448))
-#define ACC_EXP10_F ((double *)((char *)TABLE_NAME + 4488))
-#define EXPM1_POLY_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4536))
-#define EXPM1_HI_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4544))
-#define EXPM1_LO_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4552))
-#define EXPM1_POLY_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4560))
-#define EXPM1_HI_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4568))
-#define EXPM1_LO_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4576))
-#define EXPM1_F ((double *)((char *)TABLE_NAME + 4584))
-#define EXPM1_RED_F ((double *)((char *)TABLE_NAME + 4632))
-#define EXPM1_R ((double *)((char *)TABLE_NAME + 4680))
-#define EXPM1_RED_R ((double *)((char *)TABLE_NAME + 4712))
-#define SINHCOSH_OVERFLOW_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4744))
-#define SINHCOSH_BIG_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4752))
-#define SINHCOSH_POLY_CHECK_F *((unsigned __int64 *)((char *)TABLE_NAME + 4760))
-#define SINHCOSH_OVERFLOW_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4768))
-#define SINHCOSH_BIG_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4776))
-#define SINHCOSH_POLY_CHECK_R *((unsigned __int64 *)((char *)TABLE_NAME + 4784))
-#define SINH_F ((double *)((char *)TABLE_NAME + 4792))
-#define COSH_F ((double *)((char *)TABLE_NAME + 4832))
-#define SINH_R ((double *)((char *)TABLE_NAME + 4872))
-#define COSH_R ((double *)((char *)TABLE_NAME + 4896))
+#define LN2_HI *((double*)((char*)TABLE_NAME + 4264))
+#define LN2_LO *((double*)((char*)TABLE_NAME + 4272))
+#define LN2_OV_LN10_HI *((double*)((char*)TABLE_NAME + 4280))
+#define LN2_OV_LN10_LO *((double*)((char*)TABLE_NAME + 4288))
+#define ACC_POW2_F ((double*)((char*)TABLE_NAME + 4296))
+#define ACC_POW2_R ((double*)((char*)TABLE_NAME + 4336))
+#define ACC_BIG *((double*)((char*)TABLE_NAME + 4360))
+#define EXP_LO_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4368))
+#define EXP_HI_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4376))
+#define EXP_LO_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4384))
+#define EXP_HI_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4392))
+#define EXP2_HI_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4400))
+#define EXP2_HI_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4408))
+#define EXP10_LO_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4416))
+#define EXP10_HI_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4424))
+#define EXP10_LO_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4432))
+#define EXP10_HI_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4440))
+#define ACC_EXP_F ((double*)((char*)TABLE_NAME + 4448))
+#define ACC_EXP10_F ((double*)((char*)TABLE_NAME + 4488))
+#define EXPM1_POLY_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4536))
+#define EXPM1_HI_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4544))
+#define EXPM1_LO_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4552))
+#define EXPM1_POLY_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4560))
+#define EXPM1_HI_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4568))
+#define EXPM1_LO_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4576))
+#define EXPM1_F ((double*)((char*)TABLE_NAME + 4584))
+#define EXPM1_RED_F ((double*)((char*)TABLE_NAME + 4632))
+#define EXPM1_R ((double*)((char*)TABLE_NAME + 4680))
+#define EXPM1_RED_R ((double*)((char*)TABLE_NAME + 4712))
+#define SINHCOSH_OVERFLOW_CHECK_F \
+  *((unsigned __int64*)((char*)TABLE_NAME + 4744))
+#define SINHCOSH_BIG_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4752))
+#define SINHCOSH_POLY_CHECK_F *((unsigned __int64*)((char*)TABLE_NAME + 4760))
+#define SINHCOSH_OVERFLOW_CHECK_R \
+  *((unsigned __int64*)((char*)TABLE_NAME + 4768))
+#define SINHCOSH_BIG_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4776))
+#define SINHCOSH_POLY_CHECK_R *((unsigned __int64*)((char*)TABLE_NAME + 4784))
+#define SINH_F ((double*)((char*)TABLE_NAME + 4792))
+#define COSH_F ((double*)((char*)TABLE_NAME + 4832))
+#define SINH_R ((double*)((char*)TABLE_NAME + 4872))
+#define COSH_R ((double*)((char*)TABLE_NAME + 4896))
 #define LOG2_K 7
 #define POW2_K 8
 #define NO_FAST 0
 #define NO_ACC 0
 #define USE_DIVIDE 0
-#define HALF *((double *)((char *)TABLE_NAME + 4928))
-#define ONE *((double *)((char *)TABLE_NAME + 4936))
-#define TWO *((double *)((char *)TABLE_NAME + 4944))
-#define MAX_FLOAT *((double *)((char *)TABLE_NAME + 4952))
-#define RECIP_LN2 *((double *)((char *)TABLE_NAME + 4960))
-#define LN10_OV_LN2 *((double *)((char *)TABLE_NAME + 4968))
-#define LN2_OVER_TWO *((double *)((char *)TABLE_NAME + 4976))
-#define ACC_LOG2_F ((double *)((char *)TABLE_NAME + 4984))
-#define ACC_LOG2_R ((double *)((char *)TABLE_NAME + 5032))
-#define FAST_LOG2_F ((double *)((char *)TABLE_NAME + 5064))
-#define GET_F(j) *((float *)((char *)TABLE_NAME + 5112 + (j)))
-#define LOG_F_HI(j) *((float *)((char *)TABLE_NAME + 5116 + (j)))
-#define RECIP_F(j) *((double *)((char *)TABLE_NAME + 5120 + (j)))
-#define RECIP_F_LO(j) *((double *)((char *)TABLE_NAME + 5128 + (j)))
-#define LOG_F_LO(j) *((double *)((char *)TABLE_NAME + 5136 + (j)))
+#define HALF *((double*)((char*)TABLE_NAME + 4928))
+#define ONE *((double*)((char*)TABLE_NAME + 4936))
+#define TWO *((double*)((char*)TABLE_NAME + 4944))
+#define MAX_FLOAT *((double*)((char*)TABLE_NAME + 4952))
+#define RECIP_LN2 *((double*)((char*)TABLE_NAME + 4960))
+#define LN10_OV_LN2 *((double*)((char*)TABLE_NAME + 4968))
+#define LN2_OVER_TWO *((double*)((char*)TABLE_NAME + 4976))
+#define ACC_LOG2_F ((double*)((char*)TABLE_NAME + 4984))
+#define ACC_LOG2_R ((double*)((char*)TABLE_NAME + 5032))
+#define FAST_LOG2_F ((double*)((char*)TABLE_NAME + 5064))
+#define GET_F(j) *((float*)((char*)TABLE_NAME + 5112 + (j)))
+#define LOG_F_HI(j) *((float*)((char*)TABLE_NAME + 5116 + (j)))
+#define RECIP_F(j) *((double*)((char*)TABLE_NAME + 5120 + (j)))
+#define RECIP_F_LO(j) *((double*)((char*)TABLE_NAME + 5128 + (j)))
+#define LOG_F_LO(j) *((double*)((char*)TABLE_NAME + 5136 + (j)))
 #define LOG_INDEX_BASE_POS 5
 #define LOG_INDEX_SCALE 1
 
-#define FAST_POW2_POLY_F_M(x) (((FAST_POW2_F[0] + x * FAST_POW2_F[1]) + (x * x) * FAST_POW2_F[2]) + (x * (x * x)) * (FAST_POW2_F[3] + x * FAST_POW2_F[4]))
-#define FAST_POW2_POLY_F_C(x) (FAST_POW2_F[0] + x * (FAST_POW2_F[1] + x * (FAST_POW2_F[2] + x * (FAST_POW2_F[3] + x * FAST_POW2_F[4]))))
+#define FAST_POW2_POLY_F_M(x)                                           \
+  (((FAST_POW2_F[0] + x * FAST_POW2_F[1]) + (x * x) * FAST_POW2_F[2]) + \
+   (x * (x * x)) * (FAST_POW2_F[3] + x * FAST_POW2_F[4]))
+#define FAST_POW2_POLY_F_C(x) \
+  (FAST_POW2_F[0] +           \
+   x * (FAST_POW2_F[1] +      \
+        x * (FAST_POW2_F[2] + x * (FAST_POW2_F[3] + x * FAST_POW2_F[4]))))
 #define FAST_POW2_POLY_F SELECT_POLY(FAST_POW2_POLY_F_)
 
-#define FAST_POW2_POLY_R_M(x) ((FAST_POW2_R[0] + x * FAST_POW2_R[1]) + (x * x) * FAST_POW2_R[2])
-#define FAST_POW2_POLY_R_C(x) (FAST_POW2_R[0] + x * (FAST_POW2_R[1] + x * FAST_POW2_R[2]))
+#define FAST_POW2_POLY_R_M(x) \
+  ((FAST_POW2_R[0] + x * FAST_POW2_R[1]) + (x * x) * FAST_POW2_R[2])
+#define FAST_POW2_POLY_R_C(x) \
+  (FAST_POW2_R[0] + x * (FAST_POW2_R[1] + x * FAST_POW2_R[2]))
 #define FAST_POW2_POLY_R SELECT_POLY(FAST_POW2_POLY_R_)
 
-#define ACC_POW2_POLY_F_M(t, x) (((t + x * ACC_POW2_F[0]) + (x * x) * ACC_POW2_F[1]) + (x * (x * x)) * ((ACC_POW2_F[2] + x * ACC_POW2_F[3]) + (x * x) * ACC_POW2_F[4]))
-#define ACC_POW2_POLY_F_C(t, x) (t + x * (ACC_POW2_F[0] + x * (ACC_POW2_F[1] + x * (ACC_POW2_F[2] + x * (ACC_POW2_F[3] + x * ACC_POW2_F[4])))))
+#define ACC_POW2_POLY_F_M(t, x)                          \
+  (((t + x * ACC_POW2_F[0]) + (x * x) * ACC_POW2_F[1]) + \
+   (x * (x * x)) *                                       \
+       ((ACC_POW2_F[2] + x * ACC_POW2_F[3]) + (x * x) * ACC_POW2_F[4]))
+#define ACC_POW2_POLY_F_C(t, x) \
+  (t +                          \
+   x * (ACC_POW2_F[0] +         \
+        x * (ACC_POW2_F[1] +    \
+             x * (ACC_POW2_F[2] + x * (ACC_POW2_F[3] + x * ACC_POW2_F[4])))))
 #define ACC_POW2_POLY_F SELECT_POLY(ACC_POW2_POLY_F_)
 
-#define ACC_POW2_POLY_R_M(x) ((ACC_POW2_R[0] + x * ACC_POW2_R[1]) + (x * x) * ACC_POW2_R[2])
-#define ACC_POW2_POLY_R_C(x) (ACC_POW2_R[0] + x * (ACC_POW2_R[1] + x * ACC_POW2_R[2]))
+#define ACC_POW2_POLY_R_M(x) \
+  ((ACC_POW2_R[0] + x * ACC_POW2_R[1]) + (x * x) * ACC_POW2_R[2])
+#define ACC_POW2_POLY_R_C(x) \
+  (ACC_POW2_R[0] + x * (ACC_POW2_R[1] + x * ACC_POW2_R[2]))
 #define ACC_POW2_POLY_R SELECT_POLY(ACC_POW2_POLY_R_)
 
-#define ACC_EXP_POLY_F_M(t, x) (((t + x * ACC_EXP_F[0]) + (x * x) * ACC_EXP_F[1]) + (x * (x * x)) * ((ACC_EXP_F[2] + x * ACC_EXP_F[3]) + (x * x) * ACC_EXP_F[4]))
-#define ACC_EXP_POLY_F_C(t, x) (t + x * (ACC_EXP_F[0] + x * (ACC_EXP_F[1] + x * (ACC_EXP_F[2] + x * (ACC_EXP_F[3] + x * ACC_EXP_F[4])))))
+#define ACC_EXP_POLY_F_M(t, x)                         \
+  (((t + x * ACC_EXP_F[0]) + (x * x) * ACC_EXP_F[1]) + \
+   (x * (x * x)) *                                     \
+       ((ACC_EXP_F[2] + x * ACC_EXP_F[3]) + (x * x) * ACC_EXP_F[4]))
+#define ACC_EXP_POLY_F_C(t, x)  \
+  (t + x * (ACC_EXP_F[0] +      \
+            x * (ACC_EXP_F[1] + \
+                 x * (ACC_EXP_F[2] + x * (ACC_EXP_F[3] + x * ACC_EXP_F[4])))))
 #define ACC_EXP_POLY_F SELECT_POLY(ACC_EXP_POLY_F_)
 
-#define ACC_EXP10_POLY_F_M(t, x) (((t + x * ACC_EXP10_F[0]) + (x * x) * (ACC_EXP10_F[1] + x * ACC_EXP10_F[2])) + ((x * x) * (x * x)) * ((ACC_EXP10_F[3] + x * ACC_EXP10_F[4]) + (x * x) * ACC_EXP10_F[5]))
-#define ACC_EXP10_POLY_F_C(t, x) (t + x * (ACC_EXP10_F[0] + x * (ACC_EXP10_F[1] + x * (ACC_EXP10_F[2] + x * (ACC_EXP10_F[3] + x * (ACC_EXP10_F[4] + x * ACC_EXP10_F[5]))))))
+#define ACC_EXP10_POLY_F_M(t, x)                       \
+  (((t + x * ACC_EXP10_F[0]) +                         \
+    (x * x) * (ACC_EXP10_F[1] + x * ACC_EXP10_F[2])) + \
+   ((x * x) * (x * x)) *                               \
+       ((ACC_EXP10_F[3] + x * ACC_EXP10_F[4]) + (x * x) * ACC_EXP10_F[5]))
+#define ACC_EXP10_POLY_F_C(t, x)            \
+  (t + x * (ACC_EXP10_F[0] +                \
+            x * (ACC_EXP10_F[1] +           \
+                 x * (ACC_EXP10_F[2] +      \
+                      x * (ACC_EXP10_F[3] + \
+                           x * (ACC_EXP10_F[4] + x * ACC_EXP10_F[5]))))))
 #define ACC_EXP10_POLY_F SELECT_POLY(ACC_EXP10_POLY_F_)
 
-#define EXPM1_POLY_F_M(x) (x) + (((x * x) * ((EXPM1_F[0] + x * EXPM1_F[1]) + (x * x) * EXPM1_F[2])) + ((x * x) * (x * (x * x))) * ((EXPM1_F[3] + x * EXPM1_F[4]) + (x * x) * EXPM1_F[5]))
-#define EXPM1_POLY_F_C(x) (x) + ((x * x) * (EXPM1_F[0] + x * (EXPM1_F[1] + x * (EXPM1_F[2] + x * (EXPM1_F[3] + x * (EXPM1_F[4] + x * EXPM1_F[5]))))))
+#define EXPM1_POLY_F_M(x)                                                     \
+  (x) + (((x * x) * ((EXPM1_F[0] + x * EXPM1_F[1]) + (x * x) * EXPM1_F[2])) + \
+         ((x * x) * (x * (x * x))) *                                          \
+             ((EXPM1_F[3] + x * EXPM1_F[4]) + (x * x) * EXPM1_F[5]))
+#define EXPM1_POLY_F_C(x)        \
+  (x) + ((x * x) *               \
+         (EXPM1_F[0] +           \
+          x * (EXPM1_F[1] +      \
+               x * (EXPM1_F[2] + \
+                    x * (EXPM1_F[3] + x * (EXPM1_F[4] + x * EXPM1_F[5]))))))
 #define EXPM1_POLY_F SELECT_POLY(EXPM1_POLY_F_)
 
-#define EXPM1_RED_POLY_F_M(t, x) (((t + (x * x) * EXPM1_RED_F[0]) + (x * (x * x)) * (EXPM1_RED_F[1] + x * EXPM1_RED_F[2])) + ((x * x) * (x * (x * x))) * ((EXPM1_RED_F[3] + x * EXPM1_RED_F[4]) + (x * x) * EXPM1_RED_F[5]))
-#define EXPM1_RED_POLY_F_C(t, x) (t + (x * x) * (EXPM1_RED_F[0] + x * (EXPM1_RED_F[1] + x * (EXPM1_RED_F[2] + x * (EXPM1_RED_F[3] + x * (EXPM1_RED_F[4] + x * EXPM1_RED_F[5]))))))
+#define EXPM1_RED_POLY_F_M(t, x)                             \
+  (((t + (x * x) * EXPM1_RED_F[0]) +                         \
+    (x * (x * x)) * (EXPM1_RED_F[1] + x * EXPM1_RED_F[2])) + \
+   ((x * x) * (x * (x * x))) *                               \
+       ((EXPM1_RED_F[3] + x * EXPM1_RED_F[4]) + (x * x) * EXPM1_RED_F[5]))
+#define EXPM1_RED_POLY_F_C(t, x)              \
+  (t +                                        \
+   (x * x) * (EXPM1_RED_F[0] +                \
+              x * (EXPM1_RED_F[1] +           \
+                   x * (EXPM1_RED_F[2] +      \
+                        x * (EXPM1_RED_F[3] + \
+                             x * (EXPM1_RED_F[4] + x * EXPM1_RED_F[5]))))))
 #define EXPM1_RED_POLY_F SELECT_POLY(EXPM1_RED_POLY_F_)
 
-#define EXPM1_POLY_R_M(x) ((x * (EXPM1_R[0] + x * EXPM1_R[1])) + (x * (x * x)) * (EXPM1_R[2] + x * EXPM1_R[3]))
-#define EXPM1_POLY_R_C(x) (x * (EXPM1_R[0] + x * (EXPM1_R[1] + x * (EXPM1_R[2] + x * EXPM1_R[3]))))
+#define EXPM1_POLY_R_M(x)                \
+  ((x * (EXPM1_R[0] + x * EXPM1_R[1])) + \
+   (x * (x * x)) * (EXPM1_R[2] + x * EXPM1_R[3]))
+#define EXPM1_POLY_R_C(x) \
+  (x * (EXPM1_R[0] + x * (EXPM1_R[1] + x * (EXPM1_R[2] + x * EXPM1_R[3]))))
 #define EXPM1_POLY_R SELECT_POLY(EXPM1_POLY_R_)
 
-#define EXPM1_RED_POLY_R_M(x) ((x * (EXPM1_RED_R[0] + x * EXPM1_RED_R[1])) + (x * (x * x)) * (EXPM1_RED_R[2] + x * EXPM1_RED_R[3]))
-#define EXPM1_RED_POLY_R_C(x) (x * (EXPM1_RED_R[0] + x * (EXPM1_RED_R[1] + x * (EXPM1_RED_R[2] + x * EXPM1_RED_R[3]))))
+#define EXPM1_RED_POLY_R_M(x)                    \
+  ((x * (EXPM1_RED_R[0] + x * EXPM1_RED_R[1])) + \
+   (x * (x * x)) * (EXPM1_RED_R[2] + x * EXPM1_RED_R[3]))
+#define EXPM1_RED_POLY_R_C(x) \
+  (x * (EXPM1_RED_R[0] +      \
+        x * (EXPM1_RED_R[1] + x * (EXPM1_RED_R[2] + x * EXPM1_RED_R[3]))))
 #define EXPM1_RED_POLY_R SELECT_POLY(EXPM1_RED_POLY_R_)
 
-#define SINH_POLY_F_M(x) (x) + ((x * (x * x)) * (((SINH_F[0] + (x * x) * SINH_F[1]) + ((x * x) * (x * x)) * SINH_F[2]) + ((x * x) * ((x * x) * (x * x))) * (SINH_F[3] + (x * x) * SINH_F[4])))
-#define SINH_POLY_F_C(x) (x) + ((x * (x * x)) * (SINH_F[0] + (x * x) * (SINH_F[1] + (x * x) * (SINH_F[2] + (x * x) * (SINH_F[3] + (x * x) * SINH_F[4])))))
+#define SINH_POLY_F_M(x)                                       \
+  (x) + ((x * (x * x)) * (((SINH_F[0] + (x * x) * SINH_F[1]) + \
+                           ((x * x) * (x * x)) * SINH_F[2]) +  \
+                          ((x * x) * ((x * x) * (x * x))) *    \
+                              (SINH_F[3] + (x * x) * SINH_F[4])))
+#define SINH_POLY_F_C(x)                  \
+  (x) +                                   \
+      ((x * (x * x)) *                    \
+       (SINH_F[0] +                       \
+        (x * x) * (SINH_F[1] +            \
+                   (x * x) * (SINH_F[2] + \
+                              (x * x) * (SINH_F[3] + (x * x) * SINH_F[4])))))
 #define SINH_POLY_F SELECT_POLY(SINH_POLY_F_)
 
-#define COSH_POLY_F_M(x) ONE + (((x * x) * (COSH_F[0] + (x * x) * COSH_F[1])) + ((x * x) * ((x * x) * (x * x))) * ((COSH_F[2] + (x * x) * COSH_F[3]) + ((x * x) * (x * x)) * COSH_F[4]))
-#define COSH_POLY_F_C(x) ONE + ((x * x) * (COSH_F[0] + (x * x) * (COSH_F[1] + (x * x) * (COSH_F[2] + (x * x) * (COSH_F[3] + (x * x) * COSH_F[4])))))
+#define COSH_POLY_F_M(x)                                                      \
+  ONE +                                                                       \
+      (((x * x) * (COSH_F[0] + (x * x) * COSH_F[1])) +                        \
+       ((x * x) * ((x * x) * (x * x))) * ((COSH_F[2] + (x * x) * COSH_F[3]) + \
+                                          ((x * x) * (x * x)) * COSH_F[4]))
+#define COSH_POLY_F_C(x)                  \
+  ONE +                                   \
+      ((x * x) *                          \
+       (COSH_F[0] +                       \
+        (x * x) * (COSH_F[1] +            \
+                   (x * x) * (COSH_F[2] + \
+                              (x * x) * (COSH_F[3] + (x * x) * COSH_F[4])))))
 #define COSH_POLY_F SELECT_POLY(COSH_POLY_F_)
 
-#define SINHCOSH_ODD_POLY_F_M(x) (((x * ACC_EXP_F[0]) + (x * x) * (x * ACC_EXP_F[2])) + ((x * x) * (x * x)) * (x * ACC_EXP_F[4]))
-#define SINHCOSH_ODD_POLY_F_C(x) (x * (ACC_EXP_F[0] + (x * x) * (ACC_EXP_F[2] + (x * x) * ACC_EXP_F[4])))
+#define SINHCOSH_ODD_POLY_F_M(x)                         \
+  (((x * ACC_EXP_F[0]) + (x * x) * (x * ACC_EXP_F[2])) + \
+   ((x * x) * (x * x)) * (x * ACC_EXP_F[4]))
+#define SINHCOSH_ODD_POLY_F_C(x) \
+  (x * (ACC_EXP_F[0] + (x * x) * (ACC_EXP_F[2] + (x * x) * ACC_EXP_F[4])))
 #define SINHCOSH_ODD_POLY_F SELECT_POLY(SINHCOSH_ODD_POLY_F_)
 
-#define SINHCOSH_EVEN_POLY_F_M(x) ((x * x) * (ACC_EXP_F[1] + (x * x) * ACC_EXP_F[3]))
-#define SINHCOSH_EVEN_POLY_F_C(x) ((x * x) * (ACC_EXP_F[1] + (x * x) * ACC_EXP_F[3]))
+#define SINHCOSH_EVEN_POLY_F_M(x) \
+  ((x * x) * (ACC_EXP_F[1] + (x * x) * ACC_EXP_F[3]))
+#define SINHCOSH_EVEN_POLY_F_C(x) \
+  ((x * x) * (ACC_EXP_F[1] + (x * x) * ACC_EXP_F[3]))
 #define SINHCOSH_EVEN_POLY_F SELECT_POLY(SINHCOSH_EVEN_POLY_F_)
 
-#define SINH_POLY_R_M(x) (((x * SINH_R[0]) + (x * x) * (x * SINH_R[1])) + ((x * x) * (x * x)) * (x * SINH_R[2]))
-#define SINH_POLY_R_C(x) (x * (SINH_R[0] + (x * x) * (SINH_R[1] + (x * x) * SINH_R[2])))
+#define SINH_POLY_R_M(x)                           \
+  (((x * SINH_R[0]) + (x * x) * (x * SINH_R[1])) + \
+   ((x * x) * (x * x)) * (x * SINH_R[2]))
+#define SINH_POLY_R_C(x) \
+  (x * (SINH_R[0] + (x * x) * (SINH_R[1] + (x * x) * SINH_R[2])))
 #define SINH_POLY_R SELECT_POLY(SINH_POLY_R_)
 
-#define COSH_POLY_R_M(x) ((COSH_R[0] + (x * x) * COSH_R[1]) + ((x * x) * (x * x)) * (COSH_R[2] + (x * x) * COSH_R[3]))
-#define COSH_POLY_R_C(x) (COSH_R[0] + (x * x) * (COSH_R[1] + (x * x) * (COSH_R[2] + (x * x) * COSH_R[3])))
+#define COSH_POLY_R_M(x)               \
+  ((COSH_R[0] + (x * x) * COSH_R[1]) + \
+   ((x * x) * (x * x)) * (COSH_R[2] + (x * x) * COSH_R[3]))
+#define COSH_POLY_R_C(x) \
+  (COSH_R[0] +           \
+   (x * x) * (COSH_R[1] + (x * x) * (COSH_R[2] + (x * x) * COSH_R[3])))
 #define COSH_POLY_R SELECT_POLY(COSH_POLY_R_)
 
 #define SINHCOSH_ODD_POLY_R_M(x) (x * ACC_POW2_R[1])
@@ -1587,18 +1677,42 @@ extern const double TABLE_NAME[1154];
 #define SINHCOSH_EVEN_POLY_R_C(x) (ACC_POW2_R[0] + (x * x) * ACC_POW2_R[2])
 #define SINHCOSH_EVEN_POLY_R SELECT_POLY(SINHCOSH_EVEN_POLY_R_)
 
-#define ACC_LOG2_POLY_F_M(t, x) (((t + (x * x) * (x * ACC_LOG2_F[0])) + ((x * x) * (x * x)) * (ACC_LOG2_F[1] + x * ACC_LOG2_F[2])) + ((x * x) * ((x * x) * (x * x))) * ((ACC_LOG2_F[3] + x * ACC_LOG2_F[4]) + (x * x) * ACC_LOG2_F[5]))
-#define ACC_LOG2_POLY_F_C(t, x) (t + (x * (x * x)) * (ACC_LOG2_F[0] + x * (ACC_LOG2_F[1] + x * (ACC_LOG2_F[2] + x * (ACC_LOG2_F[3] + x * (ACC_LOG2_F[4] + x * ACC_LOG2_F[5]))))))
+#define ACC_LOG2_POLY_F_M(t, x)                                  \
+  (((t + (x * x) * (x * ACC_LOG2_F[0])) +                        \
+    ((x * x) * (x * x)) * (ACC_LOG2_F[1] + x * ACC_LOG2_F[2])) + \
+   ((x * x) * ((x * x) * (x * x))) *                             \
+       ((ACC_LOG2_F[3] + x * ACC_LOG2_F[4]) + (x * x) * ACC_LOG2_F[5]))
+#define ACC_LOG2_POLY_F_C(t, x)            \
+  (t + (x * (x * x)) *                     \
+           (ACC_LOG2_F[0] +                \
+            x * (ACC_LOG2_F[1] +           \
+                 x * (ACC_LOG2_F[2] +      \
+                      x * (ACC_LOG2_F[3] + \
+                           x * (ACC_LOG2_F[4] + x * ACC_LOG2_F[5]))))))
 #define ACC_LOG2_POLY_F SELECT_POLY(ACC_LOG2_POLY_F_)
 
-#define ACC_LOG2_POLY_R_M(t, x) (((t + x * ACC_LOG2_R[0]) + (x * x) * ACC_LOG2_R[1]) + (x * (x * x)) * (ACC_LOG2_R[2] + x * ACC_LOG2_R[3]))
-#define ACC_LOG2_POLY_R_C(t, x) (t + x * (ACC_LOG2_R[0] + x * (ACC_LOG2_R[1] + x * (ACC_LOG2_R[2] + x * ACC_LOG2_R[3]))))
+#define ACC_LOG2_POLY_R_M(t, x)                          \
+  (((t + x * ACC_LOG2_R[0]) + (x * x) * ACC_LOG2_R[1]) + \
+   (x * (x * x)) * (ACC_LOG2_R[2] + x * ACC_LOG2_R[3]))
+#define ACC_LOG2_POLY_R_C(t, x) \
+  (t + x * (ACC_LOG2_R[0] +     \
+            x * (ACC_LOG2_R[1] + x * (ACC_LOG2_R[2] + x * ACC_LOG2_R[3]))))
 #define ACC_LOG2_POLY_R SELECT_POLY(ACC_LOG2_POLY_R_)
 
-#define FAST_LOG2_POLY_F_M(t, x) ((t + (x * (x * x)) * (FAST_LOG2_F[1] + x * FAST_LOG2_F[2])) + ((x * x) * (x * (x * x))) * ((FAST_LOG2_F[3] + x * FAST_LOG2_F[4]) + (x * x) * FAST_LOG2_F[5]))
-#define FAST_LOG2_POLY_F_C(t, x) (t + (x * (x * x)) * (FAST_LOG2_F[1] + x * (FAST_LOG2_F[2] + x * (FAST_LOG2_F[3] + x * (FAST_LOG2_F[4] + x * FAST_LOG2_F[5])))))
+#define FAST_LOG2_POLY_F_M(t, x)                                 \
+  ((t + (x * (x * x)) * (FAST_LOG2_F[1] + x * FAST_LOG2_F[2])) + \
+   ((x * x) * (x * (x * x))) *                                   \
+       ((FAST_LOG2_F[3] + x * FAST_LOG2_F[4]) + (x * x) * FAST_LOG2_F[5]))
+#define FAST_LOG2_POLY_F_C(t, x)               \
+  (t +                                         \
+   (x * (x * x)) * (FAST_LOG2_F[1] +           \
+                    x * (FAST_LOG2_F[2] +      \
+                         x * (FAST_LOG2_F[3] + \
+                              x * (FAST_LOG2_F[4] + x * FAST_LOG2_F[5])))))
 #define FAST_LOG2_POLY_F SELECT_POLY(FAST_LOG2_POLY_F_)
 
-#define FAST_LOG2_POLY_R_M(t, x) (t + (x * (x * x)) * (ACC_LOG2_R[2] + x * ACC_LOG2_R[3]))
-#define FAST_LOG2_POLY_R_C(t, x) (t + (x * (x * x)) * (ACC_LOG2_R[2] + x * ACC_LOG2_R[3]))
+#define FAST_LOG2_POLY_R_M(t, x) \
+  (t + (x * (x * x)) * (ACC_LOG2_R[2] + x * ACC_LOG2_R[3]))
+#define FAST_LOG2_POLY_R_C(t, x) \
+  (t + (x * (x * x)) * (ACC_LOG2_R[2] + x * ACC_LOG2_R[3]))
 #define FAST_LOG2_POLY_R SELECT_POLY(FAST_LOG2_POLY_R_)

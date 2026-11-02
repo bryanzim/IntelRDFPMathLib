@@ -39,57 +39,60 @@
 #define RESTRICT
 
 #define set_str_end(e, p) \
-  if(e) {                 \
-    *e = (char *)p;       \
+  if (e) {                \
+    *e = (char*)p;        \
   }
 
 #define isdigit_macro(x) ((x) >= '0' && (x) <= '9')
 
 #define set_wcs_end(e, p) \
-  if(e) {                 \
-    *(e) = (wchar_t *)p;  \
+  if (e) {                \
+    *(e) = (wchar_t*)p;   \
   }
 
-#define towlower_macro(x) (((x) >= L'A' && (x) <= L'Z') ? ((x) - L'A' + L'a') : (x))
+#define towlower_macro(x) \
+  (((x) >= L'A' && (x) <= L'Z') ? ((x) - L'A' + L'a') : (x))
 #define iswdigit_macro(x) ((x) >= L'0' && (x) <= L'9')
 
-__BID_INLINE__ char *
-strtod_conversion(const char *RESTRICT ps_in, char **RESTRICT endptr) {
+__BID_INLINE__ char* strtod_conversion(const char* RESTRICT ps_in,
+                                       char** RESTRICT endptr) {
   char *ps0, *ps, *ptail;
 
-  if(!ps_in) {
-    if(endptr)
+  if (!ps_in) {
+    if (endptr) {
       *endptr = NULL;
+    }
     return NULL;
   }
-  while(isspace((unsigned char)*ps_in))
+  while (isspace((unsigned char)*ps_in)) {
     ps_in++;
+  }
   {
     size_t nchars = strlen(ps_in);
-    if(nchars > (SIZE_MAX - 2)) {
+    if (nchars > (SIZE_MAX - 2)) {
       set_str_end(endptr, ps_in);
       return NULL;
     }
     ps = malloc((nchars + 2) * sizeof(char));
   }
-  if(!ps) {
+  if (!ps) {
     set_str_end(endptr, ps_in);
     return NULL;
   }
   strcpy(ps, ps_in);
-  ptail = (char *)ps_in;
-  ps0 = (char *)ps;
-  if((*ps == '+') || (*ps == '-')) {
+  ptail = (char*)ps_in;
+  ps0 = ps;
+  if ((*ps == '+') || (*ps == '-')) {
     ps++;
     ptail++;
   }
 
   // Infinity?
-  if((tolower_macro(ps[0]) == 'i' && tolower_macro(ps[1]) == 'n' &&
-      tolower_macro(ps[2]) == 'f')) {
-    if(tolower_macro(ps[3]) == 'i' &&
-       tolower_macro(ps[4]) == 'n' && tolower_macro(ps[5]) == 'i' &&
-       tolower_macro(ps[6]) == 't' && tolower_macro(ps[7]) == 'y') {
+  if ((tolower_macro(ps[0]) == 'i' && tolower_macro(ps[1]) == 'n' &&
+       tolower_macro(ps[2]) == 'f')) {
+    if (tolower_macro(ps[3]) == 'i' && tolower_macro(ps[4]) == 'n' &&
+        tolower_macro(ps[5]) == 'i' && tolower_macro(ps[6]) == 't' &&
+        tolower_macro(ps[7]) == 'y') {
       ps += 8;
       ptail += 8;
       set_str_end(endptr, ptail);
@@ -98,50 +101,53 @@ strtod_conversion(const char *RESTRICT ps_in, char **RESTRICT endptr) {
       ptail += 3;
       set_str_end(endptr, ptail);
     }
-  } else if(tolower_macro(ps[0]) == 'n' && tolower_macro(ps[1]) == 'a' &&
-            tolower_macro(ps[2]) == 'n') {
+  } else if (tolower_macro(ps[0]) == 'n' && tolower_macro(ps[1]) == 'a' &&
+             tolower_macro(ps[2]) == 'n') {
     ps += 3;
     ptail += 3;
-    while(isdigit_macro(*ps)) {
+    while (isdigit_macro(*ps)) {
       ps++;
       ptail++;
     }
     set_str_end(endptr, ptail);
-    if(*ps0 == '-')
+    if (*ps0 == '-') {
       strcpy(ps0, "-QNAN");
-    else
+    } else {
       strcpy(ps0, "QNAN");
-  } else {
-    if(!isdigit_macro(*ps) && ((*ps) != '.')) {
-      if(endptr)
-        *endptr = (char *)ps_in;
-      free(ps0);
-      return NULL; // no conversion
     }
-    while(isdigit_macro(*ps)) {
+  } else {
+    if (!isdigit_macro(*ps) && ((*ps) != '.')) {
+      if (endptr) {
+        *endptr = (char*)ps_in;
+      }
+      free(ps0);
+      return NULL;  // no conversion
+    }
+    while (isdigit_macro(*ps)) {
       ps++;
       ptail++;
     }
-    if((*ps) == '.') {
-      if((ps0 != ps) || isdigit_macro(ps[1])) {
+    if ((*ps) == '.') {
+      if ((ps0 != ps) || isdigit_macro(ps[1])) {
         ps++;
         ptail++;
-        while(isdigit_macro(*ps)) {
+        while (isdigit_macro(*ps)) {
           ps++;
           ptail++;
         }
       } else {
-        if(endptr)
-          *endptr = (char *)ps_in;
+        if (endptr) {
+          *endptr = (char*)ps_in;
+        }
         free(ps0);
-        return NULL; // no conversion
+        return NULL;  // no conversion
       }
     }
-    if(tolower_macro(*ps) == 'e') {
-      if((ps[1] == '+') || (ps[1] == '-') || (isdigit_macro(ps[1]))) {
+    if (tolower_macro(*ps) == 'e') {
+      if ((ps[1] == '+') || (ps[1] == '-') || (isdigit_macro(ps[1]))) {
         ps += 2;
         ptail += 2;
-        while(isdigit_macro(*ps)) {
+        while (isdigit_macro(*ps)) {
           ps++;
           ptail++;
         }
@@ -154,43 +160,45 @@ strtod_conversion(const char *RESTRICT ps_in, char **RESTRICT endptr) {
   return ps0;
 }
 
-__BID_INLINE__ char *
-wcstod_conversion(const wchar_t *RESTRICT ps_in, wchar_t **RESTRICT endptr) {
+__BID_INLINE__ char* wcstod_conversion(const wchar_t* RESTRICT ps_in,
+                                       wchar_t** RESTRICT endptr) {
   wchar_t *ps0, *ps, *ptail;
-  char *ps0_c;
+  char* ps0_c;
   size_t nchars, ncopy, i;
 
-  if(!ps_in) {
-    if(endptr)
+  if (!ps_in) {
+    if (endptr) {
       *endptr = NULL;
+    }
     return NULL;
   }
-  while(iswspace(*ps_in))
+  while (iswspace(*ps_in)) {
     ps_in++;
+  }
   nchars = wcslen(ps_in);
-  if(nchars > (SIZE_MAX / sizeof(wchar_t)) - 2) {
+  if (nchars > (SIZE_MAX / sizeof(wchar_t)) - 2) {
     set_wcs_end(endptr, ps_in);
     return NULL;
   }
   ps = malloc((nchars + 2) * sizeof(wchar_t));
-  if(!ps) {
+  if (!ps) {
     set_wcs_end(endptr, ps_in);
     return NULL;
   }
   wcscpy(ps, ps_in);
-  ptail = (wchar_t *)ps_in;
+  ptail = (wchar_t*)ps_in;
   ps0 = ps;
-  if((*ps == L'+') || (*ps == L'-')) {
+  if ((*ps == L'+') || (*ps == L'-')) {
     ps++;
     ptail++;
   }
 
   // Infinity?
-  if((towlower_macro(ps[0]) == L'i' && towlower_macro(ps[1]) == L'n' &&
-      towlower_macro(ps[2]) == L'f')) {
-    if(towlower_macro(ps[3]) == L'i' &&
-       towlower_macro(ps[4]) == L'n' && towlower_macro(ps[5]) == L'i' &&
-       towlower_macro(ps[6]) == L't' && towlower_macro(ps[7]) == L'y') {
+  if ((towlower_macro(ps[0]) == L'i' && towlower_macro(ps[1]) == L'n' &&
+       towlower_macro(ps[2]) == L'f')) {
+    if (towlower_macro(ps[3]) == L'i' && towlower_macro(ps[4]) == L'n' &&
+        towlower_macro(ps[5]) == L'i' && towlower_macro(ps[6]) == L't' &&
+        towlower_macro(ps[7]) == L'y') {
       ps += 8;
       ptail += 8;
       set_wcs_end(endptr, ptail);
@@ -199,16 +207,16 @@ wcstod_conversion(const wchar_t *RESTRICT ps_in, wchar_t **RESTRICT endptr) {
       ptail += 3;
       set_wcs_end(endptr, ptail);
     }
-  } else if(towlower_macro(ps[0]) == L'n' && towlower_macro(ps[1]) == L'a' &&
-            towlower_macro(ps[2]) == L'n') {
+  } else if (towlower_macro(ps[0]) == L'n' && towlower_macro(ps[1]) == L'a' &&
+             towlower_macro(ps[2]) == L'n') {
     ps += 3;
     ptail += 3;
-    while(iswdigit_macro(*ps)) {
+    while (iswdigit_macro(*ps)) {
       ps++;
       ptail++;
     }
     set_wcs_end(endptr, ptail);
-    if(*ps0 == L'-') {
+    if (*ps0 == L'-') {
       ps0[0] = L'-';
       ps0[1] = L'Q';
       ps0[2] = L'N';
@@ -225,36 +233,38 @@ wcstod_conversion(const wchar_t *RESTRICT ps_in, wchar_t **RESTRICT endptr) {
       ps = ps0 + 4;
     }
   } else {
-    if(!iswdigit_macro(*ps) && ((*ps) != L'.')) {
-      if(endptr)
-        *endptr = (wchar_t *)ps_in;
+    if (!iswdigit_macro(*ps) && ((*ps) != L'.')) {
+      if (endptr) {
+        *endptr = (wchar_t*)ps_in;
+      }
       free(ps0);
-      return NULL; // no conversion
+      return NULL;  // no conversion
     }
-    while(iswdigit_macro(*ps)) {
+    while (iswdigit_macro(*ps)) {
       ps++;
       ptail++;
     }
-    if((*ps) == L'.') {
-      if((ps0 != ps) || iswdigit_macro(ps[1])) {
+    if ((*ps) == L'.') {
+      if ((ps0 != ps) || iswdigit_macro(ps[1])) {
         ps++;
         ptail++;
-        while(iswdigit_macro(*ps)) {
+        while (iswdigit_macro(*ps)) {
           ps++;
           ptail++;
         }
       } else {
-        if(endptr)
-          *endptr = (wchar_t *)ps_in;
+        if (endptr) {
+          *endptr = (wchar_t*)ps_in;
+        }
         free(ps0);
-        return NULL; // no conversion
+        return NULL;  // no conversion
       }
     }
-    if(towlower_macro(*ps) == L'e') {
-      if((ps[1] == '+') || (ps[1] == '-') || (iswdigit_macro(ps[1]))) {
+    if (towlower_macro(*ps) == L'e') {
+      if ((ps[1] == '+') || (ps[1] == '-') || (iswdigit_macro(ps[1]))) {
         ps += 2;
         ptail += 2;
-        while(iswdigit_macro(*ps)) {
+        while (iswdigit_macro(*ps)) {
           ps++;
           ptail++;
         }
@@ -266,11 +276,11 @@ wcstod_conversion(const wchar_t *RESTRICT ps_in, wchar_t **RESTRICT endptr) {
   *ps = L'\0';
   ncopy = (size_t)(ps - ps0) + 1;
   ps0_c = malloc(ncopy * sizeof(char));
-  if(!ps0_c) {
+  if (!ps0_c) {
     free(ps0);
     return NULL;
   }
-  for(i = 0; i < ncopy; i++) {
+  for (i = 0; i < ncopy; i++) {
     wchar_t ch = ps0[i];
     /* Keep ASCII as itself. A wider code would truncate into a false digit. */
     ps0_c[i] = (ch <= 127) ? (char)ch : '?';

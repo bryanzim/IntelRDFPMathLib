@@ -84,7 +84,8 @@
 #endif
 #define MPHOC_F_NEG_TINY (-MPHOC_F_POS_TINY)
 
-#define MPHOC_F_POS_HUGE (2 ^ (F_MAX_BIN_EXP + F_NORM + 1) * (1 - 1 / (2 ^ F_PRECISION)))
+#define MPHOC_F_POS_HUGE \
+  (2 ^ (F_MAX_BIN_EXP + F_NORM + 1) * (1 - 1 / (2 ^ F_PRECISION)))
 #define MPHOC_F_NEG_HUGE (-MPHOC_F_POS_HUGE)
 
 #if (F_FORMAT == f_floating)
@@ -199,7 +200,8 @@
 #define MP_MAX_UNSIGNED_INT (2 ^ BITS_PER_WORD - 1)
 
 #define MP_MIN_NORMAL_FLOAT (2 ^ (F_MIN_BIN_EXP + F_NORM))
-#define MP_MAX_FLOAT (2 ^ (F_MAX_BIN_EXP + F_NORM + 1) * (1 - 1 / 2 ^ F_PRECISION))
+#define MP_MAX_FLOAT \
+  (2 ^ (F_MAX_BIN_EXP + F_NORM + 1) * (1 - 1 / 2 ^ F_PRECISION))
 
 #ifdef VAX_FLOATING
 #define MP_MIN_FLOAT MP_MIN_NORMAL_FLOAT
@@ -211,10 +213,8 @@
 #define MPHOC_D_POS_NORMAL_TINY (2 ^ (D_MIN_BIN_EXP + F_NORM))
 
 #if IEEE_FLOATING
-#define MPHOC_S_POS_TINY \
-  (MPHOC_S_POS_NORMAL_TINY / 2 ^ (S_PRECISION - 1))
-#define MPHOC_D_POS_TINY \
-  (MPHOC_D_POS_NORMAL_TINY / 2 ^ (D_PRECISION - 1))
+#define MPHOC_S_POS_TINY (MPHOC_S_POS_NORMAL_TINY / 2 ^ (S_PRECISION - 1))
+#define MPHOC_D_POS_TINY (MPHOC_D_POS_NORMAL_TINY / 2 ^ (D_PRECISION - 1))
 #else
 #define MPHOC_S_POS_TINY MPHOC_S_POS_NORMAL_TINY
 #define MPHOC_D_POS_TINY MPHOC_D_POS_NORMAL_TINY
@@ -245,11 +245,12 @@
 
 #define PRINT_1_F_TYPE_ENTRY(x, o) PRINT_1_TYPE_ENTRY(F_CHAR, x, o)
 #define PRINT_2_F_TYPE_ENTRY(x, y, o) PRINT_2_TYPE_ENTRY(F_CHAR, x, y, o)
-#define PAD_IF_NEEDED(o, i)                 \
-  while((i) * floor(o / (i)) != o) {        \
-    printf("\t/* padding for alignment */ " \
-           "0x00000000,\n");                \
-    o += BITS_PER_TABLE_WORD;               \
+#define PAD_IF_NEEDED(o, i)              \
+  while ((i) * floor(o / (i)) != o) {    \
+    printf(                              \
+        "\t/* padding for alignment */ " \
+        "0x00000000,\n");                \
+    o += BITS_PER_TABLE_WORD;            \
   }
 
 #define BITS_PER_f BITS_PER_FLOAT
@@ -259,9 +260,9 @@
 #define BITS_PER_x BITS_PER_LONG_DOUBLE
 #define BITS_PER_w BITS_PER_WORD
 
-#define PRINT_TABLE_DEFINE(name, table, offset, type, xxx)                            \
-  printf("#define\t" STR(name) "\t" xxx                                               \
-                               "((" STR(type) " *) ((char *)" STR(table) " + %i))\n", \
+#define PRINT_TABLE_DEFINE(name, table, offset, type, xxx)                  \
+  printf("#define\t" STR(name) "\t" xxx "((" STR(type) " *) ((char *)" STR( \
+             table) " + %i))\n",                                            \
          BYTES(offset))
 
 #define PRINT_TABLE_VALUE_DEFINE(name, table, offset, type) \
@@ -353,20 +354,20 @@
 #define CHAR_TO_BITS(tchar) PASTE(BITS_PER_, tchar)
 #define CHAR_TO_FMT(tchar) PASTE(tchar, _FMT)
 
-#define PRINT_TBL_DEF(name, table, offset, tchar, xxx) \
-  printf("#define\t" name "\t" xxx "((" STR(CHAR_TO_TYPE(tchar)) " *) ((char *) " STR(table) " + %i))\n", BYTES(offset))
+#define PRINT_TBL_DEF(name, table, offset, tchar, xxx)                     \
+  printf("#define\t" name "\t" xxx "((" STR(                               \
+             CHAR_TO_TYPE(tchar)) " *) ((char *) " STR(table) " + %i))\n", \
+         BYTES(offset))
 
 #define PRINT_TYPED_TBL_ITEM(v, tchar)                                      \
   printf("\t/* %3i */ " CHAR_TO_FMT(tchar) ",\n", BYTES(MP_BIT_OFFSET), v); \
   MP_BIT_OFFSET += CHAR_TO_BITS(tchar)
 
-#define PRINT_TYPED_TBL_VDEF(name, tchar)           \
-  PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, \
-                tchar, "*")
+#define PRINT_TYPED_TBL_VDEF(name, tchar) \
+  PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, tchar, "*")
 
-#define PRINT_TYPED_TBL_ADEF(name, tchar)           \
-  PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, \
-                tchar, "")
+#define PRINT_TYPED_TBL_ADEF(name, tchar) \
+  PRINT_TBL_DEF(name, MP_TABLE_NAME, MP_BIT_OFFSET, tchar, "")
 
 #define PRINT_TYPED_TBL_VDEF_ITEM(n, v, tchar) \
   PRINT_TYPED_TBL_VDEF(n, tchar);              \
@@ -399,8 +400,10 @@
 #define PRINT_TBL_ADEF_ITEM(n, v) PRINT_TYPED_TBL_ADEF_ITEM(n, v, MP_T_CHAR)
 #define PRINT_TBL_COM_VDEF(c, n) PRINT_TYPED_COM_VDEF(c, n, MP_T_CHAR)
 #define PRINT_TBL_COM_ADEF(c, n) PRINT_TYPED_COM_ADEF(c, n, MP_T_CHAR)
-#define PRINT_TBL_COM_VDEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, MP_T_CHAR)
-#define PRINT_TBL_COM_ADEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, MP_T_CHAR)
+#define PRINT_TBL_COM_VDEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, MP_T_CHAR)
+#define PRINT_TBL_COM_ADEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, MP_T_CHAR)
 
 #define PRINT_R_TBL_ITEM(v) PRINT_TYPED_TBL_ITEM(v, R_CHAR)
 #define PRINT_R_TBL_VDEF(n) PRINT_TYPED_TBL_VDEF(n, R_CHAR)
@@ -409,8 +412,10 @@
 #define PRINT_R_TBL_ADEF_ITEM(n, v) PRINT_TYPED_TBL_ADEF_ITEM(n, v, R_CHAR)
 #define PRINT_R_TBL_COM_VDEF(c, n) PRINT_TYPED_COM_VDEF(c, n, R_CHAR)
 #define PRINT_R_TBL_COM_ADEF(c, n) PRINT_TYPED_COM_ADEF(c, n, R_CHAR)
-#define PRINT_R_TBL_COM_VDEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, R_CHAR)
-#define PRINT_R_TBL_COM_ADEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, R_CHAR)
+#define PRINT_R_TBL_COM_VDEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, R_CHAR)
+#define PRINT_R_TBL_COM_ADEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, R_CHAR)
 
 #define PRINT_F_TBL_ITEM(v) PRINT_TYPED_TBL_ITEM(v, F_CHAR)
 #define PRINT_F_TBL_VDEF(n) PRINT_TYPED_TBL_VDEF(n, F_CHAR)
@@ -419,8 +424,10 @@
 #define PRINT_F_TBL_ADEF_ITEM(n, v) PRINT_TYPED_TBL_ADEF_ITEM(n, v, F_CHAR)
 #define PRINT_F_TBL_COM_VDEF(c, n) PRINT_TYPED_COM_VDEF(c, n, F_CHAR)
 #define PRINT_F_TBL_COM_ADEF(c, n) PRINT_TYPED_COM_ADEF(c, n, F_CHAR)
-#define PRINT_F_TBL_COM_VDEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, F_CHAR)
-#define PRINT_F_TBL_COM_ADEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, F_CHAR)
+#define PRINT_F_TBL_COM_VDEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, F_CHAR)
+#define PRINT_F_TBL_COM_ADEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, F_CHAR)
 
 #define PRINT_B_TBL_ITEM(v) PRINT_TYPED_TBL_ITEM(v, B_CHAR)
 #define PRINT_B_TBL_VDEF(n) PRINT_TYPED_TBL_VDEF(n, B_CHAR)
@@ -429,8 +436,10 @@
 #define PRINT_B_TBL_ADEF_ITEM(n, v) PRINT_TYPED_TBL_ADEF_ITEM(n, v, B_CHAR)
 #define PRINT_B_COM_VDEF(c, n) PRINT_TYPED_COM_VDEF(c, n, B_CHAR)
 #define PRINT_B_COM_ADEF(c, n) PRINT_TYPED_COM_ADEF(c, n, B_CHAR)
-#define PRINT_B_TBL_COM_VDEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, B_CHAR)
-#define PRINT_B_TBL_COM_ADEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, B_CHAR)
+#define PRINT_B_TBL_COM_VDEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, B_CHAR)
+#define PRINT_B_TBL_COM_ADEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, B_CHAR)
 
 #define PRINT_W_TBL_ITEM(v) PRINT_TYPED_TBL_ITEM(v, W_CHAR)
 #define PRINT_W_TBL_VDEF(n) PRINT_TYPED_TBL_VDEF(n, W_CHAR)
@@ -439,8 +448,10 @@
 #define PRINT_W_TBL_ADEF_ITEM(n, v) PRINT_TYPED_TBL_ADEF_ITEM(n, v, W_CHAR)
 #define PRINT_W_COM_VDEF(c, n) PRINT_TYPED_COM_VDEF(c, n, W_CHAR)
 #define PRINT_W_COM_ADEF(c, n) PRINT_TYPED_COM_ADEF(c, n, W_CHAR)
-#define PRINT_W_TBL_COM_VDEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, W_CHAR)
-#define PRINT_W_TBL_COM_ADEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, W_CHAR)
+#define PRINT_W_TBL_COM_VDEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, W_CHAR)
+#define PRINT_W_TBL_COM_ADEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, W_CHAR)
 
 #define PRINT_U_TBL_ITEM(v) PRINT_TYPED_TBL_ITEM(v, U_CHAR)
 #define PRINT_U_TBL_VDEF(n) PRINT_TYPED_TBL_VDEF(n, U_CHAR)
@@ -449,8 +460,10 @@
 #define PRINT_U_TBL_ADEF_ITEM(n, v) PRINT_TYPED_TBL_ADEF_ITEM(n, v, U_CHAR)
 #define PRINT_U_COM_VDEF(c, n) PRINT_TYPED_COM_VDEF(c, n, U_CHAR)
 #define PRINT_U_COM_ADEF(c, n) PRINT_TYPED_COM_ADEF(c, n, U_CHAR)
-#define PRINT_U_TBL_COM_VDEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, U_CHAR)
-#define PRINT_U_TBL_COM_ADEF_ITEM(c, n, v) PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, U_CHAR)
+#define PRINT_U_TBL_COM_VDEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_VDEF_ITEM(c, n, v, U_CHAR)
+#define PRINT_U_TBL_COM_ADEF_ITEM(c, n, v) \
+  PRINT_TYPED_TBL_COM_ADEF_ITEM(c, n, v, U_CHAR)
 
 #define I16_HEX_FORMAT "0x%4.4.16i"
 #define I32_HEX_FORMAT "0x%8.8.16i"
@@ -478,7 +491,7 @@
   {                                                            \
     auto i, tmp;                                               \
     tmp = scale ^ first;                                       \
-    for(i = first; i <= last; i++) {                           \
+    for (i = first; i <= last; i++) {                          \
       PRINT_1_TYPE_ENTRY(type, array[i] * tmp, MP_BIT_OFFSET); \
       tmp *= scale;                                            \
     }                                                          \
@@ -500,14 +513,16 @@
 
 #define MPHOC_R_POS_NORMAL_TINY (2 ^ (R_MIN_BIN_EXP + R_NORM))
 #define MPHOC_R_POS_TINY (MPHOC_R_POS_NORMAL_TINY * MPHOC_R_DENORM_FACTOR)
-#define MPHOC_R_POS_HUGE (2 ^ (R_MAX_BIN_EXP + R_NORM + 1) * (1 - 2 ^ (-R_PRECISION)))
+#define MPHOC_R_POS_HUGE \
+  (2 ^ (R_MAX_BIN_EXP + R_NORM + 1) * (1 - 2 ^ (-R_PRECISION)))
 #define MPHOC_R_NEG_NORMAL_TINY (-MPHOC_R_POS_NORMAL_TINY)
 #define MPHOC_R_NEG_TINY (-MPHOC_R_POS_TINY)
 #define MPHOC_R_NEG_HUGE (-MPHOC_R_POS_HUGE)
 
 #define MPHOC_B_POS_NORMAL_TINY (2 ^ (B_MIN_BIN_EXP + B_NORM))
 #define MPHOC_B_POS_TINY (MPHOC_B_POS_NORMAL_TINY * MPHOC_B_DENORM_FACTOR)
-#define MPHOC_B_POS_HUGE (2 ^ (B_MAX_BIN_EXP + B_NORM + 1) * (1 - 2 ^ (-B_PRECISION)))
+#define MPHOC_B_POS_HUGE \
+  (2 ^ (B_MAX_BIN_EXP + B_NORM + 1) * (1 - 2 ^ (-B_PRECISION)))
 #define MPHOC_B_NEG_NORMAL_TINY (-MPHOC_B_POS_NORMAL_TINY)
 #define MPHOC_B_NEG_TINY (-MPHOC_B_POS_TINY)
 #define MPHOC_B_NEG_HUGE (-MPHOC_B_POS_HUGE)

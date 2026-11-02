@@ -33,9 +33,9 @@
 
 #define BID64_1 0x31c0000000000001ull
 
-BID_F80_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);       // 1.0
-BID_F80_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000);      // 0.5
-BID_F80_CONST_DEF(c_1_ov_ln_2, 3fff71547652b82f, e1777d0ffda0d23a); // 1/ln(2)
+BID_F80_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);        // 1.0
+BID_F80_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000);       // 0.5
+BID_F80_CONST_DEF(c_1_ov_ln_2, 3fff71547652b82f, e1777d0ffda0d23a);  // 1/ln(2)
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_log2, BID_UINT64, x)
 
@@ -47,19 +47,21 @@ int z;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK64) == NAN_MASK64) {
+if ((x & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK64) == SNAN_MASK64)
+  if ((x & SNAN_MASK64) == SNAN_MASK64) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res = x & 0xfc03ffffffffffffull;
-  if((res & 0x0003ffffffffffffull) > 999999999999999ull)
+  if ((res & 0x0003ffffffffffffull) > 999999999999999ull) {
     res &= ~0x0003ffffffffffffull;
+  }
   BID_RETURN(res);
 }
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid64_isZero, z, x);
-if(z) { // -Infinite and Divide by Zero according C99
+if (z) {  // -Infinite and Divide by Zero according C99
   res = 0xf800000000000000ull;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
@@ -67,7 +69,7 @@ if(z) { // -Infinite and Divide by Zero according C99
   BID_RETURN(res);
 }
 
-if(x & MASK_SIGN) { // QNaN Indefinite
+if (x & MASK_SIGN) {  // QNaN Indefinite
   res = 0x7c00000000000000ull;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -79,7 +81,7 @@ BIDECIMAL_CALL1(bid64_to_binary80, xd, x);
 __bid_f80_log2(rd, xd);
 __bid_f80_sub(e_bin, xd, c_one.v);
 __bid_f80_fabs(abs_e_bin, e_bin);
-if(__bid_f80_lt(abs_e_bin, c_half.v)) {
+if (__bid_f80_lt(abs_e_bin, c_half.v)) {
   BID_F80_TYPE tmp_e;
   BID_UINT64 e;
   BID_UINT64 b64 = (BID_UINT64)BID64_1;

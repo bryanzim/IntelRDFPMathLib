@@ -145,17 +145,19 @@ static const TABLE_UNION __pow_x_table[] = {
     /* 1040 */ DATA_1x2(0x00000001, 0x00000000),
 };
 
-#define ANSI_C_POW_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)__pow_x_table + 0))
-#define FORTRAN_POW_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)__pow_x_table + 144))
-#define EXP2_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)__pow_x_table + 256))
-#define ONE_OVER_SQRT_2 *((UX_FRACTION_DIGIT_TYPE *)((char *)__pow_x_table + 288))
-#define MSD_OF_LN2 *((UX_FRACTION_DIGIT_TYPE *)((char *)__pow_x_table + 296))
-#define UX_ONE ((UX_FLOAT *)((char *)__pow_x_table + 304))
-#define UX_TWO_OVER_LN2 ((UX_FLOAT *)((char *)__pow_x_table + 328))
-#define UX_LN2_LO_OVER_LN2 ((UX_FLOAT *)((char *)__pow_x_table + 352))
-#define POW_LOG2_COEF_ARRAY ((FIXED_128 *)((char *)__pow_x_table + 376))
+#define ANSI_C_POW_CLASS_TO_ACTION_MAP \
+  ((U_WORD const*)((char*)__pow_x_table + 0))
+#define FORTRAN_POW_CLASS_TO_ACTION_MAP \
+  ((U_WORD const*)((char*)__pow_x_table + 144))
+#define EXP2_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)__pow_x_table + 256))
+#define ONE_OVER_SQRT_2 *((UX_FRACTION_DIGIT_TYPE*)((char*)__pow_x_table + 288))
+#define MSD_OF_LN2 *((UX_FRACTION_DIGIT_TYPE*)((char*)__pow_x_table + 296))
+#define UX_ONE ((UX_FLOAT*)((char*)__pow_x_table + 304))
+#define UX_TWO_OVER_LN2 ((UX_FLOAT*)((char*)__pow_x_table + 328))
+#define UX_LN2_LO_OVER_LN2 ((UX_FLOAT*)((char*)__pow_x_table + 352))
+#define POW_LOG2_COEF_ARRAY ((FIXED_128*)((char*)__pow_x_table + 376))
 #define POW_LOG2_COEF_ARRAY_DEGREE ((signed __int64)0x0000000000000011)
-#define POW2_COEF_ARRAY ((FIXED_128 *)((char *)__pow_x_table + 672))
+#define POW2_COEF_ARRAY ((FIXED_128*)((char*)__pow_x_table + 672))
 #define POW2_COEF_ARRAY_DEGREE ((signed __int64)0x0000000000000016)
 
 #endif

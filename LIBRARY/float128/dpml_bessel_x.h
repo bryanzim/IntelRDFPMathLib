@@ -1508,22 +1508,22 @@ static const TABLE_UNION TABLE_NAME[] = {
     DATA_2x2(0xf4b4ddd9, 0xe1ee4c7b, 0xabfde7bb, 0x6c10b05c),
 };
 
-#define J0_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define J1_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 8))
-#define JN_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 16))
-#define Y0_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 40))
-#define Y1_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 48))
-#define YN_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 56))
-#define P0_COEFFICIENTS ((FIXED_128 *)((char *)TABLE_NAME + 18168))
+#define J0_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define J1_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 8))
+#define JN_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 16))
+#define Y0_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 40))
+#define Y1_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 48))
+#define YN_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 56))
+#define P0_COEFFICIENTS ((FIXED_128*)((char*)TABLE_NAME + 18168))
 #define P0_DEGREE 9
-#define Q0_COEFFICIENTS ((FIXED_128 *)((char *)TABLE_NAME + 18504))
+#define Q0_COEFFICIENTS ((FIXED_128*)((char*)TABLE_NAME + 18504))
 #define Q0_DEGREE 10
-#define P1_COEFFICIENTS ((FIXED_128 *)((char *)TABLE_NAME + 18872))
+#define P1_COEFFICIENTS ((FIXED_128*)((char*)TABLE_NAME + 18872))
 #define P1_DEGREE 9
-#define Q1_COEFFICIENTS ((FIXED_128 *)((char *)TABLE_NAME + 19208))
+#define Q1_COEFFICIENTS ((FIXED_128*)((char*)TABLE_NAME + 19208))
 #define Q1_DEGREE 9
-#define BESSEL_TABLE_DATA_MAP (TABLE_DATA_MAP *)((char *)TABLE_NAME + 19544)
-#define UX_TWO_OVER_PI ((UX_FLOAT *)((char *)TABLE_NAME + 19640))
-#define UX_TWO_LN2_OVER_PI ((UX_FLOAT *)((char *)TABLE_NAME + 19664))
+#define BESSEL_TABLE_DATA_MAP (TABLE_DATA_MAP*)((char*)TABLE_NAME + 19544)
+#define UX_TWO_OVER_PI ((UX_FLOAT*)((char*)TABLE_NAME + 19640))
+#define UX_TWO_LN2_OVER_PI ((UX_FLOAT*)((char*)TABLE_NAME + 19664))
 
 #endif

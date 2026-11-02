@@ -29,11 +29,10 @@
 
 #include "bid_trans.h"
 
-static BID_UINT128 bi_d128_1 =
-    {{0x0000000000000001ull, 0x3040000000000000ull}};
+static BID_UINT128 bi_d128_1 = {{0x0000000000000001ull, 0x3040000000000000ull}};
 
-BID_F128_CONST_DEF(c_1em40, 3f7a16c262777579, c58c46475896767b); // 1e-40
-BID_F128_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);   // 1.0
+BID_F128_CONST_DEF(c_1em40, 3f7a16c262777579, c58c46475896767b);  // 1e-40
+BID_F128_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);    // 1.0
 
 BID128_FUNCTION_ARG1(bid128_expm1, x)
 
@@ -44,18 +43,19 @@ BID_F128_TYPE xd, yd, abs_xd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
+if ((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if(((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64))
+  if (((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64)) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-  if(((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
-      0x0000314dc6448d93ull) ||
-     (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
-       0x0000314dc6448d93ull) &&
-      res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
+  if (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
+       0x0000314dc6448d93ull) ||
+      (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
+        0x0000314dc6448d93ull) &&
+       res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
     res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
     res.w[BID_LOW_128W] = 0ull;
   }
@@ -71,10 +71,10 @@ BIDECIMAL_CALL1(bid128_to_binary128, xd, x);
 // Treat zero specially to copy its sign
 
 __bid_f128_fabs(abs_xd, xd);
-if(__bid_f128_le(abs_xd, c_1em40.v)) {
+if (__bid_f128_le(abs_xd, c_1em40.v)) {
   int zf;
   BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero, zf, x);
-  if(zf) {
+  if (zf) {
     BIDECIMAL_CALL2(bid128_mul, res, x, bi_d128_1);
   } else {
     BIDECIMAL_CALL3(bid128_fma, res, x, x, x);
@@ -85,7 +85,7 @@ if(__bid_f128_le(abs_xd, c_1em40.v)) {
 // Otherwise if the input is <= 1, the naive computation is well-conditioned
 // and will neither overflow nor underflow
 
-else if(__bid_f128_le(xd, c_one.v)) {
+else if (__bid_f128_le(xd, c_one.v)) {
   __bid_f128_expm1(yd, xd);
   BIDECIMAL_CALL1(binary128_to_bid128, res, yd);
   BID_RETURN(res);

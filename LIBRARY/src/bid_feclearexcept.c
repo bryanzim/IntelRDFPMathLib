@@ -35,7 +35,7 @@ void bid_feclearexcept(int excepts _EXC_FLAGS_PARAM) {
   /* Take only supported exceptions */
   excepts &= DEC_FE_ALL_EXCEPT;
 
-  if(excepts) { /* Do we have anyting to do? */
+  if (excepts) { /* Do we have anyting to do? */
     new_sw = get_bid_sw() & ~(_IDEC_flags)(unsigned)excepts;
     // set BID status word
     set_bid_sw(new_sw);

@@ -244,9 +244,8 @@
 #define UX_LGAMMA __INTERNAL_NAME(ux_lgamma__)
 #endif
 
-static void
-UX_LGAMMA(UX_FLOAT *unpacked_argument, int *signgam,
-          UX_FLOAT *unpacked_result) {
+static void UX_LGAMMA(UX_FLOAT* unpacked_argument, int* signgam,
+                      UX_FLOAT* unpacked_result) {
   UX_SIGN_TYPE sign;
   WORD i, floor_2x, exponent, cnt;
   UX_FLOAT fraction_part, tmp[3], reduced_argument;
@@ -264,8 +263,8 @@ UX_LGAMMA(UX_FLOAT *unpacked_argument, int *signgam,
 
   exponent = G_UX_EXPONENT(unpacked_argument);
   P_UX_EXPONENT(unpacked_argument, exponent + 1);
-  i = UX_RND_TO_INT(unpacked_argument,
-                    RN_BIT_VECTOR | FRACTION_RESULT, NOT_USED, &fraction_part);
+  i = UX_RND_TO_INT(unpacked_argument, RN_BIT_VECTOR | FRACTION_RESULT,
+                    NOT_USED, &fraction_part);
   P_UX_EXPONENT(unpacked_argument, exponent);
 
   /* Get floor(2x) */
@@ -279,7 +278,7 @@ UX_LGAMMA(UX_FLOAT *unpacked_argument, int *signgam,
   ** signgam = 1 for these cases
   */
 
-  if(sign && !(i & 1) && (G_UX_MSD(&fraction_part) == 0)) {
+  if (sign && !(i & 1) && (G_UX_MSD(&fraction_part) == 0)) {
     P_UX_EXPONENT(unpacked_result, UX_UNDERFLOW_EXPONENT);
     P_UX_MSD(unpacked_result, UX_MSB);
     *signgam = 1;
@@ -290,20 +289,20 @@ UX_LGAMMA(UX_FLOAT *unpacked_argument, int *signgam,
 
   *signgam = 1 - ((sign >> (BITS_PER_UX_SIGN_TYPE - 2)) & (floor_2x & 2));
 
-  if(exponent < 5) { /* | x | < 16 */
+  if (exponent < 5) { /* | x | < 16 */
 
     /* Set initial product to 1 and get  */
 
     UX_SET_SIGN_EXP_MSD(tmp, 0, 1, UX_MSB);
     cnt = floor_2x;
 
-    while(cnt < 2) {
+    while (cnt < 2) {
       MULTIPLY(tmp, unpacked_argument, tmp);
       ADDSUB(unpacked_argument, UX_ONE, ADD, unpacked_argument);
       cnt += 2;
     }
 
-    while(cnt >= 4) {
+    while (cnt >= 4) {
       ADDSUB(unpacked_argument, UX_ONE, SUB, unpacked_argument);
       MULTIPLY(tmp, unpacked_argument, tmp);
       cnt -= 2;
@@ -325,17 +324,16 @@ UX_LGAMMA(UX_FLOAT *unpacked_argument, int *signgam,
     ** and we don't need to evaluate the rational expression
     */
 
-    if(G_UX_MSD(unpacked_result)) {
+    if (G_UX_MSD(unpacked_result)) {
       EVALUATE_RATIONAL(
-          &reduced_argument,
-          LGAMMA_P_COEF_ARRAY,
-          LGAMMA_P_COEF_ARRAY_DEGREE,
-          NUMERATOR_FLAGS(STANDARD) | DENOMINATOR_FLAGS(STANDARD),
-          &tmp[1]);
-      /*printf("DGAMMA 2: rarg=%x %x %llx %llx, tmp1=%x %x %llx %llx\n",reduced_argument.sign,reduced_argument.exponent,reduced_argument.fraction[0],reduced_argument.fraction[1],
+          &reduced_argument, LGAMMA_P_COEF_ARRAY, LGAMMA_P_COEF_ARRAY_DEGREE,
+          NUMERATOR_FLAGS(STANDARD) | DENOMINATOR_FLAGS(STANDARD), &tmp[1]);
+      /*printf("DGAMMA 2: rarg=%x %x %llx %llx, tmp1=%x %x %llx
+        %llx\n",reduced_argument.sign,reduced_argument.exponent,reduced_argument.fraction[0],reduced_argument.fraction[1],
         tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1]);*/
       MULTIPLY(unpacked_result, &tmp[1], unpacked_result);
-      /*printf("DGAMMA 2: ures=%x %x %llx %llx, tmp1=%x %x %llx %llx\n",unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1],
+      /*printf("DGAMMA 2: ures=%x %x %llx %llx, tmp1=%x %x %llx
+       %llx\n",unpacked_result->sign,unpacked_result->exponent,unpacked_result->fraction[0],unpacked_result->fraction[1],
        tmp[1].sign,tmp[1].exponent,tmp[1].fraction[0],tmp[1].fraction[1]);*/
     }
 
@@ -345,7 +343,7 @@ UX_LGAMMA(UX_FLOAT *unpacked_argument, int *signgam,
     ** at this point, tmp = 1, so we don't need to do the computation.
     */
 
-    if(floor_2x != cnt) {
+    if (floor_2x != cnt) {
       P_UX_SIGN(tmp, 0);
       NORMALIZE(tmp);
       UX_LOG(tmp, UX_LN2, tmp);
@@ -369,22 +367,18 @@ UX_LGAMMA(UX_FLOAT *unpacked_argument, int *signgam,
     ADDSUB(unpacked_argument, UX_HALF, sign ? ADD : SUB, tmp);
     MULTIPLY(unpacked_result, tmp, unpacked_result);
     ADDSUB(unpacked_result, unpacked_argument, SUB, unpacked_result);
-    ADDSUB(
-        unpacked_result,
-        sign ? UX_HALF_LN_TWO_OVER_PI : UX_HALF_LN_TWO_PI,
-        ADD, unpacked_result);
+    ADDSUB(unpacked_result, sign ? UX_HALF_LN_TWO_OVER_PI : UX_HALF_LN_TWO_PI,
+           ADD, unpacked_result);
     DIVIDE(0, unpacked_argument, FULL_PRECISION, tmp);
-    EVALUATE_RATIONAL(
-        tmp,
-        LGAMMA_PHI_COEF_ARRAY,
-        LGAMMA_PHI_COEF_ARRAY_DEGREE,
-        NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) | DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(3),
-        // unpacked_argument
-        &tmp[1]);
+    EVALUATE_RATIONAL(tmp, LGAMMA_PHI_COEF_ARRAY, LGAMMA_PHI_COEF_ARRAY_DEGREE,
+                      NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) |
+                          DENOMINATOR_FLAGS(SQUARE_TERM) | P_SCALE(3),
+                      // unpacked_argument
+                      &tmp[1]);
     // ADDSUB(unpacked_result, unpacked_argument, ADD, unpacked_result);
     ADDSUB(unpacked_result, &tmp[1], ADD, unpacked_result);
 
-    if(sign) {
+    if (sign) {
       /*
       ** x is big and negative, so we need to negate the result
       ** and subtract ln[x*sin(pi*x)]
@@ -411,32 +405,25 @@ UX_LGAMMA(UX_FLOAT *unpacked_argument, int *signgam,
 #define C_UX_LGAMMA __INTERNAL_NAME(C_ux_lgamma__)
 #endif
 
-static void
-C_UX_LGAMMA(_X_FLOAT *packed_argument, int *signgam,
-            _X_FLOAT *packed_result OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_LGAMMA(_X_FLOAT* packed_argument, int* signgam,
+                        _X_FLOAT* packed_result
+                            OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class;
   UX_FLOAT unpacked_argument, unpacked_result;
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      LGAMMA_CLASS_TO_ACTION_MAP,
-      packed_result
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class =
+      UNPACK(packed_argument, &unpacked_argument, LGAMMA_CLASS_TO_ACTION_MAP,
+             packed_result OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(fp_class < 0) {
+  if (fp_class < 0) {
     fp_class &= MAKE_MASK(F_C_CLASS_BIT_WIDTH, 0);
     *signgam = (fp_class == F_C_NEG_ZERO) ? -1 : 1;
     return;
   }
 
   UX_LGAMMA(&unpacked_argument, signgam, &unpacked_result);
-  PACK(
-      &unpacked_result,
-      packed_result,
-      LGAMMA_NON_POS_INT,
-      LGAMMA_OVERFLOW
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&unpacked_result, packed_result, LGAMMA_NON_POS_INT,
+       LGAMMA_OVERFLOW OPT_EXCEPTION_INFO_ARGUMENT);
 }
 
 /*
@@ -453,8 +440,9 @@ C_UX_LGAMMA(_X_FLOAT *packed_argument, int *signgam,
 #if (F_NAME_SUFFIX == DPML_NULL_MACRO_TOKEN)
 #define SIGNGAM_NAME signgam
 #else
-#define SIGNGAM_NAME __signgamq // new name
-// The following IS_DEFINED_SIGNGAM_NAME_OLD macro to be removed in far future (see trackers 73679,73680)
+#define SIGNGAM_NAME __signgamq  // new name
+// The following IS_DEFINED_SIGNGAM_NAME_OLD macro to be removed in far future
+// (see trackers 73679,73680)
 #define IS_DEFINED_SIGNGAM_NAME_OLD
 #if defined(IS_DEFINED_SIGNGAM_NAME_OLD)
 #if (OP_SYSTEM == vms)
@@ -477,11 +465,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  C_UX_LGAMMA(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &SIGNGAM_NAME,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_LGAMMA(PASS_ARG_X_FLOAT(packed_argument), &SIGNGAM_NAME,
+              PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
 #ifdef IS_DEFINED_SIGNGAM_NAME_OLD
   SIGNGAM_NAME_OLD = SIGNGAM_NAME;
@@ -497,11 +482,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  C_UX_LGAMMA(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &SIGNGAM_NAME,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_LGAMMA(PASS_ARG_X_FLOAT(packed_argument), &SIGNGAM_NAME,
+              PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
 #ifdef IS_DEFINED_SIGNGAM_NAME_OLD
   SIGNGAM_NAME_OLD = SIGNGAM_NAME;
@@ -517,11 +499,8 @@ X_XIptr_PROTO(F_ENTRY_NAME, packed_result, packed_argument, signgam_ptr) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  C_UX_LGAMMA(
-      PASS_ARG_X_FLOAT(packed_argument),
-      (int *)signgam_ptr,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  C_UX_LGAMMA(PASS_ARG_X_FLOAT(packed_argument), (int*)signgam_ptr,
+              PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -547,42 +526,38 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &unpacked_argument,
-      LGAMMA_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), &unpacked_argument,
+                    LGAMMA_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(fp_class < 0) {
+  if (fp_class < 0) {
     SIGNGAM_NAME = (fp_class == F_C_NEG_ZERO) ? -1 : 1;
     RETURN_X_FLOAT(packed_result);
   }
 
   exponent = G_UX_EXPONENT(&unpacked_argument);
-  if(G_UX_SIGN(&unpacked_argument) == 0) {
+  if (G_UX_SIGN(&unpacked_argument) == 0) {
     // Input is positive. Check for sure overflow
-    if(exponent > 11) {
-      UX_SET_SIGN_EXP_MSD(&unpacked_result, 0, UX_OVERFLOW_EXPONENT,
-                          UX_MSB);
+    if (exponent > 11) {
+      UX_SET_SIGN_EXP_MSD(&unpacked_result, 0, UX_OVERFLOW_EXPONENT, UX_MSB);
       goto pack_it;
     }
-  } else if(exponent > 0) {
+  } else if (exponent > 0) {
     // If input is a negative integer, return NaN and signal an error via
     // an underflow condition
     i = (unsigned)(exponent >> LOG2_BITS_PER_DIGIT);
     mask = UX_TO_DIGIT(-1);
     {
-      unsigned sh = (unsigned)((U_WORD)exponent & (U_WORD)DIGIT_MOD_MASK);
+      unsigned sh = (unsigned)((U_WORD)exponent & DIGIT_MOD_MASK);
       mask >>= sh;
     }
     msd = G_UX_FRACTION_DIGIT(&unpacked_argument, (unsigned)i);
     msd &= mask;
-    while(++i < NUM_UX_FRACTION_DIGITS)
+    while (++i < NUM_UX_FRACTION_DIGITS) {
       msd |= G_UX_FRACTION_DIGIT(&unpacked_argument, i);
-    if(msd == 0) { // This is a negative integer, force underflow condition
-      UX_SET_SIGN_EXP_MSD(&unpacked_result, 0, UX_UNDERFLOW_EXPONENT,
-                          UX_MSB);
+    }
+    if (msd == 0) {  // This is a negative integer, force underflow condition
+      UX_SET_SIGN_EXP_MSD(&unpacked_result, 0, UX_UNDERFLOW_EXPONENT, UX_MSB);
       goto pack_it;
     }
   }
@@ -591,19 +566,16 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   // Compute t = lgamma(x) and check for overflow when computing exp(t)
 
   UX_LGAMMA(&unpacked_argument, &SIGNGAM_NAME, &tmp);
-  if(G_UX_EXPONENT(&tmp) >= 14)
+  if (G_UX_EXPONENT(&tmp) >= 14) {
     // Force overflow condition
     UX_SET_SIGN_EXP_MSD(&unpacked_result, 0, UX_OVERFLOW_EXPONENT, UX_MSB);
-  else
+  } else {
     UX_EXP(&tmp, &unpacked_result);
+  }
 
 pack_it:
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      LGAMMA_NON_POS_INT,
-      LGAMMA_OVERFLOW
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result), LGAMMA_NON_POS_INT,
+       LGAMMA_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -655,10 +627,11 @@ function lgamma_1_2(y) {
   t = (y + 1);
   z = t * (y - 1);
 
-  if(z == 0)
+  if (z == 0) {
     t = .25 * ((t == 0) ? euler_gamma : 1 - euler_gamma);
-  else
+  } else {
     t = lgamma(.5 * (y + 3)) / z;
+  }
   return t;
 }
 
@@ -676,8 +649,8 @@ den_degree = 14;
 REMES_OPTION_LEVELING_TOL(.1);
 
 TABLE_COMMENT("Fixed point coefficients for lgamma on [1,2)");
-remes(REMES_STATIC + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG,
-      -1, 1, lgamma_1_2, num_degree, den_degree, &ux_rational_coefs);
+remes(REMES_STATIC + REMES_RELATIVE_WEIGHT + REMES_LINEAR_ARG, -1, 1,
+      lgamma_1_2, num_degree, den_degree, &ux_rational_coefs);
 
 precision = save_precision;
 
@@ -709,12 +682,12 @@ PRINT_WORD_DEF("LGAMMA_P_COEF_ARRAY_DEGREE", degree);
 function get_bernoulli(m_lo, m_hi) {
   auto n, C, top, bottom, t;
 
-  for(n = m_lo; n <= m_hi; n += 2) {
+  for (n = m_lo; n <= m_hi; n += 2) {
     C = 1;
     top = n + 1;
     bottom = 1;
     t = 0;
-    for(j = 0; j < n; j += 2) {
+    for (j = 0; j < n; j += 2) {
       t += (C * B[j]);
       C = C * top * (top - 1) / (bottom * (bottom + 1));
       top -= 2;
@@ -736,17 +709,18 @@ function find_n_and_min_x(tol) {
 
   n = 4;
   b_2n = B[0];
-  while(1) {
-    if(n > max_bernoulli)
-      max_bernoulli =
-          get_bernoulli(max_bernoulli + 2, max_bernoulli + 128);
+  while (1) {
+    if (n > max_bernoulli) {
+      max_bernoulli = get_bernoulli(max_bernoulli + 2, max_bernoulli + 128);
+    }
     b_2n_plus_2 = B[n];
 
     common = b_2n_plus_2 / (n * (n - 1));
     x_sqr = -common * (n - 2) * (n - 3) / b_2n;
     tmp = abs(common * x_sqr ^ (-n / 2));
-    if(tmp < tol)
+    if (tmp < tol) {
       break;
+    }
     n += 2;
     b_2n = b_2n_plus_2;
   }
@@ -764,11 +738,12 @@ function lgamma_phi(z) {
   auto w, x, term, m, total, tmp;
 
   total = B[2] / 2;
-  if(z == 0)
+  if (z == 0) {
     return total;
+  }
 
   z *= .125;
-  if(z > asymptotic_z) {
+  if (z > asymptotic_z) {
     x = 1 / z;
     return (lgamma(x) - (x - .5) * log(x) + x - half_log_two_pi) * x;
   }
@@ -777,12 +752,13 @@ function lgamma_phi(z) {
   m = 4;
   term = 1;
   old_term = total;
-  while(m <= max_terms) {
+  while (m <= max_terms) {
     term *= w;
     new_term = term * B[m] / (m * (m - 1));
     total += new_term;
-    if((bexp(total) - bexp(new_term)) > bit_precision)
+    if ((bexp(total) - bexp(new_term)) > bit_precision) {
       return total;
+    }
     m += 2;
   }
   return total;
@@ -810,8 +786,8 @@ asymptotic_z = 1 / x;
 */
 
 TABLE_COMMENT("Fixed point coefficients for lgamma(8*x) on [0, 1/16)");
-remes(REMES_FIND_RATIONAL + REMES_SQUARE_ARG + REMES_RELATIVE_WEIGHT,
-      0, 8 * (1 / 16), lgamma_phi, UX_PRECISION, &num_degree, &den_degree,
+remes(REMES_FIND_RATIONAL + REMES_SQUARE_ARG + REMES_RELATIVE_WEIGHT, 0,
+      8 * (1 / 16), lgamma_phi, UX_PRECISION, &num_degree, &den_degree,
       &ux_rational_coefs);
 
 precision = save_precision;
@@ -822,13 +798,11 @@ PRINT_WORD_DEF("LGAMMA_PHI_COEF_ARRAY_DEGREE", degree);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
 my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants lgamma",
-                               __FILE__);
+                               "Definitions and constants lgamma", __FILE__);
 print "$headerText\n\n$outText\n";
 #endif

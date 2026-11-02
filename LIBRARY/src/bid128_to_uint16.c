@@ -44,10 +44,9 @@ BID_TO_SMALL_BID_UINT_CVT_FUNCTION(unsigned short, bid128_to_uint16_rninta,
                                    BID_UINT128, x, bid128_to_uint32_rninta,
                                    unsigned int, SIZE_MASK, INVALID_RESULT)
 
-BID_TO_SMALL_BID_UINT_CVT_FUNCTION(unsigned short,
-                                   bid128_to_uint16_xrninta, BID_UINT128, x,
-                                   bid128_to_uint32_xrninta, unsigned int,
-                                   SIZE_MASK, INVALID_RESULT)
+BID_TO_SMALL_BID_UINT_CVT_FUNCTION(unsigned short, bid128_to_uint16_xrninta,
+                                   BID_UINT128, x, bid128_to_uint32_xrninta,
+                                   unsigned int, SIZE_MASK, INVALID_RESULT)
 
 BID_TO_SMALL_BID_UINT_CVT_FUNCTION(unsigned short, bid128_to_uint16_int,
                                    BID_UINT128, x, bid128_to_uint32_int,

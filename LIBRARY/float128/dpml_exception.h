@@ -191,11 +191,9 @@ typedef struct {
 #define ENABLE_FLUSH_TO_ZERO 0x40
 #define ENABLE_IEEE_MODE 0x80
 
-#define EXCEPTION_ENABLE_MASK (ENABLE_INVALID |     \
-                               ENABLE_SINGULARITY | \
-                               ENABLE_OVERFLOW |    \
-                               ENABLE_UNDERFLOW |   \
-                               ENABLE_LOST_SIGNIFICANCE)
+#define EXCEPTION_ENABLE_MASK                                                 \
+  (ENABLE_INVALID | ENABLE_SINGULARITY | ENABLE_OVERFLOW | ENABLE_UNDERFLOW | \
+   ENABLE_LOST_SIGNIFICANCE)
 
 #define STATUS_NO_ERROR ENABLE_NO_ERROR
 #define STATUS_INVALID ENABLE_INVALID
@@ -205,11 +203,9 @@ typedef struct {
 #define STATUS_LOST_SIGNIFICANCE ENABLE_LOST_SIGNIFICANCE
 #define STATUS_DENORM_PROCESSING ENABLE_FLUSH_TO_ZERO
 
-#define EXCEPTION_STATUS_MASK (STATUS_INVALID |     \
-                               STATUS_SINGULARITY | \
-                               STATUS_OVERFLOW |    \
-                               STATUS_UNDERFLOW |   \
-                               STATUS_LOST_SIGNIFICANCE)
+#define EXCEPTION_STATUS_MASK                                                 \
+  (STATUS_INVALID | STATUS_SINGULARITY | STATUS_OVERFLOW | STATUS_UNDERFLOW | \
+   STATUS_LOST_SIGNIFICANCE)
 
 /*									    */
 /*  These macros are used to determine the errno value associated with an   */
@@ -223,8 +219,7 @@ typedef struct {
 #define ERRNO_TEST(error_code) ((error_code) < DPML_OVERFLOW)
 #define DPML_ERRNO_VALUE(error_code) \
   (ERRNO_TEST(error_code) ? DPML_EDOM : DPML_ERANGE)
-#define ERRNO_VALUE(error_code) \
-  (ERRNO_TEST(error_code) ? EDOM : ERANGE)
+#define ERRNO_VALUE(error_code) (ERRNO_TEST(error_code) ? EDOM : ERANGE)
 
 /*									    */
 /*  In order to more easily encode the default return values for specific   */
@@ -288,33 +283,27 @@ typedef struct {
 #if OP_SYSTEM == osf
 #include "alpha_unix_exception.h"
 #if defined dec_cc
-#define EXCEPTION_INTERFACE_SEND (send_error_code |     \
-                                  send_return_address | \
-                                  send_return_value)
+#define EXCEPTION_INTERFACE_SEND \
+  (send_error_code | send_return_address | send_return_value)
 #else
-#define EXCEPTION_INTERFACE_SEND (send_error_code | \
-                                  send_return_value)
+#define EXCEPTION_INTERFACE_SEND (send_error_code | send_return_value)
 #endif
 
 #elif OP_SYSTEM == vms
 #include "alpha_vms_exception.h"
-#define EXCEPTION_INTERFACE_SEND (send_error_code | \
-                                  send_return_value)
+#define EXCEPTION_INTERFACE_SEND (send_error_code | send_return_value)
 #if VAX_FLOATING
 #define __PROCESS_DENORMS 0
 #endif
 
 #elif OP_SYSTEM == wnt
 #include "alpha_nt_exception.h"
-#define EXCEPTION_INTERFACE_SEND (send_error_code |     \
-                                  send_function_name |  \
-                                  send_return_address | \
-                                  send_arguments)
+#define EXCEPTION_INTERFACE_SEND \
+  (send_error_code | send_function_name | send_return_address | send_arguments)
 
 #elif OP_SYSTEM == linux
 #include "alpha_linux_exception.h"
-#define EXCEPTION_INTERFACE_SEND (send_error_code | \
-                                  send_return_value)
+#define EXCEPTION_INTERFACE_SEND (send_error_code | send_return_value)
 #define PLATFORM_SPECIFIC_HEADER_FILE "alpha_linux_exception.c"
 
 #endif
@@ -351,8 +340,7 @@ typedef struct {
 
 #elif OP_SYSTEM == vms
 #include "ia64_vms_exception.h"
-#define EXCEPTION_INTERFACE_SEND (send_error_code | \
-                                  send_return_value)
+#define EXCEPTION_INTERFACE_SEND (send_error_code | send_return_value)
 #if VAX_FLOATING
 #define __PROCESS_DENORMS 0
 #endif
@@ -361,7 +349,8 @@ typedef struct {
 
 #else
 
-#if (defined(IEEE_FLOATING) && IEEE_FLOATING) && !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
+#if (defined(IEEE_FLOATING) && IEEE_FLOATING) && \
+    !defined(MINIMAL_SILENT_MODE_EXCEPTION_HANDLER)
 #define PROCESS_DENORMS 1
 #else
 #define PROCESS_DENORMS 0
@@ -387,11 +376,11 @@ typedef union {
 
 typedef struct {
   WORD func_error_code;
-  void *context;
+  void* context;
   WORD platform_specific_err_code;
   WORD environment;
-  void *ret_val_ptr;
-  char *name;
+  void* ret_val_ptr;
+  char* name;
   char data_type;
   char dpml_error;
   char mode;
@@ -400,7 +389,7 @@ typedef struct {
   DPML_EXCEPTION_VALUE args[4];
 } DPML_EXCEPTION_RECORD;
 
-#define EXCEPTION_ARG_LIST DPML_EXCEPTION_RECORD *
+#define EXCEPTION_ARG_LIST DPML_EXCEPTION_RECORD*
 
 #endif
 
@@ -408,7 +397,7 @@ typedef struct {
 #define G_EXCPT_REC_PLTFRM_ECODE(p) p->platform_specific_err_code
 #define G_EXCPT_REC_ENVIRONMENT(p) p->environment
 #define G_EXCPT_REC_RET_VAL_PTR(p) p->ret_val_ptr
-#define G_EXCPT_REC_CONTEXT(p) ((CONTEXT *)p->context)
+#define G_EXCPT_REC_CONTEXT(p) ((CONTEXT*)p->context)
 #define G_EXCPT_REC_NAME(p) p->name
 #define G_EXCPT_REC_DATA_TYPE(p) p->data_type
 #define G_EXCPT_REC_DPML_ECODE(p) p->dpml_error
@@ -419,8 +408,8 @@ typedef struct {
 #define P_EXCPT_REC_FUNC_ECODE(p, v) p->func_error_code = (v)
 #define P_EXCPT_REC_PLTFRM_ECODE(p, v) p->platform_specific_err_code = (v)
 #define P_EXCPT_REC_ENVIRONMENT(p, v) p->environment = (v)
-#define P_EXCPT_REC_RET_VAL_PTR(p, v) p->ret_val_ptr = (void *)(v)
-#define P_EXCPT_REC_CONTEXT(p, v) p->context = (void *)(v)
+#define P_EXCPT_REC_RET_VAL_PTR(p, v) p->ret_val_ptr = (void*)(v)
+#define P_EXCPT_REC_CONTEXT(p, v) p->context = (void*)(v)
 #define P_EXCPT_REC_NAME(p, v) p->name = (v)
 #define P_EXCPT_REC_DATA_TYPE(p, v) p->data_type = (char)(v)
 #define P_EXCPT_REC_DPML_ECODE(p, v) p->dpml_error = (v)
@@ -525,8 +514,7 @@ typedef struct {
 
 #if EXCEPTION_INTERFACE_SEND & send_return_address
 /* NOTE THE TRAILING COMMA						    */
-#define INIT_RETURN_ADDRESS \
-  P_EXCPT_REC_RET_VAL_PTR((&tmp_rec), RET_ADDR),
+#define INIT_RETURN_ADDRESS P_EXCPT_REC_RET_VAL_PTR((&tmp_rec), RET_ADDR),
 #else
 #define INIT_RETURN_ADDRESS
 #endif
@@ -586,42 +574,30 @@ typedef struct {
 #define GET_EXCEPTION_RESULT INIT_NAME
 #endif
 
-#define GET_EXCEPTION_RESULT_1(error_code,                          \
-                               argument,                            \
-                               result)                              \
-  {                                                                 \
-    GET_EXCEPTION_RESULT;                                           \
-    P_F_ARG_VALUE(0, argument);                                     \
-    result = *(F_TYPE *)                                            \
-                 DPML_EXCEPTION_HANDLER(EXCEPTION_ARG(error_code)); \
+#define GET_EXCEPTION_RESULT_1(error_code, argument, result)              \
+  {                                                                       \
+    GET_EXCEPTION_RESULT;                                                 \
+    P_F_ARG_VALUE(0, argument);                                           \
+    result = *(F_TYPE*)DPML_EXCEPTION_HANDLER(EXCEPTION_ARG(error_code)); \
   }
 
-#define GET_EXCEPTION_RESULT_2(error_code,                          \
-                               argument_0,                          \
-                               argument_1,                          \
-                               result)                              \
-  {                                                                 \
-    GET_EXCEPTION_RESULT;                                           \
-    P_F_ARG_VALUE(0, argument_0);                                   \
-    P_F_ARG_VALUE(1, argument_1);                                   \
-    result = *(F_TYPE *)                                            \
-                 DPML_EXCEPTION_HANDLER(EXCEPTION_ARG(error_code)); \
+#define GET_EXCEPTION_RESULT_2(error_code, argument_0, argument_1, result) \
+  {                                                                        \
+    GET_EXCEPTION_RESULT;                                                  \
+    P_F_ARG_VALUE(0, argument_0);                                          \
+    P_F_ARG_VALUE(1, argument_1);                                          \
+    result = *(F_TYPE*)DPML_EXCEPTION_HANDLER(EXCEPTION_ARG(error_code));  \
   }
 
-#define GET_EXCEPTION_RESULT_4(error_code,                          \
-                               argument_0,                          \
-                               argument_1,                          \
-                               argument_2,                          \
-                               argument_3,                          \
-                               result)                              \
-  {                                                                 \
-    GET_EXCEPTION_RESULT;                                           \
-    P_F_ARG_VALUE(0, argument_0);                                   \
-    P_F_ARG_VALUE(1, argument_1);                                   \
-    P_F_ARG_VALUE(2, argument_2);                                   \
-    P_F_ARG_VALUE(3, argument_3);                                   \
-    result = *(F_TYPE *)                                            \
-                 DPML_EXCEPTION_HANDLER(EXCEPTION_ARG(error_code)); \
+#define GET_EXCEPTION_RESULT_4(error_code, argument_0, argument_1, argument_2, \
+                               argument_3, result)                             \
+  {                                                                            \
+    GET_EXCEPTION_RESULT;                                                      \
+    P_F_ARG_VALUE(0, argument_0);                                              \
+    P_F_ARG_VALUE(1, argument_1);                                              \
+    P_F_ARG_VALUE(2, argument_2);                                              \
+    P_F_ARG_VALUE(3, argument_3);                                              \
+    result = *(F_TYPE*)DPML_EXCEPTION_HANDLER(EXCEPTION_ARG(error_code));      \
   }
 
 #else
@@ -630,45 +606,29 @@ typedef struct {
 /*	Define the "new" style interface to the exception dispatcher.	    */
 /*									    */
 
-#define RETURN_EXCEPTION_RESULT_1(error_word, \
-                                  argument,   \
-                                  signature,  \
-                                  operation)  \
-  {                                           \
-    P_F_ARG_VALUE(0, argument);               \
-    RETURN_EXCEPTION_RESULT(error_word,       \
-                            signature,        \
-                            operation)        \
+#define RETURN_EXCEPTION_RESULT_1(error_word, argument, signature, operation) \
+  {                                                                           \
+    P_F_ARG_VALUE(0, argument);                                               \
+    RETURN_EXCEPTION_RESULT(error_word, signature, operation)                 \
   }
 
-#define RETURN_EXCEPTION_RESULT_2(error_word, \
-                                  argument_0, \
-                                  argument_1, \
-                                  signature,  \
-                                  operation)  \
-  {                                           \
-    P_F_ARG_VALUE(0, argument_0);             \
-    P_F_ARG_VALUE(1, argument_1);             \
-    RETURN_EXCEPTION_RESULT(error_word,       \
-                            signature,        \
-                            operation)        \
+#define RETURN_EXCEPTION_RESULT_2(error_word, argument_0, argument_1, \
+                                  signature, operation)               \
+  {                                                                   \
+    P_F_ARG_VALUE(0, argument_0);                                     \
+    P_F_ARG_VALUE(1, argument_1);                                     \
+    RETURN_EXCEPTION_RESULT(error_word, signature, operation)         \
   }
 
-#define RETURN_EXCEPTION_RESULT_4(error_word, \
-                                  argument_0, \
-                                  argument_1, \
-                                  argument_2, \
-                                  argument_3, \
-                                  signature,  \
-                                  operation)  \
-  {                                           \
-    P_F_ARG_VALUE(0, argument_0);             \
-    P_F_ARG_VALUE(1, argument_1);             \
-    P_F_ARG_VALUE(2, argument_2);             \
-    P_F_ARG_VALUE(3, argument_3);             \
-    RETURN_EXCEPTION_RESULT(error_word,       \
-                            signature,        \
-                            operation)        \
+#define RETURN_EXCEPTION_RESULT_4(error_word, argument_0, argument_1, \
+                                  argument_2, argument_3, signature,  \
+                                  operation)                          \
+  {                                                                   \
+    P_F_ARG_VALUE(0, argument_0);                                     \
+    P_F_ARG_VALUE(1, argument_1);                                     \
+    P_F_ARG_VALUE(2, argument_2);                                     \
+    P_F_ARG_VALUE(3, argument_3);                                     \
+    RETURN_EXCEPTION_RESULT(error_word, signature, operation)         \
   }
 
 #endif
@@ -712,15 +672,15 @@ typedef struct {
 #elif OP_SYSTEM == wnt
 #elif OP_SYSTEM == linux
 #else
-typedef void *EXCEPTION_RETURN_TYPE;
+typedef void* EXCEPTION_RETURN_TYPE;
 #endif
 #elif (defined(merced) && (ARCHITECTURE == merced))
 #if OP_SYSTEM == vms
 #else
-typedef void *EXCEPTION_RETURN_TYPE;
+typedef void* EXCEPTION_RETURN_TYPE;
 #endif
 #else /*  The hardware architecture is not Alpha or Merced		    */
-typedef void *EXCEPTION_RETURN_TYPE;
+typedef void* EXCEPTION_RETURN_TYPE;
 #endif
 
 extern EXCEPTION_RETURN_TYPE DPML_EXCEPTION_HANDLER(EXCEPTION_ARG_LIST);
@@ -745,10 +705,10 @@ extern EXCEPTION_RETURN_TYPE DPML_EXCEPTION_HANDLER(EXCEPTION_ARG_LIST);
 #if COMPATIBILITY_MODE
 
 #if !defined PROCESS_DENORMS
-#define PROCESS_DENORMS (                                    \
-    ((U_WORD)DPML_EXCEPTION_HANDLER(                         \
-         EXCEPTION_ARGUMENTS((U_WORD)(WORD)DPML_ENV_INFO)) & \
-     (ENABLE_FLUSH_TO_ZERO)) == 0)
+#define PROCESS_DENORMS                                     \
+  (((U_WORD)DPML_EXCEPTION_HANDLER(                         \
+        EXCEPTION_ARGUMENTS((U_WORD)(WORD)DPML_ENV_INFO)) & \
+    (ENABLE_FLUSH_TO_ZERO)) == 0)
 #endif
 #endif
 
@@ -820,18 +780,17 @@ extern EXCEPTION_RETURN_TYPE DPML_EXCEPTION_HANDLER(EXCEPTION_ARG_LIST);
 
 #define DPML_EDOM 0
 #define DPML_ERANGE 1
-#define ERROR_WORD_ERRNO_FLAG(errno) \
-  (((errno) == DPML_EDOM) ? 0 : 1)
+#define ERROR_WORD_ERRNO_FLAG(errno) (((errno) == DPML_EDOM) ? 0 : 1)
 #if (defined(vms) && (OP_SYSTEM == vms))
 #define ERROR_WORD_DATA_TYPE_SIZE 3
 #else
 #define ERROR_WORD_DATA_TYPE_SIZE 2
 #endif
 #define ERROR_WORD_VALUE_SIZE 4
-#define ERROR_EXTENSION_SIZE (                              \
-    (8 * sizeof(U_WORD) - 1) -                              \
-    (ERROR_WORD_DATA_TYPE_POS + ERROR_WORD_DATA_TYPE_SIZE + \
-     2 * ERROR_WORD_VALUE_SIZE))
+#define ERROR_EXTENSION_SIZE                               \
+  ((8 * sizeof(U_WORD) - 1) -                              \
+   (ERROR_WORD_DATA_TYPE_POS + ERROR_WORD_DATA_TYPE_SIZE + \
+    2 * ERROR_WORD_VALUE_SIZE))
 
 #define ERROR_WORD_DATA_TYPE_POS 8
 #define ERROR_WORD_FAST_VALUE_POS \
@@ -841,19 +800,13 @@ extern EXCEPTION_RETURN_TYPE DPML_EXCEPTION_HANDLER(EXCEPTION_ARG_LIST);
 #define ERROR_WORD_EXTRA_INFO_POS \
   (ERROR_WORD_IEEE_VALUE_POS + ERROR_WORD_VALUE_SIZE)
 
-#define ERROR_WORD(exception_cause,                       \
-                   fast_value,                            \
-                   IEEE_value,                            \
-                   data_type,                             \
-                   errno,                                 \
-                   exception_extension)                   \
-  (ERROR_WORD_ERRNO_FLAG(errno) |                         \
-   (exception_cause) |                                    \
-   ((data_type) << ERROR_WORD_DATA_TYPE_POS) |            \
-   ((fast_value) << ERROR_WORD_FAST_VALUE_POS) |          \
-   (((IEEE_value) ^ (fast_value))                         \
-    << ERROR_WORD_IEEE_VALUE_POS) |                       \
-   ((exception_extension) << ERROR_WORD_EXTRA_INFO_POS) | \
+#define ERROR_WORD(exception_cause, fast_value, IEEE_value, data_type, errno, \
+                   exception_extension)                                       \
+  (ERROR_WORD_ERRNO_FLAG(errno) | (exception_cause) |                         \
+   ((data_type) << ERROR_WORD_DATA_TYPE_POS) |                                \
+   ((fast_value) << ERROR_WORD_FAST_VALUE_POS) |                              \
+   (((IEEE_value) ^ (fast_value)) << ERROR_WORD_IEEE_VALUE_POS) |             \
+   ((exception_extension) << ERROR_WORD_EXTRA_INFO_POS) |                     \
    (ERROR_WORD_COMPATIBILITY_MODE_FLAG))
 
 /*									    */

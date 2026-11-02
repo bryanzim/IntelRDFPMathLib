@@ -29,10 +29,11 @@
 
 #include "bid_strtod.h"
 
-DFP_WRAPFN_TYPE1_TYPE2(128, bid_strtod128, const char *RESTRICT, char **RESTRICT)
+DFP_WRAPFN_TYPE1_TYPE2(128, bid_strtod128, const char* RESTRICT,
+                       char** RESTRICT)
 
-BID_UINT128 bid_strtod128(const char *RESTRICT ps_in, char **RESTRICT endptr) {
-  char *ps0;
+BID_UINT128 bid_strtod128(const char* RESTRICT ps_in, char** RESTRICT endptr) {
+  char* ps0;
   BID_UINT128 dr;
 #if !DECIMAL_GLOBAL_EXCEPTION_FLAGS
   unsigned fpsc = 0, *pfpsf = &fpsc;
@@ -43,10 +44,10 @@ BID_UINT128 bid_strtod128(const char *RESTRICT ps_in, char **RESTRICT endptr) {
 
   ps0 = strtod_conversion(ps_in, endptr);
 
-  if(!ps0) {
+  if (!ps0) {
     dr.w[BID_HIGH_128W] = 0x3040000000000000ull;
     dr.w[BID_LOW_128W] = 0ull;
-    return dr; // 0.0
+    return dr;  // 0.0
   }
 
   BIDECIMAL_CALL1_RESARG(bid128_from_string, dr, ps0);

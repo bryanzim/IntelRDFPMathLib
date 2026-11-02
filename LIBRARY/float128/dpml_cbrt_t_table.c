@@ -90,22 +90,54 @@ extern const TABLE_UNION CBRT_TABLE_NAME[66];
 
 #endif
 
-#define ONE_D *((double *)((char *)CBRT_TABLE_NAME + 0))
-#define CBRT_POLY_ADDR ((double *)((char *)CBRT_TABLE_NAME + 8))
-#define REC_CBRT_POLY_ADDR ((double *)((char *)CBRT_TABLE_NAME + 88))
+#define ONE_D *((double*)((char*)CBRT_TABLE_NAME + 0))
+#define CBRT_POLY_ADDR ((double*)((char*)CBRT_TABLE_NAME + 8))
+#define REC_CBRT_POLY_ADDR ((double*)((char*)CBRT_TABLE_NAME + 88))
 #define OFFSET_OF_CBRTS_OF_2 160
-#define BIG_QUAD *((double *)((char *)CBRT_TABLE_NAME + 208))
-#define SEVEN_NINTHS *((double *)((char *)CBRT_TABLE_NAME + 216))
-#define ONE_SEVENTH *((double *)((char *)CBRT_TABLE_NAME + 224))
-#define FIVE_SEVENTHS *((double *)((char *)CBRT_TABLE_NAME + 232))
-#define FOURTEEN *((double *)((char *)CBRT_TABLE_NAME + 240))
-#define SEVEN *((double *)((char *)CBRT_TABLE_NAME + 248))
-#define NINTH *((double *)((char *)CBRT_TABLE_NAME + 256))
+#define BIG_QUAD *((double*)((char*)CBRT_TABLE_NAME + 208))
+#define SEVEN_NINTHS *((double*)((char*)CBRT_TABLE_NAME + 216))
+#define ONE_SEVENTH *((double*)((char*)CBRT_TABLE_NAME + 224))
+#define FIVE_SEVENTHS *((double*)((char*)CBRT_TABLE_NAME + 232))
+#define FOURTEEN *((double*)((char*)CBRT_TABLE_NAME + 240))
+#define SEVEN *((double*)((char*)CBRT_TABLE_NAME + 248))
+#define NINTH *((double*)((char*)CBRT_TABLE_NAME + 256))
 
-#define CBRT_POLY_M(x) ((((CBRT_POLY_ADDR[0] + x * CBRT_POLY_ADDR[1]) + (x * x) * CBRT_POLY_ADDR[2]) + (x * (x * x)) * (CBRT_POLY_ADDR[3] + x * CBRT_POLY_ADDR[4])) + ((x * x) * (x * (x * x))) * (((CBRT_POLY_ADDR[5] + x * CBRT_POLY_ADDR[6]) + (x * x) * CBRT_POLY_ADDR[7]) + (x * (x * x)) * (CBRT_POLY_ADDR[8] + x * CBRT_POLY_ADDR[9])))
-#define CBRT_POLY_C(x) (CBRT_POLY_ADDR[0] + x * (CBRT_POLY_ADDR[1] + x * (CBRT_POLY_ADDR[2] + x * (CBRT_POLY_ADDR[3] + x * (CBRT_POLY_ADDR[4] + x * (CBRT_POLY_ADDR[5] + x * (CBRT_POLY_ADDR[6] + x * (CBRT_POLY_ADDR[7] + x * (CBRT_POLY_ADDR[8] + x * CBRT_POLY_ADDR[9])))))))))
+#define CBRT_POLY_M(x)                                             \
+  ((((CBRT_POLY_ADDR[0] + x * CBRT_POLY_ADDR[1]) +                 \
+     (x * x) * CBRT_POLY_ADDR[2]) +                                \
+    (x * (x * x)) * (CBRT_POLY_ADDR[3] + x * CBRT_POLY_ADDR[4])) + \
+   ((x * x) * (x * (x * x))) *                                     \
+       (((CBRT_POLY_ADDR[5] + x * CBRT_POLY_ADDR[6]) +             \
+         (x * x) * CBRT_POLY_ADDR[7]) +                            \
+        (x * (x * x)) * (CBRT_POLY_ADDR[8] + x * CBRT_POLY_ADDR[9])))
+#define CBRT_POLY_C(x)                                         \
+  (CBRT_POLY_ADDR[0] +                                         \
+   x * (CBRT_POLY_ADDR[1] +                                    \
+        x * (CBRT_POLY_ADDR[2] +                               \
+             x * (CBRT_POLY_ADDR[3] +                          \
+                  x * (CBRT_POLY_ADDR[4] +                     \
+                       x * (CBRT_POLY_ADDR[5] +                \
+                            x * (CBRT_POLY_ADDR[6] +           \
+                                 x * (CBRT_POLY_ADDR[7] +      \
+                                      x * (CBRT_POLY_ADDR[8] + \
+                                           x * CBRT_POLY_ADDR[9])))))))))
 #define CBRT_POLY SELECT_POLY(CBRT_POLY_)
 
-#define RECIP_CBRT_POLY_M(x) (((REC_CBRT_POLY_ADDR[0] + x * REC_CBRT_POLY_ADDR[1]) + (x * x) * (REC_CBRT_POLY_ADDR[2] + x * REC_CBRT_POLY_ADDR[3])) + ((x * x) * (x * x)) * (((REC_CBRT_POLY_ADDR[4] + x * REC_CBRT_POLY_ADDR[5]) + (x * x) * REC_CBRT_POLY_ADDR[6]) + (x * (x * x)) * (REC_CBRT_POLY_ADDR[7] + x * REC_CBRT_POLY_ADDR[8])))
-#define RECIP_CBRT_POLY_C(x) (REC_CBRT_POLY_ADDR[0] + x * (REC_CBRT_POLY_ADDR[1] + x * (REC_CBRT_POLY_ADDR[2] + x * (REC_CBRT_POLY_ADDR[3] + x * (REC_CBRT_POLY_ADDR[4] + x * (REC_CBRT_POLY_ADDR[5] + x * (REC_CBRT_POLY_ADDR[6] + x * (REC_CBRT_POLY_ADDR[7] + x * REC_CBRT_POLY_ADDR[8]))))))))
+#define RECIP_CBRT_POLY_M(x)                                         \
+  (((REC_CBRT_POLY_ADDR[0] + x * REC_CBRT_POLY_ADDR[1]) +            \
+    (x * x) * (REC_CBRT_POLY_ADDR[2] + x * REC_CBRT_POLY_ADDR[3])) + \
+   ((x * x) * (x * x)) *                                             \
+       (((REC_CBRT_POLY_ADDR[4] + x * REC_CBRT_POLY_ADDR[5]) +       \
+         (x * x) * REC_CBRT_POLY_ADDR[6]) +                          \
+        (x * (x * x)) * (REC_CBRT_POLY_ADDR[7] + x * REC_CBRT_POLY_ADDR[8])))
+#define RECIP_CBRT_POLY_C(x)                                  \
+  (REC_CBRT_POLY_ADDR[0] +                                    \
+   x * (REC_CBRT_POLY_ADDR[1] +                               \
+        x * (REC_CBRT_POLY_ADDR[2] +                          \
+             x * (REC_CBRT_POLY_ADDR[3] +                     \
+                  x * (REC_CBRT_POLY_ADDR[4] +                \
+                       x * (REC_CBRT_POLY_ADDR[5] +           \
+                            x * (REC_CBRT_POLY_ADDR[6] +      \
+                                 x * (REC_CBRT_POLY_ADDR[7] + \
+                                      x * REC_CBRT_POLY_ADDR[8]))))))))
 #define RECIP_CBRT_POLY SELECT_POLY(RECIP_CBRT_POLY_)

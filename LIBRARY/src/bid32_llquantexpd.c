@@ -37,19 +37,21 @@
  Exceptions signaled: invalid
  */
 
-BID_TYPE0_FUNCTION_ARGTYPE1_NORND(long long int, bid32_llquantexp, BID_UINT32, x)
+BID_TYPE0_FUNCTION_ARGTYPE1_NORND(long long int, bid32_llquantexp, BID_UINT32,
+                                  x)
 
-long long int res; // quantum
+long long int res;  // quantum
 
-if(((x & MASK_INF32) == MASK_INF32) || ((x & MASK_NAN32) == MASK_NAN32)) {
+if (((x & MASK_INF32) == MASK_INF32) || ((x & MASK_NAN32) == MASK_NAN32)) {
   // set invalid flag
   *pfpsf |= BID_INVALID_EXCEPTION;
   res = (long long int)0x8000000000000000ULL;
   BID_RETURN(res);
 }
-if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32)
+if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
   res = (long long int)((x >> 21) & 0xffU) - 101;
-else
+} else {
   res = (long long int)((x >> 23) & 0xffU) - 101;
+}
 BID_RETURN(res);
 }

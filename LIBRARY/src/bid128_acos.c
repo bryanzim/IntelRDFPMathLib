@@ -30,31 +30,31 @@
 
 // -1, used in sqrt(1 - x^2) computation
 
-static BID_UINT128 bi_d128_minu_s1 =
-    {BID128_LH_INIT(0x0000000000000001ull, 0xb040000000000000ull)};
+static BID_UINT128 bi_d128_minu_s1 = {
+    BID128_LH_INIT(0x0000000000000001ull, 0xb040000000000000ull)};
 
 // 2-part pi, used in trivial path.
 
-static BID_UINT128 bi_d128_p_i2_hi =
-    {BID128_LH_INIT(0xdd5f2ab27379cfc7ull, 0x2ffe4d723cabcb53ull)};
-static BID_UINT128 bi_d128_p_i2_lo =
-    {BID128_LH_INIT(0x0492b4138a162883ull, 0x2fbad9f8afb501d4ull)};
+static BID_UINT128 bi_d128_p_i2_hi = {
+    BID128_LH_INIT(0xdd5f2ab27379cfc7ull, 0x2ffe4d723cabcb53ull)};
+static BID_UINT128 bi_d128_p_i2_lo = {
+    BID128_LH_INIT(0x0492b4138a162883ull, 0x2fbad9f8afb501d4ull)};
 
 // Zero with minimal exponent, as return for acos(1)
 
-static BID_UINT128 bi_d128_0 =
-    {BID128_LH_INIT(0x0000000000000000ull, 0x0000000000000000ull)};
+static BID_UINT128 bi_d128_0 = {
+    BID128_LH_INIT(0x0000000000000000ull, 0x0000000000000000ull)};
 
 // NaN for inputs |x| > 1
 
-static BID_UINT128 bi_d128_nan =
-    {BID128_LH_INIT(0x0000000000000000ull, 0x7c00000000000000ull)};
+static BID_UINT128 bi_d128_nan = {
+    BID128_LH_INIT(0x0000000000000000ull, 0x7c00000000000000ull)};
 
-BID_F128_CONST_DEF(c_1em40, 3f7a16c262777579, c58c46475896767b);   // 1e-40
-BID_F128_CONST_DEF(c_7_10ths, 3ffe666666666666, 6666666666666666); // .7
-BID_F128_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);     // 1.0
-BID_F128_CONST_DEF(c_zero, 0000000000000000, 0000000000000000);    // 0.0
-BID_F128_CONST_DEF(c_pi, 4000921fb54442d1, 8469898cc51701b8);      // pi
+BID_F128_CONST_DEF(c_1em40, 3f7a16c262777579, c58c46475896767b);    // 1e-40
+BID_F128_CONST_DEF(c_7_10ths, 3ffe666666666666, 6666666666666666);  // .7
+BID_F128_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);      // 1.0
+BID_F128_CONST_DEF(c_zero, 0000000000000000, 0000000000000000);     // 0.0
+BID_F128_CONST_DEF(c_pi, 4000921fb54442d1, 8469898cc51701b8);       // pi
 
 BID128_FUNCTION_ARG1(bid128_acos, x)
 
@@ -67,18 +67,19 @@ BID_UINT128 pi2hi = bi_d128_p_i2_hi, pi2lo = bi_d128_p_i2_lo;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
+if ((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if(((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64))
+  if (((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64)) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-  if(((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
-      0x0000314dc6448d93ull) ||
-     (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
-       0x0000314dc6448d93ull) &&
-      res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
+  if (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
+       0x0000314dc6448d93ull) ||
+      (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
+        0x0000314dc6448d93ull) &&
+       res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
     res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
     res.w[BID_LOW_128W] = 0ull;
   }
@@ -96,20 +97,20 @@ BIDECIMAL_CALL1(bid128_to_binary128, xd, x);
 // won't knock this 2-part value across a FP number boundary.
 
 __bid_f128_fabs(abs_xd, xd);
-if(__bid_f128_lt(abs_xd, c_1em40.v)) {
+if (__bid_f128_lt(abs_xd, c_1em40.v)) {
   BIDECIMAL_CALL2(bid128_add, res, pi2hi, pi2lo);
   BID_RETURN(res);
 }
 
 // If the input is not too close to +/- 1 then do it "naively"
-if(__bid_f128_le(abs_xd, c_7_10ths.v)) {
+if (__bid_f128_le(abs_xd, c_7_10ths.v)) {
   __bid_f128_acos(yd, xd);
   BIDECIMAL_CALL1(binary128_to_bid128, res, yd);
   BID_RETURN(res);
 }
 
 // If the input is > 1 in magnitude, fail
-if(__bid_f128_gt(abs_xd, c_one.v)) {
+if (__bid_f128_gt(abs_xd, c_one.v)) {
   res = bi_d128_nan;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -119,7 +120,7 @@ if(__bid_f128_gt(abs_xd, c_one.v)) {
 
 // If the input is exactly 1, return a canonical zero with minimal exponent
 // Uses >= 1 instead of == 1 to avoid compiler warnings...
-if(__bid_f128_ge(xd, c_one.v)) {
+if (__bid_f128_ge(xd, c_one.v)) {
   res = bi_d128_0;
   BID_RETURN(res);
 }
@@ -134,8 +135,9 @@ else {
     __bid_f128_sqrt(yd, yd);
     __bid_f128_asin(yd, yd);
   }
-  if(__bid_f128_lt(xd, c_zero.v))
+  if (__bid_f128_lt(xd, c_zero.v)) {
     __bid_f128_sub(yd, c_pi.v, yd);
+  }
   BIDECIMAL_CALL1(binary128_to_bid128, res, yd);
   BID_RETURN(res);
 }

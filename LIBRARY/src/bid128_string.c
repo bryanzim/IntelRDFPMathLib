@@ -40,28 +40,27 @@
 #define MIN_DIGITS(a, b) ((a) < (b) ? (a) : (b))
 
 BID_EXTERN_C int bid128_bid_coeff_2_string(BID_UINT64 x_hi, BID_UINT64 x_lo,
-                                           char *char_ptr);
+                                           char* char_ptr);
 
 #if DECIMAL_CALL_BY_REFERENCE
 
-void bid128_to_string(char *str,
-                      BID_UINT128 *
-                          px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                              _EXC_INFO_PARAM) {
+void bid128_to_string(char* str, BID_UINT128* px _EXC_FLAGS_PARAM
+                                     _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT128 x;
 #else
 
 VOID_WRAPFN_OTHERTYPERES_DFP(bid128_to_string, char, 128)
-void bid128_to_string(char *str, BID_UINT128 x
-                                     _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+void bid128_to_string(char* str, BID_UINT128 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+                                     _EXC_INFO_PARAM) {
 #endif
   BID_UINT64 x_sign;
   BID_UINT64 x_exp;
-  int exp; // unbiased exponent
-  // Note: C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (all are BID_UINT64)
+  int exp;  // unbiased exponent
+  // Note: C1.w[1], C1.w[0] represent x_signif_hi, x_signif_lo (all are
+  // BID_UINT64)
   unsigned int ind;
   BID_UINT128 c1;
-  unsigned int k = 0; // pointer in the string
+  unsigned int k = 0;  // pointer in the string
   unsigned int d0, d123;
   unsigned int zero_digit = (unsigned int)'0';
   BID_UINT64 hi_18_dig, lo_18_dig, tmp;
@@ -74,37 +73,37 @@ void bid128_to_string(char *str, BID_UINT128 x
   x = *px;
 #endif
 
-  save_fpsf = *pfpsf; // dummy
+  save_fpsf = *pfpsf;  // dummy
   (void)save_fpsf;
 
   BID_SWAP128(x);
   // check for NaN or Infinity
-  if((x.w[1U] & MASK_SPECIAL) == MASK_SPECIAL) {
+  if ((x.w[1U] & MASK_SPECIAL) == MASK_SPECIAL) {
     // x is special
-    if((x.w[1U] & MASK_NAN) == MASK_NAN) {     // x is NAN
-      if((x.w[1U] & MASK_SNAN) == MASK_SNAN) { // x is SNAN
-                                               // set invalid flag
+    if ((x.w[1U] & MASK_NAN) == MASK_NAN) {      // x is NAN
+      if ((x.w[1U] & MASK_SNAN) == MASK_SNAN) {  // x is SNAN
+                                                 // set invalid flag
         str[0] = ((BID_SINT64)x.w[1U] < 0) ? '-' : '+';
         str[1] = 'S';
         str[2] = 'N';
         str[3] = 'a';
         str[4] = 'N';
         str[5] = '\0';
-      } else { // x is QNaN
+      } else {  // x is QNaN
         str[0] = ((BID_SINT64)x.w[1U] < 0) ? '-' : '+';
         str[1] = 'N';
         str[2] = 'a';
         str[3] = 'N';
         str[4] = '\0';
       }
-    } else {                                // x is not a NaN, so it must be infinity
-      if((x.w[1U] & MASK_SIGN) == 0x0ull) { // x is +inf
+    } else {  // x is not a NaN, so it must be infinity
+      if ((x.w[1U] & MASK_SIGN) == 0x0ull) {  // x is +inf
         str[0] = '+';
         str[1] = 'I';
         str[2] = 'n';
         str[3] = 'f';
         str[4] = '\0';
-      } else { // x is -inf
+      } else {  // x is -inf
         str[0] = '-';
         str[1] = 'I';
         str[2] = 'n';
@@ -113,58 +112,62 @@ void bid128_to_string(char *str, BID_UINT128 x
       }
     }
     return;
-  } else if(((x.w[1U] & MASK_COEFF) == 0x0ull) && (x.w[0U] == 0x0ull)) {
+  } else if (((x.w[1U] & MASK_COEFF) == 0x0ull) && (x.w[0U] == 0x0ull)) {
     // x is 0
     len = 0;
 
     // determine if +/-
-    if(x.w[1U] & MASK_SIGN)
+    if (x.w[1U] & MASK_SIGN) {
       str[len++] = '-';
-    else
+    } else {
       str[len++] = '+';
+    }
     str[len++] = '0';
     str[len++] = 'E';
 
     // extract the exponent and print
     exp = (int)(((x.w[1U] & MASK_EXP) >> 49) - 6176);
-    if(exp > (int)((0x5ffeU >> 1) - 6176)) {
+    if (exp > (int)((0x5ffeU >> 1) - 6176)) {
       exp = (int)((((x.w[1U] << 2) & MASK_EXP) >> 49) - 6176);
     }
-    if(exp >= 0) {
+    if (exp >= 0) {
       str[len++] = '+';
-      len += sprintf(str + len, "%u", exp); // should not use sprintf (should
+      len += sprintf(str + len, "%u", exp);  // should not use sprintf (should
       // use sophisticated algorithm, since we know range of exp is limited)
       str[len++] = '\0';
     } else {
-      len += sprintf(str + len, "%d", exp); // should not use sprintf (should
+      len += sprintf(str + len, "%d", exp);  // should not use sprintf (should
       // use sophisticated algorithm, since we know range of exp is limited)
       str[len++] = '\0';
     }
     return;
-  } else { // x is not special and is not zero
+  } else {  // x is not special and is not zero
     // unpack x
-    x_sign = x.w[1U] & MASK_SIGN; // 0 for positive, MASK_SIGN for negative
-    x_exp = x.w[1U] & MASK_EXP;   // biased and shifted left 49 bit positions
-    if((x.w[1U] & 0x6000000000000000ull) == 0x6000000000000000ull)
-      x_exp = (x.w[1U] << 2) & MASK_EXP; // biased and shifted left 49 bit positions
+    x_sign = x.w[1U] & MASK_SIGN;  // 0 for positive, MASK_SIGN for negative
+    x_exp = x.w[1U] & MASK_EXP;    // biased and shifted left 49 bit positions
+    if ((x.w[1U] & 0x6000000000000000ull) == 0x6000000000000000ull) {
+      x_exp = (x.w[1U] << 2) &
+              MASK_EXP;  // biased and shifted left 49 bit positions
+    }
     c1.w[1U] = x.w[1U] & MASK_COEFF;
     c1.w[0U] = x.w[0U];
     exp = (x_exp >> 49) - 6176;
 
     // determine sign's representation as a char
-    if(x_sign)
-      str[k++] = '-'; // negative number
-    else
-      str[k++] = '+'; // positive number
+    if (x_sign) {
+      str[k++] = '-';  // negative number
+    } else {
+      str[k++] = '+';  // positive number
+    }
 
     // determine coefficient's representation as a decimal string
 
     // if zero or non-canonical, set coefficient to '0'
-    if((c1.w[1U] > 0x0001ed09bead87c0ull) ||
-       (c1.w[1U] == 0x0001ed09bead87c0ull &&
-        (c1.w[0U] > 0x378d8e63ffffffffull)) ||
-       ((x.w[1U] & 0x6000000000000000ull) == 0x6000000000000000ull) ||
-       ((c1.w[1U] == 0) && (c1.w[0U] == 0))) {
+    if ((c1.w[1U] > 0x0001ed09bead87c0ull) ||
+        (c1.w[1U] == 0x0001ed09bead87c0ull &&
+         (c1.w[0U] > 0x378d8e63ffffffffull)) ||
+        ((x.w[1U] & 0x6000000000000000ull) == 0x6000000000000000ull) ||
+        ((c1.w[1U] == 0) && (c1.w[0U] == 0))) {
       str[k++] = '0';
     } else {
       /* ****************************************************
@@ -200,7 +203,7 @@ void bid128_to_string(char *str, BID_UINT128 x
       // Tmp = {C1.w[1]{49:0}, C1.w[0]{63:59}}
       // Lo_18Dig = {C1.w[0]{58:0}}
 
-      while(tmp) {
+      while (tmp) {
         midi_ind = (int)(tmp & 0x000000000000003FLL);
         midi_ind <<= 1;
         tmp >>= 6;
@@ -209,7 +212,7 @@ void bid128_to_string(char *str, BID_UINT128 x
         __L0_Normalize_10to18(hi_18_dig, lo_18_dig);
       }
       ptr = mi_di;
-      if(hi_18_dig == 0LL) {
+      if (hi_18_dig == 0LL) {
         __L1_Split_MiDi_6_Lead(lo_18_dig, ptr);
       } else {
         __L1_Split_MiDi_6_Lead(hi_18_dig, ptr);
@@ -221,7 +224,7 @@ void bid128_to_string(char *str, BID_UINT128 x
 
       /* now convert the MiDi into character strings */
       __L0_MiDi2Str_Lead(mi_di[0], c_ptr);
-      for(k_lcv = 1; k_lcv < len; k_lcv++) {
+      for (k_lcv = 1; k_lcv < len; k_lcv++) {
         __L0_MiDi2Str(mi_di[k_lcv], c_ptr);
       }
       k = k + (unsigned int)(c_ptr - c_ptr_start);
@@ -229,7 +232,7 @@ void bid128_to_string(char *str, BID_UINT128 x
 
     // print E and sign of exponent
     str[k++] = 'E';
-    if(exp < 0) {
+    if (exp < 0) {
       exp = -exp;
       str[k++] = '-';
     } else {
@@ -239,23 +242,24 @@ void bid128_to_string(char *str, BID_UINT128 x
     // determine exponent's representation as a decimal string
     // d0 = exp / 1000;
     // Use Property 1
-    d0 = ((unsigned int)exp * 0x418aU) >> 24; // 0x418a * 2^-24 = (10^(-3))RP,15
+    d0 =
+        ((unsigned int)exp * 0x418aU) >> 24;  // 0x418a * 2^-24 = (10^(-3))RP,15
     d123 = (unsigned int)exp - 1000U * d0;
 
-    if(d0) {                              // 1000 <= exp <= 6144 => 4 digits to return
-      str[k++] = (char)(d0 + zero_digit); // ASCII for decimal digit d0
+    if (d0) {  // 1000 <= exp <= 6144 => 4 digits to return
+      str[k++] = (char)(d0 + zero_digit);  // ASCII for decimal digit d0
       ind = 3 * d123;
       str[k++] = (char)bid_char_table3[ind];
       str[k++] = (char)bid_char_table3[ind + 1U];
       str[k++] = (char)bid_char_table3[ind + 2U];
-    } else {                                  // 0 <= exp <= 999 => d0 = 0
-      if(d123 < 10) {                         // 0 <= exp <= 9 => 1 digit to return
-        str[k++] = (char)(d123 + zero_digit); // ASCII
-      } else if(d123 < 100) {                 // 10 <= exp <= 99 => 2 digits to return
+    } else {            // 0 <= exp <= 999 => d0 = 0
+      if (d123 < 10) {  // 0 <= exp <= 9 => 1 digit to return
+        str[k++] = (char)(d123 + zero_digit);  // ASCII
+      } else if (d123 < 100) {  // 10 <= exp <= 99 => 2 digits to return
         ind = 2 * (d123 - 10);
         str[k++] = (char)bid_char_table2[ind];
         str[k++] = (char)bid_char_table2[ind + 1U];
-      } else { // 100 <= exp <= 999 => 3 digits to return
+      } else {  // 100 <= exp <= 999 => 3 digits to return
         ind = 3 * d123;
         str[k++] = (char)bid_char_table3[ind];
         str[k++] = (char)bid_char_table3[ind + 1U];
@@ -276,21 +280,21 @@ void bid128_to_string(char *str, BID_UINT128 x
 
 #if DECIMAL_CALL_BY_REFERENCE
 
-void bid128_from_string(BID_UINT128 *pres,
-                        char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
+void bid128_from_string(BID_UINT128* pres,
+                        char* ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
                             _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #else
 
-DFP_WRAPFN_OTHERTYPE(128, bid128_from_string, char *)
+DFP_WRAPFN_OTHERTYPE(128, bid128_from_string, char*)
 BID_UINT128
-bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
-                       _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+bid128_from_string(char* ps _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
+                       _EXC_INFO_PARAM) {
 #endif
   BID_UINT128 cx, res;
-  BID_UINT64 sign_x, coeff_high, coeff_low, coeff2, coeff_l2, carry = 0x0ull,
-                                                              scale_high, right_radix_leading_zeros;
-  int ndigits_before, ndigits_after, ndigits_total, dec_expon, sgn_exp,
-      i, d2, rdx_pt_enc, set_inexact = 0;
+  BID_UINT64 sign_x, coeff_high, coeff_low, coeff2, coeff_l2,
+      carry = 0x0ull, scale_high, right_radix_leading_zeros;
+  int ndigits_before, ndigits_after, ndigits_total, dec_expon, sgn_exp, i, d2,
+      rdx_pt_enc, set_inexact = 0;
   char c, buffer[MAX_STRING_DIGITS_128];
   _IDEC_round save_rnd_mode;
   unsigned int save_fpsf;
@@ -302,38 +306,44 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
 #endif
 #endif
 
-  save_rnd_mode = rnd_mode; // dummy
-  save_fpsf = *pfpsf;       // dummy
+  save_rnd_mode = rnd_mode;  // dummy
+  save_fpsf = *pfpsf;        // dummy
   (void)save_rnd_mode;
   (void)save_fpsf;
 
   right_radix_leading_zeros = rdx_pt_enc = 0;
 
   // if null string, return NaN
-  if(!ps) {
+  if (!ps) {
     res.w[1U] = 0x7c00000000000000ull;
     res.w[0U] = 0;
     BID_RETURN(res);
   }
   // eliminate leading white space
-  while((*ps == ' ') || (*ps == '\t'))
+  while ((*ps == ' ') || (*ps == '\t')) {
     ps++;
+  }
 
   // c gets first character
   c = *ps;
 
   // if c is null or not equal to a (radix point, negative sign,
   // positive sign, or number) it might be SNaN, sNaN, Infinity
-  if(!c || (c != '.' && c != '-' && c != '+' && ((unsigned)(c - '0') > 9))) {
+  if (!c || (c != '.' && c != '-' && c != '+' && ((unsigned)(c - '0') > 9))) {
     res.w[0U] = 0;
     // Infinity?
-    if((tolower_macro(ps[0]) == 'i' && tolower_macro(ps[1]) == 'n' && tolower_macro(ps[2]) == 'f') && (!ps[3] || (tolower_macro(ps[3]) == 'i' && tolower_macro(ps[4]) == 'n' && tolower_macro(ps[5]) == 'i' && tolower_macro(ps[6]) == 't' && tolower_macro(ps[7]) == 'y' && !ps[8]))) {
+    if ((tolower_macro(ps[0]) == 'i' && tolower_macro(ps[1]) == 'n' &&
+         tolower_macro(ps[2]) == 'f') &&
+        (!ps[3] ||
+         (tolower_macro(ps[3]) == 'i' && tolower_macro(ps[4]) == 'n' &&
+          tolower_macro(ps[5]) == 'i' && tolower_macro(ps[6]) == 't' &&
+          tolower_macro(ps[7]) == 'y' && !ps[8]))) {
       res.w[1U] = 0x7800000000000000ull;
       BID_RETURN(res);
     }
     // return sNaN
-    if(tolower_macro(ps[0]) == 's' && tolower_macro(ps[1]) == 'n' &&
-       tolower_macro(ps[2]) == 'a' && tolower_macro(ps[3]) == 'n') {
+    if (tolower_macro(ps[0]) == 's' && tolower_macro(ps[1]) == 'n' &&
+        tolower_macro(ps[2]) == 'a' && tolower_macro(ps[3]) == 'n') {
       // case insensitive check for snan
       res.w[1U] = 0x7e00000000000000ull;
       BID_RETURN(res);
@@ -344,80 +354,82 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     }
   }
   // if +Inf, -Inf, +Infinity, or -Infinity (case insensitive check for inf)
-  if((tolower_macro(ps[1]) == 'i' && tolower_macro(ps[2]) == 'n' &&
-      tolower_macro(ps[3]) == 'f') &&
-     (!ps[4] ||
-      (tolower_macro(ps[4]) == 'i' && tolower_macro(ps[5]) == 'n' &&
-       tolower_macro(ps[6]) == 'i' && tolower_macro(ps[7]) == 't' &&
-       tolower_macro(ps[8]) == 'y' && !ps[9]))) { // ci check for infinity
+  if ((tolower_macro(ps[1]) == 'i' && tolower_macro(ps[2]) == 'n' &&
+       tolower_macro(ps[3]) == 'f') &&
+      (!ps[4] ||
+       (tolower_macro(ps[4]) == 'i' && tolower_macro(ps[5]) == 'n' &&
+        tolower_macro(ps[6]) == 'i' && tolower_macro(ps[7]) == 't' &&
+        tolower_macro(ps[8]) == 'y' && !ps[9]))) {  // ci check for infinity
     res.w[0U] = 0;
 
-    if(c == '+')
+    if (c == '+') {
       res.w[1U] = 0x7800000000000000ull;
-    else if(c == '-')
+    } else if (c == '-') {
       res.w[1U] = 0xf800000000000000ull;
-    else
+    } else {
       res.w[1U] = 0x7c00000000000000ull;
+    }
 
     BID_RETURN(res);
   }
   // if +sNaN, +SNaN, -sNaN, or -SNaN
-  if(tolower_macro(ps[1]) == 's' && tolower_macro(ps[2]) == 'n' && tolower_macro(ps[3]) == 'a' && tolower_macro(ps[4]) == 'n') {
+  if (tolower_macro(ps[1]) == 's' && tolower_macro(ps[2]) == 'n' &&
+      tolower_macro(ps[3]) == 'a' && tolower_macro(ps[4]) == 'n') {
     res.w[0U] = 0;
-    if(c == '-')
+    if (c == '-') {
       res.w[1U] = 0xfe00000000000000ull;
-    else
+    } else {
       res.w[1U] = 0x7e00000000000000ull;
+    }
     BID_RETURN(res);
   }
   // set up sign_x to be OR'ed with the upper word later
-  if(c == '-')
+  if (c == '-') {
     sign_x = 0x8000000000000000ull;
-  else
+  } else {
     sign_x = 0;
+  }
 
   // go to next character if leading sign
-  if(c == '-' || c == '+')
+  if (c == '-' || c == '+') {
     ps++;
+  }
 
   c = *ps;
 
   // if c isn't a decimal point or a decimal digit, return NaN
-  if(c != '.' && ((unsigned)(c - '0') > 9)) {
+  if (c != '.' && ((unsigned)(c - '0') > 9)) {
     res.w[1U] = 0x7c00000000000000ull | sign_x;
     res.w[0U] = 0;
     BID_RETURN(res);
   }
-  if(c == '.') {
+  if (c == '.') {
     rdx_pt_enc = 1;
     ps++;
   }
 
   // detect zero (and eliminate/ignore leading zeros)
-  if(*(ps) == '0') {
-
+  if (*(ps) == '0') {
     // if all numbers are zeros (with possibly 1 radix point, the number is zero
     // should catch cases such as: 000.0
-    while(*ps == '0') {
-
+    while (*ps == '0') {
       ps++;
 
       // for numbers such as 0.0000000000000000000000000000000000001001,
       // we want to count the leading zeros
-      if(rdx_pt_enc) {
+      if (rdx_pt_enc) {
         right_radix_leading_zeros++;
       }
       // if this character is a radix point, make sure we haven't already
       // encountered one
-      if(*(ps) == '.') {
-        if(rdx_pt_enc == 0) {
+      if (*(ps) == '.') {
+        if (rdx_pt_enc == 0) {
           rdx_pt_enc = 1;
           // if this is the first radix point, and the next character is NULL,
           // we have a zero
-          if(!*(ps + 1)) {
+          if (!*(ps + 1)) {
             res.w[1U] =
-                (0x3040000000000000ull -
-                 (right_radix_leading_zeros << 49)) |
+                (0x3040000000000000ull - (right_radix_leading_zeros << 49)) |
                 sign_x;
             res.w[0U] = 0;
             BID_RETURN(res);
@@ -429,12 +441,12 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
           res.w[0U] = 0;
           BID_RETURN(res);
         }
-      } else if(!*(ps)) {
-        if(right_radix_leading_zeros > 6176)
+      } else if (!*(ps)) {
+        if (right_radix_leading_zeros > 6176) {
           right_radix_leading_zeros = 6176;
+        }
         res.w[1U] =
-            (0x3040000000000000ull -
-             (right_radix_leading_zeros << 49)) |
+            (0x3040000000000000ull - (right_radix_leading_zeros << 49)) |
             sign_x;
         res.w[0U] = 0;
         BID_RETURN(res);
@@ -449,48 +461,51 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
   sgn_exp = 0;
   // pstart_coefficient = ps;
 
-  if(!rdx_pt_enc) {
+  if (!rdx_pt_enc) {
     // investigate string (before radix point)
-    while((unsigned)(c - '0') <= 9
-          /*&& ndigits_before < MAX_STRING_DIGITS_128*/) {
-      if(ndigits_before < MAX_FORMAT_DIGITS_128)
+    while ((unsigned)(c - '0') <= 9
+           /*&& ndigits_before < MAX_STRING_DIGITS_128*/) {
+      if (ndigits_before < MAX_FORMAT_DIGITS_128) {
         buffer[ndigits_before] = c;
-      else if(ndigits_before < MAX_STRING_DIGITS_128) {
+      } else if (ndigits_before < MAX_STRING_DIGITS_128) {
         buffer[ndigits_before] = c;
-        if(c > '0')
+        if (c > '0') {
           set_inexact = 1;
-      } else if(c > '0') {
+        }
+      } else if (c > '0') {
         set_inexact = 1;
         sticky_bit = 1;
       }
       ps++;
       c = *ps;
-      if(ndigits_before < BID_COUNT_LIMIT)
+      if (ndigits_before < BID_COUNT_LIMIT) {
         ndigits_before++;
+      }
     }
 
     ndigits_total = ndigits_before;
-    if(c == '.') {
+    if (c == '.') {
       ps++;
-      if((c = *ps)) {
-
+      if ((c = *ps)) {
         // investigate string (after radix point)
-        while((unsigned)(c - '0') <= 9
-              /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
-          if(ndigits_total < MAX_FORMAT_DIGITS_128)
+        while ((unsigned)(c - '0') <= 9
+               /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
+          if (ndigits_total < MAX_FORMAT_DIGITS_128) {
             buffer[ndigits_total] = c;
-          else if(ndigits_total < MAX_STRING_DIGITS_128) {
+          } else if (ndigits_total < MAX_STRING_DIGITS_128) {
             buffer[ndigits_total] = c;
-            if(c > '0')
+            if (c > '0') {
               set_inexact = 1;
-          } else if(c > '0') {
+            }
+          } else if (c > '0') {
             set_inexact = 1;
             sticky_bit = 1;
           }
           ps++;
           c = *ps;
-          if(ndigits_total < BID_COUNT_LIMIT)
+          if (ndigits_total < BID_COUNT_LIMIT) {
             ndigits_total++;
+          }
         }
         ndigits_after = ndigits_total - ndigits_before;
       }
@@ -502,22 +517,24 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     c = *ps;
     ndigits_total = 0;
     // investigate string (after radix point)
-    while((unsigned)(c - '0') <= 9
-          /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
-      if(ndigits_total < MAX_FORMAT_DIGITS_128)
+    while ((unsigned)(c - '0') <= 9
+           /*&& ndigits_total < MAX_STRING_DIGITS_128*/) {
+      if (ndigits_total < MAX_FORMAT_DIGITS_128) {
         buffer[ndigits_total] = c;
-      else if(ndigits_total < MAX_STRING_DIGITS_128) {
+      } else if (ndigits_total < MAX_STRING_DIGITS_128) {
         buffer[ndigits_total] = c;
-        if(c > '0')
+        if (c > '0') {
           set_inexact = 1;
-      } else if(c > '0') {
+        }
+      } else if (c > '0') {
         set_inexact = 1;
         sticky_bit = 1;
       }
       ps++;
       c = *ps;
-      if(ndigits_total < BID_COUNT_LIMIT)
+      if (ndigits_total < BID_COUNT_LIMIT) {
         ndigits_total++;
+      }
     }
     ndigits_after = ndigits_total - ndigits_before;
   }
@@ -525,8 +542,8 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
   // get exponent
   dec_expon = 0;
   /*if (ndigits_total < MAX_STRING_DIGITS_128)*/ {
-    if(c) {
-      if(c != 'e' && c != 'E') {
+    if (c) {
+      if (c != 'e' && c != 'E') {
         // return NaN
         res.w[1U] = 0x7c00000000000000ull;
         res.w[0U] = 0;
@@ -535,18 +552,19 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       ps++;
       c = *ps;
 
-      if(((unsigned)(c - '0') > 9) && ((c != '+' && c != '-') || (unsigned)(ps[1] - '0') > 9)) {
+      if (((unsigned)(c - '0') > 9) &&
+          ((c != '+' && c != '-') || (unsigned)(ps[1] - '0') > 9)) {
         // return NaN
         res.w[1U] = 0x7c00000000000000ull;
         res.w[0U] = 0;
         BID_RETURN(res);
       }
 
-      if(c == '-') {
+      if (c == '-') {
         sgn_exp = -1;
         ps++;
         c = *ps;
-      } else if(c == '+') {
+      } else if (c == '+') {
         ps++;
         c = (*ps);
       }
@@ -555,13 +573,14 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
       i = 1;
       ps++;
 
-      if(!dec_expon) {
-        while((*ps) == '0')
+      if (!dec_expon) {
+        while ((*ps) == '0') {
           ps++;
+        }
       }
       c = (*ps) - '0';
 
-      while(((unsigned)c) <= 9 && i < 7) {
+      while (((unsigned)c) <= 9 && i < 7) {
         d2 = dec_expon + dec_expon;
         dec_expon = (d2 << 2) + d2 + c;
         ps++;
@@ -577,150 +596,162 @@ bid128_from_string(char *ps _RND_MODE_PARAM _EXC_FLAGS_PARAM
     int lead_zeros = (right_radix_leading_zeros > (BID_UINT64)BID_COUNT_LIMIT)
                          ? BID_COUNT_LIMIT
                          : (int)right_radix_leading_zeros;
-    if(ndigits_total <= MAX_FORMAT_DIGITS_128) {
-      dec_expon +=
-          (int)DECIMAL_EXPONENT_BIAS_128 - ndigits_after -
-          lead_zeros;
-      if(dec_expon < 0) {
+    if (ndigits_total <= MAX_FORMAT_DIGITS_128) {
+      dec_expon += DECIMAL_EXPONENT_BIAS_128 - ndigits_after - lead_zeros;
+      if (dec_expon < 0) {
         res.w[1U] = 0 | sign_x;
         res.w[0U] = 0;
       }
-      if(ndigits_total == 0) {
+      if (ndigits_total == 0) {
         cx.w[0U] = 0;
         cx.w[1U] = 0;
-      } else if(ndigits_total <= 19) {
+      } else if (ndigits_total <= 19) {
         coeff_high = (BID_UINT64)(buffer[0] - '0');
-        for(i = 1; i < ndigits_total; i++) {
+        for (i = 1; i < ndigits_total; i++) {
           coeff2 = coeff_high + coeff_high;
-          coeff_high = (coeff2 << 2) + coeff2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
+          coeff_high = (coeff2 << 2) + coeff2 +
+                       (BID_UINT64)(unsigned char)(buffer[i] - '0');
         }
         cx.w[0U] = coeff_high;
         cx.w[1U] = 0;
       } else {
         coeff_high = (BID_UINT64)(buffer[0] - '0');
-        for(i = 1; i < ndigits_total - 17; i++) {
+        for (i = 1; i < ndigits_total - 17; i++) {
           coeff2 = coeff_high + coeff_high;
-          coeff_high = (coeff2 << 2) + coeff2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
+          coeff_high = (coeff2 << 2) + coeff2 +
+                       (BID_UINT64)(unsigned char)(buffer[i] - '0');
         }
         coeff_low = (BID_UINT64)(unsigned char)(buffer[i] - '0');
         i++;
-        for(; i < ndigits_total; i++) {
+        for (; i < ndigits_total; i++) {
           coeff_l2 = coeff_low + coeff_low;
-          coeff_low = (coeff_l2 << 2) + coeff_l2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
+          coeff_low = (coeff_l2 << 2) + coeff_l2 +
+                      (BID_UINT64)(unsigned char)(buffer[i] - '0');
         }
         // now form the coefficient as coeff_high*10^19+coeff_low+carry
         scale_high = 100000000000000000ull;
         __mul_64x64_to_128_fast(cx, coeff_high, scale_high);
 
         cx.w[0U] += coeff_low;
-        if(cx.w[0U] < coeff_low)
+        if (cx.w[0U] < coeff_low) {
           cx.w[1U]++;
+        }
       }
       bid_get_BID128(&res, sign_x, dec_expon, cx, &rnd_mode, pfpsf);
       BID_RETURN(res);
     } else {
       // simply round using the digits that were read
 
-      dec_expon +=
-          ndigits_before + (int)DECIMAL_EXPONENT_BIAS_128 -
-          MAX_FORMAT_DIGITS_128 - lead_zeros;
+      dec_expon += ndigits_before + DECIMAL_EXPONENT_BIAS_128 -
+                   MAX_FORMAT_DIGITS_128 - lead_zeros;
 
-      if(dec_expon < 0) {
+      if (dec_expon < 0) {
         res.w[1U] = 0 | sign_x;
         res.w[0U] = 0;
       }
 
       coeff_high = (BID_UINT64)(buffer[0] - '0');
-      for(i = 1; i < MAX_FORMAT_DIGITS_128 - 17; i++) {
+      for (i = 1; i < MAX_FORMAT_DIGITS_128 - 17; i++) {
         coeff2 = coeff_high + coeff_high;
-        coeff_high = (coeff2 << 2) + coeff2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
+        coeff_high = (coeff2 << 2) + coeff2 +
+                     (BID_UINT64)(unsigned char)(buffer[i] - '0');
       }
       coeff_low = (BID_UINT64)(unsigned char)(buffer[i] - '0');
       i++;
-      for(; i < MAX_FORMAT_DIGITS_128; i++) {
+      for (; i < MAX_FORMAT_DIGITS_128; i++) {
         coeff_l2 = coeff_low + coeff_low;
-        coeff_low = (coeff_l2 << 2) + coeff_l2 + (BID_UINT64)(unsigned char)(buffer[i] - '0');
+        coeff_low = (coeff_l2 << 2) + coeff_l2 +
+                    (BID_UINT64)(unsigned char)(buffer[i] - '0');
       }
-      switch(rnd_mode) {
-      case BID_ROUNDING_TO_NEAREST:
-        carry = ((unsigned)('4' - buffer[i])) >> 31;
-        if((buffer[i] == '5' && !(coeff_low & 1) && !sticky_bit) || dec_expon < 0) {
-          if(dec_expon >= 0) {
-            carry = 0;
-            i++;
-          }
-          min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
-          for(carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits); i++) {
-            if(buffer[i] > '0') {
-              carry = 1;
-              break;
+      switch (rnd_mode) {
+        case BID_ROUNDING_TO_NEAREST:
+          carry = ((unsigned)('4' - buffer[i])) >> 31;
+          if ((buffer[i] == '5' && !(coeff_low & 1) && !sticky_bit) ||
+              dec_expon < 0) {
+            if (dec_expon >= 0) {
+              carry = 0;
+              i++;
+            }
+            min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
+            for (carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits);
+                 i++) {
+              if (buffer[i] > '0') {
+                carry = 1;
+                break;
+              }
             }
           }
-        }
-        break;
+          break;
 
-      case BID_ROUNDING_DOWN:
-        if(sign_x) {
-          min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
-          for(carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits); i++) {
-            if(buffer[i] > '0') {
-              carry = 1;
-              break;
+        case BID_ROUNDING_DOWN:
+          if (sign_x) {
+            min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
+            for (carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits);
+                 i++) {
+              if (buffer[i] > '0') {
+                carry = 1;
+                break;
+              }
             }
           }
-        }
-        break;
-      case BID_ROUNDING_UP:
-        if(!sign_x) {
-          min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
-          for(carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits); i++) {
-            if(buffer[i] > '0') {
-              carry = 1;
-              break;
+          break;
+        case BID_ROUNDING_UP:
+          if (!sign_x) {
+            min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
+            for (carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits);
+                 i++) {
+              if (buffer[i] > '0') {
+                carry = 1;
+                break;
+              }
             }
           }
-        }
-        break;
-      case BID_ROUNDING_TO_ZERO:
-        carry = 0;
-        break;
-      case BID_ROUNDING_TIES_AWAY:
-        carry = ((unsigned)('4' - buffer[i])) >> 31;
-        if(dec_expon < 0) {
-          min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
-          for(carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits); i++) {
-            if(buffer[i] > '0') {
-              carry = 1;
-              break;
+          break;
+        case BID_ROUNDING_TO_ZERO:
+          carry = 0;
+          break;
+        case BID_ROUNDING_TIES_AWAY:
+          carry = ((unsigned)('4' - buffer[i])) >> 31;
+          if (dec_expon < 0) {
+            min_digits = MIN_DIGITS(ndigits_total, MAX_STRING_DIGITS_128);
+            for (carry = (BID_UINT64)sticky_bit; (!carry) && (i < min_digits);
+                 i++) {
+              if (buffer[i] > '0') {
+                carry = 1;
+                break;
+              }
             }
           }
-        }
-        break;
-      default:
-        break; // default added to avoid compiler warning
+          break;
+        default:
+          break;  // default added to avoid compiler warning
       }
       // now form the coefficient as coeff_high*10^17+coeff_low+carry
       scale_high = 100000000000000000ull;
-      if(dec_expon < 0) {
-        if(dec_expon > -MAX_FORMAT_DIGITS_128) {
+      if (dec_expon < 0) {
+        if (dec_expon > -MAX_FORMAT_DIGITS_128) {
           scale_high = 1000000000000000000ull;
           coeff_low = (coeff_low << 3) + (coeff_low << 1);
           dec_expon--;
         }
-        if(dec_expon == -MAX_FORMAT_DIGITS_128 && coeff_high > 50000000000000000ull)
+        if (dec_expon == -MAX_FORMAT_DIGITS_128 &&
+            coeff_high > 50000000000000000ull) {
           carry = 0;
+        }
       }
 
       __mul_64x64_to_128_fast(cx, coeff_high, scale_high);
 
       coeff_low += carry;
       cx.w[0U] += coeff_low;
-      if(cx.w[0U] < coeff_low)
+      if (cx.w[0U] < coeff_low) {
         cx.w[1U]++;
+      }
 
 #ifdef BID_SET_STATUS_FLAGS
-      if(set_inexact)
+      if (set_inexact) {
         __set_status_flags(pfpsf, BID_INEXACT_EXCEPTION);
+      }
 #endif
 
       bid_get_BID128(&res, sign_x, dec_expon, cx, &rnd_mode, pfpsf);

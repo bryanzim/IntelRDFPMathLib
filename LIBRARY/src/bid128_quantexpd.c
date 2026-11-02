@@ -40,17 +40,18 @@
 
 BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(int, bid128_quantexp, x)
 
-int res; // quantum
+int res;  // quantum
 
-if((x.w[1U] & MASK_SPECIAL) == MASK_SPECIAL) {
+if ((x.w[1U] & MASK_SPECIAL) == MASK_SPECIAL) {
   // set invalid flag
   *pfpsf |= BID_INVALID_EXCEPTION;
   res = (int)0x80000000U;
   BID_RETURN_VAL(res);
 }
-if((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS)
+if ((x.w[1U] & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
   res = (int)((x.w[1U] >> 47) & 0x3fffU) - 6176;
-else
+} else {
   res = ((int)((x.w[1U] >> 49) & 0x3fffU)) - 6176;
+}
 BID_RETURN_VAL(res);
 }

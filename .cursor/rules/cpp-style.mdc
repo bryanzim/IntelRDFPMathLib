@@ -1,25 +1,30 @@
 ---
-description: Match C and C++ style already used in this repository
+description: Google C++ Style Guide for every first-party C and C++ file
 globs: "**/*.{c,h,cc,cpp,cxx,hpp,hh}"
 alwaysApply: false
 ---
 
-# C and C++ style
+# C++ style
 
-Follow the code already in `LIBRARY/src`. `.clang-format` and `.clang-tidy` record that style. Do not reformat untouched files, and do not rename the `bid_*` API or `BID_` / `DEC_` / `DPML_` macros.
+Follow the [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html) in every first-party C and C++ file. Formatting is `.clang-format` (`BasedOnStyle: Google`). Lint is `.clang-tidy` (`google-*` plus Google naming).
 
-- Indent 2 spaces. Put the opening brace on the function signature line. Write pointers as `type *name`.
-- Prefer `snake_case` for new functions, variables, and parameters. Leave existing names as written, including `unpack_BID64`, `QH`, and `Stemp`.
-- Leave macros as they are written (`UPPER_CASE`, `P_`/`G_` prefixes, lowercase, or a leading underscore).
-- Keep existing typedef spellings such as `BID_UINT64`.
+- 2-space indent, 80 columns, no tabs. Attach braces to the line that opens the block. Put pointers and references on the left (`int* p`).
+- Brace every `if`, `else`, `for`, `while`, and `do` body, including a single statement. Leave an `if` unbraced when a surrounding `#else` supplies the other branch, as in the `IEEE_ROUND_NEAREST` rounding paths.
+- Types, functions, and enums are `PascalCase`. Enumerators and constants are `kPascalCase`. Variables and parameters are `snake_case`. Class data members end in `_`. Namespaces are lowercase. Macros are `UPPER_SNAKE`.
+- Prefer `using` over `typedef`, `nullptr` over `NULL`, and `override` on virtual overrides in C++.
+- No `using namespace` in headers. Constructors callable with one argument are `explicit`. Include the headers you use.
+- Do not reorder includes. Configuration macros sit immediately above the header that reads them.
+
+This tree is a C library. Keep the existing C API: `bid_*` functions and `BID_` / `DEC_` / `DPML_` / `UX_` / `IDEC_` macros and typedefs. Do not rename them, and do not rewrite C as C++ (`nullptr`, `using`, or `PascalCase` exports).
 
 Do not add `Co-authored-by: Cursor` or any Cursor co-author trailer to a commit.
 
-```c
-BID_UINT32
-bid32_from_string (char *ps) {
-  if (!ps) {
-    return 0x7c000000ul;
-  }
-}
+```cpp
+class DecimalStatus {
+ public:
+  int flag_count() const { return flag_count_; }
+
+ private:
+  int flag_count_ = 0;
+};
 ```

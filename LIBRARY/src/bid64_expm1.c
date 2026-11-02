@@ -37,14 +37,16 @@ BID_F80_TYPE xd, yd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK64) == NAN_MASK64) {
+if ((x & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK64) == SNAN_MASK64)
+  if ((x & SNAN_MASK64) == SNAN_MASK64) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res = x & 0xfc03ffffffffffffull;
-  if((res & 0x0003ffffffffffffull) > 999999999999999ull)
+  if ((res & 0x0003ffffffffffffull) > 999999999999999ull) {
     res &= ~0x0003ffffffffffffull;
+  }
   BID_RETURN(res);
 }
 

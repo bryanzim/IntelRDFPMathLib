@@ -40,7 +40,7 @@
 ** a 6 lsb error bound in the worst case.
 */
 
-void MULTIPLY(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *z) {
+void MULTIPLY(UX_FLOAT* x, UX_FLOAT* y, UX_FLOAT* z) {
   U_WORD x_hi, x_lo, y_hi, y_lo, z_hi, z_lo, p1, p2;
 
   x_hi = G_UX_MSD(x);
@@ -73,7 +73,7 @@ void MULTIPLY(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *z) {
 ** containing the high and low 128 bits of the result
 */
 
-void EXTENDED_MULTIPLY(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *hi, UX_FLOAT *lo) {
+void EXTENDED_MULTIPLY(UX_FLOAT* x, UX_FLOAT* y, UX_FLOAT* hi, UX_FLOAT* lo) {
   UX_EXPONENT_TYPE exponent;
   UX_SIGN_TYPE sign;
   UX_FRACTION_DIGIT_TYPE x_hi, x_lo, y_hi, y_lo, tmp_digit, carry, p1, p2;
@@ -150,11 +150,11 @@ void EXTENDED_MULTIPLY(UX_FLOAT *x, UX_FLOAT *y, UX_FLOAT *hi, UX_FLOAT *lo) {
 
 static const UX_FLOAT ux_one = {0, 1, ((U_WORD)1 << 63), 0};
 
-void DIVIDE(UX_FLOAT *a_ptr, UX_FLOAT *b_ptr, U_WORD flags, UX_FLOAT *c_ptr) {
+void DIVIDE(UX_FLOAT* a_ptr, UX_FLOAT* b_ptr, U_WORD flags, UX_FLOAT* c_ptr) {
   UX_EXPONENT_TYPE exponent;
 
-  UX_FRACTION_DIGIT_TYPE a1, a2, b1, b2, q1, q2, s, r, p00, p01, p11,
-      n0, n1, n2, c1, mask, e;
+  UX_FRACTION_DIGIT_TYPE a1, a2, b1, b2, q1, q2, s, r, p00, p01, p11, n0, n1,
+      n2, c1, mask, e;
   D_TYPE recip, b_hi, b_lo, r_hi, r_lo, a_hi, a_lo, a, q_hi, q_lo;
 
   /*
@@ -164,12 +164,12 @@ void DIVIDE(UX_FLOAT *a_ptr, UX_FLOAT *b_ptr, U_WORD flags, UX_FLOAT *c_ptr) {
   ** schedule the code after the check.
   */
 
-  b_ptr = (b_ptr == 0) ? (UX_FLOAT *)&ux_one : b_ptr;
-  a_ptr = (a_ptr == 0) ? (UX_FLOAT *)&ux_one : a_ptr;
+  b_ptr = (b_ptr == 0) ? (UX_FLOAT*)&ux_one : b_ptr;
+  a_ptr = (a_ptr == 0) ? (UX_FLOAT*)&ux_one : a_ptr;
   b1 = G_UX_MSD(b_ptr);
   b2 = G_UX_LSD(b_ptr);
 
-  if(b_ptr == &ux_one) {
+  if (b_ptr == &ux_one) {
     UX_COPY(a_ptr, c_ptr);
     return;
   }
@@ -179,7 +179,7 @@ void DIVIDE(UX_FLOAT *a_ptr, UX_FLOAT *b_ptr, U_WORD flags, UX_FLOAT *c_ptr) {
   ** sure that b is normalized.
   */
 
-  if((UX_SIGNED_FRACTION_DIGIT_TYPE)b1 >= 0) {
+  if ((UX_SIGNED_FRACTION_DIGIT_TYPE)b1 >= 0) {
     NORMALIZE(b_ptr);
     b1 = G_UX_MSD(b_ptr);
     b2 = G_UX_LSD(b_ptr);
@@ -251,7 +251,8 @@ void DIVIDE(UX_FLOAT *a_ptr, UX_FLOAT *b_ptr, U_WORD flags, UX_FLOAT *c_ptr) {
   **		2*r_lo' = [ (2^124 - b_hi*r_hi) - b_lo*r_hi ] * (r/2^184)
   */
 
-  r_lo = D_GROUP(D_GROUP((TWO_POW_124)-b_hi * r_hi) - (b_lo * r_hi)) * (RECIP_TWO_POW_184 * recip);
+  r_lo = D_GROUP(D_GROUP((TWO_POW_124)-b_hi * r_hi) - (b_lo * r_hi)) *
+         (RECIP_TWO_POW_184 * recip);
 
   /*
   ** Now that we have 1/b ~ r_hi' + r_lo' (scaling notwithstanding), we can
@@ -301,8 +302,9 @@ void DIVIDE(UX_FLOAT *a_ptr, UX_FLOAT *b_ptr, U_WORD flags, UX_FLOAT *c_ptr) {
   s += (q1 < e);
   q2 = 0;
 
-  if(flags == HALF_PRECISION)
+  if (flags == HALF_PRECISION) {
     goto pack_it;
+  }
 
   /*
   ** While we're at it, compute an integer approximation to 1/b.  I.e. get
@@ -406,7 +408,8 @@ void DIVIDE(UX_FLOAT *a_ptr, UX_FLOAT *b_ptr, U_WORD flags, UX_FLOAT *c_ptr) {
   /* Adjust S and Q1 using the final value of E */
 
   q1 += e;
-  s = UX_TO_DIGIT(UX_TO_SDIGIT(s) + (((UX_SIGNED_FRACTION_DIGIT_TYPE)e) >> 63) + (q1 < e));
+  s = UX_TO_DIGIT(UX_TO_SDIGIT(s) + (((UX_SIGNED_FRACTION_DIGIT_TYPE)e) >> 63) +
+                  (q1 < e));
 
   /* Last but not least, pack it */
 
@@ -453,9 +456,8 @@ pack_it:
 **	  becomes negative.
 */
 
-static void
-eval_pos_poly(UX_FLOAT *x, WORD shift, FIXED_128 *coef, WORD cnt,
-              UX_FLOAT *p) {
+static void eval_pos_poly(UX_FLOAT* x, WORD shift, FIXED_128* coef, WORD cnt,
+                          UX_FLOAT* p) {
   UX_FRACTION_DIGIT_TYPE c_hi, c_lo, s_hi, s_lo, p1, p2;
   UX_FRACTION_DIGIT_TYPE x_hi, x_lo, carry;
   UX_EXPONENT_TYPE exponent;
@@ -474,15 +476,17 @@ eval_pos_poly(UX_FLOAT *x, WORD shift, FIXED_128 *coef, WORD cnt,
   ** to large shifts
   */
 
-  if(shift < 128)
+  if (shift < 128) {
     goto p_check_shift_64_to_127;
+  }
 
 p_shift_ge_128:
   shift += shift_inc;
   coef++;
   cnt--;
-  if(shift >= 128)
+  if (shift >= 128) {
     goto p_shift_ge_128;
+  }
   // printf("Eval_pos_poly, shift=%lld !!\n",shift);
 
   /*
@@ -495,8 +499,9 @@ p_shift_ge_128:
   */
 
 p_check_shift_64_to_127:
-  if(shift < 64)
+  if (shift < 64) {
     goto p_check_shift_1_to_63;
+  }
 
   /*
   ** Depending on the size of shift_inc and the rate at which the
@@ -506,19 +511,23 @@ p_check_shift_64_to_127:
   ** and skip over them.
   */
 
-  if(s_lo)
+  if (s_lo) {
     goto p_shift_64_to_127;
+  }
 
 p_shift_64_to_127_zero_loop:
   s_lo = coef->digits[1] >> (shift - 64);
-  // printf("s_lo, sh, sh_inc, c: %llx, %llx, %llx, %llx (%llx)\n",s_lo,shift, shift_inc,coef->digits[1],coef->digits[0]);
+  // printf("s_lo, sh, sh_inc, c: %llx, %llx, %llx, %llx (%llx)\n",s_lo,shift,
+  // shift_inc,coef->digits[1],coef->digits[0]);
   shift += shift_inc;
   coef++;
   cnt--;
-  if(shift < 64)
+  if (shift < 64) {
     goto p_check_shift_1_to_63;
-  if(s_lo == 0)
+  }
+  if (s_lo == 0) {
     goto p_shift_64_to_127_zero_loop;
+  }
 
   /*
   ** s_lo is no longer zero, so do the multiply and accumulate the
@@ -534,8 +543,9 @@ p_shift_64_to_127:
   coef++;
   cnt--;
   s_lo = c_lo + p1;
-  if(shift >= 64)
+  if (shift >= 64) {
     goto p_shift_64_to_127;
+  }
 
   /* Set carry out from last add */
   s_hi = (s_lo < p1);
@@ -548,8 +558,9 @@ p_shift_64_to_127:
 
 p_check_shift_1_to_63:
   exponent = 0;
-  if(shift == 0)
+  if (shift == 0) {
     goto p_shift_eq_0;
+  }
 
   /*
   ** Depending on the size of shift_inc and the rate at which the
@@ -559,8 +570,9 @@ p_check_shift_1_to_63:
   ** expensive, we check for this case and skip over them.
   */
 
-  if(s_hi)
+  if (s_hi) {
     goto p_shift_1_to_63;
+  }
 
 p_shift_1_to_63_zero_loop:
   UMULH(s_lo, x_hi, p1);
@@ -573,14 +585,16 @@ p_shift_1_to_63_zero_loop:
   cnt--;
   s_lo = c_lo + p1;
   s_hi += (s_lo < p1);
-  if(shift == 0)
+  if (shift == 0) {
     goto p_shift_eq_0;
-  if(s_hi == 0)
+  }
+  if (s_hi == 0) {
     goto p_shift_1_to_63_zero_loop;
+  }
 
 p_shift_1_to_63:
 
-  while(cnt >= 0) {
+  while (cnt >= 0) {
     p1 = s_hi * x_hi;
     c_hi = coef->digits[1];
     c_lo = coef->digits[0];
@@ -606,19 +620,20 @@ p_shift_1_to_63:
 
     s_hi = c_hi + p2;
     carry += (s_hi < p2);
-    if(carry) {
+    if (carry) {
       s_lo = (s_lo >> 1) | (s_hi << 63);
       s_hi = (s_hi >> 1) | SET_BIT(63);
       shift++;
       exponent++;
     }
-    if(shift == 0)
+    if (shift == 0) {
       break;
+    }
   }
 
 p_shift_eq_0:
 
-  while(cnt >= 0) {
+  while (cnt >= 0) {
     p1 = s_hi * x_hi;
     c_hi = coef->digits[1];
     c_lo = coef->digits[0];
@@ -641,13 +656,14 @@ p_shift_eq_0:
 
     s_hi = c_hi + p2;
     carry += (s_hi < p2);
-    if(carry) {
+    if (carry) {
       s_lo = (s_lo >> 1) | (s_hi << 63);
       s_hi = (s_hi >> 1) | SET_BIT(63);
       shift = 1;
       exponent++;
-      if(cnt >= 0)
+      if (cnt >= 0) {
         goto p_shift_1_to_63;
+      }
     }
   }
 
@@ -657,9 +673,8 @@ p_shift_eq_0:
   P_UX_SIGN(p, 0);
 }
 
-static void
-eval_neg_poly(UX_FLOAT *x, WORD shift, FIXED_128 *coef, WORD cnt,
-              UX_FLOAT *p) {
+static void eval_neg_poly(UX_FLOAT* x, WORD shift, FIXED_128* coef, WORD cnt,
+                          UX_FLOAT* p) {
   UX_FRACTION_DIGIT_TYPE c_hi, c_lo, s_hi, s_lo, p1, p2, tmp;
   UX_FRACTION_DIGIT_TYPE x_hi, x_lo;
   WORD shift_inc;
@@ -669,8 +684,9 @@ eval_neg_poly(UX_FLOAT *x, WORD shift, FIXED_128 *coef, WORD cnt,
   shift_inc = G_UX_EXPONENT(x);
 
   s_lo = s_hi = 0;
-  if(shift < 128)
+  if (shift < 128) {
     goto n_check_shift_64_to_127;
+  }
 
   /* Skip over all the big shifts */
 
@@ -678,8 +694,9 @@ n_shift_ge_128:
   shift += shift_inc;
   coef++;
   cnt--;
-  if(shift >= 128)
+  if (shift >= 128) {
     goto n_shift_ge_128;
+  }
 
   /*
    * Each time through this loop, c_hi = 0.  Since we assume that c(k) >
@@ -690,8 +707,9 @@ n_shift_ge_128:
    */
 
 n_check_shift_64_to_127:
-  if(shift < 64)
+  if (shift < 64) {
     goto n_check_shift_1_to_63;
+  }
 
   /*
    * Depending on the size of shift_inc and the rate at which the
@@ -701,18 +719,21 @@ n_check_shift_64_to_127:
    * and skip over them.
    */
 
-  if(s_lo)
+  if (s_lo) {
     goto n_shift_64_to_127;
+  }
 
 n_shift_64_to_127_zero_loop:
   s_lo = coef->digits[1] >> (shift - 64);
   shift += shift_inc;
   coef++;
   cnt--;
-  if(shift < 64)
+  if (shift < 64) {
     goto n_check_shift_1_to_63;
-  if(s_lo == 0)
+  }
+  if (s_lo == 0) {
     goto n_shift_64_to_127_zero_loop;
+  }
 
   /*
    * s_lo is no longer zero, so do the multiply and accumulate the
@@ -726,8 +747,9 @@ n_shift_64_to_127:
   coef++;
   cnt--;
   s_lo = c_lo - p1;
-  if(shift >= 64)
+  if (shift >= 64) {
     goto n_shift_64_to_127;
+  }
 
   /*
    * When shift = 0, the complementary shift is 64.  ANSI C does not
@@ -736,8 +758,9 @@ n_shift_64_to_127:
    */
 
 n_check_shift_1_to_63:
-  if(shift == 0)
+  if (shift == 0) {
     goto n_shift_eq_0;
+  }
 
   /*
    * Depending on the size of shift_inc and the rate at which the
@@ -747,8 +770,9 @@ n_check_shift_1_to_63:
    * expensive, we check for this case and skip over them.
    */
 
-  if(s_hi)
+  if (s_hi) {
     goto n_shift_1_to_63;
+  }
 
 n_shift_1_to_63_zero_loop:
   UMULH(s_lo, x_hi, p1);
@@ -761,10 +785,12 @@ n_shift_1_to_63_zero_loop:
   cnt--;
   s_lo = c_lo - p1;
   s_hi -= (s_lo > c_lo);
-  if(shift == 0)
+  if (shift == 0) {
     goto n_shift_eq_0;
-  if(s_hi == 0)
+  }
+  if (s_hi == 0) {
     goto n_shift_1_to_63_zero_loop;
+  }
 
 n_shift_1_to_63:
   p1 = s_hi * x_hi;
@@ -789,12 +815,13 @@ n_shift_1_to_63:
   coef++;
 
   s_hi = c_hi - p2;
-  if(shift)
+  if (shift) {
     goto n_shift_1_to_63;
+  }
 
 n_shift_eq_0:
 
-  while(cnt >= 0) {
+  while (cnt >= 0) {
     p1 = s_hi * x_hi;
     c_hi = coef->digits[1];
     c_lo = coef->digits[0];
@@ -854,28 +881,24 @@ n_shift_eq_0:
 #define NUMERATOR_MASK NUMERATOR_FLAGS(MAKE_MASK(NUM_DEN_FIELD_WIDTH, 0))
 #define DENOMINATOR_MASK DENOMINATOR_FLAGS(MAKE_MASK(NUM_DEN_FIELD_WIDTH, 0))
 
-#define UPDATE_COEF_PTR(c, d) (c) = ((FIXED_128 *)((char *)(c) + (d)))
-#define G_EXPONENT(c) ((UX_EXPONENT_TYPE)((WORD *)(c))[-1])
+#define UPDATE_COEF_PTR(c, d) (c) = ((FIXED_128*)((char*)(c) + (d)))
+#define G_EXPONENT(c) ((UX_EXPONENT_TYPE)((WORD*)(c))[-1])
 
 #undef EVALUATE_RATIONAL
 
-void EVALUATE_RATIONAL_FUNC(
-    UX_FLOAT *argument,
-    FIXED_128 *coefficients,
-    U_WORD degree,
-    U_WORD flags,
-    UX_FLOAT *result) {
+void EVALUATE_RATIONAL_FUNC(UX_FLOAT* argument, FIXED_128* coefficients,
+                            U_WORD degree, U_WORD flags, UX_FLOAT* result) {
   WORD tmp;
   WORD sign, shift, byte_length;
   UX_EXPONENT_TYPE exponent;
   UX_FLOAT *first_result, *second_result, arg_squared, *poly_arg;
-  void (*poly_func)(UX_FLOAT *, WORD, FIXED_128 *, WORD, UX_FLOAT *);
+  void (*poly_func)(UX_FLOAT*, WORD, FIXED_128*, WORD, UX_FLOAT*);
 
   /* Scale argument and squared it if its needed */
 
   sign = UX_TO_WORD(flags);
   UX_INCR_EXPONENT(argument, G_SCALE(flags));
-  if(flags & EITHER(SQUARE_TERM)) {
+  if (flags & EITHER(SQUARE_TERM)) {
     poly_arg = &arg_squared;
     MULTIPLY(argument, argument, &arg_squared);
   } else {
@@ -889,7 +912,7 @@ void EVALUATE_RATIONAL_FUNC(
   NORMALIZE(poly_arg);
   exponent = G_UX_EXPONENT(poly_arg);
   P_UX_EXPONENT(poly_arg, exponent);
-  shift = (WORD)(-(WORD)((U_WORD)degree * (U_WORD)exponent));
+  shift = (-(WORD)(degree * (U_WORD)exponent));
   byte_length = (WORD)((degree + 1) * sizeof(FIXED_128) + sizeof(WORD));
 
   /* allocate locations for 1st and 2nd result */
@@ -898,65 +921,66 @@ void EVALUATE_RATIONAL_FUNC(
   first_result = result + tmp;
   second_result = result + 1 - tmp;
 
-  if(NUMERATOR_MASK & flags) {
+  if (NUMERATOR_MASK & flags) {
     // printf("NUMERATOR_MASK !!\n");
     poly_func = (ALTERNATE_SIGN & sign) ? eval_neg_poly : eval_pos_poly;
 
     first_result = (DENOMINATOR_MASK & flags) ? first_result : result;
 
-    poly_func(
-        poly_arg,
-        shift,
-        coefficients,
-        UX_TO_WORD(degree),
-        first_result);
-    // printf("f_result= (%x %x) %llx %llx\n",first_result->sign,first_result->exponent,first_result->fraction[0],first_result->fraction[1]);
+    poly_func(poly_arg, shift, coefficients, UX_TO_WORD(degree), first_result);
+    // printf("f_result= (%x %x) %llx
+    // %llx\n",first_result->sign,first_result->exponent,first_result->fraction[0],first_result->fraction[1]);
 
-    // printf("fl & NUMERATOR_FLAGS(POST_MULTIPLY) = %llx (%llx)\n", flags & NUMERATOR_FLAGS(POST_MULTIPLY), flags);
-    if(flags & NUMERATOR_FLAGS(POST_MULTIPLY))
+    // printf("fl & NUMERATOR_FLAGS(POST_MULTIPLY) = %llx (%llx)\n", flags &
+    // NUMERATOR_FLAGS(POST_MULTIPLY), flags);
+    if (flags & NUMERATOR_FLAGS(POST_MULTIPLY)) {
       MULTIPLY(argument, first_result, first_result);
-    // printf("result..= (%x %x) %llx %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
+    }
+    // printf("result..= (%x %x) %llx
+    // %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
 
     UPDATE_COEF_PTR(coefficients, byte_length);
     UX_INCR_EXPONENT(first_result, G_EXPONENT(coefficients));
   } else {
     second_result = result;
     flags |= NO_DIVIDE;
-    if(flags & SKIP)
+    if (flags & SKIP) {
       UPDATE_COEF_PTR(coefficients, byte_length);
+    }
   }
 
-  if(DENOMINATOR_MASK & flags) {
+  if (DENOMINATOR_MASK & flags) {
     // printf("DENOMINATOR_MASK !!\n");
-    poly_func = (DENOMINATOR_FLAGS(ALTERNATE_SIGN) & sign) ? eval_neg_poly : eval_pos_poly;
+    poly_func = (DENOMINATOR_FLAGS(ALTERNATE_SIGN) & sign) ? eval_neg_poly
+                                                           : eval_pos_poly;
 
-    poly_func(
-        poly_arg,
-        shift,
-        coefficients,
-        UX_TO_WORD(degree),
-        second_result);
+    poly_func(poly_arg, shift, coefficients, UX_TO_WORD(degree), second_result);
 
-    if(flags & DENOMINATOR_FLAGS(POST_MULTIPLY))
+    if (flags & DENOMINATOR_FLAGS(POST_MULTIPLY)) {
       MULTIPLY(argument, second_result, second_result);
+    }
 
     UPDATE_COEF_PTR(coefficients, byte_length);
     UX_INCR_EXPONENT(second_result, G_EXPONENT(coefficients));
 
-    if(flags & SKIP)
+    if (flags & SKIP) {
       /* Numerator was skipped, we're done */
       return;
+    }
   } else {
     flags |= NO_DIVIDE;
-    if(flags & SKIP)
+    if (flags & SKIP) {
       UPDATE_COEF_PTR(coefficients, byte_length);
+    }
   }
 
   // printf("fl & NO_DIV = %llx\n", flags & NO_DIVIDE);
-  // printf("result0= (%x %x) %llx %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
+  // printf("result0= (%x %x) %llx
+  // %llx\n",result->sign,result->exponent,result->fraction[0],result->fraction[1]);
 
-  if((flags & NO_DIVIDE) == 0)
+  if ((flags & NO_DIVIDE) == 0) {
     DIVIDE(result, result + 1, FULL_PRECISION, result);
+  }
 }
 
 #if 0

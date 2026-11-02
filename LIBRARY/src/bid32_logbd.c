@@ -30,8 +30,8 @@
 #include "bid_internal.h"
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_logb(BID_UINT32 *pres, BID_UINT32 *px
-                                      _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
+void bid32_logb(BID_UINT32* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                      _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 DFP_WRAPFN_DFP(32, bid32_logb, 32)
@@ -44,16 +44,18 @@ bid32_logb(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 
   valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 
-  if(!valid_x) {
+  if (!valid_x) {
     // test if x is NaN/Inf
-    if((x & 0x78000000U) == 0x78000000U) {
+    if ((x & 0x78000000U) == 0x78000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-      if((x & 0x7e000000U) == 0x7e000000U) // sNaN
+      if ((x & 0x7e000000U) == 0x7e000000U) {  // sNaN
         __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+      }
 #endif
       res = (coefficient_x)&QUIET_MASK32;
-      if((x & 0x7c000000U) == 0x78000000U)
+      if ((x & 0x7c000000U) == 0x78000000U) {
         res &= 0x7fffffffU;
+      }
       BID_RETURN(res);
     }
     // x is 0
@@ -65,9 +67,10 @@ bid32_logb(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   }
 
   BIDECIMAL_CALL1_NORND(bid32_ilogb, ires, x);
-  if((BID_UINT32)ires & 0x80000000U)
+  if ((BID_UINT32)ires & 0x80000000U) {
     res = 0xb2800000U | (BID_UINT32)(-ires);
-  else
+  } else {
     res = 0x32800000U | (BID_UINT32)ires;
+  }
   BID_RETURN(res);
 }

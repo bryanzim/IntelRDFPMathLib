@@ -65,14 +65,14 @@ static const TABLE_UNION __lgamma_t_table[] = {
     /* 200 */ DATA_1x2(0x735455ae, 0x3f74c37d),
 };
 
-#define OVERFLOW_THRESHOLD *((double *)((char *)__lgamma_t_table + 0))
-#define REAL_BIG *((double *)((char *)__lgamma_t_table + 8))
-#define HALF_LN_2_PI *((double *)((char *)__lgamma_t_table + 16))
-#define HALF_LN_PI_OVER_2 *((double *)((char *)__lgamma_t_table + 24))
-#define PI *((double *)((char *)__lgamma_t_table + 32))
-#define P_COEFS ((double *)((char *)__lgamma_t_table + 40))
-#define Q_COEFS ((double *)((char *)__lgamma_t_table + 96))
-#define PHI_COEFS ((double *)((char *)__lgamma_t_table + 152))
+#define OVERFLOW_THRESHOLD *((double*)((char*)__lgamma_t_table + 0))
+#define REAL_BIG *((double*)((char*)__lgamma_t_table + 8))
+#define HALF_LN_2_PI *((double*)((char*)__lgamma_t_table + 16))
+#define HALF_LN_PI_OVER_2 *((double*)((char*)__lgamma_t_table + 24))
+#define PI *((double*)((char*)__lgamma_t_table + 32))
+#define P_COEFS ((double*)((char*)__lgamma_t_table + 40))
+#define Q_COEFS ((double*)((char*)__lgamma_t_table + 96))
+#define PHI_COEFS ((double*)((char*)__lgamma_t_table + 152))
 #define PHI(a, u) \
   u = a * a;      \
   u = a * POLY6(PHI_COEFS, u)

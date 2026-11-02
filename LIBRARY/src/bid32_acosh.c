@@ -38,21 +38,23 @@ int exponent_x, cmp_res;
 
 valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 
-if(!valid_x) {
+if (!valid_x) {
   // test if x is NaN
-  if((x & 0x7c000000U) == 0x7c000000U) {
+  if ((x & 0x7c000000U) == 0x7c000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & 0x7e000000U) == 0x7e000000U) // sNaN
+    if ((x & 0x7e000000U) == 0x7e000000U) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = (coefficient_x)&QUIET_MASK32;
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x & 0x78000000U) == 0x78000000U) {
+  if ((x & 0x78000000U) == 0x78000000U) {
 #ifdef BID_SET_STATUS_FLAGS
-    if(sign_x) // -Inf
+    if (sign_x) {  // -Inf
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = sign_x ? 0x7c000000U : 0x78000000U;
     BID_RETURN(res);
@@ -63,15 +65,13 @@ if(!valid_x) {
 // calculate asinh(sqrt(x*x-1)) for x near 1 (x<1+1/32 = (10^5 + 5^5)/10^5 )
 near_one = 0x300192d5U;
 
-BIDECIMAL_CALL2_NORND(bid32_quiet_less,
-                      cmp_res, x, near_one);
-if(cmp_res) {
+BIDECIMAL_CALL2_NORND(bid32_quiet_less, cmp_res, x, near_one);
+if (cmp_res) {
   // x<1+1/32
   one = 0x32800001U;
 
-  BIDECIMAL_CALL2_NORND(bid32_quiet_greater,
-                        cmp_res, one, x);
-  if(cmp_res) {
+  BIDECIMAL_CALL2_NORND(bid32_quiet_greater, cmp_res, one, x);
+  if (cmp_res) {
     // x < 1
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);

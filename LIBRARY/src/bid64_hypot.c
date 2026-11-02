@@ -38,50 +38,55 @@ int exponent_x, exponent_y;
 valid_x = unpack_BID64(&sign_x, &exponent_x, &coefficient_x, x);
 valid_y = unpack_BID64(&sign_y, &exponent_y, &coefficient_y, y);
 
-if(!valid_x) {
-  if((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+if (!valid_x) {
+  if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & 0x7e00000000000000ull) == 0x7e00000000000000ull || // sNaN
-       (y & 0x7e00000000000000ull) == 0x7e00000000000000ull)
+    if ((x & 0x7e00000000000000ull) == 0x7e00000000000000ull ||  // sNaN
+        (y & 0x7e00000000000000ull) == 0x7e00000000000000ull) {
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
-    if(((x & 0x7e00000000000000ull) == 0x7e00000000000000ull) || ((y & 0x7c00000000000000ull) != 0x7800000000000000ull))
+    if (((x & 0x7e00000000000000ull) == 0x7e00000000000000ull) ||
+        ((y & 0x7c00000000000000ull) != 0x7800000000000000ull)) {
       res = (coefficient_x)&QUIET_MASK64;
-    else
+    } else {
       res = 0x7800000000000000ull;
+    }
     BID_RETURN(res);
   }
   // x is Infinity?
-  if(((x & 0x7800000000000000ull) == 0x7800000000000000ull) && ((y & 0x7e00000000000000ull) != 0x7e00000000000000ull)) {
+  if (((x & 0x7800000000000000ull) == 0x7800000000000000ull) &&
+      ((y & 0x7e00000000000000ull) != 0x7e00000000000000ull)) {
     res = 0x7800000000000000ull;
     BID_RETURN(res);
   }
   // x is 0
-  if(valid_y) {
+  if (valid_y) {
     res = y & 0x7fffffffffffffffull;
     BID_RETURN(res);
   }
 }
 
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((y & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((y & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+    if ((y & 0x7e00000000000000ull) == 0x7e00000000000000ull) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = coefficient_y & QUIET_MASK64;
     BID_RETURN(res);
   }
 
-  if((y & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((y & 0x7800000000000000ull) == 0x7800000000000000ull) {
     res = 0x7800000000000000ull;
     BID_RETURN(res);
   }
   // y is 0
-  if(valid_x) {
+  if (valid_x) {
     res = x & 0x7fffffffffffffffull;
     BID_RETURN(res);
   }

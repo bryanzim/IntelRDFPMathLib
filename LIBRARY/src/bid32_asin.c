@@ -43,14 +43,16 @@ double xd, td, yd;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK32) == NAN_MASK32) {
+if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK32) == SNAN_MASK32)
+  if ((x & SNAN_MASK32) == SNAN_MASK32) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res = x & 0xfc0ffffful;
-  if((res & 0x000ffffful) > 999999ul)
+  if ((res & 0x000ffffful) > 999999ul) {
     res &= ~0x000ffffful;
+  }
   BID_RETURN(res);
 }
 
@@ -60,7 +62,7 @@ BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
 
 // If the input is not too close to +/- 1 then do it "naively"
 
-if(fabs(xd) <= 0.9) {
+if (fabs(xd) <= 0.9) {
   yd = asin(xd);
   BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
   BID_RETURN(res);
@@ -68,7 +70,7 @@ if(fabs(xd) <= 0.9) {
 
 // If the input is > 1 in magnitude, fail
 
-else if(fabs(xd) > 1.0) {
+else if (fabs(xd) > 1.0) {
   res = BID32_NAN;
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -86,8 +88,9 @@ else {
   BIDECIMAL_CALL1(bid32_to_binary64, td, t);
   td = (2.0 - td) * td;
   yd = acos(sqrt(td));
-  if(xd < 0.0)
+  if (xd < 0.0) {
     yd = -yd;
+  }
   BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
   BID_RETURN(res);
 }

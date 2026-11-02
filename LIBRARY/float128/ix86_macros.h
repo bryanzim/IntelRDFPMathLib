@@ -43,39 +43,37 @@
 #if (COMPILER == msc_cc)
 #if BITS_PER_WORD == 32
 
-#define EXT_UMUL(i, j, lo, hi)                                                                          \
-  {                                                                                                     \
-    int tmp_i = (i);                                                                                    \
-    int tmp_j = (j);                                                                                    \
-    int tmp_lo, tmp_hi;                                                                                 \
-    {                                                                                                   \
-        __asm mov eax, tmp_i __asm mul tmp_j __asm mov tmp_lo, eax __asm mov tmp_hi, edx}(lo) = tmp_lo; \
-    (hi) = tmp_hi;                                                                                      \
+#define EXT_UMUL(i, j, lo, hi)                              \
+  {                                                         \
+    int tmp_i = (i);                                        \
+    int tmp_j = (j);                                        \
+    int tmp_lo, tmp_hi;                                     \
+    {__asm mov eax, tmp_i __asm mul tmp_j __asm mov tmp_lo, \
+     eax __asm mov tmp_hi, edx}(lo) = tmp_lo;               \
+    (hi) = tmp_hi;                                          \
   }
 
-#define EXT_UMULH(i, j, hi)                                                       \
-  {                                                                               \
-    int tmp_i = (i);                                                              \
-    int tmp_j = (j);                                                              \
-    int tmp_hi;                                                                   \
-    {                                                                             \
-        __asm mov eax, tmp_i __asm mul tmp_j __asm mov tmp_hi, edx}(hi) = tmp_hi; \
+#define EXT_UMULH(i, j, hi)                                                    \
+  {                                                                            \
+    int tmp_i = (i);                                                           \
+    int tmp_j = (j);                                                           \
+    int tmp_hi;                                                                \
+    {__asm mov eax, tmp_i __asm mul tmp_j __asm mov tmp_hi, edx}(hi) = tmp_hi; \
   }
 
-#define EXT_MULH(i, j, hi)                                                         \
-  {                                                                                \
-    int tmp_i = (i);                                                               \
-    int tmp_j = (j);                                                               \
-    int tmp_hi;                                                                    \
-    {                                                                              \
-        __asm mov eax, tmp_i __asm imul tmp_j __asm mov tmp_hi, edx}(hi) = tmp_hi; \
+#define EXT_MULH(i, j, hi)                                              \
+  {                                                                     \
+    int tmp_i = (i);                                                    \
+    int tmp_j = (j);                                                    \
+    int tmp_hi;                                                         \
+    {__asm mov eax, tmp_i __asm imul tmp_j __asm mov tmp_hi, edx}(hi) = \
+        tmp_hi;                                                         \
   }
 
 #define F_RINT_TO_FLOATING_AND_WORD_PRECISION_LIMIT (BITS_PER_WORD - 1)
-#define F_RINT_TO_FLOATING_AND_WORD(x, flt_int_x, int_x)                         \
-  {                                                                              \
-    {                                                                            \
-        __asm fld x __asm frndint __asm fstp flt_int_x} int_x = (WORD)flt_int_x; \
+#define F_RINT_TO_FLOATING_AND_WORD(x, flt_int_x, int_x)                      \
+  {                                                                           \
+    {__asm fld x __asm frndint __asm fstp flt_int_x} int_x = (WORD)flt_int_x; \
   }
 
 #define B_RINT_TO_FLOATING_AND_WORD_PRECISION_LIMIT (BITS_PER_WORD - 1)
@@ -150,17 +148,14 @@ down will make the combination faster, go ahead and do it.  */
     (sign) = u.F_HI_WORD;                       \
   }
 
-#define F_CHANGE_SIGN(sign) \
-  (sign) = ~(sign)
+#define F_CHANGE_SIGN(sign) (sign) = ~(sign)
 
 #define F_RESTORE_SIGN(sign, x) \
   ASSERT((x) >= 0.0);           \
-  if((WORD)sign < 0)            \
-    F_NEGATE(x);
+  if ((WORD)sign < 0) F_NEGATE(x);
 
 #define F_NEGATE_IF_SIGN_NEG(sign, x) \
-  if((WORD)sign < 0)                  \
-    F_NEGATE(x);
+  if ((WORD)sign < 0) F_NEGATE(x);
 
 #endif
 
@@ -258,17 +253,14 @@ down will make the combination faster, go ahead and do it.  */
   (sign) = x;                                   \
   F_ABS((x), (abs_x))
 
-#define F_CHANGE_SIGN(sign) \
-  F_NEGATE(sign)
+#define F_CHANGE_SIGN(sign) F_NEGATE(sign)
 
 #define F_RESTORE_SIGN(sign, x) \
   ASSERT((x) >= 0.0);           \
-  if((sign) < 0.0)              \
-  F_NEGATE(x)
+  if ((sign) < 0.0) F_NEGATE(x)
 
 #define F_NEGATE_IF_SIGN_NEG(sign, x) \
-  if((sign) < 0.0)                    \
-  F_NEGATE(x)
+  if ((sign) < 0.0) F_NEGATE(x)
 
 #endif
 
@@ -426,125 +418,167 @@ down will make the combination faster, go ahead and do it.  */
   }
 
 /*  a * b -> low + high * 2^BITS_PER_WORD				    */
-#define XMUL(a, b, high, low)                                                                 \
-  {                                                                                           \
-    U_WORD p0, p1, p2, p3, s;                                                                 \
-    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)); \
-    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) >> (BITS_PER_DIGIT / 2));            \
-    p2 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));            \
-    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));                       \
-    s = (p0 >> (BITS_PER_DIGIT / 2)) + (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +              \
-        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                                              \
-    (low) = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (s << (BITS_PER_DIGIT / 2));            \
-    (high) = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) + p3 +               \
-             (s >> (BITS_PER_DIGIT / 2));                                                     \
+#define XMUL(a, b, high, low)                                                  \
+  {                                                                            \
+    U_WORD p0, p1, p2, p3, s;                                                  \
+    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                            \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                             \
+    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                            \
+         ((b) >> (BITS_PER_DIGIT / 2));                                        \
+    p2 = ((a) >> (BITS_PER_DIGIT / 2)) *                                       \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                             \
+    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));        \
+    s = (p0 >> (BITS_PER_DIGIT / 2)) +                                         \
+        (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                              \
+        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                               \
+    (low) =                                                                    \
+        (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (s << (BITS_PER_DIGIT / 2)); \
+    (high) = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) +     \
+             p3 + (s >> (BITS_PER_DIGIT / 2));                                 \
   }
 
 /*  a * b + add_low + add_high * 2^BITS_PER_WORD -> low +		    */
 /*						    high * 2^BITS_PER_WORD  */
-#define XMUL_ADD(a, b, add_low, high, low)                                                        \
-  {                                                                                               \
-    U_WORD p0, p1, p2, p3, s, t;                                                                  \
-    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));     \
-    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) >> (BITS_PER_DIGIT / 2));                \
-    p2 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                \
-    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));                           \
-    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)); \
-    t = (p0 >> (BITS_PER_DIGIT / 2)) + (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                  \
-        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) >> (BITS_PER_DIGIT / 2)) +           \
-        (s >> (BITS_PER_DIGIT / 2));                                                              \
-    (low) = (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2));                 \
-    (high) = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) + p3 +                   \
-             (t >> (BITS_PER_DIGIT / 2));                                                         \
+#define XMUL_ADD(a, b, add_low, high, low)                                    \
+  {                                                                           \
+    U_WORD p0, p1, p2, p3, s, t;                                              \
+    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) >> (BITS_PER_DIGIT / 2));                                       \
+    p2 = ((a) >> (BITS_PER_DIGIT / 2)) *                                      \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));       \
+    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                       \
+    t = (p0 >> (BITS_PER_DIGIT / 2)) +                                        \
+        (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) >> (BITS_PER_DIGIT / 2)) + (s >> (BITS_PER_DIGIT / 2));    \
+    (low) =                                                                   \
+        (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2)); \
+    (high) = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) +    \
+             p3 + (t >> (BITS_PER_DIGIT / 2));                                \
   }
 
 /*  a * b + add_low + add_high * 2^BITS_PER_WORD -> low +		    */
 /*						    high * 2^BITS_PER_WORD  */
-#define XMUL_XADD(a, b, add_high, add_low, high, low)                                             \
-  {                                                                                               \
-    U_WORD p0, p1, p2, p3, s, t;                                                                  \
-    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));     \
-    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) >> (BITS_PER_DIGIT / 2));                \
-    p2 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                \
-    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));                           \
-    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)); \
-    t = (p0 >> (BITS_PER_DIGIT / 2)) + (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                  \
-        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) >> (BITS_PER_DIGIT / 2)) +           \
-        (s >> (BITS_PER_DIGIT / 2));                                                              \
-    (low) = (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2));                 \
-    (high) = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) + p3 + (add_high) +      \
-             (t >> (BITS_PER_DIGIT / 2));                                                         \
+#define XMUL_XADD(a, b, add_high, add_low, high, low)                         \
+  {                                                                           \
+    U_WORD p0, p1, p2, p3, s, t;                                              \
+    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) >> (BITS_PER_DIGIT / 2));                                       \
+    p2 = ((a) >> (BITS_PER_DIGIT / 2)) *                                      \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));       \
+    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                       \
+    t = (p0 >> (BITS_PER_DIGIT / 2)) +                                        \
+        (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) >> (BITS_PER_DIGIT / 2)) + (s >> (BITS_PER_DIGIT / 2));    \
+    (low) =                                                                   \
+        (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2)); \
+    (high) = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) +    \
+             p3 + (add_high) + (t >> (BITS_PER_DIGIT / 2));                   \
   }
 
 /*  a * b + add_low + add_high * 2^BITS_PER_WORD ->			    */
 /*					low +				    */
 /*					high * 2^BITS_PER_WORD +	    */
 /*					carry_out * 2^(2 * BITS_PER_WORD)   */
-#define XMUL_XADDC(a, b, add_high, add_low, carry_out, high, low)                                   \
-  {                                                                                                 \
-    U_WORD p0, p1, p2, p3, s, t, u, v;                                                              \
-    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));       \
-    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) >> (BITS_PER_DIGIT / 2));                  \
-    p2 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                  \
-    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));                             \
-    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));   \
-    t = (p0 >> (BITS_PER_DIGIT / 2)) + (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                    \
-        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) >> (BITS_PER_DIGIT / 2)) +             \
-        (s >> (BITS_PER_DIGIT / 2));                                                                \
-    u = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) +                               \
-        (p3 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_high) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + \
-        (t >> (BITS_PER_DIGIT / 2));                                                                \
-    v = (p3 >> (BITS_PER_DIGIT / 2)) + ((add_high) >> (BITS_PER_DIGIT / 2)) +                       \
-        (u >> (BITS_PER_DIGIT / 2));                                                                \
-    (low) = (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2));                   \
-    (high) = (u & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (v << (BITS_PER_DIGIT / 2));                  \
-    (carry_out) = v >> (BITS_PER_DIGIT / 2);                                                        \
+#define XMUL_XADDC(a, b, add_high, add_low, carry_out, high, low)             \
+  {                                                                           \
+    U_WORD p0, p1, p2, p3, s, t, u, v;                                        \
+    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) >> (BITS_PER_DIGIT / 2));                                       \
+    p2 = ((a) >> (BITS_PER_DIGIT / 2)) *                                      \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));       \
+    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                       \
+    t = (p0 >> (BITS_PER_DIGIT / 2)) +                                        \
+        (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) >> (BITS_PER_DIGIT / 2)) + (s >> (BITS_PER_DIGIT / 2));    \
+    u = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) +         \
+        (p3 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_high) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                     \
+        (t >> (BITS_PER_DIGIT / 2));                                          \
+    v = (p3 >> (BITS_PER_DIGIT / 2)) + ((add_high) >> (BITS_PER_DIGIT / 2)) + \
+        (u >> (BITS_PER_DIGIT / 2));                                          \
+    (low) =                                                                   \
+        (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2)); \
+    (high) =                                                                  \
+        (u & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (v << (BITS_PER_DIGIT / 2)); \
+    (carry_out) = v >> (BITS_PER_DIGIT / 2);                                  \
   }
 
 /*  a * b + add_low + add_high * 2^BITS_PER_WORD + carry_in ->		    */
 /*						    low +		    */
 /*						    high * 2^BITS_PER_WORD  */
-#define XMUL_XADD_W_C_IN(a, b, add_high, add_low, carry_in, high, low)                             \
-  {                                                                                                \
-    U_WORD p0, p1, p2, p3, s, t;                                                                   \
-    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));      \
-    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) >> (BITS_PER_DIGIT / 2));                 \
-    p2 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                 \
-    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));                            \
-    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + \
-        ((carry_in) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                                           \
-    t = (p0 >> (BITS_PER_DIGIT / 2)) + (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                   \
-        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) >> (BITS_PER_DIGIT / 2)) +            \
-        ((carry_in) >> (BITS_PER_DIGIT / 2)) + (s >> (BITS_PER_DIGIT / 2));                        \
-    (low) = (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2));                  \
-    (high) = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) + p3 + (add_high) +       \
-             (t >> (BITS_PER_DIGIT / 2));                                                          \
+#define XMUL_XADD_W_C_IN(a, b, add_high, add_low, carry_in, high, low)        \
+  {                                                                           \
+    U_WORD p0, p1, p2, p3, s, t;                                              \
+    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) >> (BITS_PER_DIGIT / 2));                                       \
+    p2 = ((a) >> (BITS_PER_DIGIT / 2)) *                                      \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));       \
+    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                      \
+        ((carry_in) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                      \
+    t = (p0 >> (BITS_PER_DIGIT / 2)) +                                        \
+        (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) >> (BITS_PER_DIGIT / 2)) +                                 \
+        ((carry_in) >> (BITS_PER_DIGIT / 2)) + (s >> (BITS_PER_DIGIT / 2));   \
+    (low) =                                                                   \
+        (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2)); \
+    (high) = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) +    \
+             p3 + (add_high) + (t >> (BITS_PER_DIGIT / 2));                   \
   }
 
 /*  a * b + add_low + add_high * 2^BITS_PER_WORD + carry_in ->		    */
 /*					low +				    */
 /*					high * 2^BITS_PER_WORD +	    */
 /*					carry_out * 2^(2 * BITS_PER_WORD)   */
-#define XMUL_XADDC_W_C_IN(a, b, add_high, add_low, carry_in, carry_out, high, low)                  \
-  {                                                                                                 \
-    U_WORD p0, p1, p2, p3, s, t, u, v;                                                              \
-    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));       \
-    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) * ((b) >> (BITS_PER_DIGIT / 2));                  \
-    p2 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                  \
-    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));                             \
-    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +  \
-        ((carry_in) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                                            \
-    t = (p0 >> (BITS_PER_DIGIT / 2)) + (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                    \
-        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_low) >> (BITS_PER_DIGIT / 2)) +             \
-        ((carry_in) >> (BITS_PER_DIGIT / 2)) + (s >> (BITS_PER_DIGIT / 2));                         \
-    u = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) +                               \
-        (p3 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + ((add_high) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + \
-        (t >> (BITS_PER_DIGIT / 2));                                                                \
-    v = (p3 >> (BITS_PER_DIGIT / 2)) + ((add_high) >> (BITS_PER_DIGIT / 2)) +                       \
-        (u >> (BITS_PER_DIGIT / 2));                                                                \
-    (low) = (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2));                   \
-    (high) = (u & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (v << (BITS_PER_DIGIT / 2));                  \
-    (carry_out) = v >> (BITS_PER_DIGIT / 2);                                                        \
+#define XMUL_XADDC_W_C_IN(a, b, add_high, add_low, carry_in, carry_out, high, \
+                          low)                                                \
+  {                                                                           \
+    U_WORD p0, p1, p2, p3, s, t, u, v;                                        \
+    p0 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p1 = ((a) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) *                           \
+         ((b) >> (BITS_PER_DIGIT / 2));                                       \
+    p2 = ((a) >> (BITS_PER_DIGIT / 2)) *                                      \
+         ((b) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                            \
+    p3 = ((a) >> (BITS_PER_DIGIT / 2)) * ((b) >> (BITS_PER_DIGIT / 2));       \
+    s = (p0 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                      \
+        ((carry_in) & MAKE_MASK(BITS_PER_DIGIT / 2, 0));                      \
+    t = (p0 >> (BITS_PER_DIGIT / 2)) +                                        \
+        (p1 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        (p2 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_low) >> (BITS_PER_DIGIT / 2)) +                                 \
+        ((carry_in) >> (BITS_PER_DIGIT / 2)) + (s >> (BITS_PER_DIGIT / 2));   \
+    u = (p1 >> (BITS_PER_DIGIT / 2)) + (p2 >> (BITS_PER_DIGIT / 2)) +         \
+        (p3 & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                             \
+        ((add_high) & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) +                     \
+        (t >> (BITS_PER_DIGIT / 2));                                          \
+    v = (p3 >> (BITS_PER_DIGIT / 2)) + ((add_high) >> (BITS_PER_DIGIT / 2)) + \
+        (u >> (BITS_PER_DIGIT / 2));                                          \
+    (low) =                                                                   \
+        (s & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (t << (BITS_PER_DIGIT / 2)); \
+    (high) =                                                                  \
+        (u & MAKE_MASK(BITS_PER_DIGIT / 2, 0)) + (v << (BITS_PER_DIGIT / 2)); \
+    (carry_out) = v >> (BITS_PER_DIGIT / 2);                                  \
   }
 
 #endif

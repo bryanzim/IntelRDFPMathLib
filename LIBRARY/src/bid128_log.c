@@ -29,16 +29,17 @@
 
 #include "bid_trans.h"
 
-static BID_UINT128 bi_d128_1 =
-    {BID128_LH_INIT(0x0000000000000001ull, 0x3040000000000000ull)};
-static BID_UINT128 bi_d128_10_po_w4464 =
-    {BID128_LH_INIT(0x0000000000000001ull, 0x5320000000000000ull)};
-static BID_UINT128 bi_d128_10_pow_n4464 =
-    {BID128_LH_INIT(0x0000000000000001ull, 0x0d60000000000000ull)};
+static BID_UINT128 bi_d128_1 = {
+    BID128_LH_INIT(0x0000000000000001ull, 0x3040000000000000ull)};
+static BID_UINT128 bi_d128_10_po_w4464 = {
+    BID128_LH_INIT(0x0000000000000001ull, 0x5320000000000000ull)};
+static BID_UINT128 bi_d128_10_pow_n4464 = {
+    BID128_LH_INIT(0x0000000000000001ull, 0x0d60000000000000ull)};
 
-BID_F128_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);        // 1.0
-BID_F128_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000);       // 0.5
-BID_F128_CONST_DEF(c_4464_ln_10, 400c4135eb3929fb, a719f2c946d2d728); // 4454*ln(10)
+BID_F128_CONST_DEF(c_one, 3fff000000000000, 0000000000000000);   // 1.0
+BID_F128_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000);  // 0.5
+BID_F128_CONST_DEF(c_4464_ln_10, 400c4135eb3929fb,
+                   a719f2c946d2d728);  // 4454*ln(10)
 
 BID128_FUNCTION_ARG1(bid128_log, x)
 
@@ -48,18 +49,19 @@ int z, cmp_res;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
+if ((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if(((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64))
+  if (((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64)) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-  if(((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
-      0x0000314dc6448d93ull) ||
-     (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
-       0x0000314dc6448d93ull) &&
-      res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
+  if (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
+       0x0000314dc6448d93ull) ||
+      (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
+        0x0000314dc6448d93ull) &&
+       res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
     res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
     res.w[BID_LOW_128W] = 0ull;
   }
@@ -67,7 +69,7 @@ if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 }
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero, z, x);
-if(z) { // -Infinite and Divide by Zero according C99
+if (z) {  // -Infinite and Divide by Zero according C99
   res.w[BID_HIGH_128W] = 0xf800000000000000ull;
   res.w[BID_LOW_128W] = 0ull;
 #ifdef BID_SET_STATUS_FLAGS
@@ -76,7 +78,7 @@ if(z) { // -Infinite and Divide by Zero according C99
   BID_RETURN(res);
 }
 
-if(x.w[BID_HIGH_128W] & MASK_SIGN) { // QNaN Indefinite
+if (x.w[BID_HIGH_128W] & MASK_SIGN) {  // QNaN Indefinite
   res.w[BID_HIGH_128W] = 0x7c00000000000000ull;
   res.w[BID_LOW_128W] = 0ull;
 #ifdef BID_SET_STATUS_FLAGS
@@ -88,7 +90,7 @@ if(x.w[BID_HIGH_128W] & MASK_SIGN) { // QNaN Indefinite
 // Inputs too large to fit in quad.
 
 BIDECIMAL_CALL2_NORND(bid128_quiet_greater, cmp_res, x, bi_d128_10_po_w4464);
-if(cmp_res) {
+if (cmp_res) {
   BID_UINT128 x_mod;
   BIDECIMAL_CALL2(bid128_mul, x_mod, x, bi_d128_10_pow_n4464);
   BIDECIMAL_CALL1(bid128_to_binary128, xq, x_mod);
@@ -101,7 +103,7 @@ if(cmp_res) {
 // Inputs so small they underflow to zero in quad.
 
 BIDECIMAL_CALL2_NORND(bid128_quiet_less, cmp_res, x, bi_d128_10_pow_n4464);
-if(cmp_res) {
+if (cmp_res) {
   BID_UINT128 x_mod;
   BIDECIMAL_CALL2(bid128_mul, x_mod, x, bi_d128_10_po_w4464);
   BIDECIMAL_CALL1(bid128_to_binary128, xq, x_mod);
@@ -119,7 +121,7 @@ else {
   __bid_f128_log(rq, xq);
   __bid_f128_sub(e_bin, xq, c_one.v);
   __bid_f128_fabs(abs_e_bin, e_bin);
-  if(__bid_f128_lt(abs_e_bin, c_half.v)) {
+  if (__bid_f128_lt(abs_e_bin, c_half.v)) {
     BID_F128_TYPE tmp_e_bin;
     BID_UINT128 e;
     BIDECIMAL_CALL2(bid128_sub, e, x, bi_d128_1);

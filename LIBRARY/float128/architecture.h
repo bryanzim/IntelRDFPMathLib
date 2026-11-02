@@ -31,7 +31,8 @@
 #define ARCHITECTURE_H
 
 /*
-** for historic reasons, map ia64 architecture to merced and ct architecture to amd64
+** for historic reasons, map ia64 architecture to merced and ct architecture to
+* amd64
 */
 
 #if (defined(ia64) || defined(__ia64) || defined(__ia64__)) && !defined(HPUX_OS)
@@ -268,7 +269,8 @@
 #define U_HALF_WORD U_INT_16
 #define BITS_PER_HALF_WORD 16
 
-#elif (defined(alpha) || defined(ALPHA) || defined(__alpha) || defined(__ALPHA) || defined(_ALPHA_) || defined(__Alpha_AXP))
+#elif (defined(alpha) || defined(ALPHA) || defined(__alpha) || \
+       defined(__ALPHA) || defined(_ALPHA_) || defined(__Alpha_AXP))
 
 #undef vax
 #undef mips
@@ -664,7 +666,9 @@
 
 #if (defined(vax) && (ARCHITECTURE == vax))
 #define FLOAT_TYPES VAX_TYPES
-#elif (((defined(alpha) && (ARCHITECTURE == alpha)) || (defined(merced) && (ARCHITECTURE == merced))) && (defined(vms) && (OP_SYSTEM == vms)))
+#elif (((defined(alpha) && (ARCHITECTURE == alpha)) ||    \
+        (defined(merced) && (ARCHITECTURE == merced))) && \
+       (defined(vms) && (OP_SYSTEM == vms)))
 #define FLOAT_TYPES (VAX_TYPES + IEEE_TYPES)
 #else
 #define FLOAT_TYPES IEEE_TYPES

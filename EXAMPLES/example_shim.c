@@ -3,9 +3,8 @@
 #include "decimal.h"
 #include "example_shim.h"
 
-Decimal128
-example_bid128_mul(Decimal128 x, Decimal128 y,
-                   _IDEC_round rnd_mode, _IDEC_flags *fpsf) {
+Decimal128 example_bid128_mul(Decimal128 x, Decimal128 y, _IDEC_round rnd_mode,
+                              _IDEC_flags* fpsf) {
   BID_UINT128 bx, by, bz;
   bx.w[BID_HIGH_128W] = x.w[HIGH_128W];
   bx.w[BID_LOW_128W] = x.w[LOW_128W];

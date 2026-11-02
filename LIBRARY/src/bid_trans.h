@@ -147,7 +147,8 @@ typedef union BID_ALIGN(16) {
 #define F128_TO_F80_HI(hi, lo) _F128_TO_F80_HI(HEX64(hi), HEX64(lo))
 #define F128_TO_F80_LO(hi, lo) _F128_TO_F80_LO(HEX64(hi), HEX64(lo))
 #define _F128_TO_F80_HI(hi, lo) (hi >> 48)
-#define _F128_TO_F80_LO(hi, lo) (((hi << 15) | HEX64(8000000000000000) | (lo >> 49)) + ((lo >> 48) & 1))
+#define _F128_TO_F80_LO(hi, lo) \
+  (((hi << 15) | HEX64(8000000000000000) | (lo >> 49)) + ((lo >> 48) & 1))
 
 #define BID_INIT_F128(hi, lo)         \
   {                                   \
@@ -166,10 +167,10 @@ typedef union BID_ALIGN(16) {
 #define BID_INIT_F80(hi, lo) BID_INIT_F128(hi, lo)
 #endif
 
-#define BID_F128_CONST_DEF(name, hi, lo) static const BID_F128_CONST name = \
-                                             BID_INIT_F128(hi, lo)
-#define BID_F80_CONST_DEF(name, hi, lo) static const BID_F80_CONST name = \
-                                            BID_INIT_F80(hi, lo)
+#define BID_F128_CONST_DEF(name, hi, lo) \
+  static const BID_F128_CONST name = BID_INIT_F128(hi, lo)
+#define BID_F80_CONST_DEF(name, hi, lo) \
+  static const BID_F80_CONST name = BID_INIT_F80(hi, lo)
 
 // =============================================================================
 // The following macros are used to switch the bid function invocation macros
@@ -186,22 +187,29 @@ typedef union BID_ALIGN(16) {
 #define __BID_F128_F_FF_OP(r, a, b, op, name) ((r) = ((a)op(b)))
 #define __BID_F128_F_F_FUNC(r, a, name) ((r) = __BID_F128_NAME(name)(a))
 #define __BID_F128_F_FF_FUNC(r, a, b, name) ((r) = __BID_F128_NAME(name)(a, b))
-#define __BID_F128_F_F_DECL(name) extern BID_F128_TYPE __BID_F128_NAME(name)(BID_F128_TYPE)
-#define __BID_F128_F_FF_DECL(name) extern BID_F128_TYPE __BID_F128_NAME(name)(BID_F128_TYPE, BID_F128_TYPE)
+#define __BID_F128_F_F_DECL(name) \
+  extern BID_F128_TYPE __BID_F128_NAME(name)(BID_F128_TYPE)
+#define __BID_F128_F_FF_DECL(name) \
+  extern BID_F128_TYPE __BID_F128_NAME(name)(BID_F128_TYPE, BID_F128_TYPE)
 #define BID_F128_ASSIGN(name, con) name = con.v
 
 #else
 
-#define __b(x) ((BID_F128_TYPE *)&(x))
+#define __b(x) ((BID_F128_TYPE*)&(x))
 #define __BID_F128_NAME(name) bid_f128_##name
 #define __BID_F128_CMP(a, b, op, mask) (bid_f128_cmp(__b(a), __b(b), (mask)))
 #define __BID_F128_F_I_OP(r, a, op, name) __BID_F128_NAME(name)(__b(r), a)
 #define __BID_F128_F_F_OP(r, a, op, name) __BID_F128_NAME(name)(__b(r), __b(a))
-#define __BID_F128_F_FF_OP(r, a, b, op, name) __BID_F128_NAME(name)(__b(r), __b(a), __b(b))
+#define __BID_F128_F_FF_OP(r, a, b, op, name) \
+  __BID_F128_NAME(name)(__b(r), __b(a), __b(b))
 #define __BID_F128_F_F_FUNC(r, a, name) __BID_F128_NAME(name)(__b(r), __b(a))
-#define __BID_F128_F_FF_FUNC(r, a, b, name) __BID_F128_NAME(name)(__b(r), __b(a), __b(b))
-#define __BID_F128_F_F_DECL(name) extern void __BID_F128_NAME(name)(BID_F128_TYPE *, BID_F128_TYPE *)
-#define __BID_F128_F_FF_DECL(name) extern void __BID_F128_NAME(name)(BID_F128_TYPE *, BID_F128_TYPE *, BID_F128_TYPE *)
+#define __BID_F128_F_FF_FUNC(r, a, b, name) \
+  __BID_F128_NAME(name)(__b(r), __b(a), __b(b))
+#define __BID_F128_F_F_DECL(name) \
+  extern void __BID_F128_NAME(name)(BID_F128_TYPE*, BID_F128_TYPE*)
+#define __BID_F128_F_FF_DECL(name)                                  \
+  extern void __BID_F128_NAME(name)(BID_F128_TYPE*, BID_F128_TYPE*, \
+                                    BID_F128_TYPE*)
 #define BID_F128_ASSIGN(name, con) \
   name.w[HI] = con.w[HI];          \
   name.w[LO] = con.w[LO]
@@ -252,15 +260,16 @@ typedef union BID_ALIGN(16) {
 #define __bid_f128_tanh(res, a) __BID_F128_F_F_FUNC(res, a, tanh)
 
 #define __bid_f128_hypot(res, a, b) __BID_F128_F_FF_FUNC(res, a, b, hypot)
-#define __bid_f128_nextafter(res, a, b) __BID_F128_F_FF_FUNC(res, a, b, nextafter)
+#define __bid_f128_nextafter(res, a, b) \
+  __BID_F128_F_FF_FUNC(res, a, b, nextafter)
 
 // =============================================================================
 // The f128 function declarations
 // =============================================================================
 
 #if !USE_COMPILER_F128_TYPE
-extern int bid_f128_cmp(BID_UINT128 *, BID_UINT128 *, int);
-extern void bid_f128_itof(BID_UINT128 *, int);
+extern int bid_f128_cmp(BID_UINT128*, BID_UINT128*, int);
+extern void bid_f128_itof(BID_UINT128*, int);
 
 __BID_F128_F_FF_DECL(add);
 __BID_F128_F_FF_DECL(div);
@@ -315,8 +324,10 @@ __BID_F128_F_FF_DECL(nextafter);
 #define __BID_F80_F_FF_OP(r, a, b, op, name) ((r) = ((a)op(b)))
 #define __BID_F80_F_F_FUNC(r, a, name) ((r) = __BID_F80_NAME(name)(a))
 #define __BID_F80_F_FF_FUNC(r, a, b, name) ((r) = __BID_F80_NAME(name)(a, b))
-#define __BID_F80_F_F_DECL(name) extern BID_F80_TYPE __BID_F80_NAME(name)(BID_F80_TYPE)
-#define __BID_F80_F_FF_DECL(name) extern BID_F80_TYPE __BID_F80_NAME(name)(BID_F80_TYPE, BID_F80_TYPE)
+#define __BID_F80_F_F_DECL(name) \
+  extern BID_F80_TYPE __BID_F80_NAME(name)(BID_F80_TYPE)
+#define __BID_F80_F_FF_DECL(name) \
+  extern BID_F80_TYPE __BID_F80_NAME(name)(BID_F80_TYPE, BID_F80_TYPE)
 #define BID_F80_ASSIGN(name, con) name = con.v
 #define BID_F80_PACK_TRIG(t, sf, ef, p)                    \
   t.w[HI] = (((BID_UINT64)(sf)) << 15) | (BID_UINT64)(ef); \
@@ -328,14 +339,16 @@ __BID_F128_F_FF_DECL(nextafter);
 #define __BID_F80_CMP(a, b, op, mask) __BID_F128_CMP(a, b, op, mask)
 #define __BID_F80_F_I_OP(r, a, op, name) __BID_F128_F_I_OP(r, a, op, name)
 #define __BID_F80_F_F_OP(r, a, op, name) __BID_F128_F_F_OP(r, a, op, name)
-#define __BID_F80_F_FF_OP(r, a, b, op, name) __BID_F128_F_FF_OP(r, a, b, op, name)
+#define __BID_F80_F_FF_OP(r, a, b, op, name) \
+  __BID_F128_F_FF_OP(r, a, b, op, name)
 #define __BID_F80_F_F_FUNC(r, a, name) __BID_F128_F_F_FUNC(r, a, name)
 #define __BID_F80_F_FF_FUNC(r, a, b, name) __BID_F128_F_FF_FUNC(r, a, b, name)
 #define __BID_F80_F_F_DECL(name) __BID_F128_F_F_DECL(name)
 #define __BID_F80_F_FF_DECL(name) __BID_F128_F_FF_DECL(name)
 #define BID_F80_ASSIGN(name, con) BID_F128_ASSIGN(name, con)
-#define BID_F80_PACK_TRIG(t, sf, ef, p)                                                   \
-  t.w[HI] = (((((BID_UINT64)(sf)) << 15) | (BID_UINT64)(ef)) << 48) | (((p) << 1) >> 16); \
+#define BID_F80_PACK_TRIG(t, sf, ef, p)                               \
+  t.w[HI] = (((((BID_UINT64)(sf)) << 15) | (BID_UINT64)(ef)) << 48) | \
+            (((p) << 1) >> 16);                                       \
   t.w[LO] = ((p) << 49)
 #undef binary80_to_bid64
 #undef bid64_to_binary80

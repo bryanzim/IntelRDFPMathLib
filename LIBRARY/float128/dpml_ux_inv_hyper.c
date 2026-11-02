@@ -99,15 +99,13 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &unpacked_argument,
-      ASINH_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), &unpacked_argument,
+                    ASINH_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 >= fp_class)
+  if (0 >= fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   /* Get |x| */
 
@@ -125,7 +123,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
   exponent = G_UX_EXPONENT(&unpacked_argument);
   f_hi = G_UX_MSD(&unpacked_argument);
-  if((exponent < -1) || ((exponent == -1) && (f_hi <= SQRT_2_OV_4))) { /* Argument is small, evaluate directly */
+  if ((exponent < -1) ||
+      ((exponent == -1) &&
+       (f_hi <= SQRT_2_OV_4))) { /* Argument is small, evaluate directly */
 
     ADDSUB(&tmp, UX_ONE, ADD, &tmp);
     DIVIDE(&unpacked_argument, &tmp, FULL_PRECISION, &tmp);
@@ -139,12 +139,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   /* Set sign of result and pack */
 
   P_UX_SIGN(&unpacked_result, sign);
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED,
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result), NOT_USED,
+       NOT_USED OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -164,15 +160,13 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   unpacked_result = &tmp[0];
 
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      unpacked_argument,
-      ACOSH_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), unpacked_argument,
+                    ACOSH_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   /* Only positive arguments get here */
 
@@ -185,14 +179,17 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
   /* Check for arguments less than one */
 
-  if(G_UX_SIGN(&unpacked_result[1])) { /* Arg was less than 1, force "overflow" */
+  if (G_UX_SIGN(
+          &unpacked_result[1])) { /* Arg was less than 1, force "overflow" */
     P_UX_EXPONENT(unpacked_result, UX_OVERFLOW_EXPONENT);
     goto pack_it;
   }
 
   /* Check for small arguments */
 
-  else if((exponent == 1) && (f_hi <= THREE_SQRT_2_OV_4)) { /* Argument is small, evaluate directly */
+  else if ((exponent == 1) &&
+           (f_hi <=
+            THREE_SQRT_2_OV_4)) { /* Argument is small, evaluate directly */
 
     DIVIDE(unpacked_result + 1, unpacked_result, FULL_PRECISION,
            unpacked_result);
@@ -208,12 +205,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
 pack_it:
 
-  PACK(
-      unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED,
-      ACOSH_ARG_LT_ONE
-          OPT_EXCEPTION_INFO);
+  PACK(unpacked_result, PASS_RET_X_FLOAT(packed_result), NOT_USED,
+       ACOSH_ARG_LT_ONE OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -233,15 +226,13 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   unpacked_argument = &tmp[2];
   unpacked_result = &tmp[0];
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      unpacked_argument,
-      ATANH_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), unpacked_argument,
+                    ATANH_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   /* Get |x| */
 
@@ -252,15 +243,14 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
   exponent = G_UX_EXPONENT(unpacked_argument);
   f_hi = G_UX_MSD(unpacked_argument);
-  if(exponent >= 1) { /* |x| >= 1,  split out |x| == 1 and |x| > 1 */
+  if (exponent >= 1) { /* |x| >= 1,  split out |x| == 1 and |x| > 1 */
 
     P_UX_MSD(unpacked_result, UX_MSB);
 
-    if((exponent > 1) ||
-       !UX_FRACTION_IS_ONE_HALF(unpacked_argument))
-
+    if ((exponent > 1) || !UX_FRACTION_IS_ONE_HALF(unpacked_argument)) {
       /* |x| > 1, return error by forcing overflow */
       P_UX_EXPONENT(unpacked_result, UX_OVERFLOW_EXPONENT);
+    }
 
     else { /* |x| = 1, return error by forcing "underflow" */
       P_UX_EXPONENT(unpacked_result, UX_UNDERFLOW_EXPONENT);
@@ -270,8 +260,10 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
   /* Check for x small */
 
-  else if((exponent < -2) ||
-          ((exponent == -2) && (f_hi <= SQRT_2_M1_SQR))) { /* Argument is small, evaluate directly */
+  else if ((exponent < -2) ||
+           ((exponent == -2) &&
+            (f_hi <=
+             SQRT_2_M1_SQR))) { /* Argument is small, evaluate directly */
     UX_LOG_POLY(unpacked_argument, unpacked_result);
   } else { /* Argument is not small, use log function */
     ADDSUB(unpacked_argument, UX_ONE, ADD_SUB, unpacked_result);
@@ -285,12 +277,8 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
   P_UX_SIGN(unpacked_result, sign);
   UX_DECR_EXPONENT(unpacked_result, 1);
-  PACK(
-      unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      underflow_error,
-      ATANH_ABS_ARG_GT_ONE
-          OPT_EXCEPTION_INFO);
+  PACK(unpacked_result, PASS_RET_X_FLOAT(packed_result), underflow_error,
+       ATANH_ABS_ARG_GT_ONE OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -352,21 +340,23 @@ PRINT_U_TBL_ITEM(/* data 1 */ ATANH_ABS_ARG_GT_ONE);
 
 t = sqrt(2);
 PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM("SQRT_2_OV_4\t\t", UX_MSB_OF_(t / 4));
-PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM("THREE_SQRT_2_OV_4\t", UX_MSB_OF_(3 * t / 4));
-PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM("SQRT_2_M1_SQR\t\t", UX_MSB_OF_((t - 1) ^ 2));
+PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM("THREE_SQRT_2_OV_4\t",
+                                      UX_MSB_OF_(3 * t / 4));
+PRINT_UX_FRACTION_DIGIT_TBL_VDEF_ITEM("SQRT_2_M1_SQR\t\t",
+                                      UX_MSB_OF_((t - 1) ^ 2));
 
 TABLE_COMMENT("Unpacked constants 1 and ln2");
 PRINT_UX_TBL_ADEF_ITEM("UX_ONE\t\t\t", 1);
 PRINT_UX_TBL_ADEF_ITEM("UX_LN2\t\t\t", log(2));
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants for inverse "."hyperbolic routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants for inverse "."hyperbolic routines", __FILE__);
 print "$headerText\n\n$outText\n";
 
 #endif

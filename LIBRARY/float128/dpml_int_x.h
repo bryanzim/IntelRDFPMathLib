@@ -51,8 +51,8 @@ static const TABLE_UNION TABLE_NAME[] = {
     /* 040 */ DATA_1x2(0x00000001, 0x00000000),
 };
 
-#define FLOOR_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define CEIL_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 8))
-#define TRUNC_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 16))
+#define FLOOR_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define CEIL_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 8))
+#define TRUNC_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 16))
 
 #endif

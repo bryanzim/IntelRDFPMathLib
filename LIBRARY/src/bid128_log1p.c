@@ -29,21 +29,22 @@
 
 #include "bid_trans.h"
 
-static BID_UINT128 bi_d128_minus_half =
-    {BID128_LH_INIT(0x0000000000000005ull, 0xb03e000000000000ull)};
+static BID_UINT128 bi_d128_minus_half = {
+    BID128_LH_INIT(0x0000000000000005ull, 0xb03e000000000000ull)};
 
-static BID_UINT128 bi_d128_1 =
-    {BID128_LH_INIT(0x0000000000000001ull, 0x3040000000000000ull)};
+static BID_UINT128 bi_d128_1 = {
+    BID128_LH_INIT(0x0000000000000001ull, 0x3040000000000000ull)};
 
-static BID_UINT128 bi_d128_10_po_w4464 =
-    {BID128_LH_INIT(0x0000000000000001ull, 0x5320000000000000ull)};
-static BID_UINT128 bi_d128_10_pow_n4464 =
-    {BID128_LH_INIT(0x0000000000000001ull, 0x0d60000000000000ull)};
+static BID_UINT128 bi_d128_10_po_w4464 = {
+    BID128_LH_INIT(0x0000000000000001ull, 0x5320000000000000ull)};
+static BID_UINT128 bi_d128_10_pow_n4464 = {
+    BID128_LH_INIT(0x0000000000000001ull, 0x0d60000000000000ull)};
 
-static BID_UINT128 bi_d128_nan =
-    {BID128_LH_INIT(0x0000000000000000ull, 0x7c00000000000000ull)};
+static BID_UINT128 bi_d128_nan = {
+    BID128_LH_INIT(0x0000000000000000ull, 0x7c00000000000000ull)};
 
-BID_F128_CONST_DEF(c_4464_ln_10, 400c4135eb3929fb, a719f2c946d2d728); // 4454*ln(10)
+BID_F128_CONST_DEF(c_4464_ln_10, 400c4135eb3929fb,
+                   a719f2c946d2d728);  // 4454*ln(10)
 
 BID128_FUNCTION_ARG1(bid128_log1p, x)
 
@@ -55,18 +56,19 @@ BID_F128_TYPE xd, yd = {0};
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
+if ((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if(((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64))
+  if (((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64)) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-  if(((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
-      0x0000314dc6448d93ull) ||
-     (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
-       0x0000314dc6448d93ull) &&
-      res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
+  if (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
+       0x0000314dc6448d93ull) ||
+      (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
+        0x0000314dc6448d93ull) &&
+       res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
     res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
     res.w[BID_LOW_128W] = 0ull;
   }
@@ -78,9 +80,9 @@ if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 // Deal with negative values 1 + x, returning NaN explicitly
 
 BIDECIMAL_CALL2_NORND(bid128_quiet_less, sm, x, bi_d128_minus_half);
-if(sm) {
+if (sm) {
   BIDECIMAL_CALL2(bid128_add, y, x, bi_d128_1);
-  if((y.w[BID_HIGH_128W] & MASK_SIGN) == MASK_SIGN) {
+  if ((y.w[BID_HIGH_128W] & MASK_SIGN) == MASK_SIGN) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -97,7 +99,7 @@ if(sm) {
 // do the same thing as for the basic log function
 
 BIDECIMAL_CALL2_NORND(bid128_quiet_greater, sm, x, bi_d128_10_po_w4464);
-if(sm) {
+if (sm) {
   BID_UINT128 x_mod;
   BIDECIMAL_CALL2(bid128_mul, x_mod, x, bi_d128_10_pow_n4464);
   BIDECIMAL_CALL1(bid128_to_binary128, xd, x_mod);
@@ -114,7 +116,7 @@ if(sm) {
 x_abs = x;
 x_abs.w[BID_HIGH_128W] &= ~MASK_SIGN;
 BIDECIMAL_CALL2_NORND(bid128_quiet_less, sm, x_abs, bi_d128_10_pow_n4464);
-if(sm) {
+if (sm) {
   BID_UINT128 x_neg = x;
   x_neg.w[BID_HIGH_128W] ^= MASK_SIGN;
   BIDECIMAL_CALL3(bid128_fma, res, x, x_neg, x);

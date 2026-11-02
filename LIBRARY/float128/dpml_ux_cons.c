@@ -43,7 +43,6 @@
   index++
 
 @divert - append divertText
-
 #include "mphoc_functions.h"
 
               procedure print_table_entries(value) {
@@ -74,14 +73,16 @@ inf_value = bldexp(1, F_MAX_BIN_EXP + 1);
 
 index = 0;
 
-printf("_X_CON#if INSTANTIATE_TABLE\n"
-       "_X_CON\n"
-       "_X_CON    const TABLE_UNION PACKED_CONSTANT_TABLE[] = {\n"
-       "_X_CON\n");
+printf(
+    "_X_CON#if INSTANTIATE_TABLE\n"
+    "_X_CON\n"
+    "_X_CON    const TABLE_UNION PACKED_CONSTANT_TABLE[] = {\n"
+    "_X_CON\n");
 
-printf("ENUM\n"
-       "ENUM#if INSTANTIATE_DEFINES\n"
-       "ENUM\n");
+printf(
+    "ENUM\n"
+    "ENUM#if INSTANTIATE_DEFINES\n"
+    "ENUM\n");
 
 PRINT_IT("ZERO\t\t", 0);
 PRINT_IT("ONE\t\t", 1);
@@ -93,25 +94,25 @@ PRINT_IT("THREE_PI_OVER_4\t", 3 * pi / 4);
 PRINT_IT("NINETY\t", 90);
 PRINT_IT("ONE_EIGHTY\t", 180);
 PRINT_IT("INF\t\t", inf_value);
-printf("ENUM#   define LAST_CONS_INDEX\t%i\n"
-       "ENUM\n"
-       "ENUM#endif\n"
-       "ENUM\n",
-       index);
+printf(
+    "ENUM#   define LAST_CONS_INDEX\t%i\n"
+    "ENUM\n"
+    "ENUM#endif\n"
+    "ENUM\n",
+    index);
 
-printf("_X_CON\t};\n"
-       "_X_CON\n"
-       "_X_CON#endif\n"
-       "_X_CON\n");
+printf(
+    "_X_CON\t};\n"
+    "_X_CON\n"
+    "_X_CON#endif\n"
+    "_X_CON\n");
 
-@end_divert
-    @eval my $outText = MphocEval(GetStream(divertText));
+@end_divert @eval my $outText = MphocEval(GetStream(divertText));
 my $enumText = Egrep("^ENUM", $outText);
 $enumText = ~s | ENUM || g;
 my $xconText = Egrep("^_X_CON", $outText);
 $xconText = ~s | _X_CON || g;
 $outText = "$enumText\n$xconText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Interesting x_float constants",
-                               "dpml_ux_cons.c");
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME), "Interesting x_float constants", "dpml_ux_cons.c");
 print "$headerText\n$outText";

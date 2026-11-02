@@ -39,27 +39,29 @@ int z;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK32) == NAN_MASK32) {
+if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK32) == SNAN_MASK32)
+  if ((x & SNAN_MASK32) == SNAN_MASK32) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res = x & 0xfc0ffffful;
-  if((res & 0x000ffffful) > 999999ul)
+  if ((res & 0x000ffffful) > 999999ul) {
     res &= ~0x000ffffful;
+  }
   BID_RETURN(res);
 }
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isZero, z, x);
-if(z) {
+if (z) {
   // 1 according C99
   res = 0x32800001U;
   BID_RETURN(res);
 }
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isInf, z, x);
-if(z) {
+if (z) {
   // 0 or Inf according C99
-  if(x & MASK_SIGN32) {
+  if (x & MASK_SIGN32) {
     res = 0x32800000U;
   } else {
     res = 0x78000000U;
@@ -77,12 +79,13 @@ if(z) {
 
 BIDECIMAL_CALL1(bid32_to_binary64, xd, x);
 
-if(xd > 1000.0)
+if (xd > 1000.0) {
   yd = 1.0e200;
-else if(xd < -1000.0)
+} else if (xd < -1000.0) {
   yd = 1.0e-200;
-else
+} else {
   yd = exp2(xd);
+}
 
 BIDECIMAL_CALL1(binary64_to_bid32, res, yd);
 

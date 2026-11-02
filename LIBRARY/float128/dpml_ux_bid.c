@@ -68,25 +68,20 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  fp_class = UNPACK2(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      &unpacked_x,
-      &unpacked_y,
-      MUL_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK2(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+                     &unpacked_x, &unpacked_y, MUL_CLASS_TO_ACTION_MAP,
+                     PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   MULTIPLY(&unpacked_x, &unpacked_y, &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      G_UX_SIGN(&unpacked_result) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
-      G_UX_SIGN(&unpacked_result) ? FMA_NEG_OVERFLOW : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result),
+       G_UX_SIGN(&unpacked_result) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
+       G_UX_SIGN(&unpacked_result) ? FMA_NEG_OVERFLOW
+                                   : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -100,25 +95,20 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  fp_class = UNPACK2(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      &unpacked_x,
-      &unpacked_y,
-      DIV_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK2(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+                     &unpacked_x, &unpacked_y, DIV_CLASS_TO_ACTION_MAP,
+                     PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   DIVIDE(&unpacked_x, &unpacked_y, 0, &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      G_UX_SIGN(&unpacked_result) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
-      G_UX_SIGN(&unpacked_result) ? FMA_NEG_OVERFLOW : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result),
+       G_UX_SIGN(&unpacked_result) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
+       G_UX_SIGN(&unpacked_result) ? FMA_NEG_OVERFLOW
+                                   : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -132,25 +122,20 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  fp_class = UNPACK2(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      &unpacked_x,
-      &unpacked_y,
-      ADDITION_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK2(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+                     &unpacked_x, &unpacked_y, ADDITION_CLASS_TO_ACTION_MAP,
+                     PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   ADDSUB(&unpacked_x, &unpacked_y, ADD, &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      G_UX_SIGN(&unpacked_result) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
-      G_UX_SIGN(&unpacked_result) ? FMA_NEG_OVERFLOW : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result),
+       G_UX_SIGN(&unpacked_result) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
+       G_UX_SIGN(&unpacked_result) ? FMA_NEG_OVERFLOW
+                                   : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -164,25 +149,20 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  fp_class = UNPACK2(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      &unpacked_x,
-      &unpacked_y,
-      SUBTRACTION_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK2(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+                     &unpacked_x, &unpacked_y, SUBTRACTION_CLASS_TO_ACTION_MAP,
+                     PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   ADDSUB(&unpacked_x, &unpacked_y, SUB, &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      G_UX_SIGN(&unpacked_result) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
-      G_UX_SIGN(&unpacked_result) ? FMA_NEG_OVERFLOW : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result),
+       G_UX_SIGN(&unpacked_result) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
+       G_UX_SIGN(&unpacked_result) ? FMA_NEG_OVERFLOW
+                                   : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -196,12 +176,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_x),
-      &unpacked_x,
-      NEGATE_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_x), &unpacked_x,
+                    NEGATE_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
   (void)fp_class;
 
   RETURN_X_FLOAT(packed_result);
@@ -216,12 +193,9 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_x) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_x),
-      &unpacked_x,
-      FABS_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class =
+      UNPACK(PASS_ARG_X_FLOAT(packed_x), &unpacked_x, FABS_CLASS_TO_ACTION_MAP,
+             PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
   (void)fp_class;
 
   RETURN_X_FLOAT(packed_result);
@@ -242,21 +216,21 @@ X_I_PROTO(F_ENTRY_NAME, packed_result, i) {
 
   sign = 0;
   msd = UX_TO_DIGIT(i);
-  if(i == 0) {
+  if (i == 0) {
     exponent = 0;
   } else {
     exponent = 32;
     cnt = 16;
-    if((UX_SIGNED_FRACTION_DIGIT_TYPE)msd < 0) {
+    if ((UX_SIGNED_FRACTION_DIGIT_TYPE)msd < 0) {
       msd = UX_TO_DIGIT(-UX_TO_SDIGIT(msd));
       sign = 1;
     }
 
     mask = ((UX_FRACTION_DIGIT_TYPE)0xffff0000) << ITOF_SHIFT;
-    msd = ((UX_FRACTION_DIGIT_TYPE)msd) << ITOF_SHIFT;
+    msd = (msd) << ITOF_SHIFT;
 
-    while(cnt) {
-      if((mask & msd) == 0) {
+    while (cnt) {
+      if ((mask & msd) == 0) {
         msd <<= cnt;
         exponent -= cnt;
       }
@@ -267,11 +241,9 @@ X_I_PROTO(F_ENTRY_NAME, packed_result, i) {
 
   UX_SET_SIGN_EXP_MSD(&unpacked_result, sign, exponent, msd);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      /* Not Used */ 0,
-      /* Not Used */ 0 OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result),
+       /* Not Used */ 0,
+       /* Not Used */ 0 OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -315,9 +287,8 @@ static U_INT_32 cmp_table[] = {
 #define UX_CMP __INTERNAL_NAME(ux_cmp__)
 #endif
 
-static int
-UX_CMP(WORD x_class, UX_FLOAT *unpacked_x,
-       WORD y_class, UX_FLOAT *unpacked_y) {
+static int UX_CMP(WORD x_class, UX_FLOAT* unpacked_x, WORD y_class,
+                  UX_FLOAT* unpacked_y) {
   UX_SIGN_TYPE sign;
   int i, order;
   WORD diff;
@@ -325,24 +296,24 @@ UX_CMP(WORD x_class, UX_FLOAT *unpacked_x,
   order = (cmp_table[x_class] >> (NUM_CMP_BITS * y_class)) &
           MAKE_MASK(NUM_CMP_BITS, 0);
 
-  if(order == DO) {
-
+  if (order == DO) {
     // Both arguments have the same sign
 
-    diff = ((WORD)G_UX_EXPONENT(unpacked_x)) -
-           ((WORD)G_UX_EXPONENT(unpacked_y));
-    if(diff == 0) {
-      for(i = 0; i < NUM_UX_FRACTION_DIGITS; i++) {
+    diff =
+        ((WORD)G_UX_EXPONENT(unpacked_x)) - ((WORD)G_UX_EXPONENT(unpacked_y));
+    if (diff == 0) {
+      for (i = 0; i < NUM_UX_FRACTION_DIGITS; i++) {
         diff = UX_TO_WORD(G_UX_FRACTION_DIGIT(unpacked_x, i) -
                           G_UX_FRACTION_DIGIT(unpacked_y, i));
-        if(diff != 0)
+        if (diff != 0) {
           break;
+        }
       }
     }
     sign = G_UX_SIGN(unpacked_x);
-    if(diff > 0) {
+    if (diff > 0) {
       order = sign ? LT : GT;
-    } else if(diff < 0) {
+    } else if (diff < 0) {
       order = sign ? GT : LT;
     } else {
       order = EQ;
@@ -361,14 +332,9 @@ I_XXI_PROTO(F_ENTRY_NAME, packed_x, packed_y, predicate) {
   EXCEPTION_INFO_DECL
   _X_FLOAT dummy;
 
-  fp_class = UNPACK2(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      &unpacked_x,
-      &unpacked_y,
-      MUL_CLASS_TO_ACTION_MAP,
-      &dummy
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK2(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+                     &unpacked_x, &unpacked_y, MUL_CLASS_TO_ACTION_MAP,
+                     &dummy OPT_EXCEPTION_INFO);
 
 #define CLASS_MASK MAKE_MASK(F_C_CLASS_BIT_WIDTH, 0)
 
@@ -389,17 +355,13 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  fp_class = UNPACK2(
-      PASS_ARG_X_FLOAT(packed_x),
-      PASS_ARG_X_FLOAT(packed_y),
-      &unpacked_x,
-      &unpacked_y,
-      NEXTAFTER_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK2(PASS_ARG_X_FLOAT(packed_x), PASS_ARG_X_FLOAT(packed_y),
+                     &unpacked_x, &unpacked_y, NEXTAFTER_CLASS_TO_ACTION_MAP,
+                     PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   x_class = (WORD)((U_WORD)fp_class >> F_C_CLASS_BIT_WIDTH);
   y_class = (WORD)((U_WORD)fp_class & MAKE_MASK(F_C_CLASS_BIT_WIDTH, 0));
@@ -411,22 +373,20 @@ X_XX_PROTO(F_ENTRY_NAME, packed_result, packed_x, packed_y) {
   CLR_UX_LOW_FRACTION(&unpacked_y);
   P_UX_EXPONENT(&unpacked_y, G_UX_EXPONENT(&unpacked_x));
 
-  if(order != EQ) {
-
+  if (order != EQ) {
     exponent = G_UX_EXPONENT(&unpacked_x);
 
-    UX_SET_SIGN_EXP_MSD(&unpacked_y, order == LT ? 0 : UX_SIGN_BIT,
-                        exponent, 0);
+    UX_SET_SIGN_EXP_MSD(&unpacked_y, order == LT ? 0 : UX_SIGN_BIT, exponent,
+                        0);
     CLR_UX_LOW_FRACTION(&unpacked_y);
     P_UX_LSD(&unpacked_y, 1 << 15);
     ADDSUB(&unpacked_x, &unpacked_y, ADD, &unpacked_x);
   }
 
-  PACK(
-      &unpacked_x,
-      PASS_RET_X_FLOAT(packed_result),
-      G_UX_SIGN(&unpacked_x) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
-      G_UX_SIGN(&unpacked_x) ? FMA_NEG_OVERFLOW : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
+  PACK(&unpacked_x, PASS_RET_X_FLOAT(packed_result),
+       G_UX_SIGN(&unpacked_x) ? FMA_NEG_UNDERFLOW : FMA_POS_UNDERFLOW,
+       G_UX_SIGN(&unpacked_x) ? FMA_NEG_OVERFLOW
+                              : FMA_POS_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -481,14 +441,10 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(0) +
 /* Index 1: class-to-index mapping */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_POS_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 2) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 2) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 2) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 2) +
-    CLASS_TO_INDEX(F_C_POS_INF, 2) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 2));
+    CLASS_TO_INDEX(F_C_POS_ZERO, 2) + CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 2) + CLASS_TO_INDEX(F_C_NEG_DENORM, 2) +
+    CLASS_TO_INDEX(F_C_POS_NORM, 2) + CLASS_TO_INDEX(F_C_NEG_NORM, 2) +
+    CLASS_TO_INDEX(F_C_POS_INF, 2) + CLASS_TO_INDEX(F_C_NEG_INF, 2));
 
 /* Index 2: y class-to-index mapping for x != SNaN or QNaN */
 
@@ -508,14 +464,10 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(5) +
 /* Index 1: class-to-index mapping */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_POS_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 4) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 4) +
-    CLASS_TO_INDEX(F_C_POS_INF, 5) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 5));
+    CLASS_TO_INDEX(F_C_POS_ZERO, 2) + CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
+    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) + CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 4) + CLASS_TO_INDEX(F_C_POS_NORM, 4) +
+    CLASS_TO_INDEX(F_C_POS_INF, 5) + CLASS_TO_INDEX(F_C_NEG_INF, 5));
 
 /* Index 2: y class-to-index mapping for x = +/- zero */
 
@@ -588,14 +540,10 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(5) +
 /* Index 1: class-to-index mapping */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_POS_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 4) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 4) +
-    CLASS_TO_INDEX(F_C_POS_INF, 5) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 5));
+    CLASS_TO_INDEX(F_C_POS_ZERO, 2) + CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
+    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) + CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 4) + CLASS_TO_INDEX(F_C_POS_NORM, 4) +
+    CLASS_TO_INDEX(F_C_POS_INF, 5) + CLASS_TO_INDEX(F_C_NEG_INF, 5));
 
 /* Index 2: y class-to-index mapping for x = +/- zero */
 
@@ -672,14 +620,10 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(5) +
 /* Index 1: class-to-index mapping */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_POS_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 4) +
-    CLASS_TO_INDEX(F_C_POS_INF, 5));
+    CLASS_TO_INDEX(F_C_POS_ZERO, 2) + CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
+    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) + CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 3) + CLASS_TO_INDEX(F_C_POS_NORM, 3) +
+    CLASS_TO_INDEX(F_C_NEG_INF, 4) + CLASS_TO_INDEX(F_C_POS_INF, 5));
 
 /* Index 2: y class-to-index mapping for x = +/- zero */
 
@@ -752,14 +696,10 @@ PRINT_64_TBL_ITEM(CLASS_TO_ACTION_DISP(5) +
 /* Index 1: class-to-index mapping */
 
 PRINT_64_TBL_ITEM(
-    CLASS_TO_INDEX(F_C_POS_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
-    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_DENORM, 3) +
-    CLASS_TO_INDEX(F_C_POS_NORM, 3) +
-    CLASS_TO_INDEX(F_C_NEG_INF, 4) +
-    CLASS_TO_INDEX(F_C_POS_INF, 5));
+    CLASS_TO_INDEX(F_C_POS_ZERO, 2) + CLASS_TO_INDEX(F_C_NEG_ZERO, 2) +
+    CLASS_TO_INDEX(F_C_NEG_DENORM, 3) + CLASS_TO_INDEX(F_C_NEG_NORM, 3) +
+    CLASS_TO_INDEX(F_C_POS_DENORM, 3) + CLASS_TO_INDEX(F_C_POS_NORM, 3) +
+    CLASS_TO_INDEX(F_C_NEG_INF, 4) + CLASS_TO_INDEX(F_C_POS_INF, 5));
 
 /* Index 2: y class-to-index mapping for x = +/- zero */
 
@@ -833,8 +773,7 @@ PRINT_R_TBL_VDEF_ITEM("D_TWO_POW_75\t", bldexp(1, 75));
 PRINT_R_TBL_VDEF_ITEM("D_RECIP_TWO_POW_24", bldexp(1, -24));
 PRINT_R_TBL_VDEF_ITEM("D_RECIP_TWO_POW_77", bldexp(1, -77));
 
-TABLE_COMMENT(
-    "Rsqrt iteration (double precision) constants: 7/8 and 3/8");
+TABLE_COMMENT("Rsqrt iteration (double precision) constants: 7/8 and 3/8");
 
 PRINT_R_TBL_VDEF_ITEM("D_SEVEN_EIGHTS", 7 / 8);
 PRINT_R_TBL_VDEF_ITEM("D_THREE_EIGHTS", 3 / 8);
@@ -844,12 +783,12 @@ PRINT_UX_TBL_ADEF_ITEM("UX_THREE\t\t", 3);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants square root "."related routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants square root "."related routines", __FILE__);
 print "$headerText\n\n$outText\n";
 #endif

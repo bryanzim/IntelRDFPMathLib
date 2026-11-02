@@ -34,32 +34,30 @@
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_rnint(int *pres,
-                          BID_UINT32 *
-                              px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                  _EXC_INFO_PARAM) {
+void bid32_to_int32_rnint(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                         _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_rnint, 32)
-int bid32_to_int32_rnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                             _EXC_INFO_PARAM) {
+int bid32_to_int32_rnint(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 fstar;
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -67,22 +65,22 @@ int bid32_to_int32_rnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -91,36 +89,37 @@ int bid32_to_int32_rnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n < -2^31 - 1/2 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 > 2^31+1/2
       // <=> C * 10^(11-q) > 0x500000005, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000005 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)00...0 (11 digits)
-      if(tmp64 > 0x500000005ull) {
+      if (tmp64 > 0x500000005ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -129,14 +128,14 @@ int bid32_to_int32_rnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n >= 2^31 - 1/2 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31-1/2
       // <=> C * 10^(11-q) >= 0x4fffffffb, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000005 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)00...0 (11 digits)
-      if(tmp64 >= 0x4fffffffbull) {
+      if (tmp64 >= 0x4fffffffbull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -149,28 +148,28 @@ int bid32_to_int32_rnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 - 1/2 <= n < 2^31 - 1/2
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) < 0) { // n = +/-0.0...c(0)c(1)...c(q-1)
+  if ((q + exp) < 0) {  // n = +/-0.0...c(0)c(1)...c(q-1)
     // return 0
     res = 0x00000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 0) { // n = +/-0.c(0)c(1)...c(q-1)
+  } else if ((q + exp) == 0) {  // n = +/-0.c(0)c(1)...c(q-1)
     // if 0.c(0)c(1)...c(q-1) <= 0.5 <=> c(0)c(1)...c(q-1) <= 5 * 10^(q-1)
     //   res = 0
     // else
     //   res = +/-1
     ind = q - 1;
-    if((BID_UINT64)c1 <= bid_midpoint64[ind]) {
-      res = 0x00000000U;      // return 0
-    } else if(x_sign) {       // n < 0
-      res = (int)0xffffffffU; // return -1
-    } else {                  // n > 0
-      res = 0x00000001U;      // return +1
+    if ((BID_UINT64)c1 <= bid_midpoint64[ind]) {
+      res = 0x00000000U;       // return 0
+    } else if (x_sign) {       // n < 0
+      res = (int)0xffffffffU;  // return -1
+    } else {                   // n > 0
+      res = 0x00000001U;       // return +1
     }
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1/2 <= x <= -1 or 1 <= x < 2^31-1/2 so x can be rounded
     // to nearest to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 = C1 + 1/2 * 10^ind where the result C1 fits in 32 bits
       c1 = c1 + (BID_UINT32)bid_midpoint64[ind - 1];
@@ -199,38 +198,42 @@ int bid32_to_int32_rnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
 
       // if the result was a midpoint it was rounded away from zero, so
       // it will need a correction
       // check for midpoints
-      if((fstar.w[1U] == 0) && fstar.w[0U] && (fstar.w[0U] <= bid_ten2mk128trunc[ind - 1].w[1U])) {
+      if ((fstar.w[1U] == 0) && fstar.w[0U] &&
+          (fstar.w[0U] <= bid_ten2mk128trunc[ind - 1].w[1U])) {
         // bid_ten2mk128trunc[ind -1].w[1] is identical to
         // bid_ten2mk128[ind -1].w[1]
         // the result is a midpoint; round to nearest
-        if(cstar & 0x01U) { // Cstar is odd; MP in [EVEN, ODD]
+        if (cstar & 0x01U) {  // Cstar is odd; MP in [EVEN, ODD]
           // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
-          cstar--; // Cstar is now even
-        } // else MP in [ODD, EVEN]
+          cstar--;  // Cstar is now even
+        }  // else MP in [ODD, EVEN]
       }
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -241,32 +244,30 @@ int bid32_to_int32_rnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_xrnint(int *pres,
-                           BID_UINT32 *
-                               px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                   _EXC_INFO_PARAM) {
+void bid32_to_int32_xrnint(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                          _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xrnint, 32)
-int bid32_to_int32_xrnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                              _EXC_INFO_PARAM) {
+int bid32_to_int32_xrnint(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 fstar;
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -274,22 +275,22 @@ int bid32_to_int32_xrnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -298,36 +299,37 @@ int bid32_to_int32_xrnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n < -2^31 - 1/2 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 > 2^31+1/2
       // <=> C * 10^(11-q) > 0x500000005, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000005 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 > 0x500000005ull) {
+      if (tmp64 > 0x500000005ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -336,14 +338,14 @@ int bid32_to_int32_xrnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n >= 2^31 - 1/2 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31-1/2
       // <=> C * 10^(11-q) >= 0x4fffffffb, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000005 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x4fffffffbull) {
+      if (tmp64 >= 0x4fffffffbull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -356,32 +358,32 @@ int bid32_to_int32_xrnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 - 1/2 < n < 2^31 - 1/2
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) < 0) { // n = +/-0.0...c(0)c(1)...c(q-1)
+  if ((q + exp) < 0) {  // n = +/-0.0...c(0)c(1)...c(q-1)
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
     // return 0
     res = 0x00000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 0) { // n = +/-0.c(0)c(1)...c(q-1)
+  } else if ((q + exp) == 0) {  // n = +/-0.c(0)c(1)...c(q-1)
     // if 0.c(0)c(1)...c(q-1) <= 0.5 <=> c(0)c(1)...c(q-1) <= 5 * 10^(q-1)
     //   res = 0
     // else
     //   res = +/-1
     ind = q - 1;
-    if((BID_UINT64)c1 <= bid_midpoint64[ind]) {
-      res = 0x00000000U;      // return 0
-    } else if(x_sign) {       // n < 0
-      res = (int)0xffffffffU; // return -1
-    } else {                  // n > 0
-      res = 0x00000001U;      // return +1
+    if ((BID_UINT64)c1 <= bid_midpoint64[ind]) {
+      res = 0x00000000U;       // return 0
+    } else if (x_sign) {       // n < 0
+      res = (int)0xffffffffU;  // return -1
+    } else {                   // n > 0
+      res = 0x00000001U;       // return +1
     }
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1/2 <= x <= -1 or 1 <= x < 2^31-1/2 so x can be rounded
     // to nearest to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 = C1 + 1/2 * 10^ind where the result C1 fits in 32 bits
       c1 = c1 + (BID_UINT32)bid_midpoint64[ind - 1];
@@ -410,40 +412,40 @@ int bid32_to_int32_xrnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
       // determine inexactness of the rounding of C*
       // if (0 < f* - 1/2 < 10^(-x)) then
       //   the result is exact
       // else // if (f* - 1/2 > T*) then
       //   the result is inexact
-      if(ind - 1 <= 2) {
-        if(fstar.w[0U] > 0x8000000000000000ull) {
+      if (ind - 1 <= 2) {
+        if (fstar.w[0U] > 0x8000000000000000ull) {
           // f* > 1/2 and the result may be exact
-          tmp64 = fstar.w[0U] - 0x8000000000000000ull; // f* - 1/2
-          if((tmp64 > bid_ten2mk128trunc[ind - 1].w[1U])) {
+          tmp64 = fstar.w[0U] - 0x8000000000000000ull;  // f* - 1/2
+          if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1U])) {
             // bid_ten2mk128trunc[ind -1].w[1] is identical to
             // bid_ten2mk128[ind -1].w[1]
             // set the inexact flag
             *pfpsf |= BID_INEXACT_EXCEPTION;
-          } // else the result is exact
-        } else { // the result is inexact; f2* <= 1/2
+          }  // else the result is exact
+        } else {  // the result is inexact; f2* <= 1/2
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
         }
-      } else { // if 3 <= ind - 1 <= 14
-        if(fstar.w[1U] > bid_onehalf128[ind - 1] ||
-           (fstar.w[1U] == bid_onehalf128[ind - 1] && fstar.w[0U])) {
+      } else {  // if 3 <= ind - 1 <= 14
+        if (fstar.w[1U] > bid_onehalf128[ind - 1] ||
+            (fstar.w[1U] == bid_onehalf128[ind - 1] && fstar.w[0U])) {
           // f2* > 1/2 and the result may be exact
           // Calculate f2* - 1/2
           tmp64 = fstar.w[1U] - bid_onehalf128[ind - 1];
-          if(tmp64 || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+          if (tmp64 || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
             // bid_ten2mk128trunc[ind -1].w[1] is identical to
             // bid_ten2mk128[ind -1].w[1]
             // set the inexact flag
             *pfpsf |= BID_INEXACT_EXCEPTION;
-          } // else the result is exact
-        } else { // the result is inexact; f2* <= 1/2
+          }  // else the result is exact
+        } else {  // the result is inexact; f2* <= 1/2
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
         }
@@ -452,32 +454,36 @@ int bid32_to_int32_xrnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // if the result was a midpoint it was rounded away from zero, so
       // it will need a correction
       // check for midpoints
-      if((fstar.w[1U] == 0) && fstar.w[0U] && (fstar.w[0U] <= bid_ten2mk128trunc[ind - 1].w[1U])) {
+      if ((fstar.w[1U] == 0) && fstar.w[0U] &&
+          (fstar.w[0U] <= bid_ten2mk128trunc[ind - 1].w[1U])) {
         // bid_ten2mk128trunc[ind -1].w[1] is identical to
         // bid_ten2mk128[ind -1].w[1]
         // the result is a midpoint; round to nearest
-        if(cstar & 0x01U) { // Cstar is odd; MP in [EVEN, ODD]
+        if (cstar & 0x01U) {  // Cstar is odd; MP in [EVEN, ODD]
           // if floor(C*) is odd C = floor(C*) - 1; the result >= 1
-          cstar--; // Cstar is now even
-        } // else MP in [ODD, EVEN]
+          cstar--;  // Cstar is now even
+        }  // else MP in [ODD, EVEN]
       }
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -488,32 +494,30 @@ int bid32_to_int32_xrnint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_floor(int *pres,
-                          BID_UINT32 *
-                              px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                  _EXC_INFO_PARAM) {
+void bid32_to_int32_floor(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                         _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_floor, 32)
-int bid32_to_int32_floor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                             _EXC_INFO_PARAM) {
+int bid32_to_int32_floor(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 fstar;
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -521,22 +525,22 @@ int bid32_to_int32_floor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -545,36 +549,37 @@ int bid32_to_int32_floor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n < -2^31 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 > 2^31
       // <=> C * 10^(11-q) >= 0x500000000, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000000 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 > 0x500000000ull) {
+      if (tmp64 > 0x500000000ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -583,14 +588,14 @@ int bid32_to_int32_floor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n >= 2^31 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31
       // <=> C * 10^(11-q) >= 0x500000000, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000000 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x500000000ull) {
+      if (tmp64 >= 0x500000000ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -603,18 +608,19 @@ int bid32_to_int32_floor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 <= n < 2^31
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) <= 0) { // n = +/-0.[0...0]c(0)c(1)...c(q-1)
+  if ((q + exp) <= 0) {  // n = +/-0.[0...0]c(0)c(1)...c(q-1)
     // return -1 or 0
-    if(x_sign)
+    if (x_sign) {
       res = (int)0xffffffffU;
-    else
+    } else {
       res = 0x00000000U;
+    }
     BID_RETURN(res);
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1 < x <= -1 or 1 <= x < 2^31 so x can be rounded
     // to nearest to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 fits in 32 bits
       // calculate C* and f*
@@ -636,48 +642,51 @@ int bid32_to_int32_floor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
       // determine inexactness of the rounding of C*
       // if (0 < f* < 10^(-x)) then
       //   the result is exact
       // else // if (f* > T*) then
       //   the result is inexact
-      if(ind - 1 <= 2) {
-        if(fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+      if (ind - 1 <= 2) {
+        if (fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
-          if(x_sign) { // negative and inexact
+          if (x_sign) {  // negative and inexact
             cstar++;
           }
-        } // else the result is exact
-      } else { // if 3 <= ind - 1 <= 14
-        if(fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+        }  // else the result is exact
+      } else {  // if 3 <= ind - 1 <= 14
+        if (fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
-          if(x_sign) { // negative and inexact
+          if (x_sign) {  // negative and inexact
             cstar++;
           }
-        } // else the result is exact
+        }  // else the result is exact
       }
 
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -688,32 +697,30 @@ int bid32_to_int32_floor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_xfloor(int *pres,
-                           BID_UINT32 *
-                               px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                   _EXC_INFO_PARAM) {
+void bid32_to_int32_xfloor(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                          _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xfloor, 32)
-int bid32_to_int32_xfloor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                              _EXC_INFO_PARAM) {
+int bid32_to_int32_xfloor(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 fstar;
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -721,22 +728,22 @@ int bid32_to_int32_xfloor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -745,36 +752,37 @@ int bid32_to_int32_xfloor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n < -2^31 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 > 2^31
       // <=> C * 10^(11-q) >= 0x500000000, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000000 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 > 0x500000000ull) {
+      if (tmp64 > 0x500000000ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -783,14 +791,14 @@ int bid32_to_int32_xfloor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n >= 2^31 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31
       // <=> C * 10^(11-q) >= 0x500000000, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000000 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x500000000ull) {
+      if (tmp64 >= 0x500000000ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -803,20 +811,21 @@ int bid32_to_int32_xfloor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 <= n < 2^31
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) <= 0) { // n = +/-0.[0...0]c(0)c(1)...c(q-1)
+  if ((q + exp) <= 0) {  // n = +/-0.[0...0]c(0)c(1)...c(q-1)
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
     // return -1 or 0
-    if(x_sign)
+    if (x_sign) {
       res = (int)0xffffffffU;
-    else
+    } else {
       res = 0x00000000U;
+    }
     BID_RETURN(res);
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1 < x <= -1 or 1 <= x < 2^31 so x can be rounded
     // to nearest to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 fits in 32 bits
       // calculate C* and f*
@@ -838,52 +847,55 @@ int bid32_to_int32_xfloor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
       // determine inexactness of the rounding of C*
       // if (0 < f* < 10^(-x)) then
       //   the result is exact
       // else // if (f* > T*) then
       //   the result is inexact
-      if(ind - 1 <= 2) {
-        if(fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+      if (ind - 1 <= 2) {
+        if (fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
-          if(x_sign) { // negative and inexact
+          if (x_sign) {  // negative and inexact
             cstar++;
           }
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
-        } // else the result is exact
-      } else { // if 3 <= ind - 1 <= 14
-        if(fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+        }  // else the result is exact
+      } else {  // if 3 <= ind - 1 <= 14
+        if (fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
-          if(x_sign) { // negative and inexact
+          if (x_sign) {  // negative and inexact
             cstar++;
           }
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
-        } // else the result is exact
+        }  // else the result is exact
       }
 
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -894,32 +906,30 @@ int bid32_to_int32_xfloor(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_ceil(int *pres,
-                         BID_UINT32 *
-                             px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                 _EXC_INFO_PARAM) {
+void bid32_to_int32_ceil(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                        _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_ceil, 32)
-int bid32_to_int32_ceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                            _EXC_INFO_PARAM) {
+int bid32_to_int32_ceil(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 fstar;
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -927,22 +937,22 @@ int bid32_to_int32_ceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -951,36 +961,37 @@ int bid32_to_int32_ceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n <= -2^31 - 1 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31+1
       // <=> C * 10^(11-q) >= 0x50000000a, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x50000000a has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x50000000aull) {
+      if (tmp64 >= 0x50000000aull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -989,14 +1000,14 @@ int bid32_to_int32_ceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n > 2^31 - 1 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 > 2^31 - 1
       // <=> C * 10^(11-q) > 0x4fffffff6, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x4fffffff6 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 > 0x4fffffff6ull) {
+      if (tmp64 > 0x4fffffff6ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1009,18 +1020,19 @@ int bid32_to_int32_ceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 - 1 < n <= 2^31 - 1
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) <= 0) { // n = +/-0.[0...0]c(0)c(1)...c(q-1)
+  if ((q + exp) <= 0) {  // n = +/-0.[0...0]c(0)c(1)...c(q-1)
     // return 0 or 1
-    if(x_sign)
+    if (x_sign) {
       res = 0x00000000U;
-    else
+    } else {
       res = 0x00000001U;
+    }
     BID_RETURN(res);
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1 < x <= -1 or 1 <= x <= 2^31-1 so x can be rounded
     // to nearest to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 fits in 32 bits
       // calculate C* and f*
@@ -1042,48 +1054,51 @@ int bid32_to_int32_ceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
       // determine inexactness of the rounding of C*
       // if (0 < f* < 10^(-x)) then
       //   the result is exact
       // else // if (f* > T*) then
       //   the result is inexact
-      if(ind - 1 <= 2) {
-        if(fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+      if (ind - 1 <= 2) {
+        if (fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
-          if(!x_sign) { // positive and inexact
+          if (!x_sign) {  // positive and inexact
             cstar++;
           }
-        } // else the result is exact
-      } else { // if 3 <= ind - 1 <= 14
-        if(fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+        }  // else the result is exact
+      } else {  // if 3 <= ind - 1 <= 14
+        if (fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
-          if(!x_sign) { // positive and inexact
+          if (!x_sign) {  // positive and inexact
             cstar++;
           }
-        } // else the result is exact
+        }  // else the result is exact
       }
 
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -1094,32 +1109,30 @@ int bid32_to_int32_ceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_xceil(int *pres,
-                          BID_UINT32 *
-                              px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                  _EXC_INFO_PARAM) {
+void bid32_to_int32_xceil(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                         _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xceil, 32)
-int bid32_to_int32_xceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                             _EXC_INFO_PARAM) {
+int bid32_to_int32_xceil(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 fstar;
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -1127,22 +1140,22 @@ int bid32_to_int32_xceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -1151,36 +1164,37 @@ int bid32_to_int32_xceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n <= -2^31 - 1 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31+1
       // <=> C * 10^(11-q) >= 0x50000000a, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x50000000a has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x50000000aull) {
+      if (tmp64 >= 0x50000000aull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1189,14 +1203,14 @@ int bid32_to_int32_xceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n > 2^31 - 1 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 > 2^31 - 1
       // <=> C * 10^(11-q) > 0x4fffffff6, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x4fffffff6 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 > 0x4fffffff6ull) {
+      if (tmp64 > 0x4fffffff6ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1209,20 +1223,21 @@ int bid32_to_int32_xceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 - 1 < n <= 2^31 - 1
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) <= 0) { // n = +/-0.[0...0]c(0)c(1)...c(q-1)
+  if ((q + exp) <= 0) {  // n = +/-0.[0...0]c(0)c(1)...c(q-1)
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
     // return 0 or 1
-    if(x_sign)
+    if (x_sign) {
       res = 0x00000000U;
-    else
+    } else {
       res = 0x00000001U;
+    }
     BID_RETURN(res);
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1 < x <= -1 or 1 <= x <= 2^31-1 so x can be rounded
     // to nearest to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 fits in 32 bits
       // calculate C* and f*
@@ -1244,52 +1259,55 @@ int bid32_to_int32_xceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
       // determine inexactness of the rounding of C*
       // if (0 < f* < 10^(-x)) then
       //   the result is exact
       // else // if (f* > T*) then
       //   the result is inexact
-      if(ind - 1 <= 2) {
-        if(fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+      if (ind - 1 <= 2) {
+        if (fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
-          if(!x_sign) { // positive and inexact
+          if (!x_sign) {  // positive and inexact
             cstar++;
           }
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
-        } // else the result is exact
-      } else { // if 3 <= ind - 1 <= 14
-        if(fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+        }  // else the result is exact
+      } else {  // if 3 <= ind - 1 <= 14
+        if (fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
-          if(!x_sign) { // positive and inexact
+          if (!x_sign) {  // positive and inexact
             cstar++;
           }
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
-        } // else the result is exact
+        }  // else the result is exact
       }
 
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -1300,31 +1318,29 @@ int bid32_to_int32_xceil(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_int(int *pres,
-                        BID_UINT32 *
-                            px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                _EXC_INFO_PARAM) {
+void bid32_to_int32_int(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                       _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_int, 32)
-int bid32_to_int32_int(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                           _EXC_INFO_PARAM) {
+int bid32_to_int32_int(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -1332,22 +1348,22 @@ int bid32_to_int32_int(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -1356,36 +1372,37 @@ int bid32_to_int32_int(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n <= -2^31 - 1 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31+1
       // <=> C * 10^(11-q) >= 0x50000000a, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x50000000a has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x50000000aull) {
+      if (tmp64 >= 0x50000000aull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1394,14 +1411,14 @@ int bid32_to_int32_int(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n >= 2^31 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31
       // <=> C * 10^(11-q) >= 0x500000000, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000000 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x500000000ull) {
+      if (tmp64 >= 0x500000000ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1414,15 +1431,15 @@ int bid32_to_int32_int(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 - 1 < n < 2^31
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) <= 0) { // n = +/-0.[0...0]c(0)c(1)...c(q-1)
+  if ((q + exp) <= 0) {  // n = +/-0.[0...0]c(0)c(1)...c(q-1)
     // return 0
     res = 0x00000000U;
     BID_RETURN(res);
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1 < x <= -1 or 1 <= x < 2^31 so x can be rounded
     // to nearest to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 fits in 32 bits
       // calculate C* and f*
@@ -1442,25 +1459,28 @@ int bid32_to_int32_int(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -1471,32 +1491,30 @@ int bid32_to_int32_int(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_xint(int *pres,
-                         BID_UINT32 *
-                             px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                 _EXC_INFO_PARAM) {
+void bid32_to_int32_xint(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                        _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xint, 32)
-int bid32_to_int32_xint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                            _EXC_INFO_PARAM) {
+int bid32_to_int32_xint(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 fstar;
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -1504,22 +1522,22 @@ int bid32_to_int32_xint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -1528,36 +1546,37 @@ int bid32_to_int32_xint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n <= -2^31 - 1 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31+1
       // <=> C * 10^(11-q) >= 0x50000000a, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x50000000a has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x50000000aull) {
+      if (tmp64 >= 0x50000000aull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1566,14 +1585,14 @@ int bid32_to_int32_xint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n >= 2^31 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31
       // <=> C * 10^(11-q) >= 0x500000000, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000000 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x500000000ull) {
+      if (tmp64 >= 0x500000000ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1586,17 +1605,17 @@ int bid32_to_int32_xint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 - 1 < n < 2^31
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) <= 0) { // n = +/-0.[0...0]c(0)c(1)...c(q-1)
+  if ((q + exp) <= 0) {  // n = +/-0.[0...0]c(0)c(1)...c(q-1)
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
     // return 0
     res = 0x00000000U;
     BID_RETURN(res);
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1 < x <= -1 or 1 <= x < 2^31 so x can be rounded
     // to nearest to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 fits in 32 bits
       // calculate C* and f*
@@ -1618,46 +1637,49 @@ int bid32_to_int32_xint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
       // determine inexactness of the rounding of C*
       // if (0 < f* < 10^(-x)) then
       //   the result is exact
       // else // if (f* > T*) then
       //   the result is inexact
-      if(ind - 1 <= 2) {
-        if(fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+      if (ind - 1 <= 2) {
+        if (fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
-        } // else the result is exact
-      } else { // if 3 <= ind - 1 <= 14
-        if(fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+        }  // else the result is exact
+      } else {  // if 3 <= ind - 1 <= 14
+        if (fstar.w[1U] || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
           // bid_ten2mk128trunc[ind -1].w[1] is identical to
           // bid_ten2mk128[ind -1].w[1]
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
-        } // else the result is exact
+        }  // else the result is exact
       }
 
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -1668,31 +1690,29 @@ int bid32_to_int32_xint(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_rninta(int *pres,
-                           BID_UINT32 *
-                               px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                   _EXC_INFO_PARAM) {
+void bid32_to_int32_rninta(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                          _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_rninta, 32)
-int bid32_to_int32_rninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                              _EXC_INFO_PARAM) {
+int bid32_to_int32_rninta(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -1700,22 +1720,22 @@ int bid32_to_int32_rninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -1724,36 +1744,37 @@ int bid32_to_int32_rninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n <= -2^31 - 1/2 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31+1/2
       // <=> C * 10^(11-q) >= 0x500000005, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000005 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x500000005ull) {
+      if (tmp64 >= 0x500000005ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1762,14 +1783,14 @@ int bid32_to_int32_rninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n >= 2^31 - 1/2 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31-1/2
       // <=> C * 10^(11-q) >= 0x4fffffffb, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000005 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x4fffffffbull) {
+      if (tmp64 >= 0x4fffffffbull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1782,28 +1803,28 @@ int bid32_to_int32_rninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 - 1/2 < n < 2^31 - 1/2
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) < 0) { // n = +/-0.0...c(0)c(1)...c(q-1)
+  if ((q + exp) < 0) {  // n = +/-0.0...c(0)c(1)...c(q-1)
     // return 0
     res = 0x00000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 0) { // n = +/-0.c(0)c(1)...c(q-1)
+  } else if ((q + exp) == 0) {  // n = +/-0.c(0)c(1)...c(q-1)
     // if 0.c(0)c(1)...c(q-1) <= 0.5 <=> c(0)c(1)...c(q-1) <= 5 * 10^(q-1)
     //   res = 0
     // else
     //   res = +/-1
     ind = q - 1;
-    if(c1 < bid_midpoint64[ind]) {
-      res = 0x00000000U;      // return 0
-    } else if(x_sign) {       // n < 0
-      res = (int)0xffffffffU; // return -1
-    } else {                  // n > 0
-      res = 0x00000001U;      // return +1
+    if (c1 < bid_midpoint64[ind]) {
+      res = 0x00000000U;       // return 0
+    } else if (x_sign) {       // n < 0
+      res = (int)0xffffffffU;  // return -1
+    } else {                   // n > 0
+      res = 0x00000001U;       // return +1
     }
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1/2 <= x <= -1 or 1 <= x < 2^31-1/2 so x can be rounded
     // to nearest away to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 = C1 + 1/2 * 10^ind where the result C1 fits in 32 bits
       c1 = c1 + (BID_UINT32)bid_midpoint64[ind - 1];
@@ -1824,27 +1845,30 @@ int bid32_to_int32_rninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
 
       // if the result was a midpoint it was rounded away from zero
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);
@@ -1855,32 +1879,30 @@ int bid32_to_int32_rninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
  ****************************************************************************/
 
 #if DECIMAL_CALL_BY_REFERENCE
-void bid32_to_int32_xrninta(int *pres,
-                            BID_UINT32 *
-                                px _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                                    _EXC_INFO_PARAM) {
+void bid32_to_int32_xrninta(int* pres, BID_UINT32* px _EXC_FLAGS_PARAM
+                                           _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
   BID_UINT32 x = *px;
 #else
 RES_WRAPFN_DFP(int, bid32_to_int32_xrninta, 32)
-int bid32_to_int32_xrninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
-                               _EXC_INFO_PARAM) {
+int bid32_to_int32_xrninta(
+    BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) {
 #endif
   int res;
   BID_UINT32 x_sign;
   BID_UINT32 x_exp;
-  int exp; // unbiased exponent
+  int exp;  // unbiased exponent
   // Note: C1 represents x_significand (BID_UINT32)
   BID_UINT64 tmp64;
   BID_UI32FLOAT tmp1;
   unsigned int x_nr_bits;
   int q, ind, shift;
   BID_UINT32 c1;
-  BID_UINT64 cstar; // C* represents up to 7 decimal digits ~ 24 bits
+  BID_UINT64 cstar;  // C* represents up to 7 decimal digits ~ 24 bits
   BID_UINT128 fstar;
   BID_UINT128 p128;
 
   // check for NaN or Infinity
-  if((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
+  if ((x & MASK_NAN32) == MASK_NAN32 || (x & MASK_INF32) == MASK_INF32) {
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
@@ -1888,22 +1910,22 @@ int bid32_to_int32_xrninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
     BID_RETURN(res);
   }
   // unpack x
-  x_sign = x & MASK_SIGN32; // 0 for positive, MASK_SIGN32 for negative
+  x_sign = x & MASK_SIGN32;  // 0 for positive, MASK_SIGN32 for negative
   // if steering bits are 11 (condition will be 0), then exponent is G[0:w+1] =>
-  if((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
-    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21; // biased
+  if ((x & MASK_STEERING_BITS32) == MASK_STEERING_BITS32) {
+    x_exp = (x & MASK_BINARY_EXPONENT2_32) >> 21;  // biased
     c1 = (x & MASK_BINARY_SIG2_32) | MASK_BINARY_OR2_32;
-    if(c1 > 9999999) { // non-canonical
+    if (c1 > 9999999) {  // non-canonical
       x_exp = 0;
       c1 = 0;
     }
   } else {
-    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23; // biased
+    x_exp = (x & MASK_BINARY_EXPONENT1_32) >> 23;  // biased
     c1 = x & MASK_BINARY_SIG1_32;
   }
 
   // check for zeros (possibly from non-canonical values)
-  if(c1 == 0x0U) {
+  if (c1 == 0x0U) {
     // x is 0
     res = 0x00000000U;
     BID_RETURN(res);
@@ -1912,36 +1934,37 @@ int bid32_to_int32_xrninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
 
   // q = nr. of decimal digits in x (1 <= q <= 7)
   //  determine first the nr. of bits in x
-  tmp1.f = (float)c1; // exact conversion
+  tmp1.f = (float)c1;  // exact conversion
   x_nr_bits = 1U + ((tmp1.ui32 >> 23) & 0xffU) - 0x7fU;
   q = (int)bid_nr_digits[x_nr_bits - 1U].digits;
-  if(q == 0) {
+  if (q == 0) {
     q = (int)bid_nr_digits[x_nr_bits - 1U].digits1;
-    if(c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo)
+    if (c1 >= bid_nr_digits[x_nr_bits - 1U].threshold_lo) {
       q++;
+    }
   }
-  exp = (int)x_exp - 101; // unbiased exponent
+  exp = (int)x_exp - 101;  // unbiased exponent
 
-  if((q + exp) > 10) { // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
+  if ((q + exp) > 10) {  // x >= 10^10 ~= 2^33.2... (cannot fit in 32 bits)
     // set invalid flag
     *pfpsf |= BID_INVALID_EXCEPTION;
     // return Integer Indefinite
     res = (int)0x80000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 10) { // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
+  } else if ((q + exp) == 10) {  // x = c(0)c(1)...c(q-1)00..0 (10 dec. digits)
     // in this case 2^29.89... ~= 10^9 <= x < 10^10 ~= 2^33.2...
     // so x rounded to an integer may or may not fit in a signed 32-bit int
     // the cases that do not fit are identified here; the ones that fit
     // fall through and will be handled with other cases further,
     // under '1 <= q + exp <= 10'
-    if(x_sign) { // if n < 0 and q + exp = 10
+    if (x_sign) {  // if n < 0 and q + exp = 10
       // if n <= -2^31 - 1/2 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31+1/2
       // <=> C * 10^(11-q) >= 0x500000005, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000005 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x500000005ull) {
+      if (tmp64 >= 0x500000005ull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1950,14 +1973,14 @@ int bid32_to_int32_xrninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       }
       // else cases that can be rounded to a 32-bit int fall through
       // to '1 <= q + exp <= 10'
-    } else { // if n > 0 and q + exp = 10
+    } else {  // if n > 0 and q + exp = 10
       // if n >= 2^31 - 1/2 then n is too large
       // too large if c(0)c(1)...c(q-1)00...0 >= 2^31-1/2
       // <=> C * 10^(11-q) >= 0x4fffffffb, 1<=q<=7
       // Note: C * 10^(11-q) has 10 or 11 digits; 0x500000005 has 11 digits
-      tmp64 = c1 * bid_ten2k64[11 - q]; // C scaled up to 11-digit int
+      tmp64 = c1 * bid_ten2k64[11 - q];  // C scaled up to 11-digit int
       // c(0)c(1)...c(q-1)0...0 (11 digits)
-      if(tmp64 >= 0x4fffffffbull) {
+      if (tmp64 >= 0x4fffffffbull) {
         // set invalid flag
         *pfpsf |= BID_INVALID_EXCEPTION;
         // return Integer Indefinite
@@ -1970,32 +1993,32 @@ int bid32_to_int32_xrninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
   }
   // n is not too large to be converted to int32: -2^31 - 1/2 < n < 2^31 - 1/2
   // Note: some of the cases tested for above fall through to this point
-  if((q + exp) < 0) { // n = +/-0.0...c(0)c(1)...c(q-1)
+  if ((q + exp) < 0) {  // n = +/-0.0...c(0)c(1)...c(q-1)
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
     // return 0
     res = 0x00000000U;
     BID_RETURN(res);
-  } else if((q + exp) == 0) { // n = +/-0.c(0)c(1)...c(q-1)
+  } else if ((q + exp) == 0) {  // n = +/-0.c(0)c(1)...c(q-1)
     // if 0.c(0)c(1)...c(q-1) <= 0.5 <=> c(0)c(1)...c(q-1) <= 5 * 10^(q-1)
     //   res = 0
     // else
     //   res = +/-1
     ind = q - 1;
-    if(c1 < bid_midpoint64[ind]) {
-      res = 0x00000000U;      // return 0
-    } else if(x_sign) {       // n < 0
-      res = (int)0xffffffffU; // return -1
-    } else {                  // n > 0
-      res = 0x00000001U;      // return +1
+    if (c1 < bid_midpoint64[ind]) {
+      res = 0x00000000U;       // return 0
+    } else if (x_sign) {       // n < 0
+      res = (int)0xffffffffU;  // return -1
+    } else {                   // n > 0
+      res = 0x00000001U;       // return +1
     }
     // set inexact flag
     *pfpsf |= BID_INEXACT_EXCEPTION;
-  } else { // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
+  } else {  // if (1 <= q + exp <= 10, 1 <= q <= 7, -6 <= exp <= 9)
     // -2^31-1/2 <= x <= -1 or 1 <= x < 2^31-1/2 so x can be rounded
     // to nearest away to a 32-bit signed integer
-    if(exp < 0) { // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
-      ind = -exp; // 1 <= ind <= 6; ind is a synonym for 'x'
+    if (exp < 0) {  // 2 <= q <= 7, -6 <= exp <= -1, 1 <= q + exp <= 10
+      ind = -exp;   // 1 <= ind <= 6; ind is a synonym for 'x'
       // chop off ind digits from the lower part of C1
       // C1 = C1 + 1/2 * 10^ind where the result C1 fits in 32 bits
       c1 = c1 + (BID_UINT32)bid_midpoint64[ind - 1];
@@ -2018,63 +2041,66 @@ int bid32_to_int32_xrninta(BID_UINT32 x _EXC_FLAGS_PARAM _EXC_MASKS_PARAM
       // n = C* * 10^(e+x)
 
       // shift right C* by Ex-64 = bid_shiftright128[ind]
-      shift = bid_shiftright128[ind - 1]; // 0 <= shift <= 39
+      shift = bid_shiftright128[ind - 1];  // 0 <= shift <= 39
       cstar = cstar >> shift;
       // determine inexactness of the rounding of C*
       // if (0 < f* - 1/2 < 10^(-x)) then
       //   the result is exact
       // else // if (f* - 1/2 > T*) then
       //   the result is inexact
-      if(ind - 1 <= 2) {
-        if(fstar.w[0U] > 0x8000000000000000ull) {
+      if (ind - 1 <= 2) {
+        if (fstar.w[0U] > 0x8000000000000000ull) {
           // f* > 1/2 and the result may be exact
-          tmp64 = fstar.w[0U] - 0x8000000000000000ull; // f* - 1/2
-          if((tmp64 > bid_ten2mk128trunc[ind - 1].w[1U])) {
+          tmp64 = fstar.w[0U] - 0x8000000000000000ull;  // f* - 1/2
+          if ((tmp64 > bid_ten2mk128trunc[ind - 1].w[1U])) {
             // bid_ten2mk128trunc[ind -1].w[1] is identical to
             // bid_ten2mk128[ind -1].w[1]
             // set the inexact flag
             *pfpsf |= BID_INEXACT_EXCEPTION;
-          } // else the result is exact
-        } else { // the result is inexact; f2* <= 1/2
+          }  // else the result is exact
+        } else {  // the result is inexact; f2* <= 1/2
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
         }
-      } else { // if 3 <= ind - 1 <= 14
-        if(fstar.w[1U] > bid_onehalf128[ind - 1] ||
-           (fstar.w[1U] == bid_onehalf128[ind - 1] && fstar.w[0U])) {
+      } else {  // if 3 <= ind - 1 <= 14
+        if (fstar.w[1U] > bid_onehalf128[ind - 1] ||
+            (fstar.w[1U] == bid_onehalf128[ind - 1] && fstar.w[0U])) {
           // f2* > 1/2 and the result may be exact
           // Calculate f2* - 1/2
           tmp64 = fstar.w[1U] - bid_onehalf128[ind - 1];
-          if(tmp64 || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
+          if (tmp64 || fstar.w[0U] > bid_ten2mk128trunc[ind - 1].w[1U]) {
             // bid_ten2mk128trunc[ind -1].w[1] is identical to
             // bid_ten2mk128[ind -1].w[1]
             // set the inexact flag
             *pfpsf |= BID_INEXACT_EXCEPTION;
-          } // else the result is exact
-        } else { // the result is inexact; f2* <= 1/2
+          }  // else the result is exact
+        } else {  // the result is inexact; f2* <= 1/2
           // set the inexact flag
           *pfpsf |= BID_INEXACT_EXCEPTION;
         }
       }
 
       // if the result was a midpoint it was rounded away from zero
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)cstar));
-      else
+      } else {
         res = (int)cstar;
-    } else if(exp == 0) {
+      }
+    } else if (exp == 0) {
       // 1 <= q <= 10
       // res = +/-C (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT32)c1));
-      else
+      } else {
         res = (int)c1;
-    } else { // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
+      }
+    } else {  // if (exp > 0) => 1 <= exp <= 9, 1 <= q < 9, 2 <= q + exp <= 10
       // res = +/-C * 10^exp (exact)
-      if(x_sign)
+      if (x_sign) {
         res = (int)(-((BID_SINT64)c1 * (BID_SINT64)bid_ten2k64[exp]));
-      else
+      } else {
         res = (int)(c1 * bid_ten2k64[exp]);
+      }
     }
   }
   BID_RETURN(res);

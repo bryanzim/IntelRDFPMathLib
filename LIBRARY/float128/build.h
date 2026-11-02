@@ -145,14 +145,19 @@
 // Now generic system stuff
 // =============================================================================
 
-#if defined(__linux__) && defined(__ICC) /* Linux, Proton compiler(i.e. IA32) */
+#if defined(__linux__) && defined(__ICC) /* Linux, Proton compiler(i.e. IA32) \
+                                          */
 #pragma const_seg(".rodata")
 #endif
 
 #if (defined(__ICC) || defined(__ICL) || defined(__ECC) || defined(__ECL)) && 0
-#pragma warning(disable : 68)   /* #68: integer conversion resulted in a change of sign */
-#pragma warning(disable : 186)  /* #186: pointless comparison of unsigned integer with zero */
-#pragma warning(disable : 1572) /* #1572: floating-point equality and inequality comparisons are unreliable */
+#pragma warning( \
+    disable : 68) /* #68: integer conversion resulted in a change of sign */
+#pragma warning( \
+    disable      \
+    : 186) /* #186: pointless comparison of unsigned integer with zero */
+#pragma warning(disable : 1572) /* #1572: floating-point equality and \
+                                   inequality comparisons are unreliable */
 #endif
 
 #endif /* BUILD_H */

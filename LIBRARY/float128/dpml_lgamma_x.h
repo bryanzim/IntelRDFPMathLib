@@ -118,17 +118,17 @@ static const TABLE_UNION TABLE_NAME[] = {
     /* 960 */ DATA_1x2(0x00000001, 0x00000000),
 };
 
-#define LGAMMA_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define UX_ONE ((UX_FLOAT *)((char *)TABLE_NAME + 32))
-#define UX_HALF ((UX_FLOAT *)((char *)TABLE_NAME + 56))
-#define UX_THREE ((UX_FLOAT *)((char *)TABLE_NAME + 80))
-#define UX_LN2 ((UX_FLOAT *)((char *)TABLE_NAME + 104))
-#define UX_PI_OVER_2 ((UX_FLOAT *)((char *)TABLE_NAME + 128))
-#define UX_HALF_LN_TWO_PI ((UX_FLOAT *)((char *)TABLE_NAME + 152))
-#define UX_HALF_LN_TWO_OVER_PI ((UX_FLOAT *)((char *)TABLE_NAME + 176))
-#define LGAMMA_P_COEF_ARRAY ((FIXED_128 *)((char *)TABLE_NAME + 200))
+#define LGAMMA_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define UX_ONE ((UX_FLOAT*)((char*)TABLE_NAME + 32))
+#define UX_HALF ((UX_FLOAT*)((char*)TABLE_NAME + 56))
+#define UX_THREE ((UX_FLOAT*)((char*)TABLE_NAME + 80))
+#define UX_LN2 ((UX_FLOAT*)((char*)TABLE_NAME + 104))
+#define UX_PI_OVER_2 ((UX_FLOAT*)((char*)TABLE_NAME + 128))
+#define UX_HALF_LN_TWO_PI ((UX_FLOAT*)((char*)TABLE_NAME + 152))
+#define UX_HALF_LN_TWO_OVER_PI ((UX_FLOAT*)((char*)TABLE_NAME + 176))
+#define LGAMMA_P_COEF_ARRAY ((FIXED_128*)((char*)TABLE_NAME + 200))
 #define LGAMMA_P_COEF_ARRAY_DEGREE ((signed __int64)0x000000000000000e)
-#define LGAMMA_PHI_COEF_ARRAY ((FIXED_128 *)((char *)TABLE_NAME + 696))
+#define LGAMMA_PHI_COEF_ARRAY ((FIXED_128*)((char*)TABLE_NAME + 696))
 #define LGAMMA_PHI_COEF_ARRAY_DEGREE ((signed __int64)0x0000000000000007)
 
 #endif

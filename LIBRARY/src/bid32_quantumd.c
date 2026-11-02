@@ -46,16 +46,16 @@ BID_UINT32 res;
 int int_exp;
 
 // If x is infinite, the result is +Inf. If x is NaN, the result is NaN
-if((x & MASK_INF32) == MASK_INF32) {
+if ((x & MASK_INF32) == MASK_INF32) {
   res = x & ~SIGNMASK32;
   BID_RETURN(res);
-} else if((x & MASK_NAN32) == MASK_NAN32) {
+} else if ((x & MASK_NAN32) == MASK_NAN32) {
   res = x & QUIET_MASK32;
   BID_RETURN(res);
 }
 
 // Extract exponent
-if((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
+if ((x & MASK_STEERING_BITS) == MASK_STEERING_BITS) {
   int_exp = ((x >> 21) & 0xffU) - 101;
 } else {
   int_exp = ((x >> 23) & 0xffU) - 101;

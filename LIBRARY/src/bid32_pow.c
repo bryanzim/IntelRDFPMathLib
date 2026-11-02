@@ -45,8 +45,7 @@ BID_UINT32 lval_1 = BID32_1;
 // We will always signal on signalling NaNs anyway
 
 #ifdef BID_SET_STATUS_FLAGS
-if(((x & SNAN_MASK32) == SNAN_MASK32) ||
-   ((y & SNAN_MASK32) == SNAN_MASK32)) {
+if (((x & SNAN_MASK32) == SNAN_MASK32) || ((y & SNAN_MASK32) == SNAN_MASK32)) {
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 }
 #endif
@@ -54,13 +53,13 @@ if(((x & SNAN_MASK32) == SNAN_MASK32) ||
 // We have 1^y = x^+0 = x^-0 = 1 even when x or y is a NaN
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isZero, cmp_res, y);
-if(cmp_res && ((x & SNAN_MASK32) != SNAN_MASK32)) {
+if (cmp_res && ((x & SNAN_MASK32) != SNAN_MASK32)) {
   res = BID32_1;
   BID_RETURN(res);
 }
 
 BIDECIMAL_CALL2_NORND(bid32_quiet_equal, cmp_res, x, lval_1);
-if(cmp_res && ((y & SNAN_MASK32) != SNAN_MASK32)) {
+if (cmp_res && ((y & SNAN_MASK32) != SNAN_MASK32)) {
   res = BID32_1;
   BID_RETURN(res);
 }
@@ -68,15 +67,17 @@ if(cmp_res && ((y & SNAN_MASK32) != SNAN_MASK32)) {
 // Otherwise a NaN input leads to a NaN result.
 // Just return the same NaN, quieted and canonized
 
-if((x & NAN_MASK32) == NAN_MASK32) {
+if ((x & NAN_MASK32) == NAN_MASK32) {
   res = x & 0xfc0ffffful;
-  if((res & 0x000ffffful) > 999999ul)
+  if ((res & 0x000ffffful) > 999999ul) {
     res &= ~0x000ffffful;
+  }
   BID_RETURN(res);
-} else if((y & NAN_MASK32) == NAN_MASK32) {
+} else if ((y & NAN_MASK32) == NAN_MASK32) {
   res = y & 0xfc0ffffful;
-  if((res & 0x000ffffful) > 999999ul)
+  if ((res & 0x000ffffful) > 999999ul) {
     res &= ~0x000ffffful;
+  }
   BID_RETURN(res);
 }
 
@@ -89,23 +90,25 @@ if((x & NAN_MASK32) == NAN_MASK32) {
 //  pow(x,-inf) = +inf when |x| < 1
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isInf, cmp_res, y);
-if(cmp_res) {
+if (cmp_res) {
   BID_UINT32 a = x & ~SIGNMASK32;
   BIDECIMAL_CALL2_NORND(bid32_quiet_equal, cmp_res, a, lval_1);
-  if(cmp_res) {
+  if (cmp_res) {
     res = BID32_1;
     BID_RETURN(res);
   }
   BIDECIMAL_CALL2_NORND(bid32_quiet_less, cmp_res, a, lval_1);
-  if(cmp_res)
-    if((y & SIGNMASK32) != 0)
+  if (cmp_res) {
+    if ((y & SIGNMASK32) != 0) {
       res = BID32_INF;
-    else
+    } else {
       res = BID32_0;
-  else if((y & SIGNMASK32) != 0)
+    }
+  } else if ((y & SIGNMASK32) != 0) {
     res = BID32_0;
-  else
+  } else {
     res = BID32_INF;
+  }
   BID_RETURN(res);
 }
 
@@ -117,13 +120,13 @@ BIDECIMAL_CALL1_NORND(bid32_round_integral_nearest_even, y_int, y);
 BIDECIMAL_CALL2_NORND(bid32_quiet_equal, is_int, y_int, y);
 is_odd = 0;
 
-if(is_int) {
-  int e = (((y_int & (3ull << 29)) == (3ull << 29))
-               ? (y_int >> 21)
-               : (y_int >> 23)) &
+if (is_int) {
+  int e = (((y_int & (3ull << 29)) == (3ull << 29)) ? (y_int >> 21)
+                                                    : (y_int >> 23)) &
           ((1ull << 8) - 1);
-  if((e == 101) && (y_int & 1))
+  if ((e == 101) && (y_int & 1)) {
     is_odd = 1;
+  }
 }
 
 // Now the cases where the first arg is infinite:
@@ -133,13 +136,15 @@ if(is_int) {
 //  and pow(-inf,y) the same with sign swapped for odd integers
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isInf, cmp_res, x);
-if(cmp_res) {
-  if((y & SIGNMASK32) != 0)
+if (cmp_res) {
+  if ((y & SIGNMASK32) != 0) {
     res = BID32_0;
-  else
+  } else {
     res = BID32_INF;
-  if(is_odd && ((x & SIGNMASK32) != 0))
+  }
+  if (is_odd && ((x & SIGNMASK32) != 0)) {
     res = res ^ SIGNMASK32;
+  }
   BID_RETURN(res);
 }
 
@@ -147,14 +152,16 @@ if(cmp_res) {
 // or -0 or -inf if the second argument is an odd integer.
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid32_isZero, cmp_res, x);
-if(cmp_res) {
-  if((y & SIGNMASK32) != 0) {
+if (cmp_res) {
+  if ((y & SIGNMASK32) != 0) {
     res = BID32_INF;
     __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
-  } else
+  } else {
     res = BID32_0;
-  if(is_odd && ((x & SIGNMASK32) != 0))
+  }
+  if (is_odd && ((x & SIGNMASK32) != 0)) {
     res = res ^ SIGNMASK32;
+  }
   BID_RETURN(res);
 }
 
@@ -168,26 +175,26 @@ if(cmp_res) {
 
   *pfpsf &= ~(_IDEC_flags)(BID_INEXACT_EXCEPTION | BID_INVALID_EXCEPTION);
   BIDECIMAL_CALL1_NORND(bid32_to_int32_xrnint, exact_y, y);
-  if((*pfpsf & (BID_INEXACT_EXCEPTION | BID_INVALID_EXCEPTION)) == 0) {
+  if ((*pfpsf & (BID_INEXACT_EXCEPTION | BID_INVALID_EXCEPTION)) == 0) {
     BID_UINT32 p;
-    if(exact_y < 0) {
+    if (exact_y < 0) {
       BID_UINT32 tmp = BID32_1;
       BIDECIMAL_CALL2(bid32_div, p, tmp, x);
-      if(*pfpsf & BID_INEXACT_EXCEPTION) {
+      if (*pfpsf & BID_INEXACT_EXCEPTION) {
         inexact = 1;
       }
       exact_y *= (-1);
     } else {
       p = x;
     }
-    if((!inexact) && (((unsigned)exact_y) <= 101)) {
+    if ((!inexact) && (((unsigned)exact_y) <= 101)) {
       // exact_y >= 0 here
       BID_UINT32 r = BID32_1;
-      for(; exact_y; exact_y >>= 1) {
-        if(exact_y & 1) {
+      for (; exact_y; exact_y >>= 1) {
+        if (exact_y & 1) {
           BIDECIMAL_CALL2(bid32_mul, r, r, p);
         }
-        if(exact_y > 1) {
+        if (exact_y > 1) {
           BIDECIMAL_CALL2(bid32_mul, p, p, p);
         }
       }
@@ -213,8 +220,8 @@ BIDECIMAL_CALL1(binary64_to_bid32, res, rd);
 // Also raise exception since it wasn't from the input.
 // Do likewise for negative^noninteger
 
-if(((res & NAN_MASK32) == NAN_MASK32) ||
-   (((x & SIGNMASK32) != 0) && !is_int)) {
+if (((res & NAN_MASK32) == NAN_MASK32) ||
+    (((x & SIGNMASK32) != 0) && !is_int)) {
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -223,7 +230,8 @@ if(((res & NAN_MASK32) == NAN_MASK32) ||
 
 // Otherwise correct the sign.
 
-if(is_odd && ((x & SIGNMASK32) != 0))
+if (is_odd && ((x & SIGNMASK32) != 0)) {
   res = res ^ SIGNMASK32;
+}
 BID_RETURN(res);
 }

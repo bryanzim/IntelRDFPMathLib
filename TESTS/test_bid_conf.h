@@ -857,16 +857,16 @@
 #define BID_SET_STATUS_FLAGS
 
 #ifndef BID_THREAD
-#if defined(_MSC_VER) // Windows
+#if defined(_MSC_VER)  // Windows
 #define BID_THREAD __declspec(thread)
 #else
-#if !defined(__APPLE__) // Linux, FreeBSD
+#if !defined(__APPLE__)  // Linux, FreeBSD
 #define BID_THREAD __thread
-#else // Mac OSX, TBD
+#else  // Mac OSX, TBD
 #define BID_THREAD
-#endif // Linux or Mac
-#endif // Windows
-#endif // BID_THREAD
+#endif  // Linux or Mac
+#endif  // Windows
+#endif  // BID_THREAD
 
 #ifndef BID_HAS_GCC_DECIMAL_INTRINSICS
 #define BID_HAS_GCC_DECIMAL_INTRINSICS 0
@@ -931,17 +931,19 @@
 #endif
 
 typedef unsigned int _IDEC_round;
-typedef unsigned int _IDEC_flags; // could be a struct with diagnostic info
+typedef unsigned int
+    _IDEC_flags;  // could be a struct with diagnostic info
 
 #if DECIMAL_ALTERNATE_EXCEPTION_HANDLING
-                                  // If DECIMAL_GLOBAL_EXCEPTION_MASKS is defined then the exception mask bits
-                                  // are represented by a global variable _IDEC_exceptionmasks, otherwise they
-                                  // are passed as a parameter when needed; DECIMAL_GLOBAL_EXCEPTION_MASKS is
-                                  // ignored
-                                  // if DECIMAL_ALTERNATE_EXCEPTION_HANDLING is not defined
-                                  // **************************************************************************
+                  // If DECIMAL_GLOBAL_EXCEPTION_MASKS is defined then the
+                  // exception mask bits are represented by a global variable
+                  // _IDEC_exceptionmasks, otherwise they are passed as a
+                  // parameter when needed; DECIMAL_GLOBAL_EXCEPTION_MASKS is
+                  // ignored
+                  // if DECIMAL_ALTERNATE_EXCEPTION_HANDLING is not defined
+                  // **************************************************************************
 #define DECIMAL_GLOBAL_EXCEPTION_MASKS 0
-                                  // **************************************************************************
+                  // **************************************************************************
 
 // If DECIMAL_GLOBAL_EXCEPTION_INFO is defined then the alternate exception
 // handling information is represented by a global data structure
@@ -950,7 +952,7 @@ typedef unsigned int _IDEC_flags; // could be a struct with diagnostic info
 // if DECIMAL_ALTERNATE_EXCEPTION_HANDLING is not defined
 // **************************************************************************
 #define DECIMAL_GLOBAL_EXCEPTION_INFO 0
-                                  // **************************************************************************
+                  // **************************************************************************
 #endif
 
 // Notes: 1) rnd_mode from _RND_MODE_ARG is used by the caller of a function
@@ -963,10 +965,10 @@ typedef unsigned int _IDEC_flags; // could be a struct with diagnostic info
 #if !DECIMAL_GLOBAL_ROUNDING
 #if DECIMAL_CALL_BY_REFERENCE
 #define _RND_MODE_ARG , &rnd_mode
-#define _RND_MODE_PARAM , _IDEC_round *prnd_mode
-#define _RND_MODE_PARAM_0 _IDEC_round *prnd_mode
+#define _RND_MODE_PARAM , _IDEC_round* prnd_mode
+#define _RND_MODE_PARAM_0 _IDEC_round* prnd_mode
 #define _RND_MODE_ARG_ALONE &rnd_mode
-#define _RND_MODE_PARAM_ALONE _IDEC_round *prnd_mode
+#define _RND_MODE_PARAM_ALONE _IDEC_round* prnd_mode
 #else
 #define _RND_MODE_ARG , rnd_mode
 #define _RND_MODE_PARAM , _IDEC_round rnd_mode
@@ -990,7 +992,7 @@ typedef unsigned int _IDEC_flags; // could be a struct with diagnostic info
 //           the floating-point status flags
 #if !DECIMAL_GLOBAL_EXCEPTION_FLAGS
 #define _EXC_FLAGS_ARG , pfpsf
-#define _EXC_FLAGS_PARAM , _IDEC_flags *pfpsf
+#define _EXC_FLAGS_PARAM , _IDEC_flags* pfpsf
 #else
 #define _EXC_FLAGS_ARG
 #define _EXC_FLAGS_PARAM
@@ -1025,7 +1027,7 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #if !DECIMAL_GLOBAL_EXCEPTION_MASKS
 #if DECIMAL_CALL_BY_REFERENCE
 #define _EXC_MASKS_ARG , &exc_mask
-#define _EXC_MASKS_PARAM , _IDEC_exceptionmasks *pexc_mask
+#define _EXC_MASKS_PARAM , _IDEC_exceptionmasks* pexc_mask
 #else
 #define _EXC_MASKS_ARG , exc_mask
 #define _EXC_MASKS_PARAM , _IDEC_exceptionmasks exc_mask
@@ -1036,7 +1038,8 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #define exc_mask _IDEC_glbexceptionmasks
 #endif
 
-// Notes: 1) BID_pexc_info from _EXC_INFO_ARG is used by the caller of a function
+// Notes: 1) BID_pexc_info from _EXC_INFO_ARG is used by the caller of a
+// function
 //           from this library, and can be any name
 //        2) BID_pexc_info from _EXC_INFO_PARAM is a fixed name and *must* be
 //           used in the library functions
@@ -1044,7 +1047,7 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 //           variable holding the floating-point exception information
 #if !DECIMAL_GLOBAL_EXCEPTION_INFO
 #define _EXC_INFO_ARG , BID_pexc_info
-#define _EXC_INFO_PARAM , _IDEC_excepthandling *BID_pexc_info
+#define _EXC_INFO_PARAM , _IDEC_excepthandling* BID_pexc_info
 #else
 #define _EXC_INFO_ARG
 #define _EXC_INFO_PARAM
@@ -1076,7 +1079,7 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #if DECIMAL_CALL_BY_REFERENCE
 #define BID_RETURN_VAL(x)                       \
   {                                             \
-    BID_OPT_RESTORE_BINARY_FLAGS() *pres = (x); \
+    BID_OPT_RESTORE_BINARY_FLAGS()* pres = (x); \
     return;                                     \
   }
 #if BID_BIG_ENDIAN && defined BID_128RES
@@ -1096,7 +1099,7 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #else
 #define BID_RETURN(x)                           \
   {                                             \
-    BID_OPT_RESTORE_BINARY_FLAGS() *pres = (x); \
+    BID_OPT_RESTORE_BINARY_FLAGS()* pres = (x); \
     return;                                     \
   }
 #define BID_RETURN_NOFLAGS(x) \
@@ -1138,11 +1141,13 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 
 #if DECIMAL_CALL_BY_REFERENCE
 #define BIDECIMAL_CALL1(_FUNC, _RES, _OP1) \
-  _FUNC(&(_RES), &(_OP1)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
+  _FUNC(&(_RES),                           \
+        &(_OP1)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL1_NORND(_FUNC, _RES, _OP1) \
   _FUNC(&(_RES), &(_OP1)_EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL2(_FUNC, _RES, _OP1, _OP2) \
-  _FUNC(&(_RES), &(_OP1), &(_OP2)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
+  _FUNC(&(_RES), &(_OP1),                        \
+        &(_OP2)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL2_YPTR_NORND(_FUNC, _RES, _OP1, _OP2) \
   _FUNC(&(_RES), &(_OP1), &(_OP2)_EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL2_NORND(_FUNC, _RES, _OP1, _OP2) \
@@ -1150,15 +1155,18 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #define BIDECIMAL_CALL1_NORND_RESREF(_FUNC, _RES, _OP1) \
   _FUNC((_RES), &(_OP1)_EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL1_RESARG(_FUNC, _RES, _OP1) \
-  _FUNC(&(_RES), (_OP1)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
+  _FUNC(&(_RES),                                  \
+        (_OP1)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL1_RESREF(_FUNC, _RES, _OP1) \
-  _FUNC((_RES), &(_OP1)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
+  _FUNC((_RES),                                   \
+        &(_OP1)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL1_NORND_NOSTAT(_FUNC, _RES, _OP1) \
   _FUNC(&(_RES), &(_OP1)_EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL2_NORND_NOSTAT(_FUNC, _RES, _OP1, _OP2) \
   _FUNC(&(_RES), &(_OP1), &(_OP2)_EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL3(_FUNC, _RES, _OP1, _OP2, _OP3) \
-  _FUNC(&(_RES), &(_OP1), &(_OP2), &(_OP3)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
+  _FUNC(&(_RES), &(_OP1), &(_OP2),                     \
+        &(_OP3)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL1_NORND_NOMASK_NOINFO(_FUNC, _RES, _OP1) \
   _FUNC(&(_RES), &(_OP1)_EXC_FLAGS_ARG)
 #define BIDECIMAL_CALL1_NORND_NOFLAGS_NOMASK_NOINFO(_FUNC, _RES, _OP1) \
@@ -1167,7 +1175,8 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
   _FUNC(&(_RES), (_OP1))
 #define BIDECIMAL_CALL2_NORND_NOFLAGS_NOMASK_NOINFO(_FUNC, _RES, _OP1, _OP2) \
   _FUNC(&(_RES), &(_OP1), &(_OP2))
-#define BIDECIMAL_CALL2_NORND_NOFLAGS_NOMASK_NOINFO_ARG2REF(_FUNC, _RES, _OP1, _OP2) \
+#define BIDECIMAL_CALL2_NORND_NOFLAGS_NOMASK_NOINFO_ARG2REF(_FUNC, _RES, _OP1, \
+                                                            _OP2)              \
   _FUNC(&(_RES), &(_OP1), (_OP2))
 #define BIDECIMAL_CALL1_NORND_NOMASK_NOINFO_RESVOID(_FUNC, _OP1) \
   _FUNC(&(_OP1)_EXC_FLAGS_ARG)
@@ -1177,15 +1186,15 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
   _FUNC(&(_RES)_RND_MODE_ARG)
 #define BIDECIMAL_CALL1_NOFLAGS_NOMASK_NOINFO(_FUNC, _RES, _OP1) \
   _FUNC(&(_OP1)_RND_MODE_ARG)
-#define BIDECIMAL_CALLV_EMPTY(_FUNC, _RES) \
-  _FUNC(&(_RES))
+#define BIDECIMAL_CALLV_EMPTY(_FUNC, _RES) _FUNC(&(_RES))
 #else
 #define BIDECIMAL_CALL1(_FUNC, _RES, _OP1) \
   _RES = _FUNC((_OP1)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL1_NORND(_FUNC, _RES, _OP1) \
   _RES = _FUNC((_OP1)_EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL2(_FUNC, _RES, _OP1, _OP2) \
-  _RES = _FUNC((_OP1), (_OP2)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
+  _RES = _FUNC(                                  \
+      (_OP1), (_OP2)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL2_YPTR_NORND(_FUNC, _RES, _OP1, _OP2) \
   _RES = _FUNC((_OP1), &(_OP2)_EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL2_NORND(_FUNC, _RES, _OP1, _OP2) \
@@ -1201,7 +1210,9 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #define BIDECIMAL_CALL2_NORND_NOSTAT(_FUNC, _RES, _OP1, _OP2) \
   _RES = _FUNC((_OP1), (_OP2)_EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL3(_FUNC, _RES, _OP1, _OP2, _OP3) \
-  _RES = _FUNC((_OP1), (_OP2), (_OP3)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
+  _RES =                                               \
+      _FUNC((_OP1), (_OP2),                            \
+            (_OP3)_RND_MODE_ARG _EXC_FLAGS_ARG _EXC_MASKS_ARG _EXC_INFO_ARG)
 #define BIDECIMAL_CALL1_NORND_NOMASK_NOINFO(_FUNC, _RES, _OP1) \
   _RES = _FUNC((_OP1)_EXC_FLAGS_ARG)
 #define BIDECIMAL_CALL1_NORND_NOFLAGS_NOMASK_NOINFO(_FUNC, _RES, _OP1) \
@@ -1210,7 +1221,8 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
   _RES = _FUNC((_OP1))
 #define BIDECIMAL_CALL2_NORND_NOFLAGS_NOMASK_NOINFO(_FUNC, _RES, _OP1, _OP2) \
   _RES = _FUNC((_OP1), (_OP2))
-#define BIDECIMAL_CALL2_NORND_NOFLAGS_NOMASK_NOINFO_ARG2REF(_FUNC, _RES, _OP1, _OP2) \
+#define BIDECIMAL_CALL2_NORND_NOFLAGS_NOMASK_NOINFO_ARG2REF(_FUNC, _RES, _OP1, \
+                                                            _OP2)              \
   _RES = _FUNC((_OP1), (_OP2))
 #define BIDECIMAL_CALL1_NORND_NOMASK_NOINFO_RESVOID(_FUNC, _OP1) \
   _FUNC((_OP1)_EXC_FLAGS_ARG)
@@ -1225,8 +1237,7 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #define BIDECIMAL_CALL1_NOFLAGS_NOMASK_NOINFO(_FUNC, _RES, _OP1) \
   _FUNC((_OP1)_RND_MODE_ARG)
 #endif
-#define BIDECIMAL_CALLV_EMPTY(_FUNC, _RES) \
-  _RES = _FUNC()
+#define BIDECIMAL_CALLV_EMPTY(_FUNC, _RES) _RES = _FUNC()
 #endif
 
 #if BID_BIG_ENDIAN
@@ -1243,20 +1254,15 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #define BID_COPY_ARG_VAL(arg_name) \
   BID_UINT128 arg_name = {{bid_##arg_name.w[1], bid_##arg_name.w[0]}};
 #else
-#define BID_COPY_ARG_REF(arg_name) \
-  BID_UINT128 arg_name = *pbid_##arg_name;
-#define BID_COPY_ARG_VAL(arg_name) \
-  BID_UINT128 arg_name = bid_##arg_name;
+#define BID_COPY_ARG_REF(arg_name) BID_UINT128 arg_name = *pbid_##arg_name;
+#define BID_COPY_ARG_VAL(arg_name) BID_UINT128 arg_name = bid_##arg_name;
 #endif
 
-#define BID_COPY_ARG_TYPE_REF(type, arg_name) \
-  type arg_name = *pbid_##arg_name;
-#define BID_COPY_ARG_TYPE_VAL(type, arg_name) \
-  type arg_name = bid_##arg_name;
+#define BID_COPY_ARG_TYPE_REF(type, arg_name) type arg_name = *pbid_##arg_name;
+#define BID_COPY_ARG_TYPE_VAL(type, arg_name) type arg_name = bid_##arg_name;
 
 #if !DECIMAL_GLOBAL_ROUNDING
-#define BID_SET_RND_MODE() \
-  _IDEC_round rnd_mode = *prnd_mode;
+#define BID_SET_RND_MODE() _IDEC_round rnd_mode = *prnd_mode;
 #else
 #define BID_SET_RND_MODE()
 #endif
@@ -1265,25 +1271,23 @@ BID_EXTERN_C BID_THREAD _IDEC_excepthandling _IDEC_glbexcepthandling;
 #define BID_MS_FLAGS
 #endif
 
-#if defined(UNCHANGED_BINARY_STATUS_FLAGS) && defined(BID_FUNCTION_SETS_BINARY_FLAGS)
+#if defined(UNCHANGED_BINARY_STATUS_FLAGS) && \
+    defined(BID_FUNCTION_SETS_BINARY_FLAGS)
 #if defined(BID_MS_FLAGS)
 
 #include <float.h>
 
-extern unsigned int __bid_ms_restore_flags(unsigned int *);
+extern unsigned int __bid_ms_restore_flags(unsigned int*);
 
-#define BID_OPT_FLAG_DECLARE() \
-  unsigned int binaryflags = 0;
-#define BID_OPT_SAVE_BINARY_FLAGS() \
-  binaryflags = _statusfp();
-#define BID_OPT_RESTORE_BINARY_FLAGS() \
-  __bid_ms_restore_flags(&binaryflags);
+#define BID_OPT_FLAG_DECLARE() unsigned int binaryflags = 0;
+#define BID_OPT_SAVE_BINARY_FLAGS() binaryflags = _statusfp();
+#define BID_OPT_RESTORE_BINARY_FLAGS() __bid_ms_restore_flags(&binaryflags);
 
 #else
 #include <fenv.h>
-#define BID_FE_ALL_FLAGS FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW | FE_INEXACT
-#define BID_OPT_FLAG_DECLARE() \
-  fexcept_t binaryflags = 0;
+#define BID_FE_ALL_FLAGS \
+  FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW | FE_INEXACT
+#define BID_OPT_FLAG_DECLARE() fexcept_t binaryflags = 0;
 #define BID_OPT_SAVE_BINARY_FLAGS() \
   (void)fegetexceptflag(&binaryflags, BID_FE_ALL_FLAGS);
 #define BID_OPT_RESTORE_BINARY_FLAGS() \
@@ -1295,11 +1299,9 @@ extern unsigned int __bid_ms_restore_flags(unsigned int *);
 #define BID_OPT_RESTORE_BINARY_FLAGS()
 #endif
 
-#define BID_PROLOG_REF(arg_name) \
-  BID_COPY_ARG_REF(arg_name)
+#define BID_PROLOG_REF(arg_name) BID_COPY_ARG_REF(arg_name)
 
-#define BID_PROLOG_VAL(arg_name) \
-  BID_COPY_ARG_VAL(arg_name)
+#define BID_PROLOG_VAL(arg_name) BID_COPY_ARG_VAL(arg_name)
 
 #define BID_PROLOG_TYPE_REF(type, arg_name) \
   BID_COPY_ARG_TYPE_REF(type, arg_name)
@@ -1311,183 +1313,191 @@ extern unsigned int __bid_ms_restore_flags(unsigned int *);
 #define OTHER_BID_PROLOG_VAL() BID_OPT_FLAG_DECLARE()
 
 #if DECIMAL_CALL_BY_REFERENCE
-#define BID128_FUNCTION_ARG1(fn_name, arg_name)                                      \
-  void fn_name(BID_UINT128 *pres,                                                    \
-               BID_UINT128 *                                                         \
-                   pbid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
-                       _EXC_INFO_PARAM) {                                            \
-    BID_PROLOG_REF(arg_name)                                                         \
-    BID_SET_RND_MODE()                                                               \
+#define BID128_FUNCTION_ARG1(fn_name, arg_name)                              \
+  void fn_name(BID_UINT128* pres,                                            \
+               BID_UINT128* pbid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                       \
+    BID_PROLOG_REF(arg_name)                                                 \
+    BID_SET_RND_MODE()                                                       \
     OTHER_BID_PROLOG_REF()
 
-#define BID128_FUNCTION_ARG1_NORND(fn_name, arg_name)                \
-  void fn_name(BID_UINT128 *pres,                                    \
-               BID_UINT128 *                                         \
-                   pbid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
-                       _EXC_INFO_PARAM) {                            \
-    BID_PROLOG_REF(arg_name)                                         \
+#define BID128_FUNCTION_ARG1_NORND(fn_name, arg_name)                         \
+  void fn_name(BID_UINT128* pres,                                             \
+               BID_UINT128* pbid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
+                   _EXC_INFO_PARAM) {                                         \
+    BID_PROLOG_REF(arg_name)                                                  \
     OTHER_BID_PROLOG_REF()
 
 #define BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name) \
-  void fn_name(restype *pres,                                                \
-               BID_UINT128 *                                                 \
-                   pbid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM         \
-                       _EXC_INFO_PARAM) {                                    \
+  void fn_name(restype* pres, BID_UINT128* pbid_##arg_name _EXC_FLAGS_PARAM  \
+                                  _EXC_MASKS_PARAM _EXC_INFO_PARAM) {        \
     BID_PROLOG_REF(arg_name)                                                 \
     OTHER_BID_PROLOG_REF()
 
-#define BID128_FUNCTION_ARG2(fn_name, arg_name1, arg_name2)                                                                                      \
-  void fn_name(BID_UINT128 *pres,                                                                                                                \
-               BID_UINT128 *pbid_##arg_name1, BID_UINT128 *pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_REF(arg_name1)                                                                                                                    \
-    BID_PROLOG_REF(arg_name2)                                                                                                                    \
-    BID_SET_RND_MODE()                                                                                                                           \
+#define BID128_FUNCTION_ARG2(fn_name, arg_name1, arg_name2)                   \
+  void fn_name(BID_UINT128* pres, BID_UINT128* pbid_##arg_name1,              \
+               BID_UINT128* pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                        \
+    BID_PROLOG_REF(arg_name1)                                                 \
+    BID_PROLOG_REF(arg_name2)                                                 \
+    BID_SET_RND_MODE()                                                        \
     OTHER_BID_PROLOG_REF()
 
-#define BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, arg_name2)                                         \
-  void fn_name(restype *pres,                                                                                                    \
-               BID_UINT128 *pbid_##arg_name1, BID_UINT128 *pbid_##arg_name2 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_REF(arg_name1)                                                                                                    \
-    BID_PROLOG_REF(arg_name2)                                                                                                    \
+#define BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1,  \
+                                                 arg_name2)                    \
+  void fn_name(restype* pres, BID_UINT128* pbid_##arg_name1,                   \
+               BID_UINT128* pbid_##arg_name2 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
+                   _EXC_INFO_PARAM) {                                          \
+    BID_PROLOG_REF(arg_name1)                                                  \
+    BID_PROLOG_REF(arg_name2)                                                  \
     OTHER_BID_PROLOG_REF()
 
-#define BID128_FUNCTION_ARG2P_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, arg_name2)                                 \
-  void fn_name(restype *pres,                                                                                             \
-               BID_UINT128 *pbid_##arg_name1, BID_UINT128 *arg_name2 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_REF(arg_name1)                                                                                             \
+#define BID128_FUNCTION_ARG2P_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, \
+                                                  arg_name2)                   \
+  void fn_name(restype* pres, BID_UINT128* pbid_##arg_name1,                   \
+               BID_UINT128* arg_name2 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM        \
+                   _EXC_INFO_PARAM) {                                          \
+    BID_PROLOG_REF(arg_name1)                                                  \
     OTHER_BID_PROLOG_REF()
 
-#define BID128_FUNCTION_ARG3P_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, arg_name2, res_name3)                                                     \
-  void fn_name(restype *pres,                                                                                                                            \
-               BID_UINT128 *pbid_##arg_name1, BID_UINT128 *pbid_##arg_name2, BID_UINT128 *res_name3 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_REF(arg_name1)                                                                                                                            \
-    BID_PROLOG_REF(arg_name2)                                                                                                                            \
+#define BID128_FUNCTION_ARG3P_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, \
+                                                  arg_name2, res_name3)        \
+  void fn_name(restype* pres, BID_UINT128* pbid_##arg_name1,                   \
+               BID_UINT128* pbid_##arg_name2,                                  \
+               BID_UINT128* res_name3 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM        \
+                   _EXC_INFO_PARAM) {                                          \
+    BID_PROLOG_REF(arg_name1)                                                  \
+    BID_PROLOG_REF(arg_name2)                                                  \
     OTHER_BID_PROLOG_REF()
 
-#define BID128_FUNCTION_ARG128_ARGTYPE2(fn_name, arg_name1, type2, arg_name2)                                                              \
-  void fn_name(BID_UINT128 *pres,                                                                                                          \
-               BID_UINT128 *pbid_##arg_name1, type2 *pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_REF(arg_name1)                                                                                                              \
-    BID_PROLOG_TYPE_REF(type2, arg_name2)                                                                                                  \
-    BID_SET_RND_MODE()                                                                                                                     \
+#define BID128_FUNCTION_ARG128_ARGTYPE2(fn_name, arg_name1, type2, arg_name2) \
+  void fn_name(BID_UINT128* pres, BID_UINT128* pbid_##arg_name1,              \
+               type2* pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM       \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                        \
+    BID_PROLOG_REF(arg_name1)                                                 \
+    BID_PROLOG_TYPE_REF(type2, arg_name2)                                     \
+    BID_SET_RND_MODE()                                                        \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(type0, fn_name, type1, arg_name1, type2, arg_name2)                                     \
-  void fn_name(type0 *pres,                                                                                                          \
-               type1 *pbid_##arg_name1, type2 *pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_TYPE_REF(type1, arg_name1)                                                                                            \
-    BID_PROLOG_TYPE_REF(type2, arg_name2)                                                                                            \
-    BID_SET_RND_MODE()                                                                                                               \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(type0, fn_name, type1, arg_name1, \
+                                             type2, arg_name2)                 \
+  void fn_name(type0* pres, type1* pbid_##arg_name1,                           \
+               type2* pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM        \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                         \
+    BID_PROLOG_TYPE_REF(type1, arg_name1)                                      \
+    BID_PROLOG_TYPE_REF(type2, arg_name2)                                      \
+    BID_SET_RND_MODE()                                                         \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(type0, fn_name, type1, arg_name1, type2, arg_name2, type3, arg_name3)                                   \
-  void fn_name(type0 *pres,                                                                                                                                   \
-               type1 *pbid_##arg_name1, type2 *pbid_##arg_name2, type3 *pbid_##arg_name3 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_TYPE_REF(type1, arg_name1)                                                                                                                     \
-    BID_PROLOG_TYPE_REF(type2, arg_name2)                                                                                                                     \
-    BID_PROLOG_TYPE_REF(type3, arg_name3)                                                                                                                     \
-    BID_SET_RND_MODE()                                                                                                                                        \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(                        \
+    type0, fn_name, type1, arg_name1, type2, arg_name2, type3, arg_name3)     \
+  void fn_name(type0* pres, type1* pbid_##arg_name1, type2* pbid_##arg_name2, \
+               type3* pbid_##arg_name3 _RND_MODE_PARAM _EXC_FLAGS_PARAM       \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                        \
+    BID_PROLOG_TYPE_REF(type1, arg_name1)                                     \
+    BID_PROLOG_TYPE_REF(type2, arg_name2)                                     \
+    BID_PROLOG_TYPE_REF(type3, arg_name3)                                     \
+    BID_SET_RND_MODE()                                                        \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE_FUNCTION_ARG2(type0, fn_name, arg_name1, arg_name2)                                                                 \
-  void fn_name(type0 *pres,                                                                                                          \
-               type0 *pbid_##arg_name1, type0 *pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_TYPE_REF(type0, arg_name1)                                                                                            \
-    BID_PROLOG_TYPE_REF(type0, arg_name2)                                                                                            \
-    BID_SET_RND_MODE()                                                                                                               \
+#define BID_TYPE_FUNCTION_ARG2(type0, fn_name, arg_name1, arg_name2)    \
+  void fn_name(type0* pres, type0* pbid_##arg_name1,                    \
+               type0* pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                  \
+    BID_PROLOG_TYPE_REF(type0, arg_name1)                               \
+    BID_PROLOG_TYPE_REF(type0, arg_name2)                               \
+    BID_SET_RND_MODE()                                                  \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE_FUNCTION_ARG1(type0, fn_name, arg_name1)            \
-  void fn_name(type0 *pres,                                          \
-               type0 *pbid_##arg_name1                               \
-                   _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
-                       _EXC_INFO_PARAM) {                            \
-    BID_PROLOG_TYPE_REF(type0, arg_name1)                            \
-    BID_SET_RND_MODE()                                               \
+#define BID_TYPE_FUNCTION_ARG1(type0, fn_name, arg_name1)               \
+  void fn_name(type0* pres,                                             \
+               type0* pbid_##arg_name1 _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                  \
+    BID_PROLOG_TYPE_REF(type0, arg_name1)                               \
+    BID_SET_RND_MODE()                                                  \
     OTHER_BID_PROLOG_REF()
 
-#define BID128_FUNCTION_ARGTYPE1_ARG128(fn_name, type1, arg_name1, arg_name2)                                                              \
-  void fn_name(BID_UINT128 *pres,                                                                                                          \
-               type1 *pbid_##arg_name1, BID_UINT128 *pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_TYPE_REF(type1, arg_name1)                                                                                                  \
-    BID_PROLOG_REF(arg_name2)                                                                                                              \
-    BID_SET_RND_MODE()                                                                                                                     \
+#define BID128_FUNCTION_ARGTYPE1_ARG128(fn_name, type1, arg_name1, arg_name2) \
+  void fn_name(BID_UINT128* pres, type1* pbid_##arg_name1,                    \
+               BID_UINT128* pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                        \
+    BID_PROLOG_TYPE_REF(type1, arg_name1)                                     \
+    BID_PROLOG_REF(arg_name2)                                                 \
+    BID_SET_RND_MODE()                                                        \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE0_FUNCTION_ARG128_ARGTYPE2(type0, fn_name, arg_name1, type2, arg_name2)                                                    \
-  void fn_name(type0 *pres,                                                                                                                \
-               BID_UINT128 *pbid_##arg_name1, type2 *pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_REF(arg_name1)                                                                                                              \
-    BID_PROLOG_TYPE_REF(type2, arg_name2)                                                                                                  \
-    BID_SET_RND_MODE()                                                                                                                     \
+#define BID_TYPE0_FUNCTION_ARG128_ARGTYPE2(type0, fn_name, arg_name1, type2, \
+                                           arg_name2)                        \
+  void fn_name(type0* pres, BID_UINT128* pbid_##arg_name1,                   \
+               type2* pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM      \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                       \
+    BID_PROLOG_REF(arg_name1)                                                \
+    BID_PROLOG_TYPE_REF(type2, arg_name2)                                    \
+    BID_SET_RND_MODE()                                                       \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_ARG128(type0, fn_name, type1, arg_name1, arg_name2)                                                    \
-  void fn_name(type0 *pres,                                                                                                                \
-               type1 *pbid_##arg_name1, BID_UINT128 *pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_TYPE_REF(type1, arg_name1)                                                                                                  \
-    BID_PROLOG_REF(arg_name2)                                                                                                              \
-    BID_SET_RND_MODE()                                                                                                                     \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_ARG128(type0, fn_name, type1, arg_name1,  \
+                                           arg_name2)                         \
+  void fn_name(type0* pres, type1* pbid_##arg_name1,                          \
+               BID_UINT128* pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                        \
+    BID_PROLOG_TYPE_REF(type1, arg_name1)                                     \
+    BID_PROLOG_REF(arg_name2)                                                 \
+    BID_SET_RND_MODE()                                                        \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE0_FUNCTION_ARG128_ARG128(type0, fn_name, arg_name1, arg_name2)                                                                   \
-  void fn_name(type0 *pres,                                                                                                                      \
-               BID_UINT128 *pbid_##arg_name1, BID_UINT128 *pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_REF(arg_name1)                                                                                                                    \
-    BID_PROLOG_REF(arg_name2)                                                                                                                    \
-    BID_SET_RND_MODE()                                                                                                                           \
+#define BID_TYPE0_FUNCTION_ARG128_ARG128(type0, fn_name, arg_name1, arg_name2) \
+  void fn_name(type0* pres, BID_UINT128* pbid_##arg_name1,                     \
+               BID_UINT128* pbid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM  \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                         \
+    BID_PROLOG_REF(arg_name1)                                                  \
+    BID_PROLOG_REF(arg_name2)                                                  \
+    BID_SET_RND_MODE()                                                         \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE0_FUNCTION_ARG1(type0, fn_name, arg_name)                            \
-  void fn_name(type0 *pres,                                                          \
-               BID_UINT128 *                                                         \
-                   pbid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
-                       _EXC_INFO_PARAM) {                                            \
-    BID_PROLOG_REF(arg_name)                                                         \
-    BID_SET_RND_MODE()                                                               \
+#define BID_TYPE0_FUNCTION_ARG1(type0, fn_name, arg_name)                    \
+  void fn_name(type0* pres,                                                  \
+               BID_UINT128* pbid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                       \
+    BID_PROLOG_REF(arg_name)                                                 \
+    BID_SET_RND_MODE()                                                       \
     OTHER_BID_PROLOG_REF()
 
-#define BID128_FUNCTION_ARGTYPE1(fn_name, type1, arg_name)                           \
-  void fn_name(BID_UINT128 *pres,                                                    \
-               type1 *                                                               \
-                   pbid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
-                       _EXC_INFO_PARAM) {                                            \
-    BID_PROLOG_TYPE_REF(type1, arg_name)                                             \
-    BID_SET_RND_MODE()                                                               \
+#define BID128_FUNCTION_ARGTYPE1(fn_name, type1, arg_name)             \
+  void fn_name(BID_UINT128* pres,                                      \
+               type1* pbid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                 \
+    BID_PROLOG_TYPE_REF(type1, arg_name)                               \
+    BID_SET_RND_MODE()                                                 \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1(type0, fn_name, type1, arg_name)                 \
-  void fn_name(type0 *pres,                                                          \
-               type1 *                                                               \
-                   pbid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
-                       _EXC_INFO_PARAM) {                                            \
-    BID_PROLOG_TYPE_REF(type1, arg_name)                                             \
-    BID_SET_RND_MODE()                                                               \
+#define BID_TYPE0_FUNCTION_ARGTYPE1(type0, fn_name, type1, arg_name)   \
+  void fn_name(type0* pres,                                            \
+               type1* pbid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                   _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                 \
+    BID_PROLOG_TYPE_REF(type1, arg_name)                               \
+    BID_SET_RND_MODE()                                                 \
     OTHER_BID_PROLOG_REF()
 
 #define BID_TYPE0_FUNCTION_ARGTYPE1_NORND(type0, fn_name, type1, arg_name) \
-  void fn_name(type0 *pres,                                                \
-               type1 *                                                     \
-                   pbid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM       \
-                       _EXC_INFO_PARAM) {                                  \
+  void fn_name(type0* pres, type1* pbid_##arg_name _EXC_FLAGS_PARAM        \
+                                _EXC_MASKS_PARAM _EXC_INFO_PARAM) {        \
     BID_PROLOG_TYPE_REF(type1, arg_name)                                   \
     OTHER_BID_PROLOG_REF()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS(type0, fn_name, type1, arg_name) \
-  void fn_name(type0 *pres,                                                        \
-               type1 *                                                             \
-                   pbid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM               \
-                       _EXC_INFO_PARAM) {                                          \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS(type0, fn_name, type1, \
+                                                  arg_name)              \
+  void fn_name(type0* pres, type1* pbid_##arg_name _EXC_FLAGS_PARAM      \
+                                _EXC_MASKS_PARAM _EXC_INFO_PARAM) {      \
     BID_PROLOG_TYPE_REF(type1, arg_name)
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(type0, fn_name, type1, arg_name1, type2, arg_name2) \
-  void fn_name(type0 *pres,                                                                            \
-               type1 *                                                                                 \
-                   pbid_##arg_name1,                                                                   \
-               type2 *pbid_##arg_name2 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM                               \
-                   _EXC_INFO_PARAM) {                                                                  \
-    BID_PROLOG_TYPE_REF(type1, arg_name1)                                                              \
-    BID_PROLOG_TYPE_REF(type2, arg_name2)                                                              \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(                      \
+    type0, fn_name, type1, arg_name1, type2, arg_name2)                  \
+  void fn_name(type0* pres, type1* pbid_##arg_name1,                     \
+               type2* pbid_##arg_name2 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
+                   _EXC_INFO_PARAM) {                                    \
+    BID_PROLOG_TYPE_REF(type1, arg_name1)                                \
+    BID_PROLOG_TYPE_REF(type2, arg_name2)                                \
     OTHER_BID_PROLOG_REF()
 //////////////////////////////////////////
 /////////////////////////////////////////
@@ -1506,18 +1516,17 @@ extern unsigned int __bid_ms_restore_flags(unsigned int *);
     BID_PROLOG_VAL(arg_name)                                          \
     OTHER_BID_PROLOG_VAL()
 
-#define BID128_FUNCTION_ARG1_NORND(fn_name, arg_name) \
-  BID_UINT128                                         \
-  fn_name(BID_UINT128 bid_##arg_name _EXC_FLAGS_PARAM \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {     \
-    BID_PROLOG_VAL(arg_name)                          \
+#define BID128_FUNCTION_ARG1_NORND(fn_name, arg_name)                  \
+  BID_UINT128                                                          \
+  fn_name(BID_UINT128 bid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
+              _EXC_INFO_PARAM) {                                       \
+    BID_PROLOG_VAL(arg_name)                                           \
     OTHER_BID_PROLOG_VAL()
 
-#define BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name) \
-  restype                                                                    \
-  fn_name(BID_UINT128 bid_##arg_name _EXC_FLAGS_PARAM                        \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                            \
-    BID_PROLOG_VAL(arg_name)                                                 \
+#define BID128_FUNCTION_ARG1_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name)   \
+  restype fn_name(BID_UINT128 bid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM \
+                      _EXC_INFO_PARAM) {                                       \
+    BID_PROLOG_VAL(arg_name)                                                   \
     OTHER_BID_PROLOG_VAL()
 
 #define BID128_FUNCTION_ARG2(fn_name, arg_name1, arg_name2)            \
@@ -1529,29 +1538,30 @@ extern unsigned int __bid_ms_restore_flags(unsigned int *);
     BID_PROLOG_VAL(arg_name2)                                          \
     OTHER_BID_PROLOG_VAL()
 
-#define BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, arg_name2) \
-  restype                                                                                \
-  fn_name(BID_UINT128 bid_##arg_name1,                                                   \
-          BID_UINT128 bid_##arg_name2 _EXC_FLAGS_PARAM                                   \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                                        \
-    BID_PROLOG_VAL(arg_name1)                                                            \
-    BID_PROLOG_VAL(arg_name2)                                                            \
+#define BID128_FUNCTION_ARG2_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, \
+                                                 arg_name2)                   \
+  restype fn_name(BID_UINT128 bid_##arg_name1,                                \
+                  BID_UINT128 bid_##arg_name2 _EXC_FLAGS_PARAM                \
+                      _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                     \
+    BID_PROLOG_VAL(arg_name1)                                                 \
+    BID_PROLOG_VAL(arg_name2)                                                 \
     OTHER_BID_PROLOG_VAL()
 
-#define BID128_FUNCTION_ARG2P_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, res_name2) \
-  restype                                                                                 \
-  fn_name(BID_UINT128 bid_##arg_name1,                                                    \
-          BID_UINT128 *res_name2 _EXC_FLAGS_PARAM                                         \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                                         \
-    BID_PROLOG_VAL(arg_name1)                                                             \
+#define BID128_FUNCTION_ARG2P_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, \
+                                                  res_name2)                   \
+  restype fn_name(BID_UINT128 bid_##arg_name1,                                 \
+                  BID_UINT128* res_name2 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM     \
+                      _EXC_INFO_PARAM) {                                       \
+    BID_PROLOG_VAL(arg_name1)                                                  \
     OTHER_BID_PROLOG_VAL()
 
-#define BID128_FUNCTION_ARG3P_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, arg_name2, res_name3)               \
-  restype                                                                                                          \
-  fn_name(BID_UINT128 bid_##arg_name1,                                                                             \
-          BID_UINT128 bid_##arg_name2, BID_UINT128 *res_name3 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_VAL(arg_name1)                                                                                      \
-    BID_PROLOG_VAL(arg_name2)                                                                                      \
+#define BID128_FUNCTION_ARG3P_NORND_CUSTOMRESTYPE(restype, fn_name, arg_name1, \
+                                                  arg_name2, res_name3)        \
+  restype fn_name(BID_UINT128 bid_##arg_name1, BID_UINT128 bid_##arg_name2,    \
+                  BID_UINT128* res_name3 _EXC_FLAGS_PARAM _EXC_MASKS_PARAM     \
+                      _EXC_INFO_PARAM) {                                       \
+    BID_PROLOG_VAL(arg_name1)                                                  \
+    BID_PROLOG_VAL(arg_name2)                                                  \
     OTHER_BID_PROLOG_VAL()
 
 #define BID128_FUNCTION_ARG128_ARGTYPE2(fn_name, arg_name1, type2, arg_name2) \
@@ -1563,39 +1573,37 @@ extern unsigned int __bid_ms_restore_flags(unsigned int *);
     BID_PROLOG_TYPE_VAL(type2, arg_name2)                                     \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(type0, fn_name, type1, arg_name1, type2, arg_name2) \
-  type0                                                                                          \
-  fn_name(type1 bid_##arg_name1,                                                                 \
-          type2 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM                                 \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                                                \
-    BID_PROLOG_TYPE_VAL(type1, arg_name1)                                                        \
-    BID_PROLOG_TYPE_VAL(type2, arg_name2)                                                        \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2(type0, fn_name, type1, arg_name1, \
+                                             type2, arg_name2)                 \
+  type0 fn_name(type1 bid_##arg_name1,                                         \
+                type2 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM         \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                        \
+    BID_PROLOG_TYPE_VAL(type1, arg_name1)                                      \
+    BID_PROLOG_TYPE_VAL(type2, arg_name2)                                      \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(type0, fn_name, type1, arg_name1, type2, arg_name2, type3, arg_name3) \
-  type0                                                                                                                     \
-  fn_name(type1 bid_##arg_name1,                                                                                            \
-          type2 bid_##arg_name2, type3 bid_##arg_name3 _RND_MODE_PARAM _EXC_FLAGS_PARAM _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
-    BID_PROLOG_TYPE_VAL(type1, arg_name1)                                                                                   \
-    BID_PROLOG_TYPE_VAL(type2, arg_name2)                                                                                   \
-    BID_PROLOG_TYPE_VAL(type3, arg_name3)                                                                                   \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_ARGTYPE3(                    \
+    type0, fn_name, type1, arg_name1, type2, arg_name2, type3, arg_name3) \
+  type0 fn_name(type1 bid_##arg_name1, type2 bid_##arg_name2,             \
+                type3 bid_##arg_name3 _RND_MODE_PARAM _EXC_FLAGS_PARAM    \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                   \
+    BID_PROLOG_TYPE_VAL(type1, arg_name1)                                 \
+    BID_PROLOG_TYPE_VAL(type2, arg_name2)                                 \
+    BID_PROLOG_TYPE_VAL(type3, arg_name3)                                 \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE_FUNCTION_ARG2(type0, fn_name, arg_name1, arg_name2) \
-  type0                                                              \
-  fn_name(type0 bid_##arg_name1,                                     \
-          type0 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM     \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                    \
-    BID_PROLOG_TYPE_VAL(type0, arg_name1)                            \
-    BID_PROLOG_TYPE_VAL(type0, arg_name2)                            \
+#define BID_TYPE_FUNCTION_ARG2(type0, fn_name, arg_name1, arg_name2)   \
+  type0 fn_name(type0 bid_##arg_name1,                                 \
+                type0 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                \
+    BID_PROLOG_TYPE_VAL(type0, arg_name1)                              \
+    BID_PROLOG_TYPE_VAL(type0, arg_name2)                              \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE_FUNCTION_ARG1(type0, fn_name, arg_name1) \
-  type0                                                   \
-  fn_name(type0 bid_##arg_name1                           \
-              _RND_MODE_PARAM _EXC_FLAGS_PARAM            \
-                  _EXC_MASKS_PARAM _EXC_INFO_PARAM) {     \
-    BID_PROLOG_TYPE_VAL(type0, arg_name1)                 \
+#define BID_TYPE_FUNCTION_ARG1(type0, fn_name, arg_name1)              \
+  type0 fn_name(type0 bid_##arg_name1 _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                \
+    BID_PROLOG_TYPE_VAL(type0, arg_name1)                              \
     OTHER_BID_PROLOG_VAL()
 
 #define BID128_FUNCTION_ARGTYPE1_ARG128(fn_name, type1, arg_name1, arg_name2) \
@@ -1607,38 +1615,36 @@ extern unsigned int __bid_ms_restore_flags(unsigned int *);
     BID_PROLOG_VAL(arg_name2)                                                 \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE0_FUNCTION_ARG128_ARGTYPE2(type0, fn_name, arg_name1, type2, arg_name2) \
-  type0                                                                                 \
-  fn_name(BID_UINT128 bid_##arg_name1,                                                  \
-          type2 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM                        \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                                       \
-    BID_PROLOG_VAL(arg_name1)                                                           \
-    BID_PROLOG_TYPE_VAL(type2, arg_name2)                                               \
+#define BID_TYPE0_FUNCTION_ARG128_ARGTYPE2(type0, fn_name, arg_name1, type2, \
+                                           arg_name2)                        \
+  type0 fn_name(BID_UINT128 bid_##arg_name1,                                 \
+                type2 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM       \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                      \
+    BID_PROLOG_VAL(arg_name1)                                                \
+    BID_PROLOG_TYPE_VAL(type2, arg_name2)                                    \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_ARG128(type0, fn_name, type1, arg_name1, arg_name2) \
-  type0                                                                                 \
-  fn_name(type1 bid_##arg_name1,                                                        \
-          BID_UINT128 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM                  \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                                       \
-    BID_PROLOG_TYPE_VAL(type1, arg_name1)                                               \
-    BID_PROLOG_VAL(arg_name2)                                                           \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_ARG128(type0, fn_name, type1, arg_name1, \
+                                           arg_name2)                        \
+  type0 fn_name(type1 bid_##arg_name1,                                       \
+                BID_UINT128 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                      \
+    BID_PROLOG_TYPE_VAL(type1, arg_name1)                                    \
+    BID_PROLOG_VAL(arg_name2)                                                \
     OTHER_BID_PROLOG_VAL()
 
 #define BID_TYPE0_FUNCTION_ARG128_ARG128(type0, fn_name, arg_name1, arg_name2) \
-  type0                                                                        \
-  fn_name(BID_UINT128 bid_##arg_name1,                                         \
-          BID_UINT128 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM         \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                              \
+  type0 fn_name(BID_UINT128 bid_##arg_name1,                                   \
+                BID_UINT128 bid_##arg_name2 _RND_MODE_PARAM _EXC_FLAGS_PARAM   \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                        \
     BID_PROLOG_VAL(arg_name1)                                                  \
     BID_PROLOG_VAL(arg_name2)                                                  \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE0_FUNCTION_ARG1(type0, fn_name, arg_name)             \
-  type0                                                               \
-  fn_name(BID_UINT128 bid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                     \
-    BID_PROLOG_VAL(arg_name)                                          \
+#define BID_TYPE0_FUNCTION_ARG1(type0, fn_name, arg_name)                   \
+  type0 fn_name(BID_UINT128 bid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                     \
+    BID_PROLOG_VAL(arg_name)                                                \
     OTHER_BID_PROLOG_VAL()
 
 #define BID128_FUNCTION_ARGTYPE1(fn_name, type1, arg_name)      \
@@ -1648,58 +1654,60 @@ extern unsigned int __bid_ms_restore_flags(unsigned int *);
     BID_PROLOG_TYPE_VAL(type1, arg_name)                        \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1(type0, fn_name, type1, arg_name) \
-  type0                                                              \
-  fn_name(type1 bid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM      \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                    \
-    BID_PROLOG_TYPE_VAL(type1, arg_name)                             \
+#define BID_TYPE0_FUNCTION_ARGTYPE1(type0, fn_name, type1, arg_name)  \
+  type0 fn_name(type1 bid_##arg_name _RND_MODE_PARAM _EXC_FLAGS_PARAM \
+                    _EXC_MASKS_PARAM _EXC_INFO_PARAM) {               \
+    BID_PROLOG_TYPE_VAL(type1, arg_name)                              \
     OTHER_BID_PROLOG_VAL()
 
 #define BID_TYPE0_FUNCTION_ARGTYPE1_NORND(type0, fn_name, type1, arg_name) \
-  type0                                                                    \
-  fn_name(type1 bid_##arg_name _EXC_FLAGS_PARAM                            \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                          \
+  type0 fn_name(type1 bid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM     \
+                    _EXC_INFO_PARAM) {                                     \
     BID_PROLOG_TYPE_VAL(type1, arg_name)                                   \
     OTHER_BID_PROLOG_VAL()
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS(type0, fn_name, type1, arg_name) \
-  type0                                                                            \
-  fn_name(type1 bid_##arg_name _EXC_FLAGS_PARAM                                    \
-              _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                                  \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_NORND_NOFLAGS(type0, fn_name, type1, \
+                                                  arg_name)              \
+  type0 fn_name(type1 bid_##arg_name _EXC_FLAGS_PARAM _EXC_MASKS_PARAM   \
+                    _EXC_INFO_PARAM) {                                   \
     BID_PROLOG_TYPE_VAL(type1, arg_name)
 
-#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(type0, fn_name, type1, arg_name1, type2, arg_name2) \
-  type0                                                                                                \
-  fn_name(type1 bid_##arg_name1, type2 bid_##arg_name2 _EXC_FLAGS_PARAM                                \
-                                     _EXC_MASKS_PARAM _EXC_INFO_PARAM) {                               \
-    BID_PROLOG_TYPE_VAL(type1, arg_name1)                                                              \
-    BID_PROLOG_TYPE_VAL(type2, arg_name2)                                                              \
+#define BID_TYPE0_FUNCTION_ARGTYPE1_ARGTYPE2_NORND(                            \
+    type0, fn_name, type1, arg_name1, type2, arg_name2)                        \
+  type0 fn_name(type1 bid_##arg_name1, type2 bid_##arg_name2 _EXC_FLAGS_PARAM  \
+                                           _EXC_MASKS_PARAM _EXC_INFO_PARAM) { \
+    BID_PROLOG_TYPE_VAL(type1, arg_name1)                                      \
+    BID_PROLOG_TYPE_VAL(type2, arg_name2)                                      \
     OTHER_BID_PROLOG_VAL()
 #endif
 
-#define BID_TO_SMALL_BID_UINT_CVT_FUNCTION(type0, fn_name, type1, arg_name, cvt_fn_name, type2, size_mask, invalid_res) \
-  BID_TYPE0_FUNCTION_ARGTYPE1_NORND(type0, fn_name, type1, arg_name)                                                    \
-  type2 res;                                                                                                            \
-  _IDEC_flags saved_fpsc = *pfpsf;                                                                                      \
-  BIDECIMAL_CALL1_NORND(cvt_fn_name, res, arg_name);                                                                    \
-  if(res & size_mask) {                                                                                                 \
-    *pfpsf = saved_fpsc | BID_INVALID_EXCEPTION;                                                                        \
-    res = invalid_res;                                                                                                  \
-  }                                                                                                                     \
-  BID_RETURN_VAL((type0)res);                                                                                           \
+#define BID_TO_SMALL_BID_UINT_CVT_FUNCTION(type0, fn_name, type1, arg_name, \
+                                           cvt_fn_name, type2, size_mask,   \
+                                           invalid_res)                     \
+  BID_TYPE0_FUNCTION_ARGTYPE1_NORND(type0, fn_name, type1, arg_name)        \
+  type2 res;                                                                \
+  _IDEC_flags saved_fpsc = *pfpsf;                                          \
+  BIDECIMAL_CALL1_NORND(cvt_fn_name, res, arg_name);                        \
+  if (res & size_mask) {                                                    \
+    *pfpsf = saved_fpsc | BID_INVALID_EXCEPTION;                            \
+    res = invalid_res;                                                      \
+  }                                                                         \
+  BID_RETURN_VAL((type0)res);                                               \
   }
 
-#define BID_TO_SMALL_INT_CVT_FUNCTION(type0, fn_name, type1, arg_name, cvt_fn_name, type2, size_mask, invalid_res) \
-  BID_TYPE0_FUNCTION_ARGTYPE1_NORND(type0, fn_name, type1, arg_name)                                               \
-  type2 res, sgn_mask;                                                                                             \
-  _IDEC_flags saved_fpsc = *pfpsf;                                                                                 \
-  BIDECIMAL_CALL1_NORND(cvt_fn_name, res, arg_name);                                                               \
-  sgn_mask = res & size_mask;                                                                                      \
-  if(sgn_mask && (sgn_mask != (type2)size_mask)) {                                                                 \
-    *pfpsf = saved_fpsc | BID_INVALID_EXCEPTION;                                                                   \
-    res = invalid_res;                                                                                             \
-  }                                                                                                                \
-  BID_RETURN_VAL((type0)res);                                                                                      \
+#define BID_TO_SMALL_INT_CVT_FUNCTION(type0, fn_name, type1, arg_name, \
+                                      cvt_fn_name, type2, size_mask,   \
+                                      invalid_res)                     \
+  BID_TYPE0_FUNCTION_ARGTYPE1_NORND(type0, fn_name, type1, arg_name)   \
+  type2 res, sgn_mask;                                                 \
+  _IDEC_flags saved_fpsc = *pfpsf;                                     \
+  BIDECIMAL_CALL1_NORND(cvt_fn_name, res, arg_name);                   \
+  sgn_mask = res & size_mask;                                          \
+  if (sgn_mask && (sgn_mask != (type2)size_mask)) {                    \
+    *pfpsf = saved_fpsc | BID_INVALID_EXCEPTION;                       \
+    res = invalid_res;                                                 \
+  }                                                                    \
+  BID_RETURN_VAL((type0)res);                                          \
   }
 #endif
 

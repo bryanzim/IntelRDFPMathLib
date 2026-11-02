@@ -38,46 +38,53 @@ int exponent_x, exponent_y;
 valid_x = unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x);
 valid_y = unpack_BID32(&sign_y, &exponent_y, &coefficient_y, y);
 
-if(!valid_x) {
+if (!valid_x) {
   // x is Inf. or NaN
 #ifdef BID_SET_STATUS_FLAGS
-  if((y & SNAN_MASK32) == SNAN_MASK32) // y is sNaN
+  if ((y & SNAN_MASK32) == SNAN_MASK32) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
 
   // test if x is NaN
-  if((x & NAN_MASK32) == NAN_MASK32) {
+  if ((x & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & SNAN_MASK32) == SNAN_MASK32) // sNaN
+    if ((x & SNAN_MASK32) == SNAN_MASK32) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     BID_RETURN(coefficient_x & QUIET_MASK32);
   }
 }
 
-if(!valid_y) {
+if (!valid_y) {
   // y is Inf. or NaN
 
   // test if y is NaN
-  if((y & NAN_MASK32) == NAN_MASK32) {
+  if ((y & NAN_MASK32) == NAN_MASK32) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((y & SNAN_MASK32) == SNAN_MASK32) // sNaN
+    if ((y & SNAN_MASK32) == SNAN_MASK32) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     BID_RETURN(coefficient_y & QUIET_MASK32);
   }
 
-  if(((x & INFINITY_MASK32) == INFINITY_MASK32) && // x is Infinity
-     ((y & INFINITY_MASK32) == INFINITY_MASK32))   // y is also Infinity
+  if (((x & INFINITY_MASK32) == INFINITY_MASK32) &&  // x is Infinity
+      ((y & INFINITY_MASK32) == INFINITY_MASK32))    // y is also Infinity
   {
-    if((x & SIGNMASK32) == 0 && (y & SIGNMASK32) == 0) // x positive, y positive
+    if ((x & SIGNMASK32) == 0 &&
+        (y & SIGNMASK32) == 0) {  // x positive, y positive
       zd = atan2(1.0, 1.0);
-    else if((x & SIGNMASK32) == SIGNMASK32 && (y & SIGNMASK32) == 0) // x negative, y positive
+    } else if ((x & SIGNMASK32) == SIGNMASK32 &&
+               (y & SIGNMASK32) == 0) {  // x negative, y positive
       zd = atan2(-1.0, 1.0);
-    else if((x & SIGNMASK32) == SIGNMASK32 && (y & SIGNMASK32) == SIGNMASK32) // x negative, y negative
+    } else if ((x & SIGNMASK32) == SIGNMASK32 &&
+               (y & SIGNMASK32) == SIGNMASK32) {  // x negative, y negative
       zd = atan2(-1.0, -1.0);
-    else
+    } else {
       zd = atan2(1.0, -1.0);
+    }
     BIDECIMAL_CALL1(binary64_to_bid32, res, zd);
     BID_RETURN(res);
   }

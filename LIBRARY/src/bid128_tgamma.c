@@ -31,25 +31,26 @@
 
 // 2-part conversion.
 
-BID_EXTERN_C void bid128_to_binary128_2part(BID_F128_TYPE *, BID_F128_TYPE *, BID_UINT128);
+BID_EXTERN_C void bid128_to_binary128_2part(BID_F128_TYPE*, BID_F128_TYPE*,
+                                            BID_UINT128);
 
 // Standard NaN
 
-static BID_UINT128 bi_d128_nan =
-    {BID128_LH_INIT(0x0000000000000000ull, 0x7c00000000000000ull)};
+static BID_UINT128 bi_d128_nan = {
+    BID128_LH_INIT(0x0000000000000000ull, 0x7c00000000000000ull)};
 
 // +Infinity
 
-static BID_UINT128 bi_d128_inf =
-    {BID128_LH_INIT(0x0000000000000000ull, 0x7800000000000000ull)};
+static BID_UINT128 bi_d128_inf = {
+    BID128_LH_INIT(0x0000000000000000ull, 0x7800000000000000ull)};
 
 // Shifter 2 * 10^33
 
-static BID_UINT128 bi_d128_shifter =
-    {BID128_LH_INIT(0x7182b61400000000ull, 0x3040629b8c891b26ull)};
+static BID_UINT128 bi_d128_shifter = {
+    BID128_LH_INIT(0x7182b61400000000ull, 0x3040629b8c891b26ull)};
 
-static BID_UINT128 bi_d128_zero =
-    {BID128_LH_INIT(0x0000000000000000ull, 0x0000000000000000ull)};
+static BID_UINT128 bi_d128_zero = {
+    BID128_LH_INIT(0x0000000000000000ull, 0x0000000000000000ull)};
 
 BID128_FUNCTION_ARG1(bid128_tgamma, x)
 
@@ -60,18 +61,19 @@ int e, cmp_res;
 
 // Check for NaN and just return the same NaN, quieted and canonized
 
-if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
+if ((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 #ifdef BID_SET_STATUS_FLAGS
-  if(((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64))
+  if (((x.w[BID_HIGH_128W] & SNAN_MASK64) == SNAN_MASK64)) {
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W] & 0xfc003fffffffffffull;
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
-  if(((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
-      0x0000314dc6448d93ull) ||
-     (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
-       0x0000314dc6448d93ull) &&
-      res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
+  if (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) >
+       0x0000314dc6448d93ull) ||
+      (((res.w[BID_HIGH_128W] & 0x00003fffffffffffull) ==
+        0x0000314dc6448d93ull) &&
+       res.w[BID_LOW_128W] >= 0x38c15b0a00000000ull)) {
     res.w[BID_HIGH_128W] &= ~0x00003fffffffffffull;
     res.w[BID_LOW_128W] = 0ull;
   }
@@ -81,7 +83,7 @@ if((x.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) {
 // If the input is 0, return signed infinity
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero, cmp_res, x);
-if(cmp_res) {
+if (cmp_res) {
   res = bi_d128_inf;
   res.w[BID_HIGH_128W] ^= (x.w[BID_HIGH_128W] & SIGNMASK64);
   *pfpsf |= BID_ZERO_DIVIDE_EXCEPTION;
@@ -91,25 +93,26 @@ if(cmp_res) {
 // For infinite inputs, return NaN or infinity
 
 BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isInf, cmp_res, x);
-if(cmp_res) {
-  if((x.w[BID_HIGH_128W] & SIGNMASK64) != 0) {
+if (cmp_res) {
+  if ((x.w[BID_HIGH_128W] & SIGNMASK64) != 0) {
     res = bi_d128_nan;
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
-  } else
+  } else {
     res = bi_d128_inf;
+  }
   BID_RETURN(res);
 }
 
 // check for nonpositive integers
 BIDECIMAL_CALL2_NORND(bid128_quiet_less_equal, cmp_res, x, bi_d128_zero);
-if(cmp_res) {
+if (cmp_res) {
   BIDECIMAL_CALL1_NORND(bid128_round_integral_nearest_even, x_int, x);
   BIDECIMAL_CALL2(bid128_sub, x_frac, x, x_int);
   // If the fractional part is 0, return NaN
   BIDECIMAL_CALL1_NORND_NOSTAT(bid128_isZero, cmp_res, x_frac);
-  if(cmp_res) {
+  if (cmp_res) {
     res = bi_d128_nan;
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -128,8 +131,8 @@ BIDECIMAL_CALL1(bid128_exp, res, y);
 // If we somehow got a NaN from that, just give up
 // The result is also final if the input is nonnegative.
 
-if(((res.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) ||
-   ((x.w[BID_HIGH_128W] & SIGNMASK64) == 0)) {
+if (((res.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) ||
+    ((x.w[BID_HIGH_128W] & SIGNMASK64) == 0)) {
   BID_RETURN(res);
 }
 
@@ -138,13 +141,14 @@ if(((res.w[BID_HIGH_128W] & NAN_MASK64) == NAN_MASK64) ||
 
 BIDECIMAL_CALL1_NORND(bid128_round_integral_zero, x_int, x);
 e = ((x_int.w[BID_HIGH_128W] >> 49) & ((1ull << 14) - 1));
-if(e <= 6176) {
-  if(e < 6176) {
+if (e <= 6176) {
+  if (e < 6176) {
     BID_UINT128 localshifter = bi_d128_shifter;
     BIDECIMAL_CALL2(bid128_add, x_int, localshifter, x_int);
   }
-  if((x_int.w[BID_LOW_128W] & 1) == 0)
+  if ((x_int.w[BID_LOW_128W] & 1) == 0) {
     res.w[BID_HIGH_128W] ^= SIGNMASK64;
+  }
 }
 
 BID_RETURN(res);

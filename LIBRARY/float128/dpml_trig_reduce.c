@@ -335,9 +335,9 @@
 
     /*
      * The last issue associated with the 4/pi table is how many bits of 4/pi
-     * are necessary?  Since the index into the table is essentially the exponent
-     * of the argument less the number of bits of precision, the maximum number of
-     * bits that can be skipped over is
+     * are necessary?  Since the index into the table is essentially the
+     * exponent of the argument less the number of bits of precision, the
+     * maximum number of bits that can be skipped over is
      *
      *		MAX_EXP + (1 + v - P)
      *
@@ -363,12 +363,12 @@
      *		MAX_EXP + MAX_LEADING_0s_OR_1s + P + k + v + 1
      */
 
-    /*
-     * Determine the number of bits of 4/pi required and set number of
-     * digits and mp precision;
-     */
+        /*
+         * Determine the number of bits of 4/pi required and set number of
+         * digits and mp precision;
+         */
 
-    max_leading_1s_or_0s = ceil(5 * MAX_PRECISION / 4);
+        max_leading_1s_or_0s = ceil(5 * MAX_PRECISION / 4);
 num_4_ov_pi_bits = MAX_LOG2_MAX_FLOAT + max_leading_1s_or_0s + MIN_OVERHANG +
                    MAX_PRECISION + 1;
 total_bits = num_4_ov_pi_bits + FOUR_OV_PI_ZERO_PAD_LEN;
@@ -407,9 +407,10 @@ START_GLOBAL_TABLE(TABLE_NAME, offset);
 num_4_ov_pi_digits = ceil(total_bits / BITS_PER_DIGIT);
 digits_per_row = floor(292 / (BITS_PER_DIGIT + 16));
 
-for(n = 0; n < num_4_ov_pi_digits; n++) {
-  if(mod(n, digits_per_row) == 0)
+for (n = 0; n < num_4_ov_pi_digits; n++) {
+  if (mod(n, digits_per_row) == 0) {
     printf("\n       ");
+  }
   t = bldexp(t, BITS_PER_DIGIT);
   digit = floor(t);
   t -= digit; /* NB: precision is reduced, but this works! */
@@ -438,11 +439,8 @@ printf("    extern const " STR(DIGIT_TYPE) " FOUR_OVER_PI_TABLE_NAME[];\n");
 
 printf("\n#endif\n\n");
 
-@end_divert
-    @eval my $outText = MphocEval(GetStream("divertText"));
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Table of 4/pi",
-                               __FILE__);
+@end_divert @eval my $outText = MphocEval(GetStream("divertText"));
+my $headerText = GetHeaderText(STR(BUILD_FILE_NAME), "Table of 4/pi", __FILE__);
 print "$headerText\n\n$outText";
 
 #endif
@@ -704,27 +702,26 @@ procedure bit_loss(s, t) {
   b = s + t; /* bits in both s and t together */
   printf(" /* %i,%i */ ", s, t);
 
-  if(b < BITS_PER_DIGIT) {
+  if (b < BITS_PER_DIGIT) {
     /*
      *  MSD_OF_W suffices
      */
     p = BITS_PER_DIGIT - b; /* position of low bit of t in MSD_OF_W  */
     i = DIGIT_BIT(p);       /* to 'add 1' at position p */
     m = DIGIT_MASK(t, p);   /* mask of the t bits */
-    printf(
-        MAC2 "(((MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)" MAC3, i, m - i);
+    printf(MAC2 "(((MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)" MAC3, i, m - i);
 
-  } else if(BITS_PER_DIGIT <= s && b < 2 * BITS_PER_DIGIT) {
+  } else if (BITS_PER_DIGIT <= s && b < 2 * BITS_PER_DIGIT) {
     /*
      *  SECOND_MSD_OF_W suffices
      */
     p = 2 * BITS_PER_DIGIT - b;
     i = DIGIT_BIT(p);
     m = DIGIT_MASK(t, p);
-    printf(
-        MAC2 "(((SECOND_MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)" MAC3, i, m - i);
+    printf(MAC2 "(((SECOND_MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)" MAC3, i,
+           m - i);
 
-  } else if(b <= 2 * BITS_PER_DIGIT) {
+  } else if (b <= 2 * BITS_PER_DIGIT) {
     /*
      *  Test bits in both MSD_OF_W and SECOND_MSD_OF_W.
      */
@@ -733,20 +730,20 @@ procedure bit_loss(s, t) {
     m = DIGIT_MASK(BITS_PER_DIGIT - p, p);
     printf("( ");
     printf(MAC2);
-    if(m == i)
+    if (m == i) {
       printf("/* ");
-    printf(
-        "(((SECOND_MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)",
-        i, m - i);
+    }
+    printf("(((SECOND_MSD_OF_W + 0x%..16i) & 0x%..16i) == 0)", i, m - i);
     printf(" && ");
-    if(m == i)
+    if (m == i) {
       printf(" */");
+    }
     m = DIGIT_MASK(BITS_PER_DIGIT - s, 0);
-    printf(
-        MAC2 "(("
-             "( ((SIGNED_DIGIT_TYPE)SECOND_MSD_OF_W >> %i) - MSD_OF_W )"
-             " & 0x%..16i) == 0)",
-        p, m);
+    printf(MAC2
+           "(("
+           "( ((SIGNED_DIGIT_TYPE)SECOND_MSD_OF_W >> %i) - MSD_OF_W )"
+           " & 0x%..16i) == 0)",
+           p, m);
     printf(" )" MAC3);
 
   } else {
@@ -946,11 +943,10 @@ num_t_digits = max(3, num_f_digits + 2);
 /*
  *  Print macros for declaring the appropriate number of digits
  */
-#define PRINT_DECL_DEF(tag, name, k)    \
-  /* define 'name'0 thru 'name''k-1' */ \
-  printf("#define " tag STR(name) "0"); \
-  for(i = 1; i < k; i++)                \
-    printf(", " STR(name) "%i", i);     \
+#define PRINT_DECL_DEF(tag, name, k)                      \
+  /* define 'name'0 thru 'name''k-1' */                   \
+  printf("#define " tag STR(name) "0");                   \
+  for (i = 1; i < k; i++) printf(", " STR(name) "%i", i); \
   printf("\n")
 PRINT_DECL_DEF("G_DIGITS\t", g, num_g_digits);
 PRINT_DECL_DEF("F_DIGITS\t", F, num_f_digits);
@@ -965,10 +961,11 @@ print;
 
 printf("#define MSD_OF_F\tF%i\n", num_f_digits - 1);
 printf("#define MSD_OF_W\tg%i\n", num_w_digits - 1);
-if(num_w_digits == 1)
+if (num_w_digits == 1) {
   printf("#define SECOND_MSD_OF_W\tEXTRA_W_DIGIT\n");
-else
+} else {
   printf("#define SECOND_MSD_OF_W\tg%i\n", num_w_digits - 2);
+}
 printf("#define CARRY_DIGIT\tt%i\n", num_t_digits - 1);
 print;
 
@@ -985,16 +982,16 @@ needs_pdp_shuffle = 0;
 /*
  *  GET_F_DIGITS(x) fetches the initial digits of f from x
  */
-printf("#define GET_F_DIGITS(x)" MAC2 "{" MAC2 "union { DIGIT_TYPE i[NUM_F_DIGITS]; F_TYPE f; } _u;" MAC2 "_u.f = x;");
+printf("#define GET_F_DIGITS(x)" MAC2 "{" MAC2
+       "union { DIGIT_TYPE i[NUM_F_DIGITS]; F_TYPE f; } _u;" MAC2 "_u.f = x;");
 
-if(BITS_PER_F_TYPE < BITS_PER_DIGIT) {
-
+if (BITS_PER_F_TYPE < BITS_PER_DIGIT) {
   printf(MAC2 "F0 = _u.i[0] & DIGIT_MASK(%i, 0);", BITS_PER_F_TYPE);
-  if(needs_pdp_shuffle)
+  if (needs_pdp_shuffle) {
     printf("_PDP_SHUFFLE(F0);");
+  }
 
 } else {
-
 #if (ENDIANESS == big_endian) || (VAX_FLOATING)
   j = 0;
   j_inc = 1;
@@ -1003,10 +1000,11 @@ if(BITS_PER_F_TYPE < BITS_PER_DIGIT) {
   j_inc = -1;
 #endif
 
-  for(i = num_f_digits - 1; i >= 0; i--) {
+  for (i = num_f_digits - 1; i >= 0; i--) {
     printf(MAC2 "F%i = _u.i[%i]; ", i, j);
-    if(needs_pdp_shuffle)
+    if (needs_pdp_shuffle) {
       printf("_PDP_SHUFFLE(F%i);", i);
+    }
     j += j_inc;
   }
 }
@@ -1026,8 +1024,9 @@ printf("#define GET_G_DIGITS_FROM_TABLE(p, extra_digit)");
     printf(MAC2 "extra_digit = p[%i]; ", num_g_digits);
     printf(MAC2 "p = p[num_g_digits]");
 #else
-for(i = num_g_digits - 1; i >= 0; i--)
+for (i = num_g_digits - 1; i >= 0; i--) {
   printf(MAC2 "g%i = *p++; ", i);
+}
 printf(MAC2 "extra_digit = *p++");
 #endif
 printf(MAC3);
@@ -1039,9 +1038,9 @@ printf(MAC3);
  *		g = (g << lshift) | (extra_digit >> (BITS_PER_WORD-lshift)
  */
 printf("#define LEFT_SHIFT_G_DIGITS(lshift, rshift, extra_digit)");
-for(i = num_g_digits - 1; i > 0; i--)
-  printf(MAC2 "g%i = (g%i << (lshift)) | (g%i >> (rshift));",
-         i, i, i - 1);
+for (i = num_g_digits - 1; i > 0; i--) {
+  printf(MAC2 "g%i = (g%i << (lshift)) | (g%i >> (rshift));", i, i, i - 1);
+}
 printf(MAC2 "g0 = (g0 << (lshift)) | (extra_digit >> (rshift))");
 printf(MAC3);
 
@@ -1051,22 +1050,22 @@ printf(MAC3);
  */
 printf("#define MULTIPLY_F_AND_G_DIGITS(c)");
 
-if(num_g_digits == 1)
+if (num_g_digits == 1) {
+  printf(
+      "\t"
+      "g0 = F0*g0\n");
+}
 
-  printf("\t"
-         "g0 = F0*g0\n");
-
-else if(num_f_digits == 1) {
-
+else if (num_f_digits == 1) {
   printf(MAC2 "XMUL(F0,g0,t0,g0)");
 
-  for(i = 1; i < num_w_digits - 1; i++)
+  for (i = 1; i < num_w_digits - 1; i++) {
     printf(sMAC2 "XMUL_ADD(F0,g%i,t0,t0,g%i)", i, i);
+  }
 
   printf(sMAC2 "MUL_ADD(F0,g%i,t0,g%i)", i, i);
 
 } else {
-
   /* Get first product */
   printf(MAC2 "XMUL(g0,F0,t1,t0)");
 
@@ -1076,10 +1075,11 @@ else if(num_f_digits == 1) {
    */
 
   msd_of_mul_add = 1;
-  for(i = 1; i < num_f_digits; i++) {
+  for (i = 1; i < num_f_digits; i++) {
     msd_of_mul_add++;
-    if(msd_of_mul_add >= num_w_digits)
+    if (msd_of_mul_add >= num_w_digits) {
       break;
+    }
     printf(sMAC2 "XMUL_ADD(g0,F%i,t%i,t%i,t%i)", i, i, i + 1, i);
   }
 
@@ -1087,8 +1087,9 @@ else if(num_f_digits == 1) {
    * If we no longer needed the high digit of the XMUL before using
    * all of the F digits, add in the low bits of the final product.
    */
-  if(msd_of_mul_add >= num_w_digits)
+  if (msd_of_mul_add >= num_w_digits) {
     printf(sMAC2 "MUL_ADD(g0,F%i,t%i)", i, i);
+  }
 
   /* Move the low bits of t to w */
   printf(sMAC2 "g0 = t0");
@@ -1106,8 +1107,9 @@ else if(num_f_digits == 1) {
    * used as a carry digit.
    */
 
-  for(i = 0; i < num_t_digits - 1; i++)
+  for (i = 0; i < num_t_digits - 1; i++) {
     next_index[i] = i + 1;
+  }
   next_index[num_t_digits - 2] = 0;
 
 #define UPDATE_DIGIT_INDEX(lo, hi) \
@@ -1115,55 +1117,44 @@ else if(num_f_digits == 1) {
   hi = next_index[hi]
 
   first = 0;
-  for(i = 1; i < num_w_digits; i++) {
-
+  for (i = 1; i < num_w_digits; i++) {
     first = next_index[first];
     lo = first;
     hi = next_index[lo];
     msd_of_mul_add = i + 2; /* msd is the carry out */
 
-    if(msd_of_mul_add < num_w_digits)
-      printf(sMAC2 "XMUL_XADDC(g%i,F0,t%i,t%i,c,t%i,t%i)",
-             i, hi, lo, hi, lo);
-    else if(msd_of_mul_add <= num_w_digits)
-      printf(sMAC2 "XMUL_XADD(g%i,F0,t%i,t%i,t%i,t%i)",
-             i, hi, lo, hi, lo);
-    else
-      printf(sMAC2 "MUL_ADD(g%i,F0,t%i,t%i)",
-             i, lo, lo);
+    if (msd_of_mul_add < num_w_digits) {
+      printf(sMAC2 "XMUL_XADDC(g%i,F0,t%i,t%i,c,t%i,t%i)", i, hi, lo, hi, lo);
+    } else if (msd_of_mul_add <= num_w_digits) {
+      printf(sMAC2 "XMUL_XADD(g%i,F0,t%i,t%i,t%i,t%i)", i, hi, lo, hi, lo);
+    } else {
+      printf(sMAC2 "MUL_ADD(g%i,F0,t%i,t%i)", i, lo, lo);
+    }
     UPDATE_DIGIT_INDEX(lo, hi);
 
-    for(j = 1; j < num_f_digits; j++) {
-
+    for (j = 1; j < num_f_digits; j++) {
       msd_of_mul_add++;
-      if(msd_of_mul_add < num_w_digits) {
+      if (msd_of_mul_add < num_w_digits) {
+        if (j == (num_f_digits - 1)) {
+          printf(sMAC2 "XMUL_XADDC(g%i,F%i,c,t%i,c,t%i,t%i)", i, j, lo, hi, lo);
+        } else {
+          printf(sMAC2 "XMUL_XADDC_W_C_IN(g%i,F%i,t%i,t%i,c,c,t%i,t%i)", i, j,
+                 hi, lo, hi, lo);
+        }
 
-        if(j == (num_f_digits - 1))
-          printf(sMAC2
-                 "XMUL_XADDC(g%i,F%i,c,t%i,c,t%i,t%i)",
-                 i, j, lo, hi, lo);
-        else
-          printf(sMAC2
-                 "XMUL_XADDC_W_C_IN(g%i,F%i,t%i,t%i,c,c,t%i,t%i)",
-                 i, j, hi, lo, hi, lo);
+      } else if (msd_of_mul_add <= num_w_digits) {
+        if (j == (num_f_digits - 1)) {
+          printf(sMAC2 "XMUL_XADD(g%i,F%i,c,t%i,t%i,t%i)", i, j, lo, hi, lo);
+        } else {
+          printf(sMAC2 "XMUL_XADD_W_C_IN(g%i,F%i,t%i,t%i,c,t%i,t%i)", i, j, hi,
+                 lo, hi, lo);
+        }
 
-      } else if(msd_of_mul_add <= num_w_digits) {
-
-        if(j == (num_f_digits - 1))
-          printf(sMAC2
-                 "XMUL_XADD(g%i,F%i,c,t%i,t%i,t%i)",
-                 i, j, lo, hi, lo);
-        else
-          printf(sMAC2
-                 "XMUL_XADD_W_C_IN(g%i,F%i,t%i,t%i,c,t%i,t%i)",
-                 i, j, hi, lo, hi, lo);
-
-      } else if(msd_of_mul_add <= num_w_digits + 1) {
-
-        printf(sMAC2 "MUL_ADD(g%i,F%i,t%i,t%i)",
-               i, j, lo, lo);
-      } else
+      } else if (msd_of_mul_add <= num_w_digits + 1) {
+        printf(sMAC2 "MUL_ADD(g%i,F%i,t%i,t%i)", i, j, lo, lo);
+      } else {
         break;
+      }
       UPDATE_DIGIT_INDEX(lo, hi);
     }
 
@@ -1180,33 +1171,29 @@ print;
  */
 
 printf("#define GET_NEXT_PRODUCT(g, w, c)");
-if(num_g_digits == 1)
-
-  printf("\t"
-         "XMUL_XADD(g,F0,g0,w,g0,w)");
+if (num_g_digits == 1) {
+  printf(
+      "\t"
+      "XMUL_XADD(g,F0,g0,w,g0,w)");
+}
 
 else {
-
   printf(MAC2 "XMUL_XADDC(g,F0,g0,(DIGIT_TYPE)0,c,g0,w)");
 
   msd_of_mul_add = 1;
-  for(i = 1; i < num_f_digits; i++) {
+  for (i = 1; i < num_f_digits; i++) {
     j = i - 1;
 
-    if(msd_of_mul_add < num_w_digits)
-      printf(sMAC2
-             "XMUL_XADDC_W_C_IN(g,F%i,g%i,g%i,c,c,g%i,g%i)",
-             i, i, j, i, j);
-    else if(msd_of_mul_add <= num_w_digits + 1)
-      printf(sMAC2
-             "XMUL_XADD_W_C_IN(g,F%i,g%i,g%i,c,g%i,g%i)",
-             i, i, j, i, j);
-    else if(msd_of_mul_add <= num_w_digits + 2)
-      printf(sMAC2
-             "MUL_ADD(g,F%i,g%i,g%i)",
-             i, j, j);
-    else
+    if (msd_of_mul_add < num_w_digits) {
+      printf(sMAC2 "XMUL_XADDC_W_C_IN(g,F%i,g%i,g%i,c,c,g%i,g%i)", i, i, j, i,
+             j);
+    } else if (msd_of_mul_add <= num_w_digits + 1) {
+      printf(sMAC2 "XMUL_XADD_W_C_IN(g,F%i,g%i,g%i,c,g%i,g%i)", i, i, j, i, j);
+    } else if (msd_of_mul_add <= num_w_digits + 2) {
+      printf(sMAC2 "MUL_ADD(g,F%i,g%i,g%i)", i, j, j);
+    } else {
       break;
+    }
     msd_of_mul_add++;
   }
   printf(";");
@@ -1217,15 +1204,17 @@ else {
    * w digits as necessary.
    */
 
-  if(msd_of_mul_add < num_w_digits) {
-    if(msd_of_mul_add != (num_w_digits - 1)) {
+  if (msd_of_mul_add < num_w_digits) {
+    if (msd_of_mul_add != (num_w_digits - 1)) {
       printf(MAC2 "if (c) ");
       i = msd_of_mul_add;
-      while(i < num_w_digits - 1)
+      while (i < num_w_digits - 1) {
         printf(MAC2 "if (++g%i == 0) ", i++);
+      }
       printf(MAC2 "g%i++", i);
-    } else
+    } else {
       printf(MAC2 "g%i += c", i);
+    }
   }
 }
 printf(MAC3);
@@ -1233,8 +1222,9 @@ printf(MAC3);
 /* Generate the macro that shifts w left by 1 digit */
 
 printf("#define LEFT_SHIFT_W_ONE_DIGIT(extra_w_digit)");
-for(i = num_w_digits - 1; i > 0; i--)
+for (i = num_w_digits - 1; i > 0; i--) {
   printf(MAC2 "g%i = g%i;", i, i - 1);
+}
 printf(MAC2 "g0 = extra_w_digit" MAC3);
 
 print;
@@ -1311,29 +1301,26 @@ print;
     @divert -
     append divertText
 
-        num_significant_w_digits = ceil((F_PRECISION + MIN_OVERHANG +
-                                         NUM_OCTANT_BITS) /
-                                        BITS_PER_DIGIT);
+        num_significant_w_digits =
+    ceil((F_PRECISION + MIN_OVERHANG + NUM_OCTANT_BITS) / BITS_PER_DIGIT);
 
 n = min(num_significant_w_digits + 1, num_w_digits);
 lsd_of_w = num_w_digits - num_significant_w_digits;
 printf("#define LEFT_SHIFT_SIGNIFICANT_W_DIGITS(lshift,rshift)");
-if(num_w_digits == 1) {
-
+if (num_w_digits == 1) {
   printf(MAC2 "g0 = (g0 << (lshift)) | (SECOND_MSD_OF_W >> (rshift));");
   printf(MAC2 "SECOND_MSD_OF_W <<= (lshift)\n\n");
 
 } else {
+  for (i = num_w_digits - 1; i > lsd_of_w; i--) {
+    printf(MAC2 "g%i = (g%i << (lshift)) | (g%i >> (rshift));", i, i, i - 1);
+  }
 
-  for(i = num_w_digits - 1; i > lsd_of_w; i--)
-    printf(MAC2 "g%i = (g%i << (lshift)) | (g%i >> (rshift));",
-           i, i, i - 1);
-
-  if(i > 0)
-    printf(MAC2 "g%i = (g%i << (lshift)) | (g%i >> (rshift))",
-           i, i, i - 1);
-  else
+  if (i > 0) {
+    printf(MAC2 "g%i = (g%i << (lshift)) | (g%i >> (rshift))", i, i, i - 1);
+  } else {
     printf(MAC2 "g0 = (g0 << (lshift)) | (EXTRA_W_DIGIT >> (rshift))");
+  }
   printf(MAC3);
 }
 
@@ -1347,8 +1334,9 @@ if(num_w_digits == 1) {
 printf("#define CVT_W_TO_B_TYPE(t)");
 printf(MAC2 "t = TO_B_TYPE((SIGNED_DIGIT_TYPE) g%i)", num_w_digits - 1);
 j = 0;
-for(i = num_w_digits - 2; i >= lsd_of_w; i--)
+for (i = num_w_digits - 2; i >= lsd_of_w; i--) {
   printf(MAC2 "  + SCALE_TAB(%i)*TO_B_TYPE(g%i)", j++, i);
+}
 printf(MAC3);
 
 overhang = B_PRECISION - F_PRECISION;
@@ -1374,25 +1362,28 @@ extra_bits = num_digits_per_half_precision * BITS_PER_DIGIT - hi_bits;
  */
 half_precision_digit = num_w_digits - num_digits_per_half_precision;
 printf("#define CVT_W_TO_HI_LO(hi, lo, tmp_digit)");
-printf(MAC2 "tmp_digit = g%i & " DIGIT_HEX_FMT_SPEC ";",
-       half_precision_digit, (1 << extra_bits) - 1);
+printf(MAC2 "tmp_digit = g%i & " DIGIT_HEX_FMT_SPEC ";", half_precision_digit,
+       (1 << extra_bits) - 1);
 printf(MAC2 "g%i ^= tmp_digit;", half_precision_digit);
 /*
  *  Now compute hi and lo.  Note that we needn't worry about inexact
  *  conversions from DIGIT_TYPE to F_TYPE.
  */
-if(half_precision_digit < lsd_of_w)
+if (half_precision_digit < lsd_of_w) {
   fatal("we never set lo");
+}
 j = 0;
-for(i = num_w_digits - 1; i >= lsd_of_w; i--) {
-  if(j == 0)
+for (i = num_w_digits - 1; i >= lsd_of_w; i--) {
+  if (j == 0) {
     printf(MAC2 "hi = TO_F_TYPE((SIGNED_DIGIT_TYPE) g%i)", i);
-  else
+  } else {
     printf(MAC2 "   + SCALE_TAB(%i)*g%i", j - 1, i);
-  if(i == half_precision_digit) {
+  }
+  if (i == half_precision_digit) {
     printf(sMAC2 "lo = TO_F_TYPE(tmp_digit)");
-    if(j > 0)
+    if (j > 0) {
       printf("*SCALE_TAB(%i)", j - 1);
+    }
   }
   j++;
 }
@@ -1402,8 +1393,9 @@ overhang = half_precision + F_PRECISION;
 
 #endif
 
-if(MIN_OVERHANG >= overhang)
+if (MIN_OVERHANG >= overhang) {
   fatal("MIN_OVERHANG too big");
+}
 
 /* Make sure there are enough good bits in pi/4 */
 precision = ceil(3 / 2 * (F_PRECISION + MIN_OVERHANG) / MP_RADIX_BITS) + 4;
@@ -1439,7 +1431,7 @@ s1 = 2 ^ (-BITS_PER_DIGIT);
 t = s1;
 
 TABLE_COMMENT("Powers of 2^-BITS_PER_DIGIT");
-for(i = 1; i < num_significant_w_digits; i++) {
+for (i = 1; i < num_significant_w_digits; i++) {
   PRINT_ENTRY(t);
   t *= s1;
 }
@@ -1450,28 +1442,30 @@ printf("#define TRIG_RED_TABLE_NAME\t" STR(TABLE_NAME) "\n");
 
 #define AT_OFFSET "(((char*)TRIG_RED_TABLE_NAME) + %i)"
 #if PRECISION_BACKUP_AVAILABLE
-printf("#define PI_OVER_4 "
-       "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n",
-       pi_offset);
+printf(
+    "#define PI_OVER_4 "
+    "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n",
+    pi_offset);
 #else
-printf("#define PI_OVER_4_HI "
-       "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n",
-       pi_offset);
-printf("#define PI_OVER_4_LO "
-       "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n",
-       pi_lo_offset);
+printf(
+    "#define PI_OVER_4_HI "
+    "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n",
+    pi_offset);
+printf(
+    "#define PI_OVER_4_LO "
+    "*((" STR(ENTRY_TYPE) "*)" AT_OFFSET ")\n",
+    pi_lo_offset);
 #endif
 
-printf("#define SCALE_TAB(j) "
-       "*(((" STR(ENTRY_TYPE) "*)" AT_OFFSET ") + j)\n",
-       scale_offset);
+printf(
+    "#define SCALE_TAB(j) "
+    "*(((" STR(ENTRY_TYPE) "*)" AT_OFFSET ") + j)\n",
+    scale_offset);
 
-@end_divert
-    @eval my $outText = MphocEval(GetStream("divertText"));
+@end_divert @eval my $outText = MphocEval(GetStream("divertText"));
 my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
                                "Definitions multi-preicion arithmetic ".,
-                               "used for large argument reduction",
-                               __FILE__);
+                               "used for large argument reduction", __FILE__);
 print "$headerText\n\n$outText";
 
 #endif
@@ -1526,8 +1520,10 @@ print "$headerText\n\n$outText";
   (i) = (((DIGIT_TYPE)((i) & 0xffff) << 16) | ((DIGIT_TYPE)(i) >> 16))
 
 #elif (BITS_PER_DIGIT == 64)
-#define _PDP_SHUFFLE(i) \
-  (i) = (((DIGIT_TYPE)(i) << 48) | ((DIGIT_TYPE)(i) >> 48) | (((DIGIT_TYPE)(i) >> 16) & ((DIGIT_TYPE)0xffff << 16)) | (((DIGIT_TYPE)(i) << 16) & ((DIGIT_TYPE)0xffff << 32)))
+#define _PDP_SHUFFLE(i)                                           \
+  (i) = (((DIGIT_TYPE)(i) << 48) | ((DIGIT_TYPE)(i) >> 48) |      \
+         (((DIGIT_TYPE)(i) >> 16) & ((DIGIT_TYPE)0xffff << 16)) | \
+         (((DIGIT_TYPE)(i) << 16) & ((DIGIT_TYPE)0xffff << 32)))
 #else
 #error "_PDP_SHUFFLE macro not defined for this digit size."
 #endif
@@ -1565,13 +1561,13 @@ WORD F_ENTRY_NAME(F_TYPE x,
 #if BIX
                   WORD bix,
 #endif
-                  F_TYPE *hi, F_TYPE *lo) {
+                  F_TYPE* hi, F_TYPE* lo) {
   WORD octant, offset, scale, j;
   DIGIT_TYPE F_DIGITS;   /* declare F0, ... Fm		*/
   DIGIT_TYPE G_DIGITS;   /* declare g0, ... gn		*/
   DIGIT_TYPE TMP_DIGITS; /* declare t0, ... tm+1		*/
   DIGIT_TYPE next_g_digit;
-  const DIGIT_TYPE *p;
+  const DIGIT_TYPE* p;
 
   /*
    *  We have the following definitions and identities:
@@ -1590,8 +1586,8 @@ WORD F_ENTRY_NAME(F_TYPE x,
 #if 0
     TMP_DIGIT = MSD_OF_F & DIGIT_MASK(F_EXP_WIDTH + 1, EXP_DIGIT_POS);
 #else
-  TMP_DIGIT = MSD_OF_F & DIGIT_MASK(BITS_PER_DIGIT - EXP_DIGIT_POS,
-                                    EXP_DIGIT_POS);
+  TMP_DIGIT =
+      MSD_OF_F & DIGIT_MASK(BITS_PER_DIGIT - EXP_DIGIT_POS, EXP_DIGIT_POS);
 #endif
   MSD_OF_F = (MSD_OF_F ^ TMP_DIGIT) | DIGIT_BIT(EXP_DIGIT_POS);
   TMP_DIGIT = (TMP_DIGIT >> EXP_DIGIT_POS) & DIGIT_MASK(F_EXP_WIDTH, 0);
@@ -1610,7 +1606,8 @@ WORD F_ENTRY_NAME(F_TYPE x,
    *	Use the exponent to get the bit offset of the first
    *	interesting bit in the 4/pi table.
    */
-  offset = TMP_DIGIT - F_EXP_OF_ONE - (F_PRECISION - 1) - (NUM_OCTANT_BITS - 1) + FOUR_OV_PI_ZERO_PAD_LEN;
+  offset = TMP_DIGIT - F_EXP_OF_ONE - (F_PRECISION - 1) -
+           (NUM_OCTANT_BITS - 1) + FOUR_OV_PI_ZERO_PAD_LEN;
 
   /*
    *  A negative offset would have us access memory before the start of
@@ -1618,7 +1615,7 @@ WORD F_ENTRY_NAME(F_TYPE x,
    *	so we'll make a quick exit.
    *	NB:  We neither test nor account for negative x.  Nut we should.
    */
-  if(offset < 0) {
+  if (offset < 0) {
     *hi = x;
     *lo = 0;
 #if VOC
@@ -1637,7 +1634,7 @@ WORD F_ENTRY_NAME(F_TYPE x,
   DIV_REM_BY_L(offset, j, offset);
   p = &FOUR_OVER_PI_TABLE_NAME[j];
   GET_G_DIGITS_FROM_TABLE(p, next_g_digit);
-  if(offset) {
+  if (offset) {
     j = BITS_PER_DIGIT - offset;
     LEFT_SHIFT_G_DIGITS(offset, j, next_g_digit);
   }
@@ -1683,11 +1680,12 @@ WORD F_ENTRY_NAME(F_TYPE x,
      *  do no more partial products.  But we'll stay in the loop so the
      *  left shifts will ensure MSD_OF_W is not all 0's or 1's.
      */
-    if(W_HAS_M_BIT_LOSS) {
+    if (W_HAS_M_BIT_LOSS) {
       TMP_DIGIT = next_g_digit;
       next_g_digit = *p++;
-      if(offset)
+      if (offset) {
         TMP_DIGIT = (TMP_DIGIT << offset) | (next_g_digit >> j);
+      }
       GET_NEXT_PRODUCT(TMP_DIGIT, EXTRA_W_DIGIT, CARRY_DIGIT);
     }
 
@@ -1695,8 +1693,9 @@ WORD F_ENTRY_NAME(F_TYPE x,
      *  We're done if the there are fewer than L+1 bits of 0's or 1's.
      */
     TMP_DIGIT = (SIGNED_DIGIT_TYPE)SECOND_MSD_OF_W >> (BITS_PER_DIGIT - 1);
-    if(MSD_OF_W != TMP_DIGIT)
+    if (MSD_OF_W != TMP_DIGIT) {
       break;
+    }
 
     /*
      *  Shift w left a digit, and keep w*2^scale invariant.
@@ -1704,7 +1703,7 @@ WORD F_ENTRY_NAME(F_TYPE x,
     LEFT_SHIFT_W_ONE_DIGIT(EXTRA_W_DIGIT);
     scale -= BITS_PER_DIGIT;
 
-  } while(1);
+  } while (1);
 
   /*
    *  GET_NEXT_PRODUCT may have produced carrys into MSD_OF_W which need to
@@ -1740,7 +1739,7 @@ WORD F_ENTRY_NAME(F_TYPE x,
    */
   TMP_DIGIT = MSD_OF_W ^ ((SIGNED_DIGIT_TYPE)MSD_OF_W >> (BITS_PER_DIGIT - 1));
   j = 1;
-  if(TMP_DIGIT) {
+  if (TMP_DIGIT) {
     F_TYPE f_type_tmp;
     f_type_tmp = (SIGNED_DIGIT_TYPE)TMP_DIGIT;
     GET_EXP_WORD(f_type_tmp, j);
@@ -1748,7 +1747,7 @@ WORD F_ENTRY_NAME(F_TYPE x,
   }
 
   offset = BITS_PER_DIGIT - j;
-  if(offset) {
+  if (offset) {
     LEFT_SHIFT_SIGNIFICANT_W_DIGITS(offset, j);
     scale -= offset;
   }
@@ -1778,7 +1777,7 @@ WORD F_ENTRY_NAME(F_TYPE x,
     ub.B_HI_WORD += (scale << B_EXP_POS);
     CVT_W_TO_B_TYPE(t);
     t *= ub.f;
-    if(x >= (F_TYPE)0.0) {
+    if (x >= (F_TYPE)0.0) {
       *hi = t;
       *lo = *hi - t;
     } else {
@@ -1807,7 +1806,7 @@ WORD F_ENTRY_NAME(F_TYPE x,
     t = r + s;
     s = (t - r) - s;
 
-    if(x >= (F_TYPE)0.0) {
+    if (x >= (F_TYPE)0.0) {
       *hi = t;
       *lo = s;
     } else {

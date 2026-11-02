@@ -51,9 +51,8 @@ extern _X_FLOAT PACKED_CONSTANT_TABLE[LAST_CONS_INDEX];
 #define UX_EXP_REDUCE __INTERNAL_NAME(ux_exp_reduce__)
 #endif
 
-static WORD
-UX_EXP_REDUCE(UX_FLOAT *orig_argument, UX_FLOAT *reduced_argument,
-              UX_FRACTION_DIGIT_TYPE *constants) {
+static WORD UX_EXP_REDUCE(UX_FLOAT* orig_argument, UX_FLOAT* reduced_argument,
+                          UX_FRACTION_DIGIT_TYPE* constants) {
   U_WORD shift, reduce_constant_exp;
   UX_SIGN_TYPE sign;
   UX_EXPONENT_TYPE exponent, scale_exponent;
@@ -64,14 +63,15 @@ UX_EXP_REDUCE(UX_FLOAT *orig_argument, UX_FLOAT *reduced_argument,
   sign = G_UX_SIGN(orig_argument);
 
   reduce_constant_exp = constants[2];
-  if(UX_TO_UEXP(exponent + 1 - (UX_EXPONENT_TYPE)UX_TO_SDIGIT(reduce_constant_exp)) > 18) { /* Either no reduction is necessary, or exponent > 17 */
+  if (UX_TO_UEXP(exponent + 1 -
+                 (UX_EXPONENT_TYPE)UX_TO_SDIGIT(reduce_constant_exp)) >
+      18) { /* Either no reduction is necessary, or exponent > 17 */
 
     scale = 0;
     UX_COPY(orig_argument, reduced_argument);
-    if(exponent > 0) { /* exponent > 17, force underflow or overflow */
+    if (exponent > 0) { /* exponent > 17, force underflow or overflow */
       P_UX_EXPONENT(reduced_argument, -128);
-      scale = UX_TO_DIGIT(sign ? UX_UNDERFLOW_EXPONENT
-                               : UX_OVERFLOW_EXPONENT);
+      scale = UX_TO_DIGIT(sign ? UX_UNDERFLOW_EXPONENT : UX_OVERFLOW_EXPONENT);
     }
     return UX_TO_WORD(scale);
   }
@@ -110,7 +110,7 @@ UX_EXP_REDUCE(UX_FLOAT *orig_argument, UX_FLOAT *reduced_argument,
   ** leading zeros
   */
 
-  while((UX_SIGNED_FRACTION_DIGIT_TYPE)scale > 0) {
+  while ((UX_SIGNED_FRACTION_DIGIT_TYPE)scale > 0) {
     scale += scale;
     shift++;
   }
@@ -129,22 +129,23 @@ UX_EXP_REDUCE(UX_FLOAT *orig_argument, UX_FLOAT *reduced_argument,
   scale_exponent = (UX_EXPONENT_TYPE)(BITS_PER_UX_FRACTION_DIGIT_TYPE - shift);
   EXTENDED_DIGIT_MULTIPLY(scale, constants[1], msd, lsd);
   exponent = scale_exponent;
-  if(((UX_SIGNED_FRACTION_DIGIT_TYPE)msd) > 0) {
+  if (((UX_SIGNED_FRACTION_DIGIT_TYPE)msd) > 0) {
     exponent--;
     msd = (msd + msd) + (lsd >> (BITS_PER_UX_FRACTION_DIGIT_TYPE - 1));
     lsd += lsd;
   }
 
   /* adjust the product exponent by the exponent of the constant */
-  UX_SET_SIGN_EXP_MSD(&tmp, sign,
-                      exponent + (UX_EXPONENT_TYPE)UX_TO_SDIGIT(reduce_constant_exp), msd);
+  UX_SET_SIGN_EXP_MSD(
+      &tmp, sign,
+      exponent + (UX_EXPONENT_TYPE)UX_TO_SDIGIT(reduce_constant_exp), msd);
   P_UX_FRACTION_DIGIT(&tmp, 1, lsd);
   ADDSUB(orig_argument, &tmp, SUB, &tmp);
 
   /* scale*low_bits_of_ln2 and subtract from x - scale*high_bits_of_ln2 */
 
   UX_SET_SIGN_EXP_MSD(&ux_scale, sign, scale_exponent, scale);
-  MULTIPLY(&ux_scale, (UX_FLOAT *)&constants[3], reduced_argument);
+  MULTIPLY(&ux_scale, (UX_FLOAT*)&constants[3], reduced_argument);
   ADDSUB(&tmp, reduced_argument, SUB | NO_NORMALIZATION, reduced_argument);
 
   scale >>= shift;
@@ -162,22 +163,21 @@ UX_EXP_REDUCE(UX_FLOAT *orig_argument, UX_FLOAT *reduced_argument,
 #define UX_EXP_COMMON __INTERNAL_NAME(ux_exp_common__)
 #endif
 
-void UX_EXP_COMMON(UX_FLOAT *unpacked_argument, UX_FLOAT *unpacked_result,
-                   UX_FRACTION_DIGIT_TYPE *constant_table) {
+void UX_EXP_COMMON(UX_FLOAT* unpacked_argument, UX_FLOAT* unpacked_result,
+                   UX_FRACTION_DIGIT_TYPE* constant_table) {
   UX_EXPONENT_TYPE scale;
   UX_FLOAT reduced_argument;
 
   /* Get reduced argument */
-  scale = (UX_EXPONENT_TYPE)UX_EXP_REDUCE(unpacked_argument, &reduced_argument, constant_table);
+  scale = (UX_EXPONENT_TYPE)UX_EXP_REDUCE(unpacked_argument, &reduced_argument,
+                                          constant_table);
 
   /* Compute e^reduced_argument */
 
-  EVALUATE_RATIONAL(
-      &reduced_argument,
-      (FIXED_128 *)&constant_table[EXP_COEF_INDEX],
-      constant_table[EXP_DEGREE_INDEX],
-      NUMERATOR_FLAGS(STANDARD),
-      unpacked_result);
+  EVALUATE_RATIONAL(&reduced_argument,
+                    (FIXED_128*)&constant_table[EXP_COEF_INDEX],
+                    constant_table[EXP_DEGREE_INDEX], NUMERATOR_FLAGS(STANDARD),
+                    unpacked_result);
 
   /* Scale e^reduced_argument */
 
@@ -193,9 +193,8 @@ void UX_EXP_COMMON(UX_FLOAT *unpacked_argument, UX_FLOAT *unpacked_result,
 #define UX_EXP __INTERNAL_NAME(ux_exp__)
 #endif
 
-void UX_EXP(UX_FLOAT *unpacked_argument, UX_FLOAT *unpacked_result) {
-  UX_EXP_COMMON(unpacked_argument, unpacked_result,
-                EXP_CONSTANT_TABLE_ADDRESS);
+void UX_EXP(UX_FLOAT* unpacked_argument, UX_FLOAT* unpacked_result) {
+  UX_EXP_COMMON(unpacked_argument, unpacked_result, EXP_CONSTANT_TABLE_ADDRESS);
 }
 
 /*
@@ -212,24 +211,18 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &unpacked_argument,
-      EXP_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), &unpacked_argument,
+                    EXP_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   UX_EXP(&unpacked_argument, &unpacked_result);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      EXP_UNDERFLOW,
-      EXP_OVERFLOW
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result), EXP_UNDERFLOW,
+       EXP_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -247,24 +240,23 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   WORD fp_class;
   UX_EXPONENT_TYPE scale;
   UX_FLOAT unpacked_argument, unpacked_result, reduced_argument;
-  UX_FRACTION_DIGIT_TYPE *constants;
+  UX_FRACTION_DIGIT_TYPE* constants;
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &unpacked_argument,
-      EXPM1_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), &unpacked_argument,
+                    EXPM1_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   constants = EXP_CONSTANT_TABLE_ADDRESS;
-  scale = (UX_EXPONENT_TYPE)UX_EXP_REDUCE(&unpacked_argument, &reduced_argument, constants);
-  if(scale == 0) {
+  scale = (UX_EXPONENT_TYPE)UX_EXP_REDUCE(&unpacked_argument, &reduced_argument,
+                                          constants);
+  if (scale == 0) {
     /*
     ** abs(reduced_argument) < ln2/2. computing expm1(x) as
     ** exp(x) - 1, could result in a serve loss of significance,
@@ -273,39 +265,27 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
     ** This has the side effect that the exponent field of the
     ** result is 1 to small.
     */
-    EVALUATE_RATIONAL(
-        &reduced_argument,
-        (FIXED_128 *)&constants[EXP_COEF_INDEX],
-        constants[EXP_DEGREE_INDEX] - 1,
-        NUMERATOR_FLAGS(POST_MULTIPLY), /* Post multiply by x */
-        &unpacked_result);
+    EVALUATE_RATIONAL(&reduced_argument, (FIXED_128*)&constants[EXP_COEF_INDEX],
+                      constants[EXP_DEGREE_INDEX] - 1,
+                      NUMERATOR_FLAGS(POST_MULTIPLY), /* Post multiply by x */
+                      &unpacked_result);
     UX_INCR_EXPONENT(&unpacked_result, 1);
   } else {
     /*
     ** Compute expm1(x) = exp(x) - 1.  Since |scale| >= 1,
     ** exp(x) <= 1/sqrt(2) and exp(x) >= sqrt(2)
     */
-    EVALUATE_RATIONAL(
-        &reduced_argument,
-        (FIXED_128 *)&constants[EXP_COEF_INDEX],
-        constants[EXP_DEGREE_INDEX],
-        NUMERATOR_FLAGS(STANDARD),
-        &unpacked_result);
+    EVALUATE_RATIONAL(&reduced_argument, (FIXED_128*)&constants[EXP_COEF_INDEX],
+                      constants[EXP_DEGREE_INDEX], NUMERATOR_FLAGS(STANDARD),
+                      &unpacked_result);
     UX_INCR_EXPONENT(&unpacked_result, scale);
 
-    ADDSUB(
-        &unpacked_result,
-        UX_ONE,
-        SUB | NO_NORMALIZATION | MAGNITUDE_ONLY,
-        &unpacked_result);
+    ADDSUB(&unpacked_result, UX_ONE, SUB | NO_NORMALIZATION | MAGNITUDE_ONLY,
+           &unpacked_result);
   }
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      NOT_USED,
-      EXPM1_OVERFLOW
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result), NOT_USED,
+       EXPM1_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -324,25 +304,19 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  fp_class = UNPACK(
-      PASS_ARG_X_FLOAT(packed_argument),
-      &unpacked_argument,
-      EXP_CLASS_TO_ACTION_MAP,
-      PASS_RET_X_FLOAT(packed_result)
-          OPT_EXCEPTION_INFO);
+  fp_class = UNPACK(PASS_ARG_X_FLOAT(packed_argument), &unpacked_argument,
+                    EXP_CLASS_TO_ACTION_MAP,
+                    PASS_RET_X_FLOAT(packed_result) OPT_EXCEPTION_INFO);
 
-  if(0 > fp_class)
+  if (0 > fp_class) {
     RETURN_X_FLOAT(packed_result);
+  }
 
   UX_EXP_COMMON(&unpacked_argument, &unpacked_result,
                 EXP10_CONSTANT_TABLE_ADDRESS);
 
-  PACK(
-      &unpacked_result,
-      PASS_RET_X_FLOAT(packed_result),
-      EXP_UNDERFLOW,
-      EXP_OVERFLOW
-          OPT_EXCEPTION_INFO);
+  PACK(&unpacked_result, PASS_RET_X_FLOAT(packed_result), EXP_UNDERFLOW,
+       EXP_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -362,12 +336,14 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
 #define EVAL_RATIONAL_POS 0
 #define EVAL_RATIONAL_WIDTH (2 * NUM_DEN_FIELD_WIDTH + 3)
-#define EVAL_RATIONAL_FLAGS(i) __FLAGS(i, EVAL_RATIONAL_WIDTH, EVAL_RATIONAL_POS)
+#define EVAL_RATIONAL_FLAGS(i) \
+  __FLAGS(i, EVAL_RATIONAL_WIDTH, EVAL_RATIONAL_POS)
 
 #define SINH_EVAL (NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) | SKIP)
 #define COSH_EVAL (SKIP | DENOMINATOR_FLAGS(SQUARE_TERM))
-#define TANH_EVAL (NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) | \
-                   DENOMINATOR_FLAGS(SQUARE_TERM))
+#define TANH_EVAL                                 \
+  (NUMERATOR_FLAGS(SQUARE_TERM | POST_MULTIPLY) | \
+   DENOMINATOR_FLAGS(SQUARE_TERM))
 #define SINHCOSH_EVAL (TANH_EVAL | NO_DIVIDE)
 
 #define ADDSUB_POS (EVAL_RATIONAL_WIDTH + EVAL_RATIONAL_POS)
@@ -380,13 +356,13 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 #define SINHCOSH (4 << FUNC_CODE_POS)
 #define TANH (8 << FUNC_CODE_POS)
 
-#define EVAL_FLAGS(f, r, a) ((f) | ((r) << EVAL_RATIONAL_POS) | \
-                             ((a) << ADDSUB_POS))
+#define EVAL_FLAGS(f, r, a) \
+  ((f) | ((r) << EVAL_RATIONAL_POS) | ((a) << ADDSUB_POS))
 
 #define UX_HYPERBOLIC __INTERNAL_NAME(ux_hyperbolic__)
 
-void UX_HYPERBOLIC(UX_FLOAT *unpacked_argument, WORD evaluation_flags,
-                   UX_FLOAT *unpacked_result) {
+void UX_HYPERBOLIC(UX_FLOAT* unpacked_argument, WORD evaluation_flags,
+                   UX_FLOAT* unpacked_result) {
   UX_EXPONENT_TYPE scale;
   UX_SIGN_TYPE sign;
   UX_FLOAT reduced_argument, tmp[2];
@@ -413,25 +389,20 @@ void UX_HYPERBOLIC(UX_FLOAT *unpacked_argument, WORD evaluation_flags,
   */
 
   EVALUATE_RATIONAL(
-      &reduced_argument,
-      SINHCOSH_COEF_ARRAY,
-      SINHCOSH_COEF_ARRAY_DEGREE,
-      (scale == 0) ? UX_TO_UWORD(EVAL_RATIONAL_FLAGS(
-                         (U_WORD)evaluation_flags))
+      &reduced_argument, SINHCOSH_COEF_ARRAY, SINHCOSH_COEF_ARRAY_DEGREE,
+      (scale == 0) ? UX_TO_UWORD(EVAL_RATIONAL_FLAGS((U_WORD)evaluation_flags))
                    : UX_TO_UWORD(SINHCOSH_EVAL),
       unpacked_result);
 
-  if(scale) {
+  if (scale) {
     /*
     ** We want to compute sinh(x)/cosh(x) = (exp(x) -/+ exp(-x))/2.
     ** Begin by computing exp(z) and exp(-z) and then scale them
     ** to get exp(x)/2 and exp(-x)/2.
     */
-    ADDSUB(
-        &unpacked_result[1], /* cosh(z)	*/
-        &unpacked_result[0], /* sinh(z)	*/
-        ADD_SUB | NO_NORMALIZATION,
-        &tmp[0] /* exp(z):exp(-z)*/
+    ADDSUB(&unpacked_result[1],                /* cosh(z)	*/
+           &unpacked_result[0],                /* sinh(z)	*/
+           ADD_SUB | NO_NORMALIZATION, &tmp[0] /* exp(z):exp(-z)*/
     );
 
     UX_INCR_EXPONENT(&tmp[0], (scale - 1));
@@ -442,16 +413,17 @@ void UX_HYPERBOLIC(UX_FLOAT *unpacked_argument, WORD evaluation_flags,
     ** is a tanh evaluation, do the divide
     */
 
-    ADDSUB(
-        &tmp[0], /* exp(x)/2	*/
-        &tmp[1], /* exp(-x)/2	*/
-        UX_TO_UWORD(ADDSUB_FLAGS((U_WORD)evaluation_flags)) | MAGNITUDE_ONLY | NO_NORMALIZATION,
-        &unpacked_result[0] /* sinh(x)/cosh(x)	*/
+    ADDSUB(&tmp[0], /* exp(x)/2	*/
+           &tmp[1], /* exp(-x)/2	*/
+           UX_TO_UWORD(ADDSUB_FLAGS((U_WORD)evaluation_flags)) |
+               MAGNITUDE_ONLY | NO_NORMALIZATION,
+           &unpacked_result[0] /* sinh(x)/cosh(x)	*/
     );
 
-    if(evaluation_flags & TANH)
+    if (evaluation_flags & TANH) {
       DIVIDE(&unpacked_result[0], &unpacked_result[1], FULL_PRECISION,
              &unpacked_result[0]);
+    }
   }
 
   P_UX_SIGN(unpacked_result, sign);
@@ -466,50 +438,36 @@ void UX_HYPERBOLIC(UX_FLOAT *unpacked_argument, WORD evaluation_flags,
 
 #define C_UX_HYPERBOLIC __INTERNAL_NAME(C_ux_hyperbolic__)
 
-static void
-C_UX_HYPERBOLIC(_X_FLOAT *packed_result, _X_FLOAT *packed_argument,
-                U_WORD const *class_to_action_map, WORD evaluation_flags,
-                WORD overflow_code OPT_EXCEPTION_INFO_DECLARATION) {
+static void C_UX_HYPERBOLIC(_X_FLOAT* packed_result, _X_FLOAT* packed_argument,
+                            U_WORD const* class_to_action_map,
+                            WORD evaluation_flags,
+                            WORD overflow_code OPT_EXCEPTION_INFO_DECLARATION) {
   WORD fp_class;
   UX_FLOAT unpacked_argument, unpacked_result[2];
 
-  fp_class = UNPACK(
-      packed_argument,
-      &unpacked_argument,
-      class_to_action_map,
-      &packed_result[0] OPT_EXCEPTION_INFO_ARGUMENT);
+  fp_class = UNPACK(packed_argument, &unpacked_argument, class_to_action_map,
+                    &packed_result[0] OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(0 > fp_class) { /* If this is a SINHCOSH evaluation, write second result */
-    if(evaluation_flags & SINHCOSH) {
-      (void)UNPACK(
-          packed_argument,
-          &unpacked_argument,
-          COSH_CLASS_TO_ACTION_MAP,
-          &packed_result[1] OPT_EXCEPTION_INFO_ARGUMENT);
+  if (0 >
+      fp_class) { /* If this is a SINHCOSH evaluation, write second result */
+    if (evaluation_flags & SINHCOSH) {
+      (void)UNPACK(packed_argument, &unpacked_argument,
+                   COSH_CLASS_TO_ACTION_MAP,
+                   &packed_result[1] OPT_EXCEPTION_INFO_ARGUMENT);
     }
     return;
   }
 
-  UX_HYPERBOLIC(
-      &unpacked_argument,
-      evaluation_flags,
-      &unpacked_result[0]);
+  UX_HYPERBOLIC(&unpacked_argument, evaluation_flags, &unpacked_result[0]);
 
-  PACK(
-      &unpacked_result[0],
-      packed_result,
-      NOT_USED,
-      overflow_code
-          OPT_EXCEPTION_INFO_ARGUMENT);
+  PACK(&unpacked_result[0], packed_result, NOT_USED,
+       overflow_code OPT_EXCEPTION_INFO_ARGUMENT);
 
-  if(evaluation_flags & SINHCOSH)
+  if (evaluation_flags & SINHCOSH) {
     /* This was a sinhcosh evaluation */
-    PACK(
-        &unpacked_result[1],
-        &packed_result[1],
-        NOT_USED,
-        COSH_OVERFLOW
-            OPT_EXCEPTION_INFO_ARGUMENT);
+    PACK(&unpacked_result[1], &packed_result[1], NOT_USED,
+         COSH_OVERFLOW OPT_EXCEPTION_INFO_ARGUMENT);
+  }
 }
 
 /*
@@ -528,11 +486,10 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
 
   INIT_EXCEPTION_INFO;
   C_UX_HYPERBOLIC(
-      PASS_RET_X_FLOAT(packed_result),
-      PASS_ARG_X_FLOAT(packed_argument),
-      SINH_CLASS_TO_ACTION_MAP,
-      EVAL_FLAGS(SINH, SINH_EVAL, SUB),
-      PACKED_ARG_IS_NEG(packed_argument) ? SINH_NEG_OVERFLOW : SINH_OVERFLOW OPT_EXCEPTION_INFO);
+      PASS_RET_X_FLOAT(packed_result), PASS_ARG_X_FLOAT(packed_argument),
+      SINH_CLASS_TO_ACTION_MAP, EVAL_FLAGS(SINH, SINH_EVAL, SUB),
+      PACKED_ARG_IS_NEG(packed_argument) ? SINH_NEG_OVERFLOW
+                                         : SINH_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -545,13 +502,10 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   DECLARE_X_FLOAT(packed_result)
 
   INIT_EXCEPTION_INFO;
-  C_UX_HYPERBOLIC(
-      PASS_RET_X_FLOAT(packed_result),
-      PASS_ARG_X_FLOAT(packed_argument),
-      COSH_CLASS_TO_ACTION_MAP,
-      EVAL_FLAGS(COSH, COSH_EVAL, ADD),
-      COSH_OVERFLOW
-          OPT_EXCEPTION_INFO);
+  C_UX_HYPERBOLIC(PASS_RET_X_FLOAT(packed_result),
+                  PASS_ARG_X_FLOAT(packed_argument), COSH_CLASS_TO_ACTION_MAP,
+                  EVAL_FLAGS(COSH, COSH_EVAL, ADD),
+                  COSH_OVERFLOW OPT_EXCEPTION_INFO);
 
   RETURN_X_FLOAT(packed_result);
 }
@@ -564,12 +518,12 @@ RR_X_PROTO(F_ENTRY_NAME, packed_result0, packed_result1, packed_argument) {
   _X_FLOAT packed_result[2];
 
   INIT_EXCEPTION_INFO;
-  C_UX_HYPERBOLIC(
-      packed_result, /*PASS_RET_X_FLOAT(packed_result)*/
-      PASS_ARG_X_FLOAT(packed_argument),
-      SINH_CLASS_TO_ACTION_MAP,
-      EVAL_FLAGS(SINHCOSH, SINHCOSH_EVAL, SUB_ADD),
-      PACKED_ARG_IS_NEG(packed_argument) ? SINH_NEG_OVERFLOW : SINH_OVERFLOW OPT_EXCEPTION_INFO);
+  C_UX_HYPERBOLIC(packed_result, /*PASS_RET_X_FLOAT(packed_result)*/
+                  PASS_ARG_X_FLOAT(packed_argument), SINH_CLASS_TO_ACTION_MAP,
+                  EVAL_FLAGS(SINHCOSH, SINHCOSH_EVAL, SUB_ADD),
+                  PACKED_ARG_IS_NEG(packed_argument)
+                      ? SINH_NEG_OVERFLOW
+                      : SINH_OVERFLOW OPT_EXCEPTION_INFO);
 
   *packed_result0 = packed_result[0];
   *packed_result1 = packed_result[1];
@@ -582,13 +536,10 @@ X_X_PROTO(F_ENTRY_NAME, packed_result, packed_argument) {
   EXCEPTION_INFO_DECL
   DECLARE_X_FLOAT(packed_result)
 
-  C_UX_HYPERBOLIC(
-      PASS_RET_X_FLOAT(packed_result),
-      PASS_ARG_X_FLOAT(packed_argument),
-      TANH_CLASS_TO_ACTION_MAP,
-      EVAL_FLAGS(TANH, TANH_EVAL, SUB_ADD),
-      NOT_USED
-          OPT_EXCEPTION_INFO);
+  C_UX_HYPERBOLIC(PASS_RET_X_FLOAT(packed_result),
+                  PASS_ARG_X_FLOAT(packed_argument), TANH_CLASS_TO_ACTION_MAP,
+                  EVAL_FLAGS(TANH, TANH_EVAL, SUB_ADD),
+                  NOT_USED OPT_EXCEPTION_INFO);
   RETURN_X_FLOAT(packed_result);
 }
 
@@ -688,8 +639,7 @@ ln2_hi = bround(ln2, BITS_PER_UX_FRACTION_DIGIT_TYPE);
 tmp = bround(bldexp(1 / ln2, BITS_PER_UX_FRACTION_DIGIT_TYPE - 2),
              BITS_PER_UX_FRACTION_DIGIT_TYPE);
 PRINT_UX_FRACTION_DIGIT_TBL_ITEM(tmp);
-PRINT_UX_FRACTION_DIGIT_TBL_ITEM(
-    bldexp(ln2, BITS_PER_UX_FRACTION_DIGIT_TYPE));
+PRINT_UX_FRACTION_DIGIT_TBL_ITEM(bldexp(ln2, BITS_PER_UX_FRACTION_DIGIT_TYPE));
 PRINT_UX_FRACTION_DIGIT_TBL_ITEM(0);
 
 TABLE_COMMENT("ln2_lo = ln2 - ln2_hi in unpacked form");
@@ -701,10 +651,11 @@ PRINT_UX_TBL_ITEM(ln2 - ln2_hi);
 */
 
 function __expm1(x) {
-  if(x == 0)
+  if (x == 0) {
     return 1.;
-  else
+  } else {
     return expm1(x) / x;
+  }
 }
 
 save_precision = precision;
@@ -712,13 +663,14 @@ precision = ceil(UX_PRECISION / 8) + 8;
 
 max_arg = ln2 / 2;
 
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT, -max_arg,
-      max_arg, __expm1, UX_PRECISION, &degree, &ux_rational_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT, -max_arg, max_arg, __expm1,
+      UX_PRECISION, &degree, &ux_rational_coefs);
 
 precision = save_precision;
 
-for(i = degree + 1; i > 0; /* NULL */)
+for (i = degree + 1; i > 0; /* NULL */) {
   ux_rational_coefs[i] = ux_rational_coefs[--i];
+}
 ux_rational_coefs[0] = 1;
 
 #define __INDEX(z, b) ((z - b) / BITS_PER_UX_FRACTION_DIGIT_TYPE)
@@ -756,8 +708,8 @@ ln2_ov_ln10_hi = bround(ln2_ov_ln10, BITS_PER_UX_FRACTION_DIGIT_TYPE);
 tmp = bround(bldexp(1 / ln2_ov_ln10, BITS_PER_UX_FRACTION_DIGIT_TYPE - 2),
              BITS_PER_UX_FRACTION_DIGIT_TYPE);
 PRINT_UX_FRACTION_DIGIT_TBL_ITEM(tmp);
-PRINT_UX_FRACTION_DIGIT_TBL_ITEM(
-    bldexp(ln2_ov_ln10, BITS_PER_UX_FRACTION_DIGIT_TYPE + 1));
+PRINT_UX_FRACTION_DIGIT_TBL_ITEM(bldexp(ln2_ov_ln10,
+                                        BITS_PER_UX_FRACTION_DIGIT_TYPE + 1));
 PRINT_UX_FRACTION_DIGIT_TBL_ITEM(-1);
 
 TABLE_COMMENT("ln2_ov_ln10_lo = ln2 - ln2_ov_ln10__hi in unpacked form");
@@ -767,17 +719,15 @@ PRINT_UX_TBL_ITEM(ln2_ov_ln10 - ln2_ov_ln10_hi);
 ** Compute polynomial coefficient for exp10.
 */
 
-function __exp10(x) {
-  return exp(x * log(10));
-}
+function __exp10(x) { return exp(x * log(10)); }
 
 save_precision = precision;
 precision = ceil(UX_PRECISION / 8) + 8;
 
 max_arg = ln2_ov_ln10 / 2;
 
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT, -max_arg,
-      max_arg, __exp10, UX_PRECISION, &degree, &ux_rational_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT, -max_arg, max_arg, __exp10,
+      UX_PRECISION, &degree, &ux_rational_coefs);
 
 precision = save_precision;
 
@@ -793,10 +743,11 @@ print_ux_rational_coefs(degree, 0, 0);
 function __cosh(x) { return cosh(x); }
 
 function __sinh(x) {
-  if(x == 0)
+  if (x == 0) {
     return 1.;
-  else
+  } else {
     return sinh(x) / x;
+  }
 }
 
 save_precision = precision;
@@ -804,14 +755,15 @@ precision = ceil(UX_PRECISION / 8) + 8;
 
 max_arg = ln2 / 2;
 
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __sinh, UX_PRECISION, &degree, &ux_rational_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __sinh, UX_PRECISION, &degree, &ux_rational_coefs);
 
-remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG,
-      0, max_arg, __cosh, UX_PRECISION, &tmp_degree, &tmp_coefs);
+remes(REMES_FIND_POLYNOMIAL + REMES_RELATIVE_WEIGHT + REMES_SQUARE_ARG, 0,
+      max_arg, __cosh, UX_PRECISION, &tmp_degree, &tmp_coefs);
 
-for(i = 0; i <= tmp_degree; i++)
+for (i = 0; i <= tmp_degree; i++) {
   ux_rational_coefs[i + degree + 1] = tmp_coefs[i];
+}
 
 TABLE_COMMENT("Fixed point coefficients for sinh/cosh evaluation");
 PRINT_FIXED_128_TBL_ADEF("SINHCOSH_COEF_ARRAY\t");
@@ -820,13 +772,14 @@ PRINT_WORD_DEF("SINHCOSH_COEF_ARRAY_DEGREE", degree);
 
 END_TABLE;
 
-@end_divert
-    @eval my $tableText;
+@end_divert @eval my $tableText;
 my $outText = MphocEval(GetStream("divertText"));
 my $defineText = Egrep("#define", $outText, \$tableText);
 $outText = "$tableText\n\n$defineText";
-my $headerText = GetHeaderText(STR(BUILD_FILE_NAME),
-                               "Definitions and constants exponential"." and hyperbolic routines", __FILE__);
+my $headerText = GetHeaderText(
+    STR(BUILD_FILE_NAME),
+    "Definitions and constants exponential"." and hyperbolic routines",
+    __FILE__);
 print "$headerText\n\n$outText\n";
 
 #endif

@@ -68,7 +68,8 @@ fields are defined as follows:
 #undef DOUBLE_PRECISION
 #undef QUAD_PRECISION
 
-#if (defined(f_floating) || defined(F_FLOATING) || defined(f_float) || defined(F_FLOAT))
+#if (defined(f_floating) || defined(F_FLOATING) || defined(f_float) || \
+     defined(F_FLOAT))
 
 #define VAX_FLOATING 1
 #define F_FORMAT f_floating
@@ -77,7 +78,8 @@ fields are defined as follows:
 #define F_PREC_CHAR S
 #define B_PREC_CHAR D
 
-#elif (defined(d_floating) || defined(D_FLOATING) || defined(d_float) || defined(D_FLOAT))
+#elif (defined(d_floating) || defined(D_FLOATING) || defined(d_float) || \
+       defined(D_FLOAT))
 
 #define VAX_FLOATING 1
 #define F_FORMAT d_floating
@@ -86,7 +88,8 @@ fields are defined as follows:
 #define F_PREC_CHAR D
 #define B_PREC_CHAR D
 
-#elif (defined(g_floating) || defined(G_FLOATING) || defined(g_float) || defined(G_FLOAT))
+#elif (defined(g_floating) || defined(G_FLOATING) || defined(g_float) || \
+       defined(G_FLOAT))
 
 #define VAX_FLOATING 1
 #define F_FORMAT g_floating
@@ -95,7 +98,8 @@ fields are defined as follows:
 #define F_PREC_CHAR D
 #define B_PREC_CHAR D
 
-#elif (defined(h_floating) || defined(H_FLOATING) || defined(h_float) || defined(H_FLOAT))
+#elif (defined(h_floating) || defined(H_FLOATING) || defined(h_float) || \
+       defined(H_FLOAT))
 
 #define VAX_FLOATING 1
 #define F_FORMAT h_floating
@@ -104,7 +108,8 @@ fields are defined as follows:
 #define F_PREC_CHAR Q
 #define B_PREC_CHAR Q
 
-#elif (defined(s_floating) || defined(S_FLOATING) || defined(s_float) || defined(S_FLOAT))
+#elif (defined(s_floating) || defined(S_FLOATING) || defined(s_float) || \
+       defined(S_FLOAT))
 
 #define IEEE_FLOATING 1
 #define F_FORMAT s_floating
@@ -113,7 +118,8 @@ fields are defined as follows:
 #define F_PREC_CHAR S
 #define B_PREC_CHAR D
 
-#elif (defined(t_floating) || defined(T_FLOATING) || defined(t_float) || defined(T_FLOAT))
+#elif (defined(t_floating) || defined(T_FLOATING) || defined(t_float) || \
+       defined(T_FLOAT))
 
 #define IEEE_FLOATING 1
 #define F_FORMAT t_floating
@@ -122,7 +128,8 @@ fields are defined as follows:
 #define F_PREC_CHAR D
 #define B_PREC_CHAR D
 
-#elif (defined(x_floating) || defined(X_FLOATING) || defined(x_float) || defined(X_FLOAT))
+#elif (defined(x_floating) || defined(X_FLOATING) || defined(x_float) || \
+       defined(X_FLOAT))
 
 #define IEEE_FLOATING 1
 #define F_FORMAT x_floating
@@ -1307,12 +1314,14 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #endif
 
 #undef RANGE_BACKUP_AVAILABLE
-#if (defined(B_FORMAT) && defined(B_TYPE) && (B_PRECISION >= F_PRECISION) && (B_EXP_WIDTH >= F_EXP_WIDTH + 1))
+#if (defined(B_FORMAT) && defined(B_TYPE) && (B_PRECISION >= F_PRECISION) && \
+     (B_EXP_WIDTH >= F_EXP_WIDTH + 1))
 #define RANGE_BACKUP_AVAILABLE 1
 #endif
 
 #undef PRECISION_BACKUP_AVAILABLE
-#if (defined(B_FORMAT) && defined(B_TYPE) && (B_EXP_WIDTH >= F_EXP_WIDTH) && (B_PRECISION >= F_PRECISION * 2))
+#if (defined(B_FORMAT) && defined(B_TYPE) && (B_EXP_WIDTH >= F_EXP_WIDTH) && \
+     (B_PRECISION >= F_PRECISION * 2))
 #define PRECISION_BACKUP_AVAILABLE 1
 #endif
 
@@ -1327,7 +1336,9 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 
 #if (defined(USE_BACKUP) && USE_BACKUP)
 #define USE_BACKUP 1
-#elif (!defined(USE_BACKUP) && (defined(RANGE_BACKUP_AVAILABLE) && RANGE_BACKUP_AVAILABLE) && (defined(PRECISION_BACKUP_AVAILABLE) && PRECISION_BACKUP_AVAILABLE))
+#elif (!defined(USE_BACKUP) &&                                        \
+       (defined(RANGE_BACKUP_AVAILABLE) && RANGE_BACKUP_AVAILABLE) && \
+       (defined(PRECISION_BACKUP_AVAILABLE) && PRECISION_BACKUP_AVAILABLE))
 #define USE_BACKUP 1
 #else
 #define USE_BACKUP 0
@@ -1348,21 +1359,22 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 
 #if (BITS_PER_WORD == 32)
 
-#define PDP_SHUFFLE(i) \
-  (((U_WORD)(i) << 16) | ((U_WORD)(i) >> 16))
+#define PDP_SHUFFLE(i) (((U_WORD)(i) << 16) | ((U_WORD)(i) >> 16))
 
 #elif (BITS_PER_F_TYPE < BITS_PER_WORD)
 
-#define PDP_SHUFFLE(i) \
-  (((U_WORD)((i) & 0xffff) << 16) | ((U_WORD)(i) >> 16))
+#define PDP_SHUFFLE(i) (((U_WORD)((i) & 0xffff) << 16) | ((U_WORD)(i) >> 16))
 
-#define SIGN_EXTENDED_PDP_SHUFFLE(i) \
-  ((((WORD)((U_WORD)(i) << (BITS_PER_WORD - 16))) >> (BITS_PER_WORD - 32)) | ((U_WORD)(i) >> 16))
+#define SIGN_EXTENDED_PDP_SHUFFLE(i)                                         \
+  ((((WORD)((U_WORD)(i) << (BITS_PER_WORD - 16))) >> (BITS_PER_WORD - 32)) | \
+   ((U_WORD)(i) >> 16))
 
 #elif (BITS_PER_WORD == 64)
 
-#define PDP_SHUFFLE(i) \
-  (((U_WORD)(i) << 48) | ((U_WORD)(i) >> 48) | (((U_WORD)(i) >> 16) & ((U_WORD)0xffff << 16)) | (((U_WORD)(i) << 16) & ((U_WORD)0xffff << 32)))
+#define PDP_SHUFFLE(i)                              \
+  (((U_WORD)(i) << 48) | ((U_WORD)(i) >> 48) |      \
+   (((U_WORD)(i) >> 16) & ((U_WORD)0xffff << 16)) | \
+   (((U_WORD)(i) << 16) & ((U_WORD)0xffff << 32)))
 
 #else
 
@@ -1405,8 +1417,10 @@ powers of two up to 2^M where M = (4 * BITS_PER_WORD) - 5 */
 #define CLEAR_LOW_BITS(u) (_F_WORD(u, 1) = 0, _F_WORD(u, 2) = 0)
 #elif (_WORDS_PER_F_TYPE == 4)
 #define OR_LOW_BITS_SET(u) | _F_WORD(u, 1) | _F_WORD(u, 2) | _F_WORD(u, 3)
-#define AND_LOW_BITS_CLEAR(u) &&((_F_WORD(u, 1) | _F_WORD(u, 2) | _F_WORD(u, 3)) == 0)
-#define CLEAR_LOW_BITS(u) (_F_WORD(u, 1) = 0, _F_WORD(u, 2) = 0, _F_WORD(u, 3) = 0)
+#define AND_LOW_BITS_CLEAR(u) \
+  &&((_F_WORD(u, 1) | _F_WORD(u, 2) | _F_WORD(u, 3)) == 0)
+#define CLEAR_LOW_BITS(u) \
+  (_F_WORD(u, 1) = 0, _F_WORD(u, 2) = 0, _F_WORD(u, 3) = 0)
 #else
 #error "Unsupport combinition of WORD and F_TYPE"
 #endif

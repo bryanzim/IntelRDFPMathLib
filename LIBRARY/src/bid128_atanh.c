@@ -29,7 +29,7 @@
 
 #include "bid_trans.h"
 
-BID_F128_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000); // 0.5
+BID_F128_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000);  // 0.5
 
 BID128_FUNCTION_ARG1(bid128_atanh, x)
 
@@ -39,19 +39,21 @@ int exponent_x;
 BID_F128_TYPE rq, xq;
 
 // unpack arguments, check for NaN or Infinity
-if(!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
+if (!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
   // test if x is NaN
-  if((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((x.w[BID_HIGH_128W] & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+    if ((x.w[BID_HIGH_128W] & 0x7e00000000000000ull) ==
+        0x7e00000000000000ull) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res.w[BID_HIGH_128W] = (cx.w[BID_HIGH_128W]) & QUIET_MASK64;
     res.w[BID_LOW_128W] = cx.w[BID_LOW_128W];
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((x.w[BID_HIGH_128W] & 0x7800000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -65,7 +67,7 @@ if(!unpack_BID128_value_BLE(&sign_x, &exponent_x, &cx, x)) {
   BID_RETURN(res);
 }
 
-if(exponent_x <= DECIMAL_EXPONENT_BIAS_128 - 51) {
+if (exponent_x <= DECIMAL_EXPONENT_BIAS_128 - 51) {
   res.w[BID_HIGH_128W] = x.w[BID_HIGH_128W];
   res.w[BID_LOW_128W] = x.w[BID_LOW_128W];
   BID_RETURN(res);
@@ -82,7 +84,7 @@ one.w[BID_LOW_128W] = 1;
 // 1 - |x|
 BIDECIMAL_CALL2(bid128_sub, one_m_x, one, xn);
 
-if(one_m_x.w[BID_HIGH_128W] & 0x8000000000000000ull) {
+if (one_m_x.w[BID_HIGH_128W] & 0x8000000000000000ull) {
   // |x|>1
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -92,7 +94,7 @@ if(one_m_x.w[BID_HIGH_128W] & 0x8000000000000000ull) {
   BID_RETURN(res);
 }
 
-if((!one_m_x.w[BID_LOW_128W]) && !(one_m_x.w[BID_HIGH_128W] << 15)) {
+if ((!one_m_x.w[BID_LOW_128W]) && !(one_m_x.w[BID_HIGH_128W] << 15)) {
   // |x|==1
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);

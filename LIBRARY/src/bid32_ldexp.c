@@ -29,29 +29,33 @@
 
 #include "bid_internal.h"
 
-BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT32, bid32_ldexp, BID_UINT32, x, int, n)
+BID_TYPE0_FUNCTION_ARGTYPE1_OTHER_ARGTYPE2(BID_UINT32, bid32_ldexp, BID_UINT32,
+                                           x, int, n)
 
 BID_UINT32 sign_x, coefficient_x, res;
 BID_SINT64 exp64;
 int exponent_x, rmode;
 
 // unpack arguments, check for NaN or Infinity
-if(!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
+if (!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
   // x is Inf. or NaN or 0
 #ifdef BID_SET_STATUS_FLAGS
-  if((x & SNAN_MASK32) == SNAN_MASK32) // y is sNaN
+  if ((x & SNAN_MASK32) == SNAN_MASK32) {  // y is sNaN
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+  }
 #endif
-  if(coefficient_x)
+  if (coefficient_x) {
     res = coefficient_x & QUIET_MASK32;
-  else {
+  } else {
     exp64 = (BID_SINT64)exponent_x + (BID_SINT64)n;
-    if(exp64 < 0)
+    if (exp64 < 0) {
       exp64 = 0;
-    if(exp64 > DECIMAL_MAX_EXPON_32)
+    }
+    if (exp64 > DECIMAL_MAX_EXPON_32) {
       exp64 = DECIMAL_MAX_EXPON_32;
+    }
     exponent_x = (int)exp64;
-    res = very_fast_get_BID32(sign_x, exponent_x, coefficient_x); // 0
+    res = very_fast_get_BID32(sign_x, exponent_x, coefficient_x);  // 0
   }
   BID_RETURN(res);
 }
@@ -59,24 +63,25 @@ if(!unpack_BID32(&sign_x, &exponent_x, &coefficient_x, x)) {
 exp64 = (BID_SINT64)exponent_x + (BID_SINT64)n;
 exponent_x = (int)exp64;
 
-if((BID_UINT32)exponent_x <= DECIMAL_MAX_EXPON_32) {
+if ((BID_UINT32)exponent_x <= DECIMAL_MAX_EXPON_32) {
   res = very_fast_get_BID32(sign_x, exponent_x, coefficient_x);
   BID_RETURN(res);
 }
 // check for overflow
-if(exp64 > DECIMAL_MAX_EXPON_32) {
+if (exp64 > DECIMAL_MAX_EXPON_32) {
   // try to normalize coefficient
-  while((coefficient_x < 1000000ul) && (exp64 > DECIMAL_MAX_EXPON_32)) {
+  while ((coefficient_x < 1000000ul) && (exp64 > DECIMAL_MAX_EXPON_32)) {
     // coefficient_x < 10^15, scale by 10
     coefficient_x = (coefficient_x << 1) + (coefficient_x << 3);
     exponent_x--;
     exp64--;
   }
-  if(exp64 <= DECIMAL_MAX_EXPON_32) {
+  if (exp64 <= DECIMAL_MAX_EXPON_32) {
     res = very_fast_get_BID32(sign_x, exponent_x, coefficient_x);
     BID_RETURN(res);
-  } else
-    exponent_x = 0x7fffffffU; // overflow
+  } else {
+    exponent_x = 0x7fffffffU;  // overflow
+  }
 }
 // exponent < 0
 // the BID pack routine will round the coefficient

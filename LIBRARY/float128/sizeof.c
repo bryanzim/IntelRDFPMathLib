@@ -33,7 +33,6 @@
 #define SIZEOF(type) PRINT(#type, sizeof(type))
 
 main() {
-
   long double ld[2];
   SIZEOF(char);
   SIZEOF(short);
@@ -43,7 +42,7 @@ main() {
 #if __INT64
   SIZEOF(__int64);
 #endif
-  SIZEOF(void *);
+  SIZEOF(void*);
   SIZEOF(size_t);
 
   SIZEOF(float);

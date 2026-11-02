@@ -175,27 +175,27 @@ static const TABLE_UNION TABLE_NAME[] = {
     /* 1304 */ DATA_1x2(0x00000001, 0x00000000),
 };
 
-#define ASIN_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 0))
-#define ACOS_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 16))
-#define ASIND_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 40))
-#define ACOSD_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 56))
-#define ATAN_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 80))
-#define ATAND_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 96))
-#define ATAN2_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 112))
-#define ATAND2_CLASS_TO_ACTION_MAP ((U_WORD const *)((char *)TABLE_NAME + 208))
-#define INV_TRIG_CONS_BASE ((UX_FLOAT *)((char *)TABLE_NAME + 320))
-#define UX_ZERO ((UX_FLOAT *)((char *)TABLE_NAME + 320))
+#define ASIN_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 0))
+#define ACOS_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 16))
+#define ASIND_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 40))
+#define ACOSD_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 56))
+#define ATAN_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 80))
+#define ATAND_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 96))
+#define ATAN2_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 112))
+#define ATAND2_CLASS_TO_ACTION_MAP ((U_WORD const*)((char*)TABLE_NAME + 208))
+#define INV_TRIG_CONS_BASE ((UX_FLOAT*)((char*)TABLE_NAME + 320))
+#define UX_ZERO ((UX_FLOAT*)((char*)TABLE_NAME + 320))
 #define UX_ZERO_INDEX 0
 #define UX_PI_OVER_4_INDEX 24
 #define UX_PI_OVER_2_INDEX 48
 #define UX_THREE_QUARTERS_PI_INDEX 72
 #define UX_PI_INDEX 96
-#define UX_ONE ((UX_FLOAT *)((char *)TABLE_NAME + 440))
-#define UX_RAD_TO_DEG ((UX_FLOAT *)((char *)TABLE_NAME + 464))
-#define UX_ONE_THIRD ((UX_FLOAT *)((char *)TABLE_NAME + 488))
-#define ATAN_COEF_ARRAY ((FIXED_128 *)((char *)TABLE_NAME + 512))
+#define UX_ONE ((UX_FLOAT*)((char*)TABLE_NAME + 440))
+#define UX_RAD_TO_DEG ((UX_FLOAT*)((char*)TABLE_NAME + 464))
+#define UX_ONE_THIRD ((UX_FLOAT*)((char*)TABLE_NAME + 488))
+#define ATAN_COEF_ARRAY ((FIXED_128*)((char*)TABLE_NAME + 512))
 #define ATAN_COEF_ARRAY_DEGREE ((signed long long)0x000000000000000b)
-#define ASIN_COEF_ARRAY ((FIXED_128 *)((char *)TABLE_NAME + 912))
+#define ASIN_COEF_ARRAY ((FIXED_128*)((char*)TABLE_NAME + 912))
 #define ASIN_COEF_ARRAY_DEGREE ((signed long long)0x000000000000000b)
 
 #endif

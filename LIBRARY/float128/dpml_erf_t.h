@@ -95,14 +95,14 @@ static const TABLE_UNION __erf_t_table[] = {
     /* 360 */ DATA_1x2(0x668fd10f, 0x3f531d7a),
 };
 
-#define TWO_OVER_SQRT_PI_M1 *((double *)((char *)__erf_t_table + 0))
-#define EIGHT *((double *)((char *)__erf_t_table + 8))
-#define ONE_EIGTH *((double *)((char *)__erf_t_table + 16))
-#define ERF_POLY_COEFS ((double *)((char *)__erf_t_table + 24))
-#define ERFC_POLY_COEFS ((double *)((char *)__erf_t_table + 104))
-#define EXP_POLY_COEFS ((double *)((char *)__erf_t_table + 192))
-#define ERFC_NUM_COEFS ((double *)((char *)__erf_t_table + 224))
-#define ERFC_DEN_COEFS ((double *)((char *)__erf_t_table + 296))
+#define TWO_OVER_SQRT_PI_M1 *((double*)((char*)__erf_t_table + 0))
+#define EIGHT *((double*)((char*)__erf_t_table + 8))
+#define ONE_EIGTH *((double*)((char*)__erf_t_table + 16))
+#define ERF_POLY_COEFS ((double*)((char*)__erf_t_table + 24))
+#define ERFC_POLY_COEFS ((double*)((char*)__erf_t_table + 104))
+#define EXP_POLY_COEFS ((double*)((char*)__erf_t_table + 192))
+#define ERFC_NUM_COEFS ((double*)((char*)__erf_t_table + 224))
+#define ERFC_DEN_COEFS ((double*)((char*)__erf_t_table + 296))
 #define ERF_POLY(t, z) POLY_9_ALL(t, ERF_POLY_COEFS, z)
 #define ERFC_POLY(t, z) POLY_10_ALL(t, ERFC_POLY_COEFS, z)
 #define EXP_POLY(t, z) POLY_3_ALL(t, EXP_POLY_COEFS, z)

@@ -32,13 +32,13 @@
 #endif
 #include "bid_internal.h"
 
-void bid_fegetexceptflag(fexcept_t *flagp, int excepts _EXC_FLAGS_PARAM) {
+void bid_fegetexceptflag(fexcept_t* flagp, int excepts _EXC_FLAGS_PARAM) {
   _IDEC_flags new_sw;
 
   /* Take only supported exceptions */
   excepts &= DEC_FE_ALL_EXCEPT;
 
-  if(excepts) { /* Do we have anything to do? */
+  if (excepts) { /* Do we have anything to do? */
 
     /* Erase the old state of specified exception flags */
     *flagp &= ~(fexcept_t)(unsigned)excepts;

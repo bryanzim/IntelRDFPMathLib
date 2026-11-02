@@ -29,7 +29,7 @@
 
 #include "bid_trans.h"
 
-BID_F80_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000); // 0.5
+BID_F80_CONST_DEF(c_half, 3ffe000000000000, 0000000000000000);  // 0.5
 
 BID_TYPE0_FUNCTION_ARGTYPE1(BID_UINT64, bid64_atanh, BID_UINT64, x)
 
@@ -40,18 +40,19 @@ int exponent_x;
 
 valid_x = unpack_BID64(&sign_x, &exponent_x, &coefficient_x, x);
 
-if(!valid_x) {
+if (!valid_x) {
   // test if x is NaN
-  if((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
+  if ((x & 0x7c00000000000000ull) == 0x7c00000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
-    if((x & 0x7e00000000000000ull) == 0x7e00000000000000ull) // sNaN
+    if ((x & 0x7e00000000000000ull) == 0x7e00000000000000ull) {  // sNaN
       __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
+    }
 #endif
     res = (coefficient_x)&QUIET_MASK64;
     BID_RETURN(res);
   }
   // x is Infinity?
-  if((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
+  if ((x & 0x7800000000000000ull) == 0x7800000000000000ull) {
 #ifdef BID_SET_STATUS_FLAGS
     __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
 #endif
@@ -63,7 +64,7 @@ if(!valid_x) {
   BID_RETURN(res);
 }
 
-if(exponent_x <= DECIMAL_EXPONENT_BIAS - 24) {
+if (exponent_x <= DECIMAL_EXPONENT_BIAS - 24) {
   res = x;
   BID_RETURN(res);
 }
@@ -77,7 +78,7 @@ one = 0x31c0000000000001ull;
 // 1 - |x|
 BIDECIMAL_CALL2(bid64_sub, one_m_x, one, xn);
 
-if(one_m_x & 0x8000000000000000ull) {
+if (one_m_x & 0x8000000000000000ull) {
   // |x|>1
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_INVALID_EXCEPTION);
@@ -86,7 +87,8 @@ if(one_m_x & 0x8000000000000000ull) {
   BID_RETURN(res);
 }
 
-if(!(one_m_x << (64 - 53)) && ((one_m_x & SPECIAL_ENCODING_MASK64) != SPECIAL_ENCODING_MASK64)) {
+if (!(one_m_x << (64 - 53)) &&
+    ((one_m_x & SPECIAL_ENCODING_MASK64) != SPECIAL_ENCODING_MASK64)) {
   // |x|==1
 #ifdef BID_SET_STATUS_FLAGS
   __set_status_flags(pfpsf, BID_ZERO_DIVIDE_EXCEPTION);
