@@ -23,7 +23,7 @@ function(idfp_set_static_runtime_and_link_flags)
         endif()
     elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
         add_link_options("-static-libstdc++" "-static-libgcc")
-    elseif (CMAKE_C_COMPILER_ID STREQUAL "Intel")
+    elseif (CMAKE_C_COMPILER_ID MATCHES "^Intel")
         # Intel Windows/Linux use project defaults.
     else()
         message(FATAL_ERROR "Unsupported compiler ${CMAKE_C_COMPILER_ID}")
