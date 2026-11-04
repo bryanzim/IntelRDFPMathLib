@@ -30,7 +30,6 @@ if (MSVC)
 endif()
 
 idfp_detect_intel_compiler()
-idfp_set_static_runtime_and_link_flags()
 
 # Define options
 option(IDFP_CALL_BY_REFERENCE
@@ -52,6 +51,9 @@ option(IDFP_STRICT_MSVC_WARNINGS
 
 # Drive CMake's standard shared-library switch from the project option.
 set(BUILD_SHARED_LIBS ${IDFP_BUILD_SHARED_LIBS})
+
+# The runtime and link flags read IDFP_LINK_STATIC_RUNTIME and BUILD_SHARED_LIBS, so this runs after both are set.
+idfp_set_static_runtime_and_link_flags()
 
 if (IDFP_BUILD_TESTS)
     enable_testing()

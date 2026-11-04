@@ -28,7 +28,7 @@ add_executable(IntelDFPExample
 target_include_directories(IntelDFPExample PRIVATE
     "${CMAKE_CURRENT_BINARY_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}"
-    "${CMAKE_SOURCE_DIR}/LIBRARY/src")
+    "${PROJECT_SOURCE_DIR}/LIBRARY/src")
 target_compile_definitions(IntelDFPExample PRIVATE "INTEL_DFP_USE_EXAMPLE_SHIM=1")
 target_link_libraries(IntelDFPExample PRIVATE IntelDFP)
 idfp_apply_application_target_settings(IntelDFPExample)

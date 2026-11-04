@@ -28,7 +28,7 @@ write_basic_package_version_file(
 )
 
 configure_package_config_file(
-    "${CMAKE_SOURCE_DIR}/cmake/IntelDFPConfig.cmake.in"
+    "${PROJECT_SOURCE_DIR}/cmake/IntelDFPConfig.cmake.in"
     "${CMAKE_CURRENT_BINARY_DIR}/IntelDFPConfig.cmake"
     INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/IntelDFP
 )
